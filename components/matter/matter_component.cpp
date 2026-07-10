@@ -11,6 +11,7 @@
 #include <esp_random.h>
 
 #include <crypto/CHIPCryptoPAL.h>
+#include <lib/support/Base64.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
 #include <setup_payload/QRCodeSetupPayloadGenerator.h>
 #include <setup_payload/SetupPayload.h>
@@ -101,11 +102,17 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_
     return false;
   }
 
+  char salt_b64[BASE64_ENCODED_LEN(SPAKE2P_SALT_LENGTH) + 1];
+  salt_b64[chip::Base64Encode32(salt, SPAKE2P_SALT_LENGTH, salt_b64)] = '\0';
+
+  char verifier_b64[BASE64_ENCODED_LEN(chip::Crypto::kSpake2p_VerifierSerialized_Length) + 1];
+  verifier_b64[chip::Base64Encode32(verifier_bytes, sizeof(verifier_bytes), verifier_b64)] = '\0';
+
   nvs_set_u32(handle, NVS_KEY_DISCRIMINATOR, discriminator);
   nvs_set_u32(handle, NVS_KEY_PASSCODE, passcode);
   nvs_set_u32(handle, NVS_KEY_ITERATION_COUNT, SPAKE2P_ITERATION_COUNT);
-  nvs_set_blob(handle, NVS_KEY_SALT, salt, SPAKE2P_SALT_LENGTH);
-  nvs_set_blob(handle, NVS_KEY_VERIFIER, verifier_bytes, sizeof(verifier_bytes));
+  nvs_set_str(handle, NVS_KEY_SALT, salt_b64);
+  nvs_set_str(handle, NVS_KEY_VERIFIER, verifier_b64);
   nvs_commit(handle);
   nvs_close(handle);
 
@@ -191,7 +198,7 @@ void MatterComponent::dump_config() {
 
   std::string manual_code;
   if (chip::ManualSetupPayloadGenerator(payload).payloadDecimalStringRepresentation(manual_code) == CHIP_NO_ERROR) {
-    ESP_LOGCONFIG(TAG, "  Manual pairing code: [%s]", manual_code.c_str());
+    ESP_LOGCONFIG(TAG, "  Manual pairing code: %s", manual_code.c_str());
   }
 }
 
