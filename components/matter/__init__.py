@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option
@@ -32,6 +33,7 @@ def _validate_passcode(value):
 
 matter_ns = cg.esphome_ns.namespace("matter")
 MatterComponent = matter_ns.class_("MatterComponent", cg.Component)
+MatterFactoryResetAction = matter_ns.class_("MatterFactoryResetAction", automation.Action)
 
 CONFIG_SCHEMA = cv.All(
     cv.Schema({
@@ -103,3 +105,14 @@ async def to_code(config):
     # Adding this define to PlatformIO's src compilation makes CHIP headers work when
     # included from our ESPHome component files.
     cg.add_build_flag("-DCHIP_HAVE_CONFIG_H=1")
+
+
+@automation.register_action(
+    "matter.factory_reset",
+    MatterFactoryResetAction,
+    cv.Schema({cv.GenerateID(): cv.use_id(MatterComponent)}),
+)
+async def matter_factory_reset_to_code(config, action_id, template_arg, args):
+    var = cg.new_Pvariable(action_id, template_arg)
+    await cg.register_parented(var, config[CONF_ID])
+    return var

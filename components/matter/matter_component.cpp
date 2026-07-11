@@ -171,6 +171,19 @@ void MatterComponent::setup() {
   }
 }
 
+void MatterComponent::factory_reset() {
+  ESP_LOGW(TAG, "Matter factory reset — erasing fabric data and rebooting");
+  for (const char *ns : {"chip-config", "chip-counters", "CHIP_KVS"}) {
+    nvs_handle_t h;
+    if (nvs_open(ns, NVS_READWRITE, &h) == ESP_OK) {
+      nvs_erase_all(h);
+      nvs_commit(h);
+      nvs_close(h);
+    }
+  }
+  App.safe_reboot();
+}
+
 void MatterComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "Matter:");
   if (this->is_failed()) {
