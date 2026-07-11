@@ -123,6 +123,25 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_
 
 namespace esphome::matter {
 
+static void on_off_invoke_cb(esp_matter::client::peer_device_t *peer_device,
+                              esp_matter::client::request_handle_t *req_handle, void *priv_data) {
+  if (req_handle->type != esp_matter::client::INVOKE_CMD)
+    return;
+  if (req_handle->command_path.mClusterId != chip::app::Clusters::OnOff::Id)
+    return;
+  esp_matter::client::interaction::invoke::send_request(nullptr, peer_device, req_handle->command_path, "{}",
+                                                        nullptr, nullptr, chip::NullOptional);
+}
+
+static void on_off_group_invoke_cb(uint8_t fabric_index, esp_matter::client::request_handle_t *req_handle,
+                                    void *priv_data) {
+  if (req_handle->type != esp_matter::client::INVOKE_CMD)
+    return;
+  if (req_handle->command_path.mClusterId != chip::app::Clusters::OnOff::Id)
+    return;
+  esp_matter::client::interaction::invoke::send_group_request(fabric_index, req_handle->command_path, "{}");
+}
+
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
@@ -215,6 +234,23 @@ void MatterComponent::setup() {
     ESP_LOGD(TAG, "Generic switch endpoint created: id=%u", ms.endpoint_id);
   }
 
+  for (auto &sw : this->on_off_switches_) {
+    esp_matter::endpoint::on_off_switch::config_t sw_config;
+    esp_matter::endpoint_t *ep =
+        esp_matter::endpoint::on_off_switch::create(node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    if (ep == nullptr) {
+      ESP_LOGE(TAG, "Failed to create on_off_switch endpoint");
+      this->mark_failed();
+      return;
+    }
+    sw.endpoint_id = esp_matter::endpoint::get_id(ep);
+    ESP_LOGD(TAG, "On/Off switch endpoint created: id=%u", sw.endpoint_id);
+  }
+
+  if (!this->on_off_switches_.empty()) {
+    esp_matter::client::set_request_callback(on_off_invoke_cb, on_off_group_invoke_cb, nullptr);
+  }
+
   esp_err_t err = esp_matter::start(event_callback);
   if (err != ESP_OK) {
     ESP_LOGE(TAG, "Failed to start Matter: %s", esp_err_to_name(err));
@@ -246,6 +282,27 @@ void MatterComponent::setup() {
           }
         }
       });
+    });
+  }
+
+  for (const auto &sw : this->on_off_switches_) {
+    uint16_t eid = sw.endpoint_id;
+    OnOffAction action = sw.action;
+    sw.sensor->add_on_state_callback([eid, action](bool state) {
+      if (!state)
+        return;
+      using namespace chip::app::Clusters;
+      esp_matter::client::request_handle_t req;
+      req.type = esp_matter::client::INVOKE_CMD;
+      req.command_path.mClusterId = OnOff::Id;
+      switch (action) {
+        case OnOffAction::ON:     req.command_path.mCommandId = OnOff::Commands::On::Id; break;
+        case OnOffAction::OFF:    req.command_path.mCommandId = OnOff::Commands::Off::Id; break;
+        case OnOffAction::TOGGLE: req.command_path.mCommandId = OnOff::Commands::Toggle::Id; break;
+      }
+      esp_matter::lock::chip_stack_lock(portMAX_DELAY);
+      esp_matter::client::cluster_update(eid, &req);
+      esp_matter::lock::chip_stack_unlock();
     });
   }
 }

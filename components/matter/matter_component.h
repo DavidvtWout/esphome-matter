@@ -20,10 +20,22 @@ enum class SwitchDeviceType {
   MOMENTARY_FULL,
 };
 
+enum class OnOffAction {
+  ON,
+  OFF,
+  TOGGLE,
+};
+
 struct MatterSwitch {
   binary_sensor::BinarySensor *sensor;
   SwitchDeviceType device_type;
-  uint16_t endpoint_id;  // 0 = auto-assign
+  uint16_t endpoint_id;
+};
+
+struct MatterOnOffSwitch {
+  binary_sensor::BinarySensor *sensor;
+  OnOffAction action;
+  uint16_t endpoint_id;
 };
 
 class MatterComponent : public Component {
@@ -35,11 +47,15 @@ class MatterComponent : public Component {
   void add_switch(binary_sensor::BinarySensor *sensor, SwitchDeviceType device_type, uint16_t endpoint_id) {
     this->switches_.push_back({sensor, device_type, endpoint_id});
   }
+  void add_on_off_switch(binary_sensor::BinarySensor *sensor, OnOffAction action, uint16_t endpoint_id) {
+    this->on_off_switches_.push_back({sensor, action, endpoint_id});
+  }
 
  private:
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
   std::vector<MatterSwitch> switches_;
+  std::vector<MatterOnOffSwitch> on_off_switches_;
 };
 
 template <typename... Ts>
