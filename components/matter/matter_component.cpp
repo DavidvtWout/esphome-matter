@@ -165,11 +165,88 @@ void MatterComponent::setup() {
     return;
   }
 
+  for (auto &ms : this->switches_) {
+    esp_matter::endpoint::generic_switch::config_t sw_config;
+    esp_matter::endpoint_t *ep =
+        esp_matter::endpoint::generic_switch::create(node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    if (ep == nullptr) {
+      ESP_LOGE(TAG, "Failed to create generic switch endpoint");
+      this->mark_failed();
+      return;
+    }
+
+    esp_matter::cluster_t *cluster =
+        esp_matter::cluster::get(ep, chip::app::Clusters::Switch::Id);
+    esp_matter::cluster::switch_cluster::feature::momentary_switch_multi_press::config_t msmconfig;
+    msmconfig.multi_press_max = 2;
+    switch (ms.device_type) {
+      case SwitchDeviceType::LATCHED:
+        esp_matter::cluster::switch_cluster::feature::latching_switch::add(cluster);
+        break;
+      case SwitchDeviceType::MOMENTARY:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        break;
+      case SwitchDeviceType::MOMENTARY_RELEASE:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_release::add(cluster);
+        break;
+      case SwitchDeviceType::MOMENTARY_LONG_PRESS:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_release::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_long_press::add(cluster);
+        break;
+      case SwitchDeviceType::MOMENTARY_MULTI_PRESS:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_release::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_multi_press::add(cluster, &msmconfig);
+        break;
+      case SwitchDeviceType::MOMENTARY_FULL:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_release::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_long_press::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_multi_press::add(cluster, &msmconfig);
+        break;
+    }
+
+    esp_matter::cluster::binding::config_t binding_config;
+    esp_matter::cluster::binding::create(ep, &binding_config, esp_matter::CLUSTER_FLAG_SERVER);
+
+    ms.endpoint_id = esp_matter::endpoint::get_id(ep);
+    ESP_LOGD(TAG, "Generic switch endpoint created: id=%u", ms.endpoint_id);
+  }
+
   esp_err_t err = esp_matter::start(event_callback);
   if (err != ESP_OK) {
     ESP_LOGE(TAG, "Failed to start Matter: %s", esp_err_to_name(err));
     this->mark_failed();
     return;
+  }
+
+  // Register binary sensor callbacks after the CHIP stack is running.
+  // State changes are dispatched to the CHIP event loop via ScheduleLambda.
+  for (const auto &ms : this->switches_) {
+    uint16_t eid = ms.endpoint_id;
+    SwitchDeviceType dt = ms.device_type;
+    ms.sensor->add_on_state_callback([eid, dt](bool state) {
+      chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, dt, state]() {
+        using namespace esp_matter::cluster::switch_cluster::event;
+        // CurrentPosition attribute: 0x0001 in the Switch cluster (0x003B)
+        static constexpr uint32_t kSwitchClusterId = 0x0000003Bu;
+        static constexpr uint32_t kCurrentPositionAttrId = 0x00000001u;
+        esp_matter_attr_val_t pos = esp_matter_uint8(state ? 1u : 0u);
+        esp_matter::attribute::update(eid, kSwitchClusterId, kCurrentPositionAttrId, &pos);
+
+        if (dt == SwitchDeviceType::LATCHED) {
+          send_switch_latched(eid, state ? 1 : 0);
+        } else {
+          if (state) {
+            send_initial_press(eid, 1);
+          } else if (dt != SwitchDeviceType::MOMENTARY) {
+            send_short_release(eid, 1);
+          }
+        }
+      });
+    });
   }
 }
 
@@ -216,7 +293,10 @@ void MatterComponent::dump_config() {
     ESP_LOGCONFIG(TAG, "  Manual pairing code: %s", manual_code.c_str());
   }
 
+  chip::DeviceLayer::PlatformMgr().LockChipStack();
   auto &server = chip::Server::GetInstance();
+  ESP_LOGCONFIG(TAG, "  Commissioning window: %s",
+                server.GetCommissioningWindowManager().IsCommissioningWindowOpen() ? "open" : "closed");
   const auto &fabric_table = server.GetFabricTable();
   if (fabric_table.FabricCount() == 0) {
     ESP_LOGCONFIG(TAG, "  Fabrics: none");
