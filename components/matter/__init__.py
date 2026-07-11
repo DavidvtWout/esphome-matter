@@ -19,7 +19,8 @@ CONF_DEVICES = "devices"
 CONF_DEVICE_TYPE = "device_type"
 CONF_ENDPOINT_ID = "endpoint_id"
 CONF_SWITCH_TYPE = "switch_type"
-CONF_ACTION = "action"
+CONF_UP_ID = "up_id"
+CONF_DOWN_ID = "down_id"
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -41,7 +42,6 @@ matter_ns = cg.esphome_ns.namespace("matter")
 MatterComponent = matter_ns.class_("MatterComponent", cg.Component)
 MatterFactoryResetAction = matter_ns.class_("MatterFactoryResetAction", automation.Action)
 SwitchDeviceType = matter_ns.enum("SwitchDeviceType", is_class=True)
-OnOffAction = matter_ns.enum("OnOffAction", is_class=True)
 
 SWITCH_TYPES = {
     "latched":               SwitchDeviceType.LATCHED,
@@ -52,37 +52,43 @@ SWITCH_TYPES = {
     "momentary_full":        SwitchDeviceType.MOMENTARY_FULL,
 }
 
-ON_OFF_ACTIONS = {
-    "on":     OnOffAction.ON,
-    "off":    OnOffAction.OFF,
-    "toggle": OnOffAction.TOGGLE,
-}
-
-MATTER_DEVICE_TYPES = ["on_off_switch", "generic_switch"]
+MATTER_DEVICE_TYPES = ["on_off_switch", "dimmer_switch", "generic_switch"]
 
 
 def _validate_device(config):
     dt = config[CONF_DEVICE_TYPE]
     if dt == "on_off_switch":
-        if CONF_ACTION not in config:
-            raise cv.Invalid("on_off_switch requires 'action'")
-        if CONF_SWITCH_TYPE in config:
-            raise cv.Invalid("on_off_switch does not use 'switch_type'")
+        for key in (CONF_SWITCH_TYPE, CONF_UP_ID, CONF_DOWN_ID):
+            if key in config:
+                raise cv.Invalid(f"on_off_switch does not use '{key}'")
+        if CONF_ID not in config:
+            raise cv.Invalid("on_off_switch requires 'id'")
+    elif dt == "dimmer_switch":
+        for key in (CONF_SWITCH_TYPE, CONF_ID):
+            if key in config:
+                raise cv.Invalid(f"dimmer_switch does not use '{key}'")
+        for key in (CONF_UP_ID, CONF_DOWN_ID):
+            if key not in config:
+                raise cv.Invalid(f"dimmer_switch requires '{key}'")
     elif dt == "generic_switch":
+        for key in (CONF_UP_ID, CONF_DOWN_ID):
+            if key in config:
+                raise cv.Invalid(f"generic_switch does not use '{key}'")
         if CONF_SWITCH_TYPE not in config:
             raise cv.Invalid("generic_switch requires 'switch_type'")
-        if CONF_ACTION in config:
-            raise cv.Invalid("generic_switch does not use 'action'")
+        if CONF_ID not in config:
+            raise cv.Invalid("generic_switch requires 'id'")
     return config
 
 
 DEVICE_SCHEMA = cv.All(
     cv.Schema({
-        cv.Required(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
+        cv.Optional(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
+        cv.Optional(CONF_UP_ID): cv.use_id(binary_sensor.BinarySensor),
+        cv.Optional(CONF_DOWN_ID): cv.use_id(binary_sensor.BinarySensor),
         cv.Optional(CONF_ENDPOINT_ID): cv.int_range(min=1, max=0xFFFF),
         cv.Required(CONF_DEVICE_TYPE): cv.one_of(*MATTER_DEVICE_TYPES, lower=True),
         cv.Optional(CONF_SWITCH_TYPE): cv.one_of(*SWITCH_TYPES, lower=True),
-        cv.Optional(CONF_ACTION): cv.one_of(*ON_OFF_ACTIONS, lower=True),
     }),
     _validate_device,
 )
@@ -169,15 +175,19 @@ async def to_code(config):
     cg.add_build_flag("-DCHIP_HAVE_CONFIG_H=1")
 
     for dev_conf in config[CONF_DEVICES]:
-        sensor = await cg.get_variable(dev_conf[CONF_ID])
         endpoint_id = dev_conf.get(CONF_ENDPOINT_ID, 0)
         dt = dev_conf[CONF_DEVICE_TYPE]
         if dt == "generic_switch":
+            sensor = await cg.get_variable(dev_conf[CONF_ID])
             switch_type = SWITCH_TYPES[dev_conf[CONF_SWITCH_TYPE]]
             cg.add(var.add_switch(sensor, switch_type, endpoint_id))
         elif dt == "on_off_switch":
-            action = ON_OFF_ACTIONS[dev_conf[CONF_ACTION]]
-            cg.add(var.add_on_off_switch(sensor, action, endpoint_id))
+            sensor = await cg.get_variable(dev_conf[CONF_ID])
+            cg.add(var.add_on_off_switch(sensor, endpoint_id))
+        elif dt == "dimmer_switch":
+            up_sensor = await cg.get_variable(dev_conf[CONF_UP_ID])
+            down_sensor = await cg.get_variable(dev_conf[CONF_DOWN_ID])
+            cg.add(var.add_dimmer_switch(up_sensor, down_sensor, endpoint_id))
 
 
 @automation.register_action(
