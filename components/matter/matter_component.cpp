@@ -5,11 +5,13 @@
 #include "esphome/core/application.h"
 #include "esphome/core/log.h"
 
+#include <cinttypes>
 #include <cstring>
 #include <algorithm>
 #include <nvs.h>
 #include <esp_random.h>
 
+#include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
 #include <lib/support/Base64.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
@@ -213,6 +215,30 @@ void MatterComponent::dump_config() {
   if (chip::ManualSetupPayloadGenerator(payload).payloadDecimalStringRepresentation(manual_code) == CHIP_NO_ERROR) {
     ESP_LOGCONFIG(TAG, "  Manual pairing code: %s", manual_code.c_str());
   }
+
+  auto &server = chip::Server::GetInstance();
+  const auto &fabric_table = server.GetFabricTable();
+  if (fabric_table.FabricCount() == 0) {
+    ESP_LOGCONFIG(TAG, "  Fabrics: none");
+  } else {
+    ESP_LOGCONFIG(TAG, "  Fabrics:");
+    for (const auto &fabric : fabric_table) {
+      char label[chip::kFabricLabelMaxLengthInBytes + 1] = {0};
+      auto label_span = fabric.GetFabricLabel();
+      memcpy(label, label_span.data(), std::min(label_span.size(), sizeof(label) - 1));
+      uint64_t fabric_id = fabric.GetFabricId();
+      uint64_t node_id = fabric.GetNodeId();
+      ESP_LOGCONFIG(TAG, "    [%u] FabricId: 0x%08" PRIx32 "%08" PRIx32
+                         ", NodeId: 0x%08" PRIx32 "%08" PRIx32
+                         ", VendorId: 0x%04x%s%s",
+                    fabric.GetFabricIndex(),
+                    (uint32_t)(fabric_id >> 32), (uint32_t)(fabric_id),
+                    (uint32_t)(node_id >> 32), (uint32_t)(node_id),
+                    (uint16_t)fabric.GetVendorId(),
+                    label[0] ? ", Label: " : "", label);
+    }
+  }
+  chip::DeviceLayer::PlatformMgr().UnlockChipStack();
 }
 
 }  // namespace esphome::matter
