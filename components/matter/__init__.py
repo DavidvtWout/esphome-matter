@@ -5,7 +5,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import binary_sensor
 from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option
-from esphome.const import CONF_ID, CONF_SWITCHES, Framework
+from esphome.const import CONF_ID, Framework
 from esphome.core import CORE
 from esphome.helpers import write_file_if_changed
 
@@ -15,9 +15,10 @@ DEPENDENCIES = ["network"]
 
 CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
+CONF_DEVICES = "devices"
 CONF_DEVICE_TYPE = "device_type"
 CONF_ENDPOINT_ID = "endpoint_id"
-CONF_ON_OFF_SWITCHES = "on_off_switches"
+CONF_SWITCH_TYPE = "switch_type"
 CONF_ACTION = "action"
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
@@ -42,7 +43,7 @@ MatterFactoryResetAction = matter_ns.class_("MatterFactoryResetAction", automati
 SwitchDeviceType = matter_ns.enum("SwitchDeviceType", is_class=True)
 OnOffAction = matter_ns.enum("OnOffAction", is_class=True)
 
-SWITCH_DEVICE_TYPES = {
+SWITCH_TYPES = {
     "latched":               SwitchDeviceType.LATCHED,
     "momentary":             SwitchDeviceType.MOMENTARY,
     "momentary_release":     SwitchDeviceType.MOMENTARY_RELEASE,
@@ -57,34 +58,49 @@ ON_OFF_ACTIONS = {
     "toggle": OnOffAction.TOGGLE,
 }
 
-ON_OFF_SWITCH_SCHEMA = cv.Schema({
-    cv.Required(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
-    cv.Optional(CONF_ENDPOINT_ID): cv.int_range(min=1, max=0xFFFF),
-    cv.Required(CONF_ACTION): cv.one_of(*ON_OFF_ACTIONS, lower=True),
-})
+MATTER_DEVICE_TYPES = ["on_off_switch", "generic_switch"]
 
-def _validate_unique_endpoint_ids(config):
-    ids = (
-        [s[CONF_ENDPOINT_ID] for s in config.get(CONF_SWITCHES, []) if CONF_ENDPOINT_ID in s] +
-        [s[CONF_ENDPOINT_ID] for s in config.get(CONF_ON_OFF_SWITCHES, []) if CONF_ENDPOINT_ID in s]
-    )
-    if len(ids) != len(set(ids)):
-        raise cv.Invalid("Duplicate endpoint_id values in matter switches")
+
+def _validate_device(config):
+    dt = config[CONF_DEVICE_TYPE]
+    if dt == "on_off_switch":
+        if CONF_ACTION not in config:
+            raise cv.Invalid("on_off_switch requires 'action'")
+        if CONF_SWITCH_TYPE in config:
+            raise cv.Invalid("on_off_switch does not use 'switch_type'")
+    elif dt == "generic_switch":
+        if CONF_SWITCH_TYPE not in config:
+            raise cv.Invalid("generic_switch requires 'switch_type'")
+        if CONF_ACTION in config:
+            raise cv.Invalid("generic_switch does not use 'action'")
     return config
 
-SWITCH_SCHEMA = cv.Schema({
-    cv.Required(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
-    cv.Optional(CONF_ENDPOINT_ID): cv.int_range(min=1, max=0xFFFF),
-    cv.Required(CONF_DEVICE_TYPE): cv.one_of(*SWITCH_DEVICE_TYPES, lower=True),
-})
+
+DEVICE_SCHEMA = cv.All(
+    cv.Schema({
+        cv.Required(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
+        cv.Optional(CONF_ENDPOINT_ID): cv.int_range(min=1, max=0xFFFF),
+        cv.Required(CONF_DEVICE_TYPE): cv.one_of(*MATTER_DEVICE_TYPES, lower=True),
+        cv.Optional(CONF_SWITCH_TYPE): cv.one_of(*SWITCH_TYPES, lower=True),
+        cv.Optional(CONF_ACTION): cv.one_of(*ON_OFF_ACTIONS, lower=True),
+    }),
+    _validate_device,
+)
+
+
+def _validate_unique_endpoint_ids(config):
+    ids = [d[CONF_ENDPOINT_ID] for d in config.get(CONF_DEVICES, []) if CONF_ENDPOINT_ID in d]
+    if len(ids) != len(set(ids)):
+        raise cv.Invalid("Duplicate endpoint_id values in matter devices")
+    return config
+
 
 CONFIG_SCHEMA = cv.All(
     cv.Schema({
         cv.GenerateID(): cv.declare_id(MatterComponent),
         cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
         cv.Optional(CONF_PASSCODE): _validate_passcode,
-        cv.Optional(CONF_SWITCHES, default=[]): cv.ensure_list(SWITCH_SCHEMA),
-        cv.Optional(CONF_ON_OFF_SWITCHES, default=[]): cv.ensure_list(ON_OFF_SWITCH_SCHEMA),
+        cv.Optional(CONF_DEVICES, default=[]): cv.ensure_list(DEVICE_SCHEMA),
     }).extend(cv.COMPONENT_SCHEMA),
     cv.only_on_esp32,
     cv.only_with_framework(Framework.ESP_IDF),
@@ -152,17 +168,16 @@ async def to_code(config):
     # included from our ESPHome component files.
     cg.add_build_flag("-DCHIP_HAVE_CONFIG_H=1")
 
-    for switch_conf in config[CONF_SWITCHES]:
-        sensor = await cg.get_variable(switch_conf[CONF_ID])
-        device_type = SWITCH_DEVICE_TYPES[switch_conf[CONF_DEVICE_TYPE]]
-        endpoint_id = switch_conf.get(CONF_ENDPOINT_ID, 0)
-        cg.add(var.add_switch(sensor, device_type, endpoint_id))
-
-    for sw_conf in config[CONF_ON_OFF_SWITCHES]:
-        sensor = await cg.get_variable(sw_conf[CONF_ID])
-        action = ON_OFF_ACTIONS[sw_conf[CONF_ACTION]]
-        endpoint_id = sw_conf.get(CONF_ENDPOINT_ID, 0)
-        cg.add(var.add_on_off_switch(sensor, action, endpoint_id))
+    for dev_conf in config[CONF_DEVICES]:
+        sensor = await cg.get_variable(dev_conf[CONF_ID])
+        endpoint_id = dev_conf.get(CONF_ENDPOINT_ID, 0)
+        dt = dev_conf[CONF_DEVICE_TYPE]
+        if dt == "generic_switch":
+            switch_type = SWITCH_TYPES[dev_conf[CONF_SWITCH_TYPE]]
+            cg.add(var.add_switch(sensor, switch_type, endpoint_id))
+        elif dt == "on_off_switch":
+            action = ON_OFF_ACTIONS[dev_conf[CONF_ACTION]]
+            cg.add(var.add_on_off_switch(sensor, action, endpoint_id))
 
 
 @automation.register_action(
