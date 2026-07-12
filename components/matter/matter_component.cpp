@@ -123,6 +123,44 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_
 
 namespace esphome::matter {
 
+static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
+                              esp_matter::client::request_handle_t *req_handle, void *priv_data) {
+  if (req_handle->type != esp_matter::client::INVOKE_CMD)
+    return;
+  using namespace chip::app::Clusters;
+  char cmd_data[48] = "{}";
+  if (req_handle->command_path.mClusterId == LevelControl::Id) {
+    if (req_handle->command_path.mCommandId == LevelControl::Commands::MoveWithOnOff::Id) {
+      uint8_t mode = static_cast<uint8_t>(reinterpret_cast<uintptr_t>(req_handle->request_data));
+      snprintf(cmd_data, sizeof(cmd_data),
+               "{\"0:U8\": %u, \"1:U8\": 50, \"2:U8\": 0, \"3:U8\": 0}", mode);
+    } else {
+      // StopWithOnOff: OptionsMask=0, OptionsOverride=0
+      strcpy(cmd_data, "{\"0:U8\": 0, \"1:U8\": 0}");
+    }
+  }
+  esp_matter::client::interaction::invoke::send_request(nullptr, peer_device, req_handle->command_path,
+                                                        cmd_data, nullptr, nullptr, chip::NullOptional);
+}
+
+static void client_group_invoke_cb(uint8_t fabric_index, esp_matter::client::request_handle_t *req_handle,
+                                    void *priv_data) {
+  if (req_handle->type != esp_matter::client::INVOKE_CMD)
+    return;
+  using namespace chip::app::Clusters;
+  char cmd_data[48] = "{}";
+  if (req_handle->command_path.mClusterId == LevelControl::Id) {
+    if (req_handle->command_path.mCommandId == LevelControl::Commands::MoveWithOnOff::Id) {
+      uint8_t mode = static_cast<uint8_t>(reinterpret_cast<uintptr_t>(req_handle->request_data));
+      snprintf(cmd_data, sizeof(cmd_data),
+               "{\"0:U8\": %u, \"1:U8\": 50, \"2:U8\": 0, \"3:U8\": 0}", mode);
+    } else {
+      strcpy(cmd_data, "{\"0:U8\": 0, \"1:U8\": 0}");
+    }
+  }
+  esp_matter::client::interaction::invoke::send_group_request(fabric_index, req_handle->command_path, cmd_data);
+}
+
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
@@ -165,16 +203,158 @@ void MatterComponent::setup() {
     return;
   }
 
+  for (auto &ms : this->switches_) {
+    esp_matter::endpoint::generic_switch::config_t sw_config;
+    esp_matter::endpoint_t *ep =
+        esp_matter::endpoint::generic_switch::create(node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    if (ep == nullptr) {
+      ESP_LOGE(TAG, "Failed to create generic switch endpoint");
+      this->mark_failed();
+      return;
+    }
+
+    esp_matter::cluster_t *cluster =
+        esp_matter::cluster::get(ep, chip::app::Clusters::Switch::Id);
+    esp_matter::cluster::switch_cluster::feature::momentary_switch_multi_press::config_t msmconfig;
+    msmconfig.multi_press_max = 2;
+    switch (ms.device_type) {
+      case SwitchDeviceType::LATCHED:
+        esp_matter::cluster::switch_cluster::feature::latching_switch::add(cluster);
+        break;
+      case SwitchDeviceType::MOMENTARY:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        break;
+      case SwitchDeviceType::MOMENTARY_RELEASE:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_release::add(cluster);
+        break;
+      case SwitchDeviceType::MOMENTARY_LONG_PRESS:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_release::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_long_press::add(cluster);
+        break;
+      case SwitchDeviceType::MOMENTARY_MULTI_PRESS:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_release::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_multi_press::add(cluster, &msmconfig);
+        break;
+      case SwitchDeviceType::MOMENTARY_FULL:
+        esp_matter::cluster::switch_cluster::feature::momentary_switch::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_release::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_long_press::add(cluster);
+        esp_matter::cluster::switch_cluster::feature::momentary_switch_multi_press::add(cluster, &msmconfig);
+        break;
+    }
+
+    esp_matter::cluster::binding::config_t binding_config;
+    esp_matter::cluster::binding::create(ep, &binding_config, esp_matter::CLUSTER_FLAG_SERVER);
+
+    ms.endpoint_id = esp_matter::endpoint::get_id(ep);
+    ESP_LOGD(TAG, "Generic switch endpoint created: id=%u", ms.endpoint_id);
+  }
+
+  for (auto &sw : this->on_off_switches_) {
+    esp_matter::endpoint::on_off_switch::config_t sw_config;
+    esp_matter::endpoint_t *ep =
+        esp_matter::endpoint::on_off_switch::create(node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    if (ep == nullptr) {
+      ESP_LOGE(TAG, "Failed to create on_off_switch endpoint");
+      this->mark_failed();
+      return;
+    }
+    sw.endpoint_id = esp_matter::endpoint::get_id(ep);
+    ESP_LOGD(TAG, "On/Off switch endpoint created: id=%u", sw.endpoint_id);
+  }
+
+  for (auto &sw : this->dimmer_switches_) {
+    esp_matter::endpoint::dimmer_switch::config_t sw_config;
+    esp_matter::endpoint_t *ep =
+        esp_matter::endpoint::dimmer_switch::create(node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    if (ep == nullptr) {
+      ESP_LOGE(TAG, "Failed to create dimmer_switch endpoint");
+      this->mark_failed();
+      return;
+    }
+    sw.endpoint_id = esp_matter::endpoint::get_id(ep);
+    ESP_LOGD(TAG, "Dimmer switch endpoint created: id=%u", sw.endpoint_id);
+  }
+
+  if (!this->on_off_switches_.empty() || !this->dimmer_switches_.empty()) {
+    esp_matter::client::set_request_callback(client_invoke_cb, client_group_invoke_cb, nullptr);
+  }
+
   esp_err_t err = esp_matter::start(event_callback);
   if (err != ESP_OK) {
     ESP_LOGE(TAG, "Failed to start Matter: %s", esp_err_to_name(err));
     this->mark_failed();
     return;
   }
+
+  // Register binary sensor callbacks after the CHIP stack is running.
+  // State changes are dispatched to the CHIP event loop via ScheduleLambda.
+  for (const auto &ms : this->switches_) {
+    uint16_t eid = ms.endpoint_id;
+    SwitchDeviceType dt = ms.device_type;
+    ms.sensor->add_on_state_callback([eid, dt](bool state) {
+      chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, dt, state]() {
+        using namespace esp_matter::cluster::switch_cluster::event;
+        // CurrentPosition attribute: 0x0001 in the Switch cluster (0x003B)
+        static constexpr uint32_t kSwitchClusterId = 0x0000003Bu;
+        static constexpr uint32_t kCurrentPositionAttrId = 0x00000001u;
+        esp_matter_attr_val_t pos = esp_matter_uint8(state ? 1u : 0u);
+        esp_matter::attribute::update(eid, kSwitchClusterId, kCurrentPositionAttrId, &pos);
+
+        if (dt == SwitchDeviceType::LATCHED) {
+          send_switch_latched(eid, state ? 1 : 0);
+        } else {
+          if (state) {
+            send_initial_press(eid, 1);
+          } else if (dt != SwitchDeviceType::MOMENTARY) {
+            send_short_release(eid, 1);
+          }
+        }
+      });
+    });
+  }
+
+  for (const auto &sw : this->on_off_switches_) {
+    uint16_t eid = sw.endpoint_id;
+    sw.sensor->add_on_state_callback([eid](bool state) {
+      using namespace chip::app::Clusters;
+      esp_matter::client::request_handle_t req;
+      req.type = esp_matter::client::INVOKE_CMD;
+      req.command_path.mClusterId = OnOff::Id;
+      req.command_path.mCommandId = state ? OnOff::Commands::On::Id : OnOff::Commands::Off::Id;
+      esp_matter::lock::chip_stack_lock(portMAX_DELAY);
+      esp_matter::client::cluster_update(eid, &req);
+      esp_matter::lock::chip_stack_unlock();
+    });
+  }
+
+  for (const auto &sw : this->dimmer_switches_) {
+    uint16_t eid = sw.endpoint_id;
+    auto send_level = [eid](bool press, uint8_t move_mode) {
+      using namespace chip::app::Clusters;
+      esp_matter::client::request_handle_t req;
+      req.type = esp_matter::client::INVOKE_CMD;
+      req.command_path.mClusterId = LevelControl::Id;
+      if (press) {
+        req.command_path.mCommandId = LevelControl::Commands::MoveWithOnOff::Id;
+        req.request_data = reinterpret_cast<void *>(static_cast<uintptr_t>(move_mode));
+      } else {
+        req.command_path.mCommandId = LevelControl::Commands::StopWithOnOff::Id;
+      }
+      esp_matter::lock::chip_stack_lock(portMAX_DELAY);
+      esp_matter::client::cluster_update(eid, &req);
+      esp_matter::lock::chip_stack_unlock();
+    };
+    sw.up_sensor->add_on_state_callback([send_level](bool state) { send_level(state, 0); });
+    sw.down_sensor->add_on_state_callback([send_level](bool state) { send_level(state, 1); });
+  }
 }
 
 void MatterComponent::factory_reset() {
-  ESP_LOGW(TAG, "Matter factory reset — erasing fabric data and rebooting");
+  ESP_LOGW(TAG, "Matter factory reset. Erasing fabric data and rebooting");
   for (const char *ns : {"chip-config", "chip-counters", "CHIP_KVS"}) {
     nvs_handle_t h;
     if (nvs_open(ns, NVS_READWRITE, &h) == ESP_OK) {
@@ -216,7 +396,10 @@ void MatterComponent::dump_config() {
     ESP_LOGCONFIG(TAG, "  Manual pairing code: %s", manual_code.c_str());
   }
 
+  chip::DeviceLayer::PlatformMgr().LockChipStack();
   auto &server = chip::Server::GetInstance();
+  ESP_LOGCONFIG(TAG, "  Commissioning window: %s",
+                server.GetCommissioningWindowManager().IsCommissioningWindowOpen() ? "open" : "closed");
   const auto &fabric_table = server.GetFabricTable();
   if (fabric_table.FabricCount() == 0) {
     ESP_LOGCONFIG(TAG, "  Fabrics: none");

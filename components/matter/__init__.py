@@ -3,6 +3,7 @@ from pathlib import Path
 from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
+from esphome.components import binary_sensor
 from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option
 from esphome.const import CONF_ID, Framework
 from esphome.core import CORE
@@ -14,6 +15,12 @@ DEPENDENCIES = ["network"]
 
 CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
+CONF_DEVICES = "devices"
+CONF_DEVICE_TYPE = "device_type"
+CONF_ENDPOINT_ID = "endpoint_id"
+CONF_SWITCH_TYPE = "switch_type"
+CONF_UP_ID = "up_id"
+CONF_DOWN_ID = "down_id"
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -34,15 +41,76 @@ def _validate_passcode(value):
 matter_ns = cg.esphome_ns.namespace("matter")
 MatterComponent = matter_ns.class_("MatterComponent", cg.Component)
 MatterFactoryResetAction = matter_ns.class_("MatterFactoryResetAction", automation.Action)
+SwitchDeviceType = matter_ns.enum("SwitchDeviceType", is_class=True)
+
+SWITCH_TYPES = {
+    "latched":               SwitchDeviceType.LATCHED,
+    "momentary":             SwitchDeviceType.MOMENTARY,
+    "momentary_release":     SwitchDeviceType.MOMENTARY_RELEASE,
+    "momentary_long_press":  SwitchDeviceType.MOMENTARY_LONG_PRESS,
+    "momentary_multi_press": SwitchDeviceType.MOMENTARY_MULTI_PRESS,
+    "momentary_full":        SwitchDeviceType.MOMENTARY_FULL,
+}
+
+MATTER_DEVICE_TYPES = ["on_off_switch", "dimmer_switch", "generic_switch"]
+
+
+def _validate_device(config):
+    dt = config[CONF_DEVICE_TYPE]
+    if dt == "on_off_switch":
+        for key in (CONF_SWITCH_TYPE, CONF_UP_ID, CONF_DOWN_ID):
+            if key in config:
+                raise cv.Invalid(f"on_off_switch does not use '{key}'")
+        if CONF_ID not in config:
+            raise cv.Invalid("on_off_switch requires 'id'")
+    elif dt == "dimmer_switch":
+        for key in (CONF_SWITCH_TYPE, CONF_ID):
+            if key in config:
+                raise cv.Invalid(f"dimmer_switch does not use '{key}'")
+        for key in (CONF_UP_ID, CONF_DOWN_ID):
+            if key not in config:
+                raise cv.Invalid(f"dimmer_switch requires '{key}'")
+    elif dt == "generic_switch":
+        for key in (CONF_UP_ID, CONF_DOWN_ID):
+            if key in config:
+                raise cv.Invalid(f"generic_switch does not use '{key}'")
+        if CONF_SWITCH_TYPE not in config:
+            raise cv.Invalid("generic_switch requires 'switch_type'")
+        if CONF_ID not in config:
+            raise cv.Invalid("generic_switch requires 'id'")
+    return config
+
+
+DEVICE_SCHEMA = cv.All(
+    cv.Schema({
+        cv.Optional(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
+        cv.Optional(CONF_UP_ID): cv.use_id(binary_sensor.BinarySensor),
+        cv.Optional(CONF_DOWN_ID): cv.use_id(binary_sensor.BinarySensor),
+        cv.Optional(CONF_ENDPOINT_ID): cv.int_range(min=1, max=0xFFFF),
+        cv.Required(CONF_DEVICE_TYPE): cv.one_of(*MATTER_DEVICE_TYPES, lower=True),
+        cv.Optional(CONF_SWITCH_TYPE): cv.one_of(*SWITCH_TYPES, lower=True),
+    }),
+    _validate_device,
+)
+
+
+def _validate_unique_endpoint_ids(config):
+    ids = [d[CONF_ENDPOINT_ID] for d in config.get(CONF_DEVICES, []) if CONF_ENDPOINT_ID in d]
+    if len(ids) != len(set(ids)):
+        raise cv.Invalid("Duplicate endpoint_id values in matter devices")
+    return config
+
 
 CONFIG_SCHEMA = cv.All(
     cv.Schema({
         cv.GenerateID(): cv.declare_id(MatterComponent),
         cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
         cv.Optional(CONF_PASSCODE): _validate_passcode,
+        cv.Optional(CONF_DEVICES, default=[]): cv.ensure_list(DEVICE_SCHEMA),
     }).extend(cv.COMPONENT_SCHEMA),
     cv.only_on_esp32,
     cv.only_with_framework(Framework.ESP_IDF),
+    _validate_unique_endpoint_ids,
 )
 
 
@@ -105,6 +173,21 @@ async def to_code(config):
     # Adding this define to PlatformIO's src compilation makes CHIP headers work when
     # included from our ESPHome component files.
     cg.add_build_flag("-DCHIP_HAVE_CONFIG_H=1")
+
+    for dev_conf in config[CONF_DEVICES]:
+        endpoint_id = dev_conf.get(CONF_ENDPOINT_ID, 0)
+        dt = dev_conf[CONF_DEVICE_TYPE]
+        if dt == "generic_switch":
+            sensor = await cg.get_variable(dev_conf[CONF_ID])
+            switch_type = SWITCH_TYPES[dev_conf[CONF_SWITCH_TYPE]]
+            cg.add(var.add_switch(sensor, switch_type, endpoint_id))
+        elif dt == "on_off_switch":
+            sensor = await cg.get_variable(dev_conf[CONF_ID])
+            cg.add(var.add_on_off_switch(sensor, endpoint_id))
+        elif dt == "dimmer_switch":
+            up_sensor = await cg.get_variable(dev_conf[CONF_UP_ID])
+            down_sensor = await cg.get_variable(dev_conf[CONF_DOWN_ID])
+            cg.add(var.add_dimmer_switch(up_sensor, down_sensor, endpoint_id))
 
 
 @automation.register_action(
