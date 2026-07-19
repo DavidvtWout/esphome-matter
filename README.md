@@ -1,9 +1,16 @@
 # esphome-matter
 ESPHome external component for matter support.
 
-This is currently a proof-of-concept and not really usable yet.
+It's still in early-development. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
+`on_off_light` and `dimmable_light` matter endpoints are supported.
 
-Do you like the idea of matter support in esphome? Give this project a star! Then I'll know people are interested.
+The main limitation is that it currently isn't yet compatible with the `network` component. And since the
+`api` components requires `network`, there is no way to combine the api with matter. Incompatibility with `network`
+also means no `wifi`, `ethernet` or `openthread` can be configured. The thread TLV is passed to matter during commissioning
+and this is currently the only way to set up matter-over-thread. I think it will be possible to support matter-over-wifi and 
+matter-over-ethernet soon.
+
+I completely disabled wifi support to make it easier to implement matter-over-thread. This will also be fixed in the future.
 
 # Compilation
 
@@ -40,19 +47,15 @@ external_components:
 logger:
 
 matter:
-  devices:
-    - device_type: dimmer_switch
-      # IDs must match with IDs defined under binary_sensors.
-      up_id: button_up
-      down_id: button_down
-      # Not strictly needed to specify the endpoint_id, but if unspecified these will be auto-generated. If you later
-      # add another device that may change the endpoint_id which breaks binding and automations that use the endpoint_id.
-      endpoint_id: 1
+  endpoints:
+    - dimmer_switch:
+      id: dimmer_endpoint 
+    - temperature_sensor:
+        sensor_id: internal_temp
 
 # The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
 binary_sensor:
   - name: "Button up"
-    id: button_up
     platform: gpio
     pin:
       number: GPIO0
@@ -60,6 +63,15 @@ binary_sensor:
         pullup: true
         input: true
       inverted: true
+    on_click:
+      matter.turn_on:
+        id: dimmer_endpoint
+    on_press:
+      matter.dim_up:
+        id: dimmer_endpoint
+    on_release:
+      matter.dim_stop:
+        id: dimmer_endpoint
   - name: "Button down"
     id: button_down
     platform: gpio
@@ -69,4 +81,33 @@ binary_sensor:
         pullup: true
         input: true
       inverted: true
+    on_click:
+      matter.turn_off:
+        id: dimmer_endpoint
+    on_press:
+      matter.dim_down:
+        id: dimmer_endpoint
+    on_release:
+      matter.dim_stop:
+        id: dimmer_endpoint
+
+sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+    id: internal_temp
 ```
+
+> [!WARNING]
+> **Endpoint IDs must stay stable.** Matter endpoint IDs are assigned by list order:
+> the first entry under `endpoints:` becomes endpoint 1, the second endpoint 2, and so on.
+> Other devices and controllers reference these IDs in their bindings and ACLs, so once the
+> device is commissioned, treat the list as append-only:
+>
+> - **Never reorder or remove entries.** Removing a middle entry shifts every endpoint after
+>   it down by one, breaking their bindings.
+> - **Never change the device type of an existing entry.** The endpoint keeps its ID but its
+>   clusters change, which invalidates bindings targeting it.
+> - **Adding new entries at the end is safe.**
+>
+> If you must restructure the list, re-commission the device afterwards and recreate its
+> bindings (and clean up stale ACL entries on bound devices).
