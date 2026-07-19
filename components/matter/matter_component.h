@@ -24,6 +24,9 @@ class MatterComponent : public Component {
                          uint32_t long_press_ms) {
     this->dimmer_switches_.push_back({up_sensor, down_sensor, long_press_ms, 0});
   }
+#ifdef USE_SENSOR
+  void add_temperature_sensor(sensor::Sensor *sensor) { this->temperature_sensors_.push_back({sensor, 0}); }
+#endif
 
  private:
   // Defined in matter_endpoints.cpp
@@ -34,6 +37,9 @@ class MatterComponent : public Component {
   uint32_t passcode_{0};
   std::vector<MatterOnOffSwitch> on_off_switches_;
   std::vector<MatterDimmerSwitch> dimmer_switches_;
+#ifdef USE_SENSOR
+  std::vector<MatterTemperatureSensor> temperature_sensors_;
+#endif
 };
 
 template <typename... Ts>

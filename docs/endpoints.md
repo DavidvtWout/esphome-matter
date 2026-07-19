@@ -1,4 +1,20 @@
 
+# Sensors
+
+```yaml
+sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+    id: internal_temperature
+  
+matter:
+  endpoints:
+    - temperature_sensor:
+        sensor_id: internal_temperature
+```
+
+# Switches
+
 A matter switch needs a binary_sensor as input. For example;
 
 ```yaml

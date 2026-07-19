@@ -45,6 +45,13 @@ matter:
         # IDs must match with IDs defined under binary_sensors.
         up_id: button_up
         down_id: button_down
+    - temperature_sensor:
+        sensor_id: internal_temp
+
+sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+    id: internal_temp
 
 # The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
 binary_sensor:

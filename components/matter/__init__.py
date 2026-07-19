@@ -3,9 +3,9 @@ from pathlib import Path
 from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import binary_sensor
+from esphome.components import binary_sensor, sensor
 from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option, require_vfs_select
-from esphome.const import CONF_ID, Framework
+from esphome.const import CONF_ID, CONF_SENSOR_ID, Framework
 from esphome.core import CORE
 from esphome.coroutine import CoroPriority, coroutine_with_priority
 from esphome.helpers import write_file_if_changed
@@ -21,6 +21,7 @@ CONF_PASSCODE = "passcode"
 CONF_ENDPOINTS = "endpoints"
 CONF_ON_OFF_SWITCH = "on_off_switch"
 CONF_DIMMER_SWITCH = "dimmer_switch"
+CONF_TEMPERATURE_SENSOR = "temperature_sensor"
 CONF_UP_ID = "up_id"
 CONF_DOWN_ID = "down_id"
 CONF_LONG_PRESS_DELAY = "long_press_delay"
@@ -63,6 +64,10 @@ DIMMER_SWITCH_SCHEMA = cv.Schema({
     cv.Optional(CONF_LONG_PRESS_DELAY, default="400ms"): cv.positive_time_period_milliseconds,
 })
 
+TEMPERATURE_SENSOR_SCHEMA = cv.Schema({
+    cv.Required(CONF_SENSOR_ID): cv.use_id(sensor.Sensor),
+})
+
 
 def _validate_endpoint(config):
     if len(config) != 1:
@@ -80,6 +85,7 @@ ENDPOINT_SCHEMA = cv.All(
     cv.Schema({
         cv.Optional(CONF_ON_OFF_SWITCH): ON_OFF_SWITCH_SCHEMA,
         cv.Optional(CONF_DIMMER_SWITCH): DIMMER_SWITCH_SCHEMA,
+        cv.Optional(CONF_TEMPERATURE_SENSOR): TEMPERATURE_SENSOR_SCHEMA,
     }),
     _validate_endpoint,
 )
@@ -204,6 +210,10 @@ async def to_code(config):
             down_sensor = await cg.get_variable(opts[CONF_DOWN_ID])
             long_press_ms = int(opts[CONF_LONG_PRESS_DELAY].total_milliseconds)
             cg.add(var.add_dimmer_switch(up_sensor, down_sensor, long_press_ms))
+        elif CONF_TEMPERATURE_SENSOR in ep_conf:
+            opts = ep_conf[CONF_TEMPERATURE_SENSOR]
+            sens = await cg.get_variable(opts[CONF_SENSOR_ID])
+            cg.add(var.add_temperature_sensor(sens))
 
 
 @automation.register_action(
