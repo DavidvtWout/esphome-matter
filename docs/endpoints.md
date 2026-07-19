@@ -1,16 +1,39 @@
 
+# Lights
+
+```yaml
+matter:
+  endpoints:
+    - on_off_light:
+        light_id: user_led
+
+output:
+  # Seeed studio XIAO-ESP32-C6
+  - platform: gpio
+    pin:
+      number: GPIO15
+      inverted: true
+    id: user_led_pin
+
+light:
+  - platform: binary
+    id: user_led
+    name: "User LED"
+    output: user_led_pin
+```
+
 # Sensors
 
 ```yaml
-sensor:
-  - platform: internal_temperature
-    name: "Internal Temperature"
-    id: internal_temperature
-  
 matter:
   endpoints:
     - temperature_sensor:
         sensor_id: internal_temperature
+
+sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+    id: internal_temperature
 ```
 
 # Switches

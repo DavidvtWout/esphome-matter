@@ -127,6 +127,8 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_
 
 namespace esphome::matter {
 
+MatterComponent *global_matter_component = nullptr;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
@@ -170,6 +172,7 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
 }
 
 void MatterComponent::setup() {
+  global_matter_component = this;
   uint16_t discriminator;
   uint32_t passcode;
   if (!load_or_generate_commissioning_data(discriminator, passcode)) {
@@ -191,7 +194,7 @@ void MatterComponent::setup() {
   }
 
   esp_matter::node::config_t node_config;
-  esp_matter::node_t *node = esp_matter::node::create(&node_config, nullptr, nullptr);
+  esp_matter::node_t *node = esp_matter::node::create(&node_config, endpoint_attribute_update_cb, nullptr);
   if (node == nullptr) {
     ESP_LOGE(TAG, "Failed to create Matter node");
     this->mark_failed();

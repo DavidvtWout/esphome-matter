@@ -3,9 +3,9 @@ from pathlib import Path
 from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import sensor
+from esphome.components import light, sensor
 from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option, require_vfs_select
-from esphome.const import CONF_ID, CONF_SENSOR_ID, Framework
+from esphome.const import CONF_ID, CONF_LIGHT_ID, CONF_SENSOR_ID, Framework
 from esphome.core import CORE
 from esphome.coroutine import CoroPriority, coroutine_with_priority
 from esphome.helpers import write_file_if_changed
@@ -22,6 +22,8 @@ CONF_ENDPOINTS = "endpoints"
 CONF_ON_OFF_SWITCH = "on_off_switch"
 CONF_DIMMER_SWITCH = "dimmer_switch"
 CONF_TEMPERATURE_SENSOR = "temperature_sensor"
+CONF_ON_OFF_LIGHT = "on_off_light"
+CONF_DIMMABLE_LIGHT = "dimmable_light"
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -73,6 +75,10 @@ TEMPERATURE_SENSOR_SCHEMA = cv.Schema({
     cv.Required(CONF_SENSOR_ID): cv.use_id(sensor.Sensor),
 })
 
+LIGHT_SCHEMA = cv.Schema({
+    cv.Required(CONF_LIGHT_ID): cv.use_id(light.LightState),
+})
+
 
 def _validate_endpoint(config):
     device_types = [k for k in config if k != CONF_ID]
@@ -94,6 +100,8 @@ ENDPOINT_SCHEMA = cv.All(
         cv.Optional(CONF_ON_OFF_SWITCH): ON_OFF_SWITCH_SCHEMA,
         cv.Optional(CONF_DIMMER_SWITCH): DIMMER_SWITCH_SCHEMA,
         cv.Optional(CONF_TEMPERATURE_SENSOR): TEMPERATURE_SENSOR_SCHEMA,
+        cv.Optional(CONF_ON_OFF_LIGHT): LIGHT_SCHEMA,
+        cv.Optional(CONF_DIMMABLE_LIGHT): LIGHT_SCHEMA,
     }),
     _validate_endpoint,
 )
@@ -217,6 +225,12 @@ async def to_code(config):
             opts = ep_conf[CONF_TEMPERATURE_SENSOR]
             sens = await cg.get_variable(opts[CONF_SENSOR_ID])
             cg.add(var.add_temperature_sensor(sens, ref))
+        elif CONF_ON_OFF_LIGHT in ep_conf:
+            light_var = await cg.get_variable(ep_conf[CONF_ON_OFF_LIGHT][CONF_LIGHT_ID])
+            cg.add(var.add_on_off_light(light_var, ref))
+        elif CONF_DIMMABLE_LIGHT in ep_conf:
+            light_var = await cg.get_variable(ep_conf[CONF_DIMMABLE_LIGHT][CONF_LIGHT_ID])
+            cg.add(var.add_dimmable_light(light_var, ref))
 
 
 @automation.register_action(
