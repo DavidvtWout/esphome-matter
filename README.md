@@ -42,21 +42,13 @@ logger:
 matter:
   endpoints:
     - dimmer_switch:
-        # IDs must match with IDs defined under binary_sensors.
-        up_id: button_up
-        down_id: button_down
+      id: dimmer_endpoint 
     - temperature_sensor:
         sensor_id: internal_temp
-
-sensor:
-  - platform: internal_temperature
-    name: "Internal Temperature"
-    id: internal_temp
 
 # The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
 binary_sensor:
   - name: "Button up"
-    id: button_up
     platform: gpio
     pin:
       number: GPIO0
@@ -64,6 +56,15 @@ binary_sensor:
         pullup: true
         input: true
       inverted: true
+    on_click:
+      matter.turn_on:
+        id: dimmer_endpoint
+    on_press:
+      matter.dim_up:
+        id: dimmer_endpoint
+    on_release:
+      matter.dim_stop:
+        id: dimmer_endpoint
   - name: "Button down"
     id: button_down
     platform: gpio
@@ -73,6 +74,20 @@ binary_sensor:
         pullup: true
         input: true
       inverted: true
+    on_click:
+      matter.turn_off:
+        id: dimmer_endpoint
+    on_press:
+      matter.dim_down:
+        id: dimmer_endpoint
+    on_release:
+      matter.dim_stop:
+        id: dimmer_endpoint
+
+sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+    id: internal_temp
 ```
 
 > [!WARNING]

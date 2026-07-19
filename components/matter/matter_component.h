@@ -1,7 +1,6 @@
 #pragma once
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
-#include "esphome/components/binary_sensor/binary_sensor.h"
 
 #include "matter_endpoints.h"
 
@@ -19,13 +18,12 @@ class MatterComponent : public Component {
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::BEFORE_CONNECTION; }
   void factory_reset();
-  void add_on_off_switch(binary_sensor::BinarySensor *sensor) { this->on_off_switches_.push_back({sensor, 0}); }
-  void add_dimmer_switch(binary_sensor::BinarySensor *up_sensor, binary_sensor::BinarySensor *down_sensor,
-                         uint32_t long_press_ms) {
-    this->dimmer_switches_.push_back({up_sensor, down_sensor, long_press_ms, 0});
-  }
+  void add_on_off_switch(MatterEndpointRef *ref) { this->on_off_switches_.push_back({ref, 0}); }
+  void add_dimmer_switch(MatterEndpointRef *ref) { this->dimmer_switches_.push_back({ref, 0}); }
 #ifdef USE_SENSOR
-  void add_temperature_sensor(sensor::Sensor *sensor) { this->temperature_sensors_.push_back({sensor, 0}); }
+  void add_temperature_sensor(sensor::Sensor *sensor, MatterEndpointRef *ref) {
+    this->temperature_sensors_.push_back({sensor, ref, 0});
+  }
 #endif
 
  private:

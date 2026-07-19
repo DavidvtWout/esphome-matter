@@ -3,7 +3,7 @@ from pathlib import Path
 from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import binary_sensor, sensor
+from esphome.components import sensor
 from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option, require_vfs_select
 from esphome.const import CONF_ID, CONF_SENSOR_ID, Framework
 from esphome.core import CORE
@@ -22,9 +22,6 @@ CONF_ENDPOINTS = "endpoints"
 CONF_ON_OFF_SWITCH = "on_off_switch"
 CONF_DIMMER_SWITCH = "dimmer_switch"
 CONF_TEMPERATURE_SENSOR = "temperature_sensor"
-CONF_UP_ID = "up_id"
-CONF_DOWN_ID = "down_id"
-CONF_LONG_PRESS_DELAY = "long_press_delay"
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -45,6 +42,12 @@ def _validate_passcode(value):
 matter_ns = cg.esphome_ns.namespace("matter")
 MatterComponent = matter_ns.class_("MatterComponent", cg.Component)
 MatterFactoryResetAction = matter_ns.class_("MatterFactoryResetAction", automation.Action)
+MatterEndpointRef = matter_ns.class_("MatterEndpointRef")
+MatterTurnOnAction = matter_ns.class_("MatterTurnOnAction", automation.Action)
+MatterTurnOffAction = matter_ns.class_("MatterTurnOffAction", automation.Action)
+MatterToggleAction = matter_ns.class_("MatterToggleAction", automation.Action)
+MatterDimAction = matter_ns.class_("MatterDimAction", automation.Action)
+MatterDimStopAction = matter_ns.class_("MatterDimStopAction", automation.Action)
 
 
 def _require_vfs_select(config):
@@ -54,15 +57,17 @@ def _require_vfs_select(config):
     return config
 
 
-ON_OFF_SWITCH_SCHEMA = cv.Schema({
-    cv.Required(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
-})
+def _none_to_dict(value):
+    """Allow a bare `on_off_switch:` (no options)."""
+    return {} if value is None else value
 
-DIMMER_SWITCH_SCHEMA = cv.Schema({
-    cv.Required(CONF_UP_ID): cv.use_id(binary_sensor.BinarySensor),
-    cv.Required(CONF_DOWN_ID): cv.use_id(binary_sensor.BinarySensor),
-    cv.Optional(CONF_LONG_PRESS_DELAY, default="400ms"): cv.positive_time_period_milliseconds,
-})
+
+# Client switch endpoints take no options: they only define the Matter device
+# type (clusters + Binding). Behaviour is wired in YAML automations using the
+# matter.* actions, referencing the endpoint's id.
+ON_OFF_SWITCH_SCHEMA = cv.All(_none_to_dict, cv.Schema({}))
+
+DIMMER_SWITCH_SCHEMA = cv.All(_none_to_dict, cv.Schema({}))
 
 TEMPERATURE_SENSOR_SCHEMA = cv.Schema({
     cv.Required(CONF_SENSOR_ID): cv.use_id(sensor.Sensor),
@@ -70,7 +75,8 @@ TEMPERATURE_SENSOR_SCHEMA = cv.Schema({
 
 
 def _validate_endpoint(config):
-    if len(config) != 1:
+    device_types = [k for k in config if k != CONF_ID]
+    if len(device_types) != 1:
         raise cv.Invalid(
             "Each endpoint must have exactly one device type "
             "(multiple device types per endpoint are not supported yet)"
@@ -83,6 +89,8 @@ def _validate_endpoint(config):
 # or reordered once the device is commissioned — append only.
 ENDPOINT_SCHEMA = cv.All(
     cv.Schema({
+        # Referenceable from matter.* actions via endpoint_ref.
+        cv.GenerateID(): cv.declare_id(MatterEndpointRef),
         cv.Optional(CONF_ON_OFF_SWITCH): ON_OFF_SWITCH_SCHEMA,
         cv.Optional(CONF_DIMMER_SWITCH): DIMMER_SWITCH_SCHEMA,
         cv.Optional(CONF_TEMPERATURE_SENSOR): TEMPERATURE_SENSOR_SCHEMA,
@@ -200,20 +208,15 @@ async def to_code(config):
     cg.add_build_flag("-DCHIP_CRYPTO_KEYSTORE_RAW=1")
 
     for ep_conf in config[CONF_ENDPOINTS]:
+        ref = cg.new_Pvariable(ep_conf[CONF_ID])
         if CONF_ON_OFF_SWITCH in ep_conf:
-            opts = ep_conf[CONF_ON_OFF_SWITCH]
-            sensor = await cg.get_variable(opts[CONF_ID])
-            cg.add(var.add_on_off_switch(sensor))
+            cg.add(var.add_on_off_switch(ref))
         elif CONF_DIMMER_SWITCH in ep_conf:
-            opts = ep_conf[CONF_DIMMER_SWITCH]
-            up_sensor = await cg.get_variable(opts[CONF_UP_ID])
-            down_sensor = await cg.get_variable(opts[CONF_DOWN_ID])
-            long_press_ms = int(opts[CONF_LONG_PRESS_DELAY].total_milliseconds)
-            cg.add(var.add_dimmer_switch(up_sensor, down_sensor, long_press_ms))
+            cg.add(var.add_dimmer_switch(ref))
         elif CONF_TEMPERATURE_SENSOR in ep_conf:
             opts = ep_conf[CONF_TEMPERATURE_SENSOR]
             sens = await cg.get_variable(opts[CONF_SENSOR_ID])
-            cg.add(var.add_temperature_sensor(sens))
+            cg.add(var.add_temperature_sensor(sens, ref))
 
 
 @automation.register_action(
@@ -225,3 +228,50 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
     return var
+
+
+# Accepts both `matter.turn_on: {id: my_endpoint}` and the short form
+# `matter.turn_on: my_endpoint`, like the light/switch component actions.
+MATTER_CLIENT_ACTION_SCHEMA = automation.maybe_simple_id({
+    cv.Required(CONF_ID): cv.use_id(MatterEndpointRef),
+})
+
+
+async def _matter_client_action_to_code(config, action_id, template_arg):
+    var = cg.new_Pvariable(action_id, template_arg)
+    await cg.register_parented(var, config[CONF_ID])
+    return var
+
+
+@automation.register_action("matter.turn_on", MatterTurnOnAction, MATTER_CLIENT_ACTION_SCHEMA)
+async def matter_turn_on_to_code(config, action_id, template_arg, args):
+    return await _matter_client_action_to_code(config, action_id, template_arg)
+
+
+@automation.register_action("matter.turn_off", MatterTurnOffAction, MATTER_CLIENT_ACTION_SCHEMA)
+async def matter_turn_off_to_code(config, action_id, template_arg, args):
+    return await _matter_client_action_to_code(config, action_id, template_arg)
+
+
+@automation.register_action("matter.toggle", MatterToggleAction, MATTER_CLIENT_ACTION_SCHEMA)
+async def matter_toggle_to_code(config, action_id, template_arg, args):
+    return await _matter_client_action_to_code(config, action_id, template_arg)
+
+
+@automation.register_action("matter.dim_up", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA)
+async def matter_dim_up_to_code(config, action_id, template_arg, args):
+    var = await _matter_client_action_to_code(config, action_id, template_arg)
+    cg.add(var.set_direction(0))
+    return var
+
+
+@automation.register_action("matter.dim_down", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA)
+async def matter_dim_down_to_code(config, action_id, template_arg, args):
+    var = await _matter_client_action_to_code(config, action_id, template_arg)
+    cg.add(var.set_direction(1))
+    return var
+
+
+@automation.register_action("matter.dim_stop", MatterDimStopAction, MATTER_CLIENT_ACTION_SCHEMA)
+async def matter_dim_stop_to_code(config, action_id, template_arg, args):
+    return await _matter_client_action_to_code(config, action_id, template_arg)

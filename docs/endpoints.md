@@ -15,22 +15,44 @@ matter:
 
 # Switches
 
-A matter switch needs a binary_sensor as input. For example;
+esphome-matter supports two types of switches; `on_off_switch` and `dimmer_switch`. The first one allows the
+`matter.turn_on` and `matter.turn_off` actions on it. The second one also `matter.dim_up`, `matter.dim_down` and 
+`matter.dim_stop`.
 
 ```yaml
-binary_sensor:
-  - platform: gpio
-    pin: ...
-    id: button_up
-  - platform: gpio
-    pin: ...
-    id: button_down
-  
 matter:
   endpoints:
     - dimmer_switch:
-        up_id: button_up
-        down_id: button_down
+      id: dimmer_endpoint
+
+binary_sensor:
+  - platform: gpio
+    pin: ...
+    on_click:
+      matter.turn_on:
+        id: dimmer_endpoint
+    on_press:
+      matter.dim_up:
+        id: dimmer_endpoint
+    on_release:
+      matter.dim_stop:
+        id: dimmer_endpoint
+  - platform: gpio
+    pin:
+      number: GPIO1
+      mode:
+        pullup: true
+        input: true
+      inverted: true
+    on_click:
+      matter.turn_off:
+        id: dimmer_endpoint
+    on_press:
+      matter.dim_down:
+        id: dimmer_endpoint
+    on_release:
+      matter.dim_stop:
+        id: dimmer_endpoint
 ```
 
 ### Binding

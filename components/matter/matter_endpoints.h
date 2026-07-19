@@ -1,6 +1,5 @@
 #pragma once
 #include "esphome/core/defines.h"
-#include "esphome/components/binary_sensor/binary_sensor.h"
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
 #endif
@@ -11,21 +10,29 @@
 
 namespace esphome::matter {
 
+// Referenceable handle for one configured endpoint. The endpoint_id is filled
+// in during endpoint creation; actions resolve it at play() time.
+class MatterEndpointRef {
+ public:
+  uint16_t endpoint_id{0};
+};
+
+// Client endpoints carry no entity references: behaviour is wired in YAML
+// automations via the matter.* actions, targeting the endpoint's ref id.
 struct MatterOnOffSwitch {
-  binary_sensor::BinarySensor *sensor;
+  MatterEndpointRef *ref;
   uint16_t endpoint_id;
 };
 
 struct MatterDimmerSwitch {
-  binary_sensor::BinarySensor *up_sensor;
-  binary_sensor::BinarySensor *down_sensor;
-  uint32_t long_press_ms;
+  MatterEndpointRef *ref;
   uint16_t endpoint_id;
 };
 
 #ifdef USE_SENSOR
 struct MatterTemperatureSensor {
   sensor::Sensor *sensor;
+  MatterEndpointRef *ref;
   uint16_t endpoint_id;
 };
 #endif
