@@ -3,6 +3,8 @@
 #include "esphome/core/component.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 
+#include "matter_endpoints.h"
+
 #include <vector>
 
 #ifdef USE_MATTER
@@ -11,41 +13,12 @@
 
 namespace esphome::matter {
 
-enum class SwitchDeviceType {
-  LATCHED,
-  MOMENTARY,
-  MOMENTARY_RELEASE,
-  MOMENTARY_LONG_PRESS,
-  MOMENTARY_MULTI_PRESS,
-  MOMENTARY_FULL,
-};
-
-struct MatterSwitch {
-  binary_sensor::BinarySensor *sensor;
-  SwitchDeviceType device_type;
-  uint16_t endpoint_id;
-};
-
-struct MatterOnOffSwitch {
-  binary_sensor::BinarySensor *sensor;
-  uint16_t endpoint_id;
-};
-
-struct MatterDimmerSwitch {
-  binary_sensor::BinarySensor *up_sensor;
-  binary_sensor::BinarySensor *down_sensor;
-  uint16_t endpoint_id;
-};
-
 class MatterComponent : public Component {
  public:
   void setup() override;
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::BEFORE_CONNECTION; }
   void factory_reset();
-  void add_switch(binary_sensor::BinarySensor *sensor, SwitchDeviceType device_type, uint16_t endpoint_id) {
-    this->switches_.push_back({sensor, device_type, endpoint_id});
-  }
   void add_on_off_switch(binary_sensor::BinarySensor *sensor, uint16_t endpoint_id) {
     this->on_off_switches_.push_back({sensor, endpoint_id});
   }
@@ -55,9 +28,12 @@ class MatterComponent : public Component {
   }
 
  private:
+  // Defined in matter_endpoints.cpp
+  bool create_endpoints_(esp_matter::node_t *node);
+  void register_endpoint_callbacks_();
+
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
-  std::vector<MatterSwitch> switches_;
   std::vector<MatterOnOffSwitch> on_off_switches_;
   std::vector<MatterDimmerSwitch> dimmer_switches_;
 };
