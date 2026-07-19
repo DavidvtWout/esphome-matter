@@ -1,0 +1,30 @@
+# If no wifi, ethernet or openthread is configured, matter will start in BLE commissioning mode. This mode is what
+# almost all matter devices use for commissioning. The commissioning window will remain open as long as there is no
+# matter fabric configured. In this mode, matter supports whatever radio the device supports. So for example, an
+# ESP32-S3 can be commissioned as a matter-over-wifi device, an ESP32-H2 as matter-over-thread and an ESP32-C6 can be
+# commissioned as either.
+#
+# The credentials for the wifi or thread network are stored in the nvs partition and will survive a reboot and even
+# reflashing esphome.
+#
+# All ESP32 devices except for the ESP32-S2 (has no bluetooth) support this mode.
+#
+# F.A.Q.
+#   Q: What if the device has been commissioned and I configure wifi or openthread in esphome?
+#   A: I haven't implemented support for that so don't know... Just don't do that?
+
+esphome:
+  name: matter-device
+  friendly_name: Matter Device
+
+esp32:
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: github://DavidvtWout/esphome-matter@main
+    refresh: 0s
+
+logger:
+
+matter:

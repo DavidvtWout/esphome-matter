@@ -4,14 +4,17 @@ from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import binary_sensor
-from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option
+from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option, require_vfs_select
 from esphome.const import CONF_ID, Framework
 from esphome.core import CORE
+from esphome.coroutine import CoroPriority, coroutine_with_priority
 from esphome.helpers import write_file_if_changed
+
+from .kconfig import disable_unused_clusters
 
 CODEOWNERS = ["@DavidvtWout"]
 
-DEPENDENCIES = ["network"]
+# DEPENDENCIES = ["network"]
 
 CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
@@ -43,16 +46,8 @@ MatterComponent = matter_ns.class_("MatterComponent", cg.Component)
 MatterFactoryResetAction = matter_ns.class_("MatterFactoryResetAction", automation.Action)
 SwitchDeviceType = matter_ns.enum("SwitchDeviceType", is_class=True)
 
-SWITCH_TYPES = {
-    "latched":               SwitchDeviceType.LATCHED,
-    "momentary":             SwitchDeviceType.MOMENTARY,
-    "momentary_release":     SwitchDeviceType.MOMENTARY_RELEASE,
-    "momentary_long_press":  SwitchDeviceType.MOMENTARY_LONG_PRESS,
-    "momentary_multi_press": SwitchDeviceType.MOMENTARY_MULTI_PRESS,
-    "momentary_full":        SwitchDeviceType.MOMENTARY_FULL,
-}
 
-MATTER_DEVICE_TYPES = ["on_off_switch", "dimmer_switch", "generic_switch"]
+MATTER_DEVICE_TYPES = ["on_off_switch", "dimmer_switch"]
 
 
 def _validate_device(config):
@@ -70,14 +65,13 @@ def _validate_device(config):
         for key in (CONF_UP_ID, CONF_DOWN_ID):
             if key not in config:
                 raise cv.Invalid(f"dimmer_switch requires '{key}'")
-    elif dt == "generic_switch":
-        for key in (CONF_UP_ID, CONF_DOWN_ID):
-            if key in config:
-                raise cv.Invalid(f"generic_switch does not use '{key}'")
-        if CONF_SWITCH_TYPE not in config:
-            raise cv.Invalid("generic_switch requires 'switch_type'")
-        if CONF_ID not in config:
-            raise cv.Invalid("generic_switch requires 'id'")
+    return config
+
+
+def _require_vfs_select(config):
+    """Register VFS select requirement during config validation."""
+    if CORE.is_esp32:
+        require_vfs_select()
     return config
 
 
@@ -88,9 +82,9 @@ DEVICE_SCHEMA = cv.All(
         cv.Optional(CONF_DOWN_ID): cv.use_id(binary_sensor.BinarySensor),
         cv.Optional(CONF_ENDPOINT_ID): cv.int_range(min=1, max=0xFFFF),
         cv.Required(CONF_DEVICE_TYPE): cv.one_of(*MATTER_DEVICE_TYPES, lower=True),
-        cv.Optional(CONF_SWITCH_TYPE): cv.one_of(*SWITCH_TYPES, lower=True),
     }),
     _validate_device,
+    _require_vfs_select, # TODO: Only needed when openthread is enabled
 )
 
 
@@ -113,18 +107,20 @@ CONFIG_SCHEMA = cv.All(
     _validate_unique_endpoint_ids,
 )
 
-
+# Wifi, ethernet and thread run at COMMUNICATION priority. Matter needs to start just after that and
+# NETWORK_SERVICES is the next CoroPriority so we choose that one.
+@coroutine_with_priority(CoroPriority.NETWORK_SERVICES)
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
-    add_idf_component(name="espressif/esp_matter", ref="1.4.0")
 
-    cg.add_define("USE_MATTER")
-
-    if CONF_DISCRIMINATOR in config:
-        cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
-    if CONF_PASSCODE in config:
-        cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
+    # The 1.4.0 tag is too far behind and doesn't include some essential bug-fixes. For now I pinned a specific
+    # commit but in the future the release/v1.4 branch should probably be pinned.
+    add_idf_component(
+        name="espressif/esp_matter",
+        repo="https://github.com/espressif/esp-matter",
+        ref="88cdc085f95cc9d806608e2ddd9ca6d2e6224ce6"
+    )
 
     # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but
     # PlatformIO names the app component "src". We write the project CMakeLists.txt
@@ -140,31 +136,62 @@ async def to_code(config):
         f"project({CORE.name})\n",
     )
 
-    # Disable esp_matter's own Thread stack init: ESPHome's openthread component already
-    # called esp_openthread_init(). Letting esp_matter also call it (the default) causes a
-    # double-init crash. With this False, esp_matter::start() skips InitThreadStack() and
-    # StartThreadTask(); CHIP's UDP layer still reaches the Thread netif via LWIP.
-    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False)
+    cg.add_define("USE_MATTER")
 
-    # On-network commissioning (device already connected via ESPHome Wi-Fi/Thread config)
-    # uses mDNS/SRP discovery + PASE over UDP. BLE is not involved. Disabling it saves
-    # memory and avoids radio coexistence issues on ESP32-C6 where BLE and 802.15.4 share
-    # the same RF hardware. CHIP drops CHIPoBLE automatically when BT is disabled and falls
-    # back to IP-only commissioning.
-    add_idf_sdkconfig_option("CONFIG_BT_ENABLED", False)
+    if CONF_DISCRIMINATOR in config:
+        cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
+    if CONF_PASSCODE in config:
+        cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
+
+    # has_wifi = "wifi" in CORE.loaded_integrations
+    # has_ethernet = "ethernet" in CORE.loaded_integrations
+    # has_openthread = "openthread" in CORE.loaded_integrations
+
+    enable_ble = True
+    enable_openthread = True
+    enable_wifi = False
+
+    # TODO: use CORE.data?
+    if enable_ble:
+        add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
+        add_idf_sdkconfig_option("CONFIG_BT_BLUEDROID_ENABLED", False)
+        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLED", True)
+        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT", False)
+        # TODO: set USE_BLE_ONLY_FOR_COMMISSIONING to false if other esphome components need it?
+
+    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)
+    add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
+
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", enable_wifi)
+
+    if enable_openthread:
+        add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", True)
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CLI", False)
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
+        add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", True)
+        add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)
+
+        add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
+        add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
+        add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
+        add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
+        add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
+        add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # chip core
+
+    disable_unused_clusters()
+
+    # TODO: ENABLE_ESP32_FACTORY_DATA_PROVIDER?
+
+    # TODO: stop api from restarting device in commissioning mode?
 
     # CHIP's mbedTLS crypto backend calls mbedtls_hkdf() (CHIPCryptoPALmbedTLS.cpp).
     # ESP-IDF's mbedTLS disables HKDF by default; enabling this compiles mbedtls/hkdf.c
     # into the mbedTLS library so the symbol is present at link time.
     add_idf_sdkconfig_option("CONFIG_MBEDTLS_HKDF_C", True)
-
-    # connectedhomeip's ConnectivityManagerImpl static-asserts that the Wi-Fi and Thread
-    # Matter NetworkCommissioning cluster endpoint IDs are different. Both Kconfig options
-    # default to 0 on ESP32-C6 (which has hardware for both). Setting Thread=2 prevents the
-    # assertion. These are Matter application-layer endpoint numbers, not network interface
-    # IDs, the actual Wi-Fi/Thread connectivity is still managed by ESPHome's Wi-Fi/OpenThread.
-    add_idf_sdkconfig_option("CONFIG_WIFI_NETWORK_ENDPOINT_ID", 0)
-    add_idf_sdkconfig_option("CONFIG_THREAD_NETWORK_ENDPOINT_ID", 2)
 
     # connectedhomeip's GN build sets CHIP_HAVE_CONFIG_H=1 for all its sources (src/BUILD.gn).
     # Without it, SystemConfig.h can't find the GN-generated SystemBuildConfig.h and
@@ -174,14 +201,13 @@ async def to_code(config):
     # included from our ESPHome component files.
     cg.add_build_flag("-DCHIP_HAVE_CONFIG_H=1")
 
+    # TODO: probably not needed?
+    cg.add_build_flag("-DCHIP_CRYPTO_KEYSTORE_RAW=1")
+
     for dev_conf in config[CONF_DEVICES]:
         endpoint_id = dev_conf.get(CONF_ENDPOINT_ID, 0)
         dt = dev_conf[CONF_DEVICE_TYPE]
-        if dt == "generic_switch":
-            sensor = await cg.get_variable(dev_conf[CONF_ID])
-            switch_type = SWITCH_TYPES[dev_conf[CONF_SWITCH_TYPE]]
-            cg.add(var.add_switch(sensor, switch_type, endpoint_id))
-        elif dt == "on_off_switch":
+        if dt == "on_off_switch":
             sensor = await cg.get_variable(dev_conf[CONF_ID])
             cg.add(var.add_on_off_switch(sensor, endpoint_id))
         elif dt == "dimmer_switch":
