@@ -1,0 +1,54 @@
+# This example involved a pre-configured openthread network. This way, the api is immediately available, even before
+# matter is commissioned.
+
+esphome:
+  name: matter-device
+  friendly_name: Matter Device
+
+esp32:
+  framework:
+    variant: ESP32C6
+    type: esp-idf
+
+external_components:
+  - source: github://DavidvtWout/esphome-matter@main
+    refresh: 0s
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+openthread:
+  tlv: !secret thread_tlv
+
+matter:
+  endpoints:
+    - dimmer_switch:
+        # IDs must match with IDs defined under binary_sensors.
+        up_id: button_up
+        down_id: button_down
+        long_press_delay: 200ms
+
+# The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
+binary_sensor:
+  - name: "Button up"
+    id: button_up
+    platform: gpio
+    pin:
+      number: GPIO0
+      mode:
+        pullup: true
+        input: true
+      inverted: true
+  - name: "Button down"
+    id: button_down
+    platform: gpio
+    pin:
+      number: GPIO1
+      mode:
+        pullup: true
+        input: true
+      inverted: true

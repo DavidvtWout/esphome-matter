@@ -16,6 +16,7 @@ struct MatterOnOffSwitch {
 struct MatterDimmerSwitch {
   binary_sensor::BinarySensor *up_sensor;
   binary_sensor::BinarySensor *down_sensor;
+  uint32_t long_press_ms;
   uint16_t endpoint_id;
 };
 

@@ -19,12 +19,10 @@ class MatterComponent : public Component {
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::BEFORE_CONNECTION; }
   void factory_reset();
-  void add_on_off_switch(binary_sensor::BinarySensor *sensor, uint16_t endpoint_id) {
-    this->on_off_switches_.push_back({sensor, endpoint_id});
-  }
+  void add_on_off_switch(binary_sensor::BinarySensor *sensor) { this->on_off_switches_.push_back({sensor, 0}); }
   void add_dimmer_switch(binary_sensor::BinarySensor *up_sensor, binary_sensor::BinarySensor *down_sensor,
-                         uint16_t endpoint_id) {
-    this->dimmer_switches_.push_back({up_sensor, down_sensor, endpoint_id});
+                         uint32_t long_press_ms) {
+    this->dimmer_switches_.push_back({up_sensor, down_sensor, long_press_ms, 0});
   }
 
  private:

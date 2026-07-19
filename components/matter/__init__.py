@@ -18,12 +18,12 @@ CODEOWNERS = ["@DavidvtWout"]
 
 CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
-CONF_DEVICES = "devices"
-CONF_DEVICE_TYPE = "device_type"
-CONF_ENDPOINT_ID = "endpoint_id"
-CONF_SWITCH_TYPE = "switch_type"
+CONF_ENDPOINTS = "endpoints"
+CONF_ON_OFF_SWITCH = "on_off_switch"
+CONF_DIMMER_SWITCH = "dimmer_switch"
 CONF_UP_ID = "up_id"
 CONF_DOWN_ID = "down_id"
+CONF_LONG_PRESS_DELAY = "long_press_delay"
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -44,28 +44,6 @@ def _validate_passcode(value):
 matter_ns = cg.esphome_ns.namespace("matter")
 MatterComponent = matter_ns.class_("MatterComponent", cg.Component)
 MatterFactoryResetAction = matter_ns.class_("MatterFactoryResetAction", automation.Action)
-SwitchDeviceType = matter_ns.enum("SwitchDeviceType", is_class=True)
-
-
-MATTER_DEVICE_TYPES = ["on_off_switch", "dimmer_switch"]
-
-
-def _validate_device(config):
-    dt = config[CONF_DEVICE_TYPE]
-    if dt == "on_off_switch":
-        for key in (CONF_SWITCH_TYPE, CONF_UP_ID, CONF_DOWN_ID):
-            if key in config:
-                raise cv.Invalid(f"on_off_switch does not use '{key}'")
-        if CONF_ID not in config:
-            raise cv.Invalid("on_off_switch requires 'id'")
-    elif dt == "dimmer_switch":
-        for key in (CONF_SWITCH_TYPE, CONF_ID):
-            if key in config:
-                raise cv.Invalid(f"dimmer_switch does not use '{key}'")
-        for key in (CONF_UP_ID, CONF_DOWN_ID):
-            if key not in config:
-                raise cv.Invalid(f"dimmer_switch requires '{key}'")
-    return config
 
 
 def _require_vfs_select(config):
@@ -75,36 +53,47 @@ def _require_vfs_select(config):
     return config
 
 
-DEVICE_SCHEMA = cv.All(
-    cv.Schema({
-        cv.Optional(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
-        cv.Optional(CONF_UP_ID): cv.use_id(binary_sensor.BinarySensor),
-        cv.Optional(CONF_DOWN_ID): cv.use_id(binary_sensor.BinarySensor),
-        cv.Optional(CONF_ENDPOINT_ID): cv.int_range(min=1, max=0xFFFF),
-        cv.Required(CONF_DEVICE_TYPE): cv.one_of(*MATTER_DEVICE_TYPES, lower=True),
-    }),
-    _validate_device,
-    _require_vfs_select, # TODO: Only needed when openthread is enabled
-)
+ON_OFF_SWITCH_SCHEMA = cv.Schema({
+    cv.Required(CONF_ID): cv.use_id(binary_sensor.BinarySensor),
+})
+
+DIMMER_SWITCH_SCHEMA = cv.Schema({
+    cv.Required(CONF_UP_ID): cv.use_id(binary_sensor.BinarySensor),
+    cv.Required(CONF_DOWN_ID): cv.use_id(binary_sensor.BinarySensor),
+    cv.Optional(CONF_LONG_PRESS_DELAY, default="400ms"): cv.positive_time_period_milliseconds,
+})
 
 
-def _validate_unique_endpoint_ids(config):
-    ids = [d[CONF_ENDPOINT_ID] for d in config.get(CONF_DEVICES, []) if CONF_ENDPOINT_ID in d]
-    if len(ids) != len(set(ids)):
-        raise cv.Invalid("Duplicate endpoint_id values in matter devices")
+def _validate_endpoint(config):
+    if len(config) != 1:
+        raise cv.Invalid(
+            "Each endpoint must have exactly one device type "
+            "(multiple device types per endpoint are not supported yet)"
+        )
     return config
 
+
+# Each list entry is one Matter endpoint; the key selects the device type.
+# Endpoint ids are assigned in list order, so entries must never be removed
+# or reordered once the device is commissioned — append only.
+ENDPOINT_SCHEMA = cv.All(
+    cv.Schema({
+        cv.Optional(CONF_ON_OFF_SWITCH): ON_OFF_SWITCH_SCHEMA,
+        cv.Optional(CONF_DIMMER_SWITCH): DIMMER_SWITCH_SCHEMA,
+    }),
+    _validate_endpoint,
+)
 
 CONFIG_SCHEMA = cv.All(
     cv.Schema({
         cv.GenerateID(): cv.declare_id(MatterComponent),
         cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
         cv.Optional(CONF_PASSCODE): _validate_passcode,
-        cv.Optional(CONF_DEVICES, default=[]): cv.ensure_list(DEVICE_SCHEMA),
+        cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
     }).extend(cv.COMPONENT_SCHEMA),
     cv.only_on_esp32,
     cv.only_with_framework(Framework.ESP_IDF),
-    _validate_unique_endpoint_ids,
+    _require_vfs_select,  # TODO: Only needed when openthread is enabled
 )
 
 # Wifi, ethernet and thread run at COMMUNICATION priority. Matter needs to start just after that and
@@ -204,16 +193,17 @@ async def to_code(config):
     # TODO: probably not needed?
     cg.add_build_flag("-DCHIP_CRYPTO_KEYSTORE_RAW=1")
 
-    for dev_conf in config[CONF_DEVICES]:
-        endpoint_id = dev_conf.get(CONF_ENDPOINT_ID, 0)
-        dt = dev_conf[CONF_DEVICE_TYPE]
-        if dt == "on_off_switch":
-            sensor = await cg.get_variable(dev_conf[CONF_ID])
-            cg.add(var.add_on_off_switch(sensor, endpoint_id))
-        elif dt == "dimmer_switch":
-            up_sensor = await cg.get_variable(dev_conf[CONF_UP_ID])
-            down_sensor = await cg.get_variable(dev_conf[CONF_DOWN_ID])
-            cg.add(var.add_dimmer_switch(up_sensor, down_sensor, endpoint_id))
+    for ep_conf in config[CONF_ENDPOINTS]:
+        if CONF_ON_OFF_SWITCH in ep_conf:
+            opts = ep_conf[CONF_ON_OFF_SWITCH]
+            sensor = await cg.get_variable(opts[CONF_ID])
+            cg.add(var.add_on_off_switch(sensor))
+        elif CONF_DIMMER_SWITCH in ep_conf:
+            opts = ep_conf[CONF_DIMMER_SWITCH]
+            up_sensor = await cg.get_variable(opts[CONF_UP_ID])
+            down_sensor = await cg.get_variable(opts[CONF_DOWN_ID])
+            long_press_ms = int(opts[CONF_LONG_PRESS_DELAY].total_milliseconds)
+            cg.add(var.add_dimmer_switch(up_sensor, down_sensor, long_press_ms))
 
 
 @automation.register_action(

@@ -40,14 +40,11 @@ external_components:
 logger:
 
 matter:
-  devices:
-    - device_type: dimmer_switch
-      # IDs must match with IDs defined under binary_sensors.
-      up_id: button_up
-      down_id: button_down
-      # Not strictly needed to specify the endpoint_id, but if unspecified these will be auto-generated. If you later
-      # add another device that may change the endpoint_id which breaks binding and automations that use the endpoint_id.
-      endpoint_id: 1
+  endpoints:
+    - dimmer_switch:
+        # IDs must match with IDs defined under binary_sensors.
+        up_id: button_up
+        down_id: button_down
 
 # The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
 binary_sensor:
@@ -70,3 +67,18 @@ binary_sensor:
         input: true
       inverted: true
 ```
+
+> [!WARNING]
+> **Endpoint IDs must stay stable.** Matter endpoint IDs are assigned by list order:
+> the first entry under `endpoints:` becomes endpoint 1, the second endpoint 2, and so on.
+> Other devices and controllers reference these IDs in their bindings and ACLs, so once the
+> device is commissioned, treat the list as append-only:
+>
+> - **Never reorder or remove entries.** Removing a middle entry shifts every endpoint after
+>   it down by one, breaking their bindings.
+> - **Never change the device type of an existing entry.** The endpoint keeps its ID but its
+>   clusters change, which invalidates bindings targeting it.
+> - **Adding new entries at the end is safe.**
+>
+> If you must restructure the list, re-commission the device afterwards and recreate its
+> bindings (and clean up stale ACL entries on bound devices).

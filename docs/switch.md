@@ -11,14 +11,10 @@ binary_sensor:
     id: button_down
   
 matter:
-  devices:
-    - device_type: dimmer_switch
-      up_id: button_up
-      down_id: button_down
-      endpoint_id: 1
-    - device_type: on_off_switch
-      id: button_on_off
-      endpoint_id: 2
+  endpoints:
+    - dimmer_switch:
+        up_id: button_up
+        down_id: button_down
 ```
 
 ### Binding
