@@ -12,18 +12,11 @@ from esphome.helpers import write_file_if_changed
 
 from .kconfig import disable_unused_clusters
 
+from .const import *
+
 CODEOWNERS = ["@DavidvtWout"]
 
-# DEPENDENCIES = ["network"]
-
-CONF_DISCRIMINATOR = "discriminator"
-CONF_PASSCODE = "passcode"
-CONF_ENDPOINTS = "endpoints"
-CONF_ON_OFF_SWITCH = "on_off_switch"
-CONF_DIMMER_SWITCH = "dimmer_switch"
-CONF_TEMPERATURE_SENSOR = "temperature_sensor"
-CONF_ON_OFF_LIGHT = "on_off_light"
-CONF_DIMMABLE_LIGHT = "dimmable_light"
+AUTO_LOAD = ["network"]
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -190,8 +183,11 @@ async def to_code(config):
         add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
-        add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
         add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # chip core
+
+        # TODO: fix the network implementation of ESPHome. Currently the network component is garbage and doesn't
+        #   even support IPv6-only.
+        # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
 
     disable_unused_clusters()
 
