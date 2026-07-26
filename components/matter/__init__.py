@@ -113,16 +113,16 @@ CONFIG_SCHEMA = cv.All(
 )
 
 def _final_validate(_):
-    # TODO: technically matter is able to operate over IPv4 so only check ipv6 if needed.
     full_config = fv.full_config.get()
     network_config = full_config.get("network", {})
     if not network_config.get(CONF_ENABLE_IPV6, False):
         raise cv.Invalid(
-            "OpenThread requires IPv6 to be enabled in the network component. "
+            "matter-over-thread requires IPv6 to be enabled in the network component. "
             "Please set `enable_ipv6: true` in the `network` configuration."
         )
 
-FINAL_VALIDATE_SCHEMA = _final_validate
+# TODO: only for matter-over-thread
+# FINAL_VALIDATE_SCHEMA = _final_validate
 
 # Wifi, ethernet and thread run at COMMUNICATION priority. Matter needs to start just after that and
 # NETWORK_SERVICES is the next CoroPriority so we choose that one.
@@ -166,8 +166,7 @@ async def to_code(config):
     wifi_configured = "wifi" in CORE.loaded_integrations
     any_network_configured = ethernet_configured or openthread_configured or wifi_configured
 
-    enable_openthread = True
-    enable_wifi = False
+    enable_openthread = False
 
     if not any_network_configured:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
@@ -188,7 +187,7 @@ async def to_code(config):
 
     # These are connectedhomeip specific flags
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False) # connectedhomeip
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", enable_wifi)  # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", wifi_configured)  # connectedhomeip
 
     if enable_openthread:
         add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", True)
