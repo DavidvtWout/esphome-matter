@@ -113,6 +113,7 @@ CONFIG_SCHEMA = cv.All(
 )
 
 def _final_validate(_):
+    # TODO: technically matter is able to operate over IPv4 so only check ipv6 if needed.
     full_config = fv.full_config.get()
     network_config = full_config.get("network", {})
     if not network_config.get(CONF_ENABLE_IPV6, False):
@@ -159,27 +160,35 @@ async def to_code(config):
     if CONF_PASSCODE in config:
         cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
 
-    # has_wifi = "wifi" in CORE.loaded_integrations
-    # has_ethernet = "ethernet" in CORE.loaded_integrations
-    # has_openthread = "openthread" in CORE.loaded_integrations
 
-    enable_ble = True
+    ethernet_configured = "ethernet" in CORE.loaded_integrations
+    openthread_configured = "openthread" in CORE.loaded_integrations
+    wifi_configured = "wifi" in CORE.loaded_integrations
+    any_network_configured = ethernet_configured or openthread_configured or wifi_configured
+
     enable_openthread = True
     enable_wifi = False
 
-    # TODO: use CORE.data?
-    if enable_ble:
+    if not any_network_configured:
+        # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
+        # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
+        # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the
+        # device. If the device supports both, it can be commissioned in either mode.
+
+        # TODO: use CORE.data?
         add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
         add_idf_sdkconfig_option("CONFIG_BT_BLUEDROID_ENABLED", False)
         add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLED", True)
         add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT", False)
         # TODO: set USE_BLE_ONLY_FOR_COMMISSIONING to false if other esphome components need it?
 
+    # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
 
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", enable_wifi)
+    # These are connectedhomeip specific flags
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False) # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", enable_wifi)  # connectedhomeip
 
     if enable_openthread:
         add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", True)
@@ -199,7 +208,7 @@ async def to_code(config):
         # TODO: fix the network implementation of ESPHome. Currently the network component is garbage and doesn't
         #   even support IPv6-only.
         # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
-        # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # chip core
+        # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
 
     disable_unused_clusters()
 
