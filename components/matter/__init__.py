@@ -168,29 +168,18 @@ async def to_code(config):
 
     enable_openthread = False
 
-    if not any_network_configured:
-        # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
-        # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
-        # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the
-        # device. If the device supports both, it can be commissioned in either mode.
-
-        # TODO: use CORE.data?
-        add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
-        add_idf_sdkconfig_option("CONFIG_BT_BLUEDROID_ENABLED", False)
-        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLED", True)
-        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT", False)
-        # TODO: set USE_BLE_ONLY_FOR_COMMISSIONING to false if other esphome components need it?
-
     # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
-    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)
+    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
 
-    # These are connectedhomeip specific flags
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False) # connectedhomeip
+    # These are connectedhomeip specific flags and must both be set to False since Wi-Fi is already managed by
+    # the ESPHome wifi component and enabling chip's Wi-Fi conflicts with this.
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", False)  # connectedhomeip
 
+    # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
+    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", enable_openthread)  # esp-matter
     if enable_openthread:
-        add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
@@ -209,11 +198,23 @@ async def to_code(config):
         # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
         # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
 
+    if not any_network_configured:
+        # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
+        # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
+        # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the
+        # device. If the device supports both, it can be commissioned in either mode.
+
+        # TODO: use CORE.data?
+        add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
+        add_idf_sdkconfig_option("CONFIG_BT_BLUEDROID_ENABLED", False)
+        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLED", True)
+        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT", False)
+        # TODO: set USE_BLE_ONLY_FOR_COMMISSIONING to false if other esphome components need it?
+        # TODO: stop api from restarting device in commissioning mode?
+
     disable_unused_clusters()
 
     # TODO: ENABLE_ESP32_FACTORY_DATA_PROVIDER?
-
-    # TODO: stop api from restarting device in commissioning mode?
 
     # CHIP's mbedTLS crypto backend calls mbedtls_hkdf() (CHIPCryptoPALmbedTLS.cpp).
     # ESP-IDF's mbedTLS disables HKDF by default; enabling this compiles mbedtls/hkdf.c
