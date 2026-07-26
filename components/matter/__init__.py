@@ -5,9 +5,10 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import light, sensor
 from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option, require_vfs_select
-from esphome.const import CONF_ID, CONF_LIGHT_ID, CONF_SENSOR_ID, Framework
+from esphome.const import CONF_ENABLE_IPV6, CONF_ID, CONF_LIGHT_ID, CONF_SENSOR_ID, Framework
 from esphome.core import CORE
 from esphome.coroutine import CoroPriority, coroutine_with_priority
+import esphome.final_validate as fv
 from esphome.helpers import write_file_if_changed
 
 from .kconfig import disable_unused_clusters
@@ -111,6 +112,17 @@ CONFIG_SCHEMA = cv.All(
     _require_vfs_select,  # TODO: Only needed when openthread is enabled
 )
 
+def _final_validate(_):
+    full_config = fv.full_config.get()
+    network_config = full_config.get("network", {})
+    if not network_config.get(CONF_ENABLE_IPV6, False):
+        raise cv.Invalid(
+            "OpenThread requires IPv6 to be enabled in the network component. "
+            "Please set `enable_ipv6: true` in the `network` configuration."
+        )
+
+FINAL_VALIDATE_SCHEMA = _final_validate
+
 # Wifi, ethernet and thread run at COMMUNICATION priority. Matter needs to start just after that and
 # NETWORK_SERVICES is the next CoroPriority so we choose that one.
 @coroutine_with_priority(CoroPriority.NETWORK_SERVICES)
@@ -183,11 +195,11 @@ async def to_code(config):
         add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
-        add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # chip core
 
         # TODO: fix the network implementation of ESPHome. Currently the network component is garbage and doesn't
         #   even support IPv6-only.
         # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
+        # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # chip core
 
     disable_unused_clusters()
 
