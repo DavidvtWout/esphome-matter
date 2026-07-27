@@ -168,8 +168,15 @@ async def to_code(config):
 
     enable_openthread = False
 
-    # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
-    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
+    # Use CHIP's built-in minimal mDNS stack. We cannot use CONFIG_USE_MINIMAL_MDNS=n (esp-mdns) because
+    # that path requires CHIP_DEVICE_CONFIG_ENABLE_WIFI=1, which is derived from
+    #   CHIP_DEVICE_CONFIG_ENABLE_WIFI = CHIP_DEVICE_CONFIG_ENABLE_WIFI_AP | CHIP_DEVICE_CONFIG_ENABLE_WIFI_STATION
+    # Setting CONFIG_ENABLE_WIFI_STATION=n (required to prevent CHIP from driving esp_wifi and conflicting with
+    # ESPHome's wifi component) zeroes out CHIP_DEVICE_CONFIG_ENABLE_WIFI, which causes EspDnssdInit() in
+    # DnssdImpl.cpp to be compiled out. Without EspDnssdInit, HandleDnssdInit is never called, the advertiser
+    # state stays kInitializing, and all DNS-SD ops fail with CHIP_ERROR_INCORRECT_STATE.
+    # Minimal mDNS uses its own UDP socket and doesn't depend on CHIP_DEVICE_CONFIG_ENABLE_WIFI.
+    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", True)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
 
     add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
