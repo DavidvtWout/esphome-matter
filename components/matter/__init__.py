@@ -168,15 +168,8 @@ async def to_code(config):
 
     enable_openthread = False
 
-    # Use CHIP's built-in minimal mDNS stack. We cannot use CONFIG_USE_MINIMAL_MDNS=n (esp-mdns) because
-    # that path requires CHIP_DEVICE_CONFIG_ENABLE_WIFI=1, which is derived from
-    #   CHIP_DEVICE_CONFIG_ENABLE_WIFI = CHIP_DEVICE_CONFIG_ENABLE_WIFI_AP | CHIP_DEVICE_CONFIG_ENABLE_WIFI_STATION
-    # Setting CONFIG_ENABLE_WIFI_STATION=n (required to prevent CHIP from driving esp_wifi and conflicting with
-    # ESPHome's wifi component) zeroes out CHIP_DEVICE_CONFIG_ENABLE_WIFI, which causes EspDnssdInit() in
-    # DnssdImpl.cpp to be compiled out. Without EspDnssdInit, HandleDnssdInit is never called, the advertiser
-    # state stays kInitializing, and all DNS-SD ops fail with CHIP_ERROR_INCORRECT_STATE.
-    # Minimal mDNS uses its own UDP socket and doesn't depend on CHIP_DEVICE_CONFIG_ENABLE_WIFI.
-    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", True)  # connectedhomeip
+    # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
+    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
 
     add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
@@ -187,6 +180,17 @@ async def to_code(config):
     # the ESPHome wifi component and enabling chip's Wi-Fi conflicts with this.
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", False)  # connectedhomeip
+
+    if ethernet_configured or wifi_configured:
+        # CONFIG_ENABLE_ETHERNET_TELEMETRY is just named completely wrong. Instead of what you would expect it to do,
+        # it just enables CHIP_DEVICE_CONFIG_ENABLE_ETHERNET which doesn't seem to break anything important. It makes
+        # connectedhomeip "think" it's connected via ethernet which prevent it from fucking with the wifi stack, while
+        # keeping important services such as DNS-SD enabled.
+        add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", True) # connectedhomeip
+        if not ethernet_configured:
+            add_idf_sdkconfig_option("GPIO_RANGE_MAX", 10) # connectedhomeip TODO: only set if there is no default?
+            add_idf_sdkconfig_option("ETH_MDC_GPIO", 0) # connectedhomeip
+            add_idf_sdkconfig_option("ETH_MDIO_GPIO", 0) # connectedhomeip
 
     # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
     add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", enable_openthread)  # esp-matter
@@ -208,7 +212,7 @@ async def to_code(config):
 
     add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not any_network_configured)  # connectedhomeip
     if any_network_configured:
-        cg.add_define("MATTER_RENDEZVOUS_ON_NETWORK")
+        cg.add_define("MATTER_RENDEZVOUS_ON_NETWORK") # esphome-matter
     else:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
         # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
