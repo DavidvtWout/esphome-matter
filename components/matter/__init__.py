@@ -172,6 +172,10 @@ async def to_code(config):
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
 
+    add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
+    add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
+    add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
+
     # These are connectedhomeip specific flags and must both be set to False since Wi-Fi is already managed by
     # the ESPHome wifi component and enabling chip's Wi-Fi conflicts with this.
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
@@ -187,10 +191,6 @@ async def to_code(config):
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
         add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", True)
         add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)
-
-        add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
-        add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
-        add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
 
         # TODO: fix the network implementation of ESPHome. Currently the network component is garbage and doesn't
