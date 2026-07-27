@@ -183,6 +183,7 @@ async def to_code(config):
 
     # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
     add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", enable_openthread)  # esp-matter
+    add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", enable_openthread)  # connectedhomeip
     if enable_openthread:
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
@@ -198,8 +199,10 @@ async def to_code(config):
         # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
         # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
 
-    add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not any_network_configured)
-    if not any_network_configured:
+    add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not any_network_configured)  # connectedhomeip
+    if any_network_configured:
+        cg.add_define("MATTER_RENDEZVOUS_ON_NETWORK")
+    else:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
         # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
         # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the

@@ -15,6 +15,7 @@ namespace esphome::matter {
 class MatterComponent : public Component {
  public:
   void setup() override;
+  void loop() override;
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::BEFORE_CONNECTION; }
   void factory_reset();
@@ -51,6 +52,9 @@ class MatterComponent : public Component {
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
+  // Tracks network connectivity so we can tell CHIP to (re)advertise DNS-SD when
+  // the ESPHome-managed interface comes up (see loop() in matter_component.cpp).
+  bool network_was_connected_{false};
   std::vector<MatterOnOffSwitch> on_off_switches_;
   std::vector<MatterDimmerSwitch> dimmer_switches_;
 #ifdef USE_SENSOR
