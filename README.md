@@ -42,11 +42,6 @@ Keep in mind that the commissioning window remains open for only 15 minutes. A r
 
 # Example config
 
-The ESPHome `network` components isn't really build for IPv6 and messes things up a bit... Since this component is
-required for the `api` component, the api also can't be enabled for now. With this example config matter will start
-in BLE commissioning mode. Only matter-over-thread is supported for now. Once commissioned, you can bind the 
-button to a matter light.
-
 ```yaml
 esphome:
   name: matter-device
