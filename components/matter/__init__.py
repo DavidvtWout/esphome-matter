@@ -5,25 +5,19 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import light, sensor
 from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option, require_vfs_select
-from esphome.const import CONF_ID, CONF_LIGHT_ID, CONF_SENSOR_ID, Framework
+from esphome.const import CONF_ENABLE_IPV6, CONF_ID, CONF_LIGHT_ID, CONF_SENSOR_ID, Framework
 from esphome.core import CORE
 from esphome.coroutine import CoroPriority, coroutine_with_priority
+import esphome.final_validate as fv
 from esphome.helpers import write_file_if_changed
 
 from .kconfig import disable_unused_clusters
 
+from .const import *
+
 CODEOWNERS = ["@DavidvtWout"]
 
-# DEPENDENCIES = ["network"]
-
-CONF_DISCRIMINATOR = "discriminator"
-CONF_PASSCODE = "passcode"
-CONF_ENDPOINTS = "endpoints"
-CONF_ON_OFF_SWITCH = "on_off_switch"
-CONF_DIMMER_SWITCH = "dimmer_switch"
-CONF_TEMPERATURE_SENSOR = "temperature_sensor"
-CONF_ON_OFF_LIGHT = "on_off_light"
-CONF_DIMMABLE_LIGHT = "dimmable_light"
+AUTO_LOAD = ["network"]
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -118,6 +112,18 @@ CONFIG_SCHEMA = cv.All(
     _require_vfs_select,  # TODO: Only needed when openthread is enabled
 )
 
+def _final_validate(_):
+    full_config = fv.full_config.get()
+    network_config = full_config.get("network", {})
+    if not network_config.get(CONF_ENABLE_IPV6, False):
+        raise cv.Invalid(
+            "Matter requires IPv6 to be enabled in the network component (technically IPv4-only matter-over-wifi"
+            "should be possible but the spec forbids this and the connectedhomeip project doesn't support this). "
+            "Please set `enable_ipv6: true` in the `network` configuration."
+        )
+
+FINAL_VALIDATE_SCHEMA = _final_validate
+
 # Wifi, ethernet and thread run at COMMUNICATION priority. Matter needs to start just after that and
 # NETWORK_SERVICES is the next CoroPriority so we choose that one.
 @coroutine_with_priority(CoroPriority.NETWORK_SERVICES)
@@ -154,30 +160,31 @@ async def to_code(config):
     if CONF_PASSCODE in config:
         cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
 
-    # has_wifi = "wifi" in CORE.loaded_integrations
-    # has_ethernet = "ethernet" in CORE.loaded_integrations
-    # has_openthread = "openthread" in CORE.loaded_integrations
 
-    enable_ble = True
-    enable_openthread = True
-    enable_wifi = False
+    ethernet_configured = "ethernet" in CORE.loaded_integrations
+    openthread_configured = "openthread" in CORE.loaded_integrations
+    wifi_configured = "wifi" in CORE.loaded_integrations
+    any_network_configured = ethernet_configured or openthread_configured or wifi_configured
 
-    # TODO: use CORE.data?
-    if enable_ble:
-        add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
-        add_idf_sdkconfig_option("CONFIG_BT_BLUEDROID_ENABLED", False)
-        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLED", True)
-        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT", False)
-        # TODO: set USE_BLE_ONLY_FOR_COMMISSIONING to false if other esphome components need it?
+    enable_openthread = False
 
-    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)
+    # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
+    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
 
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", enable_wifi)
+    add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
+    add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
+    add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
 
+    # These are connectedhomeip specific flags and must both be set to False since Wi-Fi is already managed by
+    # the ESPHome wifi component and enabling chip's Wi-Fi conflicts with this.
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", False)  # connectedhomeip
+
+    # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
+    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", enable_openthread)  # esp-matter
+    add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", enable_openthread)  # connectedhomeip
     if enable_openthread:
-        add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
@@ -185,19 +192,33 @@ async def to_code(config):
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
         add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", True)
         add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)
-
-        add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
-        add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
-        add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
-        add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
-        add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # chip core
+
+        # TODO: fix the network implementation of ESPHome. Currently the network component is garbage and doesn't
+        #   even support IPv6-only.
+        # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
+        # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
+
+    add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not any_network_configured)  # connectedhomeip
+    if any_network_configured:
+        cg.add_define("MATTER_RENDEZVOUS_ON_NETWORK") # esphome-matter
+    else:
+        # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
+        # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
+        # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the
+        # device. If the device supports both, it can be commissioned in either mode.
+
+        # TODO: use CORE.data?
+        add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
+        add_idf_sdkconfig_option("CONFIG_BT_BLUEDROID_ENABLED", False)
+        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLED", True)
+        add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT", False)
+        # TODO: set USE_BLE_ONLY_FOR_COMMISSIONING to false if other esphome components need it?
+        # TODO: stop api from restarting device in commissioning mode?
 
     disable_unused_clusters()
 
     # TODO: ENABLE_ESP32_FACTORY_DATA_PROVIDER?
-
-    # TODO: stop api from restarting device in commissioning mode?
 
     # CHIP's mbedTLS crypto backend calls mbedtls_hkdf() (CHIPCryptoPALmbedTLS.cpp).
     # ESP-IDF's mbedTLS disables HKDF by default; enabling this compiles mbedtls/hkdf.c

@@ -4,6 +4,7 @@
 #include "matter_component.h"
 #include "esphome/core/application.h"
 #include "esphome/core/log.h"
+#include "esphome/components/network/util.h"
 
 #include <cinttypes>
 #include <cstring>
@@ -11,6 +12,8 @@
 #include <string>
 #include <nvs.h>
 #include <esp_random.h>
+#include <esp_event.h>
+#include <esp_netif.h>
 
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
@@ -129,6 +132,21 @@ namespace esphome::matter {
 
 MatterComponent *global_matter_component = nullptr;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
+static void on_got_ipv6(void *, esp_event_base_t, int32_t, void *event_data) {
+  // Only re-advertise for global unicast (2000::/3), not link-local (fe80::/10).
+  // Link-local addresses are in every AAAA response anyway; re-advertising for them
+  // just adds noise and may cause commissioners to try an unroutable address first.
+  auto *data = static_cast<ip_event_got_ip6_t *>(event_data);
+  const uint8_t *addr = reinterpret_cast<const uint8_t *>(data->ip6_info.ip.addr);
+  bool is_global = (addr[0] & 0xE0) == 0x20;  // 2000::/3
+  if (!is_global)
+    return;
+  ESP_LOGD(TAG, "Got global IPv6 address; requesting Matter DNS-SD re-advertise");
+  chip::DeviceLayer::ChipDeviceEvent event;
+  event.Type = chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded;
+  chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
+}
+
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
@@ -222,6 +240,11 @@ void MatterComponent::setup() {
   set_openthread_platform_config(&ot_config);
 #endif
 
+  // Re-advertise DNS-SD when an IPv6 address is assigned (SLAAC may complete after WiFi up).
+  // Without this, the first mDNS announcement may only contain an A record, and the matter
+  // controller discovers the device as IPv4-only and may fail to connect.
+  esp_event_handler_register(IP_EVENT, IP_EVENT_GOT_IP6, on_got_ipv6, nullptr);
+
   /* Matter start */
   esp_err_t err = esp_matter::start(event_callback);
   if (err != ESP_OK) {
@@ -233,6 +256,24 @@ void MatterComponent::setup() {
   }
 
   this->register_endpoint_callbacks_();
+}
+
+void MatterComponent::loop() {
+  // CHIP re-advertises DNS-SD (the _matterc._udp / _matter._tcp records) only on
+  // kDnssdInitialized / kDnssdRestartNeeded events. On ESP32 those are posted by
+  // CHIP's WiFi connectivity manager when the station gets an IP — but that code
+  // is compiled out (CONFIG_ENABLE_WIFI_STATION=n) because ESPHome owns the WiFi
+  // driver. So CHIP never learns the ESPHome-managed interface came up and never
+  // advertises. We bridge that here: on the network up-edge, post the same event
+  // the WiFi manager would have, which drives DnssdServer::StartServer().
+  bool connected = network::is_connected();
+  if (connected && !this->network_was_connected_) {
+    ESP_LOGD(TAG, "Network up; requesting Matter DNS-SD (re)advertise");
+    chip::DeviceLayer::ChipDeviceEvent event;
+    event.Type = chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded;
+    chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
+  }
+  this->network_was_connected_ = connected;
 }
 
 void MatterComponent::factory_reset() {
@@ -260,7 +301,11 @@ void MatterComponent::dump_config() {
   payload.vendorID = CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID;
   payload.productID = CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID;
   payload.commissioningFlow = chip::CommissioningFlow::kStandard;
+#ifdef MATTER_RENDEZVOUS_ON_NETWORK
+  payload.rendezvousInformation.SetValue(chip::RendezvousInformationFlag::kOnNetwork);
+#else
   payload.rendezvousInformation.SetValue(chip::RendezvousInformationFlag::kBLE);
+#endif
   payload.discriminator.SetLongValue(this->discriminator_);
   payload.setUpPINCode = this->passcode_;
 

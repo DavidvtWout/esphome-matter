@@ -4,13 +4,15 @@ ESPHome external component for matter support.
 It's still in early-development. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
 `on_off_light` and `dimmable_light` matter endpoints are supported.
 
-The main limitation is that it currently isn't yet compatible with the `network` component. And since the
-`api` components requires `network`, there is no way to combine the api with matter. Incompatibility with `network`
-also means no `wifi`, `ethernet` or `openthread` can be configured. The thread TLV is passed to matter during commissioning
-and this is currently the only way to set up matter-over-thread. I think it will be possible to support matter-over-wifi and 
-matter-over-ethernet soon.
+# Progress
 
-I completely disabled wifi support to make it easier to implement matter-over-thread. This will also be fixed in the future.
+- matter-over-wifi: Working now! If you have configured `wifi` in the device config, matter announces itself via mDNS and you can commission it over-the-network.
+- matter-over-thread: The next step will be supporting the `openthread` component.
+- matter-over-ethernet: Not sure. But probably doesn't work yet.
+- commissioning over BLE: If no network (`wifi`, `openthread`, `ethernet`) is configured at all, matter falls back to 
+  BLE commissioning. This is how almost every matter device is commissioned. This mode is currently not compatible with
+  the `api` component since this checks network connectivity in a rather naive way that always fails if no network is
+  configured. This bug can only be fixed in ESPHome itself.
 
 # Compilation
 
@@ -22,6 +24,21 @@ esp32:
   framework:
     type: esp-idf
 ```
+
+# Commissioning
+
+Directly after flashing ESPHome (and after every restart), the commissioning code (starting with `MT:`) is printed in the logs:
+```
+[C][matter:293]: Matter:
+[C][matter:314]:   SetupQRCode: MT:Y.K904QI14-O992WI00
+[C][matter:315]:   QR URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K904QI14-O992WI00
+[C][matter:323]:   Manual pairing code: 32552014321
+[C][matter:328]:   Commissioning window: open
+[C][matter:332]:   Fabrics: none
+```
+
+Copy the code and use this to commission the device. In python-matter-server you can commission the device with the `Commission existing device` option.
+Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window but only if it hasn't joined any fabrics yet.
 
 # Example config
 
@@ -45,6 +62,14 @@ external_components:
     refresh: 0s
 
 logger:
+  
+api:
+  
+network:
+  enable_ipv6: y
+  
+wifi:
+  ...
 
 matter:
   endpoints:
@@ -96,18 +121,3 @@ sensor:
     name: "Internal Temperature"
     id: internal_temp
 ```
-
-> [!WARNING]
-> **Endpoint IDs must stay stable.** Matter endpoint IDs are assigned by list order:
-> the first entry under `endpoints:` becomes endpoint 1, the second endpoint 2, and so on.
-> Other devices and controllers reference these IDs in their bindings and ACLs, so once the
-> device is commissioned, treat the list as append-only:
->
-> - **Never reorder or remove entries.** Removing a middle entry shifts every endpoint after
->   it down by one, breaking their bindings.
-> - **Never change the device type of an existing entry.** The endpoint keeps its ID but its
->   clusters change, which invalidates bindings targeting it.
-> - **Adding new entries at the end is safe.**
->
-> If you must restructure the list, re-commission the device afterwards and recreate its
-> bindings (and clean up stale ACL entries on bound devices).
