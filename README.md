@@ -1,8 +1,11 @@
 # esphome-matter
 ESPHome external component for matter support.
 
-It's still in early-development. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
-`on_off_light` and `dimmable_light` matter endpoints are supported.
+> [!WARNING]
+> This project is still in early-development so don't expect a perfectly working setup. matter-over-wifi is now sort
+> of working but only very few matter endpoints are supported yet. Currently only the `on_off_switch`, `dimmer_switch`,
+> `temperature_sensor`, `on_off_light` and `dimmable_light` endpoints are supported.
+> I will first focus on matter-over-thread and matter-over-ethernet and getting everything stable before I add useful features.
 
 # Progress
 
@@ -61,7 +64,7 @@ logger:
 api:
   
 network:
-  enable_ipv6: y
+  enable_ipv6: true
   
 wifi:
   ...
@@ -69,9 +72,11 @@ wifi:
 matter:
   endpoints:
     - dimmer_switch:
-      id: dimmer_endpoint 
+      id: dimmer_endpoint
     - temperature_sensor:
         sensor_id: internal_temp
+    - on_off_light:
+        light_id: user_led
 
 # The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
 binary_sensor:
@@ -115,4 +120,17 @@ sensor:
   - platform: internal_temperature
     name: "Internal Temperature"
     id: internal_temp
+
+output:
+  - platform: gpio
+    pin:
+      number: GPIO15
+      inverted: true
+    id: user_led_pin
+
+light:
+  - platform: binary
+    name: "User LED"
+    output: user_led_pin
+    id: user_led
 ```
