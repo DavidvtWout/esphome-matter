@@ -11,7 +11,7 @@ from esphome.coroutine import CoroPriority, coroutine_with_priority
 import esphome.final_validate as fv
 from esphome.helpers import write_file_if_changed
 
-from .kconfig import disable_unused_clusters
+from .kconfig import disable_unused_clusters, write_kconfig_projbuild
 
 from .const import *
 
@@ -139,10 +139,13 @@ async def to_code(config):
         ref="88cdc085f95cc9d806608e2ddd9ca6d2e6224ce6"
     )
 
+    write_kconfig_projbuild()
+
     # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but
     # PlatformIO names the app component "src". We write the project CMakeLists.txt
     # ourselves with the correct variable before PlatformIO gets a chance to create it
     # (PlatformIO only generates CMakeLists.txt when the file doesn't already exist).
+    # For more info on the exluded ethernet files, see docs/dev/matter-over-wifi.md.
     cmake_path = CORE.relative_build_path("CMakeLists.txt")
     cmake_path.parent.mkdir(parents=True, exist_ok=True)
     write_file_if_changed(
@@ -192,7 +195,7 @@ async def to_code(config):
     if ethernet_configured or wifi_configured:
         # CONFIG_ENABLE_ETHERNET_TELEMETRY is just named completely wrong. Instead of what you would expect it to do,
         # it just enables CHIP_DEVICE_CONFIG_ENABLE_ETHERNET which doesn't seem to break anything important. It makes
-        # connectedhomeip "think" it's connected via ethernet which prevent it from fucking with the wifi stack, while
+        # connectedhomeip "think" it's connected via ethernet which prevents it from fucking with the wifi stack, while
         # keeping important services such as DNS-SD enabled.
         add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", True) # connectedhomeip
 

@@ -168,7 +168,7 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
       break;
     case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
       ESP_LOGI(TAG, "DNS-SD restart needed");
-      // chip::app::DnssdServer::Instance().StartServer();
+      chip::app::DnssdServer::Instance().StartServer();
       break;
     default:
       ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
