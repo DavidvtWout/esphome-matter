@@ -25,11 +25,14 @@
 #ifdef USE_MATTER
 
 #include <mdns.h>
+#include <esp_log.h>
 
 #include <lib/dnssd/platform/Dnssd.h>
 #include <lib/support/CHIPMem.h>
 #include <lib/support/CodeUtils.h>
 #include <lib/support/logging/CHIPLogging.h>
+
+static const char * const TAG = "matter_dnssd";
 
 namespace chip {
 namespace Dnssd {
@@ -49,14 +52,10 @@ static const char * GetProtocol(DnssdServiceProtocol protocol)
 
 CHIP_ERROR ChipDnssdInit(DnssdAsyncReturnCallback initCallback, DnssdAsyncReturnCallback errorCallback, void * context)
 {
-    // mdns_init() is idempotent — ESPHome's mdns component already called it.
-    esp_err_t err = mdns_init();
-    if (err != ESP_OK)
-    {
-        ChipLogError(DeviceLayer, "mdns_init failed: %s", esp_err_to_name(err));
-        initCallback(context, CHIP_ERROR_INTERNAL);
-        return CHIP_ERROR_INTERNAL;
-    }
+    // ESPHome's mdns component already called mdns_init(). On ESP-IDF 5.x, calling
+    // mdns_init() a second time returns ESP_ERR_INVALID_STATE. Don't call it. The
+    // daemon is already running and we can use it directly.
+    ESP_LOGD(TAG, "ChipDnssdInit called");
     initCallback(context, CHIP_NO_ERROR);
     return CHIP_NO_ERROR;
 }
@@ -93,8 +92,15 @@ CHIP_ERROR ChipDnssdPublishService(const DnssdService * service, DnssdPublishCal
     while (mdns_service_exists(service->mType, proto, nullptr))
         mdns_service_remove(service->mType, proto);
 
+    ESP_LOGD(TAG, "mDNS publish: %s.%s.%s port=%u",
+             service->mName, service->mType, proto, service->mPort);
     espError = mdns_service_add(service->mName, service->mType, proto, service->mPort,
                                 items, service->mTextEntrySize);
+    if (espError != ESP_OK)
+    {
+        ChipLogError(DeviceLayer, "mdns_service_add failed for %s.%s.%s: %s",
+                     service->mName, service->mType, proto, esp_err_to_name(espError));
+    }
     VerifyOrExit(espError == ESP_OK, error = CHIP_ERROR_INTERNAL);
 
     for (size_t i = 0; i < service->mSubTypeSize; i++)
@@ -116,6 +122,7 @@ exit:
 
 CHIP_ERROR ChipDnssdRemoveServices()
 {
+    ESP_LOGD(TAG, "ChipDnssdRemoveServices called");
     while (mdns_service_exists("_matter", "_tcp", nullptr))
         mdns_service_remove("_matter", "_tcp");
     while (mdns_service_exists("_matterc", "_udp", nullptr))

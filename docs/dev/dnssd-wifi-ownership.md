@@ -93,8 +93,36 @@ source and without any sdkconfig changes.
 the device hostname. We deliberately omit this; Matter services are registered under
 ESPHome's hostname, keeping `_matterc._udp` and `_esphomelib._tcp` consistent.
 
-**`mdns_init()` is idempotent.** ESPHome's mdns component already called it; calling
-it again in `ChipDnssdInit` is safe and required by the CHIP platform API.
+**`mdns_init()` must NOT be called again.** ESPHome's mdns component already called
+it; on ESP-IDF 5.x, a second call returns `ESP_ERR_INVALID_STATE`. `ChipDnssdInit`
+must call `initCallback(context, CHIP_NO_ERROR)` directly — if it is called with an
+error, `HandleDnssdInit` sets `mState = kUninitialized`, which causes `IsInitialized()`
+to return false and `RemoveServices()` to skip all subsequent `ChipDnssdRemoveServices`
+calls.
+
+**`StartServer()` must be bootstrapped from `kDnssdRestartNeeded`.** On non-ESP32 targets,
+`Server::Init()` (in `connectedhomeip/src/app/server/Server.cpp:334`) calls
+`DnssdServer::Instance().StartServer()` unconditionally. On ESP32 this call is wrapped in
+`#if !CHIP_DEVICE_LAYER_TARGET_ESP32` — CHIP has a comment "ESP32 and Mbed OS examples
+have a custom logic for enabling DNS-SD". That custom logic lives in `esp_matter_core.cpp`
+inside `device_callback_internal`: it calls `StartServer()` on `kInterfaceIpAddressChanged`
+but gated by `#if CHIP_DEVICE_CONFIG_ENABLE_WIFI || CHIP_DEVICE_CONFIG_ENABLE_ETHERNET`.
+With both flags 0, neither path runs.
+
+The consequence: `OnPlatformEventWrapper` (the internal CHIP handler that calls
+`StartServer()` for `kDnssdInitialized` and `kDnssdRestartNeeded`) is registered from
+INSIDE `StartServer()`. With no one ever calling `StartServer()`, it is never registered,
+and future restart events produce no re-advertisement. Our `event_callback` handles
+`kDnssdRestartNeeded` and explicitly calls `StartServer()` to bootstrap the cycle.
+
+**Why `kDnssdRestartNeeded` not `kDnssdInitialized`**: `kDnssdInitialized` fires very early,
+during `Server::Init()` → `Resolver::Instance().Init()` → `InitImpl()` → `ChipDnssdInit()` →
+`HandleDnssdInit()`. At that point `Server::Init()` has not finished and — critically — the
+mDNS daemon may not be initialized yet (ESPHome's `mdns` component may set up later than
+`matter`). Calling `mdns_service_remove()` / `mdns_service_add()` before `mdns_init()` is
+complete triggers `assert failed: xQueueSemaphoreTake (( pxQueue ))` because the mDNS action
+queue is null. `kDnssdRestartNeeded` fires on the WiFi up-edge (~5s after boot), well after
+both mDNS and the CHIP stack are fully initialized.
 
 **Remove by type, not instance name.** CHIP generates a fresh random 64-bit instance
 name (e.g. `19CD1A9C30FBC089`) on every re-advertise cycle. Removing only the specific

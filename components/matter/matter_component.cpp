@@ -16,6 +16,7 @@
 #include <esp_netif.h>
 
 #include <app/server/Server.h>
+#include <app/server/Dnssd.h>
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
@@ -182,6 +183,17 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
       break;
     case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
       ESP_LOGI(TAG, "Fabric is committed");
+      break;
+    case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
+      // On ESP32, Server::Init() skips StartServer() (#if !CHIP_DEVICE_LAYER_TARGET_ESP32).
+      // esp-matter's own StartServer() call is gated by #if CHIP_DEVICE_CONFIG_ENABLE_WIFI,
+      // which is 0 for us. So OnPlatformEventWrapper — the CHIP-internal handler that
+      // normally calls StartServer() for future restarts — is never registered.
+      // We call it here, on the first restart event (triggered by loop() on WiFi up-edge),
+      // which is safe because by that time mDNS and the full CHIP stack are up.
+      // After this call, OnPlatformEventWrapper is registered and handles all future restarts.
+      ESP_LOGD(TAG, "DNS-SD restart needed; calling StartServer");
+      chip::app::DnssdServer::Instance().StartServer();
       break;
     default:
       ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
