@@ -12,11 +12,8 @@
 #include <string>
 #include <nvs.h>
 #include <esp_random.h>
-#include <esp_event.h>
-#include <esp_netif.h>
 
 #include <app/server/Server.h>
-#include <app/server/Dnssd.h>
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/OpenthreadLauncher.h>
@@ -133,21 +130,6 @@ namespace esphome::matter {
 
 MatterComponent *global_matter_component = nullptr;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
-static void on_got_ipv6(void *, esp_event_base_t, int32_t, void *event_data) {
-  // Only re-advertise for global unicast (2000::/3), not link-local (fe80::/10).
-  // Link-local addresses are in every AAAA response anyway; re-advertising for them
-  // just adds noise and may cause commissioners to try an unroutable address first.
-  auto *data = static_cast<ip_event_got_ip6_t *>(event_data);
-  const uint8_t *addr = reinterpret_cast<const uint8_t *>(data->ip6_info.ip.addr);
-  bool is_global = (addr[0] & 0xE0) == 0x20;  // 2000::/3
-  if (!is_global)
-    return;
-  ESP_LOGD(TAG, "Got global IPv6 address; requesting Matter DNS-SD re-advertise");
-  chip::DeviceLayer::ChipDeviceEvent event;
-  event.Type = chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded;
-  chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
-}
-
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
@@ -185,15 +167,8 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
       ESP_LOGI(TAG, "Fabric is committed");
       break;
     case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
-      // On ESP32, Server::Init() skips StartServer() (#if !CHIP_DEVICE_LAYER_TARGET_ESP32).
-      // esp-matter's own StartServer() call is gated by #if CHIP_DEVICE_CONFIG_ENABLE_WIFI,
-      // which is 0 for us. So OnPlatformEventWrapper — the CHIP-internal handler that
-      // normally calls StartServer() for future restarts — is never registered.
-      // We call it here, on the first restart event (triggered by loop() on WiFi up-edge),
-      // which is safe because by that time mDNS and the full CHIP stack are up.
-      // After this call, OnPlatformEventWrapper is registered and handles all future restarts.
-      ESP_LOGD(TAG, "DNS-SD restart needed; calling StartServer");
-      chip::app::DnssdServer::Instance().StartServer();
+      ESP_LOGI(TAG, "DNS-SD restart needed");
+      // chip::app::DnssdServer::Instance().StartServer();
       break;
     default:
       ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
@@ -251,11 +226,6 @@ void MatterComponent::setup() {
   //  };
   set_openthread_platform_config(&ot_config);
 #endif
-
-  // Re-advertise DNS-SD when an IPv6 address is assigned (SLAAC may complete after WiFi up).
-  // Without this, the first mDNS announcement may only contain an A record, and the matter
-  // controller discovers the device as IPv4-only and may fail to connect.
-  esp_event_handler_register(IP_EVENT, IP_EVENT_GOT_IP6, on_got_ipv6, nullptr);
 
   /* Matter start */
   esp_err_t err = esp_matter::start(event_callback);

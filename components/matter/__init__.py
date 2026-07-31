@@ -181,6 +181,13 @@ async def to_code(config):
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", False)  # connectedhomeip
 
+    if ethernet_configured or wifi_configured:
+        # CONFIG_ENABLE_ETHERNET_TELEMETRY is just named completely wrong. Instead of what you would expect it to do,
+        # it just enables CHIP_DEVICE_CONFIG_ENABLE_ETHERNET which doesn't seem to break anything important. It makes
+        # connectedhomeip "think" it's connected via ethernet which prevent it from fucking with the wifi stack, while
+        # keeping important services such as DNS-SD enabled.
+        add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", True) # connectedhomeip
+
     # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
     add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", enable_openthread)  # esp-matter
     add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", enable_openthread)  # connectedhomeip
