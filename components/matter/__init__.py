@@ -150,7 +150,15 @@ async def to_code(config):
         "cmake_minimum_required(VERSION 3.16.0)\n"
         'set(EXECUTABLE_COMPONENT_NAME "src")\n'
         'include($ENV{IDF_PATH}/tools/cmake/project.cmake)\n'
-        f"project({CORE.name})\n",
+        f"project({CORE.name})\n"
+        "\n"
+        "idf_component_get_property(_matter_lib espressif__esp_matter COMPONENT_LIB)\n"
+        "idf_component_get_property(_matter_dir espressif__esp_matter COMPONENT_DIR)\n"
+        "get_target_property(_srcs ${_matter_lib} SOURCES)\n"
+        'list(FILTER _srcs EXCLUDE REGEX "NetworkCommissioningDriver_Ethernet|ConnectivityManagerImpl_Ethernet")\n'
+        'set_target_properties(${_matter_lib} PROPERTIES SOURCES "${_srcs}")\n'
+        'target_sources(${_matter_lib} PRIVATE\n'
+        '    "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ESP32DnssdImpl.cpp")\n',
     )
 
     cg.add_define("USE_MATTER")
@@ -201,8 +209,7 @@ async def to_code(config):
         add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
 
-        # TODO: fix the network implementation of ESPHome. Currently the network component is garbage and doesn't
-        #   even support IPv6-only.
+        # TODO: fix the network implementation of ESPHome. Currently the network component doesn't even support IPv6-only.
         # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
         # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
 
