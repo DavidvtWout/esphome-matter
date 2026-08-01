@@ -7,6 +7,12 @@ ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter
 > `temperature_sensor`, `on_off_light` and `dimmable_light` endpoints are supported.
 > I will first focus on matter-over-thread and matter-over-ethernet and getting everything stable before I add useful features.
 
+# Contributing
+
+Help is very welcome! I'm not deeply experienced in the ESPHome, Espressif, or connectedhomeip ecosystems. If you know your way around any of these and spot something wrong or have ideas, please open an issue or PR.
+
+Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work. Additional feature requests are also appreciated.
+
 # Progress
 
 - matter-over-wifi: Working now! If you have configured `wifi` in the device config, matter announces itself via mDNS and you can commission it over-the-network.
@@ -16,6 +22,9 @@ ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter
   BLE commissioning. This is how almost every matter device is commissioned. This mode is currently not compatible with
   the `api` component since this checks network connectivity in a rather naive way that always fails if no network is
   configured. This bug can only be fixed in ESPHome itself.
+- binding: Binding (for example a button to a light) requires matter devices to find each other via dns-sd. This is not yet working.
+
+See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for more planned features.
 
 # Compilation
 
