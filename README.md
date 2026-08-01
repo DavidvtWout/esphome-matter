@@ -131,6 +131,8 @@ sensor:
     id: internal_temp
 
 output:
+  # On a Seeed Studio XIAO ESP32-C6, the GPIO15 pin is wired to the user LED. Pick
+  # the correct pin for your board or remove the `output` and `light` sections.
   - platform: gpio
     pin:
       number: GPIO15
