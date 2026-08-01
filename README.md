@@ -133,4 +133,9 @@ light:
     name: "User LED"
     output: user_led_pin
     id: user_led
+    # It's recommended to set `internal: true` for lights, since this hides the entity from
+    # Home Assistant. Without it, both HA and matter try to own the light's state. If both
+    # issue a command at nearly the same time, they enter a feedback loop and the light
+    # toggles on/off indefinitely.
+    internal: true
 ```
