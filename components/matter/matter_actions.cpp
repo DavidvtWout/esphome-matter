@@ -58,9 +58,8 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster, chip::Co
   req.command_path.mClusterId = cluster;
   req.command_path.mCommandId = command;
   req.request_data = reinterpret_cast<void *>(static_cast<uintptr_t>(move_mode));
-  esp_matter::lock::chip_stack_lock(portMAX_DELAY);
+  esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
   esp_matter::client::cluster_update(endpoint_id, &req);
-  esp_matter::lock::chip_stack_unlock();
 }
 
 }  // namespace esphome::matter
