@@ -168,11 +168,11 @@ async def to_code(config):
     if CONF_PASSCODE in config:
         cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
 
-
-    ethernet_configured = "ethernet" in CORE.loaded_integrations
-    openthread_configured = "openthread" in CORE.loaded_integrations
-    wifi_configured = "wifi" in CORE.loaded_integrations
-    any_network_configured = ethernet_configured or openthread_configured or wifi_configured
+    # There is no distinction between ethernet and wifi for esp-matter since esphome already manages the
+    # connection layer. So it's easier to bundle these two together.
+    lan_enabled = "ethernet" in CORE.loaded_integrations or "wifi" in CORE.loaded_integrations
+    thread_enabled = "openthread" in CORE.loaded_integrations
+    connectivity_enabled = lan_enabled or thread_enabled
 
     # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
@@ -187,7 +187,7 @@ async def to_code(config):
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", False)  # connectedhomeip
 
-    if ethernet_configured or wifi_configured:
+    if lan_enabled:
         # CONFIG_ENABLE_ETHERNET_TELEMETRY is just named completely wrong. Instead of what you would expect it to do,
         # it just enables CHIP_DEVICE_CONFIG_ENABLE_ETHERNET which doesn't seem to break anything important. It makes
         # connectedhomeip "think" it's connected via ethernet which prevents it from fucking with the wifi stack, while
@@ -195,9 +195,9 @@ async def to_code(config):
         add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", True) # connectedhomeip
 
     # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
-    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", openthread_configured)  # esp-matter
-    add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", openthread_configured)  # connectedhomeip
-    if openthread_configured:
+    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", thread_enabled)  # esp-matter
+    add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", thread_enabled)  # connectedhomeip
+    if thread_enabled:
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
@@ -211,8 +211,8 @@ async def to_code(config):
         # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
         # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
 
-    add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not any_network_configured)  # connectedhomeip
-    if any_network_configured:
+    add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not connectivity_enabled)  # connectedhomeip
+    if connectivity_enabled:
         cg.add_define("MATTER_RENDEZVOUS_ON_NETWORK") # esphome-matter
     else:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
