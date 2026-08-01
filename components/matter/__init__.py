@@ -174,8 +174,6 @@ async def to_code(config):
     wifi_configured = "wifi" in CORE.loaded_integrations
     any_network_configured = ethernet_configured or openthread_configured or wifi_configured
 
-    enable_openthread = False
-
     # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
@@ -197,9 +195,9 @@ async def to_code(config):
         add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", True) # connectedhomeip
 
     # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
-    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", enable_openthread)  # esp-matter
-    add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", enable_openthread)  # connectedhomeip
-    if enable_openthread:
+    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", openthread_configured)  # esp-matter
+    add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", openthread_configured)  # connectedhomeip
+    if openthread_configured:
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
