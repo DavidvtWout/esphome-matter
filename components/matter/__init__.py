@@ -131,12 +131,10 @@ async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
 
-    # The 1.4.0 tag is too far behind and doesn't include some essential bug-fixes. For now I pinned a specific
-    # commit but in the future the release/v1.4 branch should probably be pinned.
     add_idf_component(
         name="espressif/esp_matter",
         repo="https://github.com/espressif/esp-matter",
-        ref="88cdc085f95cc9d806608e2ddd9ca6d2e6224ce6"
+        ref="2c125619610b9a16bb8e92f5ebbf55111638615e"  # release/v1.6
     )
 
     write_kconfig_projbuild()
