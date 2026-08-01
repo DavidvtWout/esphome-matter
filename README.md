@@ -60,13 +60,14 @@ esphome:
   friendly_name: Matter Device
 
 esp32:
+  # Native esp-idf isn't supported yet.
+  toolchain: platformio
+  variant: ESP32C6 # Set to your variant
   framework:
-    variant: ESP32C6
     type: esp-idf
 
 external_components:
   - source: github://DavidvtWout/esphome-matter@main
-    refresh: 0s
 
 logger:
   
