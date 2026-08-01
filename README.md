@@ -1,5 +1,5 @@
 # esphome-matter
-ESPHome external component for matter support.
+ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter 1.5.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.5.1).
 
 > [!WARNING]
 > This project is still in early-development so don't expect a perfectly working setup. matter-over-wifi is now sort

@@ -13,9 +13,9 @@ namespace esphome::matter {
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   for (auto &sw : this->on_off_switches_) {
-    esp_matter::endpoint::on_off_switch::config_t sw_config;
+    esp_matter::endpoint::on_off_light_switch::config_t sw_config;
     esp_matter::endpoint_t *ep =
-        esp_matter::endpoint::on_off_switch::create(node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+        esp_matter::endpoint::on_off_light_switch::create(node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
     if (ep == nullptr) {
       ESP_LOGE(TAG, "Failed to create on_off_switch endpoint");
       return false;
