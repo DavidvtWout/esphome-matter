@@ -136,30 +136,37 @@ async def to_code(config):
         ref="1.5.1",
     )
 
+    # Inform esp-matter of source code location.
+    write_file_if_changed(
+        Path(CORE.relative_src_path("project_include.cmake")),
+        'set(EXECUTABLE_COMPONENT_NAME "src")\n',
+    )
+
+    # Set GPIO_RANGE_MAX default so C5,C6,etc can build
     write_kconfig_projbuild()
 
     # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but
     # PlatformIO names the app component "src". We write the project CMakeLists.txt
     # ourselves with the correct variable before PlatformIO gets a chance to create it
     # (PlatformIO only generates CMakeLists.txt when the file doesn't already exist).
-    # For more info on the exluded ethernet files, see docs/dev/matter-over-wifi.md.
-    cmake_path = CORE.relative_build_path("CMakeLists.txt")
-    cmake_path.parent.mkdir(parents=True, exist_ok=True)
-    write_file_if_changed(
-        cmake_path,
-        "cmake_minimum_required(VERSION 3.16.0)\n"
-        'set(EXECUTABLE_COMPONENT_NAME "src")\n'
-        'include($ENV{IDF_PATH}/tools/cmake/project.cmake)\n'
-        f"project({CORE.name})\n"
-        "\n"
-        "idf_component_get_property(_matter_lib espressif__esp_matter COMPONENT_LIB)\n"
-        "idf_component_get_property(_matter_dir espressif__esp_matter COMPONENT_DIR)\n"
-        "get_target_property(_srcs ${_matter_lib} SOURCES)\n"
-        'list(FILTER _srcs EXCLUDE REGEX "NetworkCommissioningDriver_Ethernet|ConnectivityManagerImpl_Ethernet")\n'
-        'set_target_properties(${_matter_lib} PROPERTIES SOURCES "${_srcs}")\n'
-        'target_sources(${_matter_lib} PRIVATE\n'
-        '    "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ESP32DnssdImpl.cpp")\n',
-    )
+    # For more info on the excluded ethernet files, see docs/dev/matter-over-wifi.md.
+    # cmake_path = CORE.relative_build_path("CMakeLists.txt")
+    # cmake_path.parent.mkdir(parents=True, exist_ok=True)
+    # write_file_if_changed(
+    #     cmake_path,
+    #     "cmake_minimum_required(VERSION 3.16.0)\n"
+    #     'set(EXECUTABLE_COMPONENT_NAME "src")\n'
+    #     'include($ENV{IDF_PATH}/tools/cmake/project.cmake)\n'
+    #     f"project({CORE.name})\n"
+    #     "\n"
+    #     "idf_component_get_property(_matter_lib espressif__esp_matter COMPONENT_LIB)\n"
+    #     "idf_component_get_property(_matter_dir espressif__esp_matter COMPONENT_DIR)\n"
+    #     "get_target_property(_srcs ${_matter_lib} SOURCES)\n"
+    #     'list(FILTER _srcs EXCLUDE REGEX "NetworkCommissioningDriver_Ethernet|ConnectivityManagerImpl_Ethernet")\n'
+    #     'set_target_properties(${_matter_lib} PROPERTIES SOURCES "${_srcs}")\n'
+    #     'target_sources(${_matter_lib} PRIVATE\n'
+    #     '    "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ESP32DnssdImpl.cpp")\n',
+    # )
 
     cg.add_define("USE_MATTER")
 
