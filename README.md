@@ -11,7 +11,7 @@ ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter
 
 Help is very welcome! I'm not deeply experienced in the ESPHome, Espressif, or connectedhomeip ecosystems. If you know your way around any of these and spot something wrong or have ideas, please open an issue or PR.
 
-Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work. Additional feature requests are also appreciated.
+Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas.
 
 # Progress
 
@@ -25,17 +25,6 @@ Even if you have no experience with any of these: just building the project and 
 - binding: Binding (for example a button to a light) requires matter devices to find each other via dns-sd. This is not yet working.
 
 See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for more planned features.
-
-# Compilation
-
-esphome-matter requires the esp-idf framework. The arduino framework won't work. Since esphome 2026.1.0 this is the
-default anyway, but if you're still on an earlier version you need to specify the framework;
-
-```yaml
-esp32:
-  framework:
-    type: esp-idf
-```
 
 # Commissioning
 
