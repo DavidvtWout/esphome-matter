@@ -17,7 +17,16 @@ class MatterComponent : public Component {
   void setup() override;
   void loop() override;
   void dump_config() override;
-  float get_setup_priority() const override { return setup_priority::BEFORE_CONNECTION; }
+  float get_setup_priority() const override {
+#ifdef USE_OPENTHREAD
+    // Must run after the OpenThreadSrpComponent.
+    return setup_priority::AFTER_CONNECTION - 5.0f;
+#else
+    return setup_priority::AFTER_CONNECTION;
+// TODO: AFTER_BLUETOOTH in BLE commissioning mode.
+#endif
+  }
+
   void factory_reset();
   void add_on_off_switch(MatterEndpointRef *ref) { this->on_off_switches_.push_back({ref, 0}); }
   void add_dimmer_switch(MatterEndpointRef *ref) { this->dimmer_switches_.push_back({ref, 0}); }
