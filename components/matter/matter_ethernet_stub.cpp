@@ -1,12 +1,14 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 
-// Includes MUST come before CHIP_DEVICE_CONFIG_ENABLE_ETHERNET
+// CHIP_DEVICE_CONFIG_ENABLE_ETHERNET is derived from ESP-IDF Kconfig here.
+#include <platform/ESP32/CHIPDevicePlatformConfig.h>
+
+#if CHIP_DEVICE_CONFIG_ENABLE_ETHERNET
+
 #include <platform/internal/CHIPDeviceLayerInternal.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
 #include <esp_netif.h>
-
-#if CHIP_DEVICE_CONFIG_ENABLE_ETHERNET
 
 // Linker-override stubs for Ethernet hardware init.
 //
