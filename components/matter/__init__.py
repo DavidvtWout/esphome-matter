@@ -53,6 +53,15 @@ def _require_vfs_select(config):
     return config
 
 
+def _require_platformio_toolchain(config):
+    if not CORE.using_toolchain_platformio:
+        raise cv.Invalid(
+            "The esphome-matter external component currently requires the ESP32 PlatformIO "
+            "toolchain. Please use `esp32.toolchain: platformio`."
+        )
+    return config
+
+
 def _none_to_dict(value):
     """Allow a bare `on_off_switch:` (no options)."""
     return {} if value is None else value
@@ -109,6 +118,7 @@ CONFIG_SCHEMA = cv.All(
     }).extend(cv.COMPONENT_SCHEMA),
     cv.only_on_esp32,
     cv.only_with_framework(Framework.ESP_IDF),
+    _require_platformio_toolchain,
     _require_vfs_select,  # TODO: Only needed when openthread is enabled
 )
 
