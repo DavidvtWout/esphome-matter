@@ -345,15 +345,16 @@ void MatterComponent::dump_config() {
       auto label_span = fabric.GetFabricLabel();
       memcpy(label, label_span.data(),
              std::min(label_span.size(), sizeof(label) - 1));
-      uint64_t fabric_id = fabric.GetFabricId();
+      uint64_t compressed_fabric_id = fabric.GetCompressedFabricId();
       uint64_t node_id = fabric.GetNodeId();
       ESP_LOGCONFIG(
           TAG,
-          "    [%u] FabricId: 0x%08" PRIx32 "%08" PRIx32
+          "    [%u] CompressedFabricId: 0x%08" PRIx32 "%08" PRIx32
           ", NodeId: 0x%08" PRIx32 "%08" PRIx32 ", VendorId: 0x%04x%s%s",
-          fabric.GetFabricIndex(), (uint32_t)(fabric_id >> 32),
-          (uint32_t)(fabric_id), (uint32_t)(node_id >> 32), (uint32_t)(node_id),
-          (uint16_t)fabric.GetVendorId(), label[0] ? ", Label: " : "", label);
+          fabric.GetFabricIndex(), (uint32_t)(compressed_fabric_id >> 32),
+          (uint32_t)(compressed_fabric_id), (uint32_t)(node_id >> 32),
+          (uint32_t)(node_id), (uint16_t)fabric.GetVendorId(),
+          label[0] ? ", Label: " : "", label);
     }
   }
   chip::DeviceLayer::PlatformMgr().UnlockChipStack();
