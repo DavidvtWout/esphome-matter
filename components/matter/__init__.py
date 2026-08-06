@@ -124,6 +124,20 @@ def _final_validate(_):
 
 FINAL_VALIDATE_SCHEMA = _final_validate
 
+
+# The esp32 component already sets board_build.cmake_extra_args at FINAL priority so we need
+# to set it after that to prevent this platformio option from being overwritten.
+@coroutine_with_priority(CoroPriority.FINAL - 1)
+async def _set_executable_component_name():
+    # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but ESPHome names the app component
+    # "src". The only way to fix this is by using a cmake argument, but idp.py and platformio make this harder
+    # than expected.
+    if CORE.using_toolchain_platformio:
+        key = "board_build.cmake_extra_args"
+        value = CORE.platformio_options.get(key, "")
+        cg.add_platformio_option(key, value + " -DEXECUTABLE_COMPONENT_NAME=src")
+
+
 # Wifi, ethernet and thread run at COMMUNICATION priority. Matter needs to start just after that and
 # NETWORK_SERVICES is the next CoroPriority so we choose that one.
 @coroutine_with_priority(CoroPriority.NETWORK_SERVICES)
@@ -138,28 +152,30 @@ async def to_code(config):
 
     write_kconfig_projbuild()
 
+    CORE.add_job(_set_executable_component_name)
+
     # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but
     # PlatformIO names the app component "src". We write the project CMakeLists.txt
     # ourselves with the correct variable before PlatformIO gets a chance to create it
     # (PlatformIO only generates CMakeLists.txt when the file doesn't already exist).
     # For more info on the exluded ethernet files, see docs/dev/matter-over-wifi.md.
-    cmake_path = CORE.relative_build_path("CMakeLists.txt")
-    cmake_path.parent.mkdir(parents=True, exist_ok=True)
-    write_file_if_changed(
-        cmake_path,
-        "cmake_minimum_required(VERSION 3.16.0)\n"
-        'set(EXECUTABLE_COMPONENT_NAME "src")\n'
-        'include($ENV{IDF_PATH}/tools/cmake/project.cmake)\n'
-        f"project({CORE.name})\n"
-        "\n"
-        "idf_component_get_property(_matter_lib espressif__esp_matter COMPONENT_LIB)\n"
-        "idf_component_get_property(_matter_dir espressif__esp_matter COMPONENT_DIR)\n"
-        "get_target_property(_srcs ${_matter_lib} SOURCES)\n"
-        'list(FILTER _srcs EXCLUDE REGEX "NetworkCommissioningDriver_Ethernet|ConnectivityManagerImpl_Ethernet")\n'
-        'set_target_properties(${_matter_lib} PROPERTIES SOURCES "${_srcs}")\n'
-        'target_sources(${_matter_lib} PRIVATE\n'
-        '    "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ESP32DnssdImpl.cpp")\n',
-    )
+    # cmake_path = CORE.relative_build_path("CMakeLists.txt")
+    # cmake_path.parent.mkdir(parents=True, exist_ok=True)
+    # write_file_if_changed(
+    #     cmake_path,
+    #     "cmake_minimum_required(VERSION 3.16.0)\n"
+    #     'set(EXECUTABLE_COMPONENT_NAME "src")\n'
+    #     'include($ENV{IDF_PATH}/tools/cmake/project.cmake)\n'
+    #     f"project({CORE.name})\n"
+    #     "\n"
+    #     "idf_component_get_property(_matter_lib espressif__esp_matter COMPONENT_LIB)\n"
+    #     "idf_component_get_property(_matter_dir espressif__esp_matter COMPONENT_DIR)\n"
+    #     "get_target_property(_srcs ${_matter_lib} SOURCES)\n"
+    #     'list(FILTER _srcs EXCLUDE REGEX "NetworkCommissioningDriver_Ethernet|ConnectivityManagerImpl_Ethernet")\n'
+    #     'set_target_properties(${_matter_lib} PROPERTIES SOURCES "${_srcs}")\n'
+    #     'target_sources(${_matter_lib} PRIVATE\n'
+    #     '    "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ESP32DnssdImpl.cpp")\n',
+    # )
 
     cg.add_define("USE_MATTER")
 
