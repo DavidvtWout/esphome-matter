@@ -126,9 +126,7 @@ def write_kconfig_projbuild() -> None:
     kconfig_projbuild_path.parent.mkdir(parents=True, exist_ok=True)
     write_file_if_changed(
         kconfig_projbuild_path,
-        "config GPIO_RANGE_MAX\n"
-        "    int\n"
-        "    default 255\n",
+        "config GPIO_RANGE_MAX\n    int\n    default 255\n",
     )
 
 
