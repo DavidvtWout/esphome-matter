@@ -1,17 +1,17 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 
-#include "matter_component.h"
+#include "esphome/components/network/util.h"
 #include "esphome/core/application.h"
 #include "esphome/core/log.h"
-#include "esphome/components/network/util.h"
+#include "matter_component.h"
 
+#include <algorithm>
 #include <cinttypes>
 #include <cstring>
-#include <algorithm>
-#include <string>
-#include <nvs.h>
 #include <esp_random.h>
+#include <nvs.h>
+#include <string>
 
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
@@ -25,23 +25,24 @@
 
 static const char *const TAG = "matter";
 
-// Keys in the "chip-factory" NVS namespace, matching CHIP's ESP32Config key names.
-static constexpr const char *NVS_NAMESPACE           = "chip-factory";
-static constexpr const char *NVS_KEY_DISCRIMINATOR   = "discriminator";
-static constexpr const char *NVS_KEY_PASSCODE        = "pin-code";
+// Keys in the "chip-factory" NVS namespace, matching CHIP's ESP32Config key
+// names.
+static constexpr const char *NVS_NAMESPACE = "chip-factory";
+static constexpr const char *NVS_KEY_DISCRIMINATOR = "discriminator";
+static constexpr const char *NVS_KEY_PASSCODE = "pin-code";
 static constexpr const char *NVS_KEY_ITERATION_COUNT = "iteration-count";
-static constexpr const char *NVS_KEY_SALT            = "salt";
-static constexpr const char *NVS_KEY_VERIFIER        = "verifier";
+static constexpr const char *NVS_KEY_SALT = "salt";
+static constexpr const char *NVS_KEY_VERIFIER = "verifier";
 
 static constexpr uint32_t SPAKE2P_ITERATION_COUNT = 1000;
-static constexpr size_t   SPAKE2P_SALT_LENGTH     = 32;
+static constexpr size_t SPAKE2P_SALT_LENGTH = 32;
 
 static bool is_valid_passcode(uint32_t pin) {
   if (pin == 0 || pin > 99999998)
     return false;
   static constexpr uint32_t FORBIDDEN[] = {
-      11111111, 22222222, 33333333, 44444444, 55555555,
-      66666666, 77777777, 88888888, 99999999, 12345678, 87654321,
+      11111111, 22222222, 33333333, 44444444, 55555555, 66666666,
+      77777777, 88888888, 99999999, 12345678, 87654321,
   };
   for (uint32_t f : FORBIDDEN) {
     if (pin == f)
@@ -50,10 +51,12 @@ static bool is_valid_passcode(uint32_t pin) {
   return true;
 }
 
-// Loads existing commissioning data from NVS, or generates random values and stores them.
-// The EXAMPLE_COMMISSIONABLE_DATA_PROVIDER reads these same NVS keys on every boot,
-// so whatever we write here becomes the device's commissioning identity.
-static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_t &passcode) {
+// Loads existing commissioning data from NVS, or generates random values and
+// stores them. The EXAMPLE_COMMISSIONABLE_DATA_PROVIDER reads these same NVS
+// keys on every boot, so whatever we write here becomes the device's
+// commissioning identity.
+static bool load_or_generate_commissioning_data(uint16_t &discriminator,
+                                                uint32_t &passcode) {
   nvs_handle_t handle;
   if (nvs_open(NVS_NAMESPACE, NVS_READWRITE, &handle) != ESP_OK) {
     ESP_LOGE(TAG, "Failed to open NVS namespace '%s'", NVS_NAMESPACE);
@@ -61,10 +64,12 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_
   }
 
   uint32_t stored_discriminator, stored_passcode;
-  bool already_provisioned = (nvs_get_u32(handle, NVS_KEY_DISCRIMINATOR, &stored_discriminator) == ESP_OK &&
-                              nvs_get_u32(handle, NVS_KEY_PASSCODE, &stored_passcode) == ESP_OK);
+  bool already_provisioned =
+      (nvs_get_u32(handle, NVS_KEY_DISCRIMINATOR, &stored_discriminator) ==
+           ESP_OK &&
+       nvs_get_u32(handle, NVS_KEY_PASSCODE, &stored_passcode) == ESP_OK);
   if (already_provisioned) {
-    discriminator = (uint16_t) stored_discriminator;
+    discriminator = (uint16_t)stored_discriminator;
     passcode = stored_passcode;
     nvs_close(handle);
     return true;
@@ -93,10 +98,13 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_
   }
 
   // Compute the Spake2p verifier from the passcode + salt + iteration count.
-  // Storing the verifier (rather than the raw passcode) means future boots don't need
-  // to recompute it, and the factory partition holds a stronger derived secret.
+  // Storing the verifier (rather than the raw passcode) means future boots
+  // don't need to recompute it, and the factory partition holds a stronger
+  // derived secret.
   chip::Crypto::Spake2pVerifier verifier;
-  if (verifier.Generate(SPAKE2P_ITERATION_COUNT, chip::ByteSpan(salt, SPAKE2P_SALT_LENGTH), passcode) != CHIP_NO_ERROR) {
+  if (verifier.Generate(SPAKE2P_ITERATION_COUNT,
+                        chip::ByteSpan(salt, SPAKE2P_SALT_LENGTH),
+                        passcode) != CHIP_NO_ERROR) {
     ESP_LOGE(TAG, "Failed to generate Spake2p verifier");
     nvs_close(handle);
     return false;
@@ -112,8 +120,11 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_
   char salt_b64[BASE64_ENCODED_LEN(SPAKE2P_SALT_LENGTH) + 1];
   salt_b64[chip::Base64Encode32(salt, SPAKE2P_SALT_LENGTH, salt_b64)] = '\0';
 
-  char verifier_b64[BASE64_ENCODED_LEN(chip::Crypto::kSpake2p_VerifierSerialized_Length) + 1];
-  verifier_b64[chip::Base64Encode32(verifier_bytes, sizeof(verifier_bytes), verifier_b64)] = '\0';
+  char verifier_b64[BASE64_ENCODED_LEN(
+                        chip::Crypto::kSpake2p_VerifierSerialized_Length) +
+                    1];
+  verifier_b64[chip::Base64Encode32(verifier_bytes, sizeof(verifier_bytes),
+                                    verifier_b64)] = '\0';
 
   nvs_set_u32(handle, NVS_KEY_DISCRIMINATOR, discriminator);
   nvs_set_u32(handle, NVS_KEY_PASSCODE, passcode);
@@ -128,51 +139,52 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator, uint32_
 
 namespace esphome::matter {
 
-MatterComponent *global_matter_component = nullptr;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+MatterComponent *global_matter_component =
+    nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
-    case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
-      ESP_LOGI(TAG, "Interface IP Address changed");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
-      ESP_LOGI(TAG, "Commissioning complete");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kFailSafeTimerExpired:
-      ESP_LOGI(TAG, "Commissioning failed, fail safe timer expired");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStarted:
-      ESP_LOGI(TAG, "Commissioning session started");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStopped:
-      ESP_LOGI(TAG, "Commissioning session stopped");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kCommissioningWindowOpened:
-      ESP_LOGI(TAG, "Commissioning window opened");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
-      ESP_LOGI(TAG, "Commissioning window closed");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
-      ESP_LOGI(TAG, "Fabric removed");
-      // TODO: reopen commissioning window?
-      break;
-    case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
-      ESP_LOGI(TAG, "Fabric will be removed");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kFabricUpdated:
-      ESP_LOGI(TAG, "Fabric is updated");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
-      ESP_LOGI(TAG, "Fabric is committed");
-      break;
-    case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
-      ESP_LOGI(TAG, "DNS-SD restart needed");
-      chip::app::DnssdServer::Instance().StartServer();
-      break;
-    default:
-      ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
-      break;
+  case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
+    ESP_LOGI(TAG, "Interface IP Address changed");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
+    ESP_LOGI(TAG, "Commissioning complete");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kFailSafeTimerExpired:
+    ESP_LOGI(TAG, "Commissioning failed, fail safe timer expired");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStarted:
+    ESP_LOGI(TAG, "Commissioning session started");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStopped:
+    ESP_LOGI(TAG, "Commissioning session stopped");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kCommissioningWindowOpened:
+    ESP_LOGI(TAG, "Commissioning window opened");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
+    ESP_LOGI(TAG, "Commissioning window closed");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
+    ESP_LOGI(TAG, "Fabric removed");
+    // TODO: reopen commissioning window?
+    break;
+  case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
+    ESP_LOGI(TAG, "Fabric will be removed");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kFabricUpdated:
+    ESP_LOGI(TAG, "Fabric is updated");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
+    ESP_LOGI(TAG, "Fabric is committed");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
+    ESP_LOGI(TAG, "DNS-SD restart needed");
+    chip::app::DnssdServer::Instance().StartServer();
+    break;
+  default:
+    ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
+    break;
   }
 }
 
@@ -187,8 +199,9 @@ void MatterComponent::setup() {
   this->discriminator_ = discriminator;
   this->passcode_ = passcode;
 
-  // Always update device-name so it stays in sync if the ESPHome device name changes.
-  // This is the DN TXT record in _matterc._udp — what controllers show in their UI.
+  // Always update device-name so it stays in sync if the ESPHome device name
+  // changes. This is the DN TXT record in _matterc._udp — what controllers show
+  // in their UI.
   {
     nvs_handle_t h;
     if (nvs_open(NVS_NAMESPACE, NVS_READWRITE, &h) == ESP_OK) {
@@ -199,7 +212,8 @@ void MatterComponent::setup() {
   }
 
   esp_matter::node::config_t node_config;
-  esp_matter::node_t *node = esp_matter::node::create(&node_config, endpoint_attribute_update_cb, nullptr);
+  esp_matter::node_t *node = esp_matter::node::create(
+      &node_config, endpoint_attribute_update_cb, nullptr);
   if (node == nullptr) {
     ESP_LOGE(TAG, "Failed to create Matter node");
     this->mark_failed();
@@ -214,9 +228,11 @@ void MatterComponent::setup() {
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
   /* Set OpenThread platform config */
   esp_openthread_platform_config_t ot_config = {
-    .radio_config = { .radio_mode = RADIO_MODE_NATIVE },
-    .host_config  = { .host_connection_mode = HOST_CONNECTION_MODE_NONE },
-    .port_config  = { .storage_partition_name = "nvs", .netif_queue_size = 10, .task_queue_size = 10 },
+      .radio_config = {.radio_mode = RADIO_MODE_NATIVE},
+      .host_config = {.host_connection_mode = HOST_CONNECTION_MODE_NONE},
+      .port_config = {.storage_partition_name = "nvs",
+                      .netif_queue_size = 10,
+                      .task_queue_size = 10},
   };
   // TODO:
   //  esp_openthread_platform_config_t ot_config = {
@@ -241,13 +257,14 @@ void MatterComponent::setup() {
 }
 
 void MatterComponent::loop() {
-  // CHIP re-advertises DNS-SD (the _matterc._udp / _matter._tcp records) only on
-  // kDnssdInitialized / kDnssdRestartNeeded events. On ESP32 those are posted by
-  // CHIP's WiFi connectivity manager when the station gets an IP — but that code
-  // is compiled out (CONFIG_ENABLE_WIFI_STATION=n) because ESPHome owns the WiFi
-  // driver. So CHIP never learns the ESPHome-managed interface came up and never
-  // advertises. We bridge that here: on the network up-edge, post the same event
-  // the WiFi manager would have, which drives DnssdServer::StartServer().
+  // CHIP re-advertises DNS-SD (the _matterc._udp / _matter._tcp records) only
+  // on kDnssdInitialized / kDnssdRestartNeeded events. On ESP32 those are
+  // posted by CHIP's WiFi connectivity manager when the station gets an IP —
+  // but that code is compiled out (CONFIG_ENABLE_WIFI_STATION=n) because
+  // ESPHome owns the WiFi driver. So CHIP never learns the ESPHome-managed
+  // interface came up and never advertises. We bridge that here: on the network
+  // up-edge, post the same event the WiFi manager would have, which drives
+  // DnssdServer::StartServer().
   bool connected = network::is_connected();
   if (connected && !this->network_was_connected_) {
     ESP_LOGD(TAG, "Network up; requesting Matter DNS-SD (re)advertise");
@@ -284,7 +301,8 @@ void MatterComponent::dump_config() {
   payload.productID = CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID;
   payload.commissioningFlow = chip::CommissioningFlow::kStandard;
 #ifdef MATTER_RENDEZVOUS_ON_NETWORK
-  payload.rendezvousInformation.SetValue(chip::RendezvousInformationFlag::kOnNetwork);
+  payload.rendezvousInformation.SetValue(
+      chip::RendezvousInformationFlag::kOnNetwork);
 #else
   payload.rendezvousInformation.SetValue(chip::RendezvousInformationFlag::kBLE);
 #endif
@@ -292,23 +310,31 @@ void MatterComponent::dump_config() {
   payload.setUpPINCode = this->passcode_;
 
   std::string qr_code;
-  if (chip::QRCodeSetupPayloadGenerator(payload).payloadBase38Representation(qr_code) == CHIP_NO_ERROR) {
+  if (chip::QRCodeSetupPayloadGenerator(payload).payloadBase38Representation(
+          qr_code) == CHIP_NO_ERROR) {
     ESP_LOGCONFIG(TAG, "  SetupQRCode: %s", qr_code.c_str());
-    ESP_LOGCONFIG(TAG, "  QR URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=%s",
-                  qr_code.c_str());
+    ESP_LOGCONFIG(
+        TAG,
+        "  QR URL: "
+        "https://project-chip.github.io/connectedhomeip/qrcode.html?data=%s",
+        qr_code.c_str());
   } else {
     ESP_LOGE(TAG, "  Failed to generate QR code");
   }
 
   std::string manual_code;
-  if (chip::ManualSetupPayloadGenerator(payload).payloadDecimalStringRepresentation(manual_code) == CHIP_NO_ERROR) {
+  if (chip::ManualSetupPayloadGenerator(payload)
+          .payloadDecimalStringRepresentation(manual_code) == CHIP_NO_ERROR) {
     ESP_LOGCONFIG(TAG, "  Manual pairing code: %s", manual_code.c_str());
   }
 
   chip::DeviceLayer::PlatformMgr().LockChipStack();
   auto &server = chip::Server::GetInstance();
-  ESP_LOGCONFIG(TAG, "  Commissioning window: %s",
-                server.GetCommissioningWindowManager().IsCommissioningWindowOpen() ? "open" : "closed");
+  ESP_LOGCONFIG(
+      TAG, "  Commissioning window: %s",
+      server.GetCommissioningWindowManager().IsCommissioningWindowOpen()
+          ? "open"
+          : "closed");
   const auto &fabric_table = server.GetFabricTable();
   if (fabric_table.FabricCount() == 0) {
     ESP_LOGCONFIG(TAG, "  Fabrics: none");
@@ -317,22 +343,22 @@ void MatterComponent::dump_config() {
     for (const auto &fabric : fabric_table) {
       char label[chip::kFabricLabelMaxLengthInBytes + 1] = {0};
       auto label_span = fabric.GetFabricLabel();
-      memcpy(label, label_span.data(), std::min(label_span.size(), sizeof(label) - 1));
+      memcpy(label, label_span.data(),
+             std::min(label_span.size(), sizeof(label) - 1));
       uint64_t fabric_id = fabric.GetFabricId();
       uint64_t node_id = fabric.GetNodeId();
-      ESP_LOGCONFIG(TAG, "    [%u] FabricId: 0x%08" PRIx32 "%08" PRIx32
-                         ", NodeId: 0x%08" PRIx32 "%08" PRIx32
-                         ", VendorId: 0x%04x%s%s",
-                    fabric.GetFabricIndex(),
-                    (uint32_t)(fabric_id >> 32), (uint32_t)(fabric_id),
-                    (uint32_t)(node_id >> 32), (uint32_t)(node_id),
-                    (uint16_t)fabric.GetVendorId(),
-                    label[0] ? ", Label: " : "", label);
+      ESP_LOGCONFIG(
+          TAG,
+          "    [%u] FabricId: 0x%08" PRIx32 "%08" PRIx32
+          ", NodeId: 0x%08" PRIx32 "%08" PRIx32 ", VendorId: 0x%04x%s%s",
+          fabric.GetFabricIndex(), (uint32_t)(fabric_id >> 32),
+          (uint32_t)(fabric_id), (uint32_t)(node_id >> 32), (uint32_t)(node_id),
+          (uint16_t)fabric.GetVendorId(), label[0] ? ", Label: " : "", label);
     }
   }
   chip::DeviceLayer::PlatformMgr().UnlockChipStack();
 }
 
-}  // namespace esphome::matter
+} // namespace esphome::matter
 
-#endif  // USE_MATTER
+#endif // USE_MATTER
