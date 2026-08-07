@@ -225,24 +225,6 @@ void MatterComponent::setup() {
     return;
   }
 
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-  /* Set OpenThread platform config */
-  esp_openthread_platform_config_t ot_config = {
-      .radio_config = {.radio_mode = RADIO_MODE_NATIVE},
-      .host_config = {.host_connection_mode = HOST_CONNECTION_MODE_NONE},
-      .port_config = {.storage_partition_name = "nvs",
-                      .netif_queue_size = 10,
-                      .task_queue_size = 10},
-  };
-  // TODO:
-  //  esp_openthread_platform_config_t ot_config = {
-  //      .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
-  //      .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
-  //      .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
-  //  };
-  set_openthread_platform_config(&ot_config);
-#endif
-
   /* Matter start */
   esp_err_t err = esp_matter::start(event_callback);
   if (err != ESP_OK) {

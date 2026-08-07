@@ -277,7 +277,7 @@ async def to_code(config):
 
     # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
     add_idf_sdkconfig_option(
-        "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", thread_enabled
+        "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False
     )  # esp-matter
     add_idf_sdkconfig_option(
         "CONFIG_ENABLE_MATTER_OVER_THREAD", thread_enabled
