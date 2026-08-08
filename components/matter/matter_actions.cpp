@@ -15,6 +15,22 @@ static const char *const TAG = "matter.actions";
 
 namespace esphome::matter {
 
+static void invoke_response_cb(void *,
+                               const chip::app::ConcreteCommandPath &path,
+                               const chip::app::StatusIB &status,
+                               chip::TLV::TLVReader *) {
+  ESP_LOGD(TAG,
+           "Invoke response endpoint=%u cluster=%lu command=%lu status=0x%02x",
+           static_cast<unsigned>(path.mEndpointId),
+           static_cast<unsigned long>(path.mClusterId),
+           static_cast<unsigned long>(path.mCommandId),
+           static_cast<unsigned>(status.mStatus));
+}
+
+static void invoke_failure_cb(void *, CHIP_ERROR error) {
+  ESP_LOGE(TAG, "Invoke failed: %" CHIP_ERROR_FORMAT, error.Format());
+}
+
 // Builds the JSON command payload for outgoing client commands. Called by
 // esp_matter for every command sent through cluster_update().
 static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
@@ -37,8 +53,8 @@ static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
     }
   }
   esp_matter::client::interaction::invoke::send_request(
-      nullptr, peer_device, req_handle->command_path, cmd_data, nullptr,
-      nullptr, chip::NullOptional);
+      nullptr, peer_device, req_handle->command_path, cmd_data,
+      invoke_response_cb, invoke_failure_cb, chip::NullOptional);
 }
 
 static void
