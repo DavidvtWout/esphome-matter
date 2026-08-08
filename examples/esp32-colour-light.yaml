@@ -1,0 +1,70 @@
+# Colour light endpoints on an ESP32-C6 with an SK6812 RGBW strip.
+#
+# NOT COMPILED. NOT FLASHED. NOT TESTED.
+#
+# extended_color_light  = OnOff + LevelControl + ColorControl (HueSaturation + ColorTemperature)
+# color_temperature_light = OnOff + LevelControl + ColorControl (ColorTemperature only)
+#
+# Colour temperature writes are accepted and ignored when the underlying ESPHome
+# light has no COLOR_TEMPERATURE capability, which is the case for a plain RGBW
+# strip. The endpoint must still advertise the cluster, so this is expected.
+
+esphome:
+  name: matter-colour-light
+  friendly_name: Matter Colour Light
+
+esp32:
+  toolchain: platformio
+  variant: ESP32C6
+  # ESPHome defaults flash_size to 4MB and does NOT derive it from the board.
+  # Matter is large, so this figure decides whether the image fits. Set it to the
+  # flash your board actually has:
+  #   ESP32-C6-DevKitC-1-N8   -> 8MB
+  #   ESP32-C6-DevKitM-1      -> 4MB
+  #   Seeed XIAO ESP32C6      -> 4MB
+  #   DFRobot Beetle ESP32-C6 -> 4MB
+  #   GLEDOPTO GL-C-010WL     -> 4MB (and variant: ESP32, not ESP32C6)
+  # Declaring more flash than the chip has stops it booting.
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: github://meremortals70/esphome-matter@colour-light-endpoints
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+matter:
+  id: matter_component
+  endpoints:
+    - id: strip_endpoint
+      extended_color_light:
+        light_id: led_strip
+
+light:
+  - platform: esp32_rmt_led_strip
+    id: led_strip
+    name: "LED Strip"
+    pin: GPIO5
+    num_leds: 10
+    chipset: SK6812
+    rgbw_order: GRBW
+    default_transition_length: 500ms
+    restore_mode: RESTORE_DEFAULT_OFF
+
+button:
+  - platform: template
+    name: "Matter Factory Reset"
+    entity_category: config
+    on_press:
+      - matter.factory_reset:
+          id: matter_component

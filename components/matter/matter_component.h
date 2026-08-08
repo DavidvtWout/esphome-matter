@@ -13,7 +13,7 @@
 namespace esphome::matter {
 
 class MatterComponent : public Component {
-public:
+ public:
   void setup() override;
   void loop() override;
   void dump_config() override;
@@ -28,12 +28,8 @@ public:
   }
 
   void factory_reset();
-  void add_on_off_switch(MatterEndpointRef *ref) {
-    this->on_off_switches_.push_back({ref, 0});
-  }
-  void add_dimmer_switch(MatterEndpointRef *ref) {
-    this->dimmer_switches_.push_back({ref, 0});
-  }
+  void add_on_off_switch(MatterEndpointRef *ref) { this->on_off_switches_.push_back({ref, 0}); }
+  void add_dimmer_switch(MatterEndpointRef *ref) { this->dimmer_switches_.push_back({ref, 0}); }
 #ifdef USE_SENSOR
   void add_temperature_sensor(sensor::Sensor *sensor, MatterEndpointRef *ref) {
     this->temperature_sensors_.push_back({sensor, ref, 0});
@@ -41,10 +37,16 @@ public:
 #endif
 #ifdef USE_LIGHT
   void add_on_off_light(light::LightState *light, MatterEndpointRef *ref) {
-    this->lights_.push_back(new MatterLight(light, false, ref));
+    this->lights_.push_back(new MatterLight(light, MatterLightType::ON_OFF, ref));
   }
   void add_dimmable_light(light::LightState *light, MatterEndpointRef *ref) {
-    this->lights_.push_back(new MatterLight(light, true, ref));
+    this->lights_.push_back(new MatterLight(light, MatterLightType::DIMMABLE, ref));
+  }
+  void add_color_temperature_light(light::LightState *light, MatterEndpointRef *ref) {
+    this->lights_.push_back(new MatterLight(light, MatterLightType::COLOR_TEMPERATURE, ref));
+  }
+  void add_extended_color_light(light::LightState *light, MatterEndpointRef *ref) {
+    this->lights_.push_back(new MatterLight(light, MatterLightType::EXTENDED_COLOR, ref));
   }
   MatterLight *get_light_by_endpoint(uint16_t endpoint_id) {
     for (auto *ml : this->lights_) {
@@ -56,20 +58,17 @@ public:
 #endif
   // Public wrapper around the protected Component scheduler; used by the
   // Matter-thread callbacks to hop onto the main loop (defer is thread-safe).
-  void defer_to_main_loop(std::function<void()> &&f) {
-    this->defer(std::move(f));
-  }
+  void defer_to_main_loop(std::function<void()> &&f) { this->defer(std::move(f)); }
 
-private:
+ private:
   // Defined in matter_endpoints.cpp
   bool create_endpoints_(esp_matter::node_t *node);
   void register_endpoint_callbacks_();
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
-  // Tracks network connectivity so we can tell CHIP to (re)advertise DNS-SD
-  // when the ESPHome-managed interface comes up (see loop() in
-  // matter_component.cpp).
+  // Tracks network connectivity so we can tell CHIP to (re)advertise DNS-SD when
+  // the ESPHome-managed interface comes up (see loop() in matter_component.cpp).
   bool network_was_connected_{false};
   std::vector<MatterOnOffSwitch> on_off_switches_;
   std::vector<MatterDimmerSwitch> dimmer_switches_;
@@ -81,16 +80,14 @@ private:
 #endif
 };
 
-extern MatterComponent *
-    global_matter_component; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+extern MatterComponent *global_matter_component;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 template <typename... Ts>
-class MatterFactoryResetAction : public Action<Ts...>,
-                                 public Parented<MatterComponent> {
-public:
+class MatterFactoryResetAction : public Action<Ts...>, public Parented<MatterComponent> {
+ public:
   void play(Ts... x) override { this->parent_->factory_reset(); }
 };
 
-} // namespace esphome::matter
+}  // namespace esphome::matter
 
-#endif // USE_MATTER
+#endif  // USE_MATTER

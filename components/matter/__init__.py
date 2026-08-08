@@ -4,18 +4,8 @@ from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import light, sensor
-from esphome.components.esp32 import (
-    add_idf_component,
-    add_idf_sdkconfig_option,
-    require_vfs_select,
-)
-from esphome.const import (
-    CONF_ENABLE_IPV6,
-    CONF_ID,
-    CONF_LIGHT_ID,
-    CONF_SENSOR_ID,
-    Framework,
-)
+from esphome.components.esp32 import add_idf_component, add_idf_sdkconfig_option, require_vfs_select
+from esphome.const import CONF_ENABLE_IPV6, CONF_ID, CONF_LIGHT_ID, CONF_SENSOR_ID, Framework
 from esphome.core import CORE
 from esphome.coroutine import CoroPriority, coroutine_with_priority
 import esphome.final_validate as fv
@@ -31,17 +21,8 @@ AUTO_LOAD = ["network"]
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
-    11111111,
-    22222222,
-    33333333,
-    44444444,
-    55555555,
-    66666666,
-    77777777,
-    88888888,
-    99999999,
-    12345678,
-    87654321,
+    11111111, 22222222, 33333333, 44444444, 55555555,
+    66666666, 77777777, 88888888, 99999999, 12345678, 87654321,
 }
 
 
@@ -56,9 +37,7 @@ def _validate_passcode(value):
 
 matter_ns = cg.esphome_ns.namespace("matter")
 MatterComponent = matter_ns.class_("MatterComponent", cg.Component)
-MatterFactoryResetAction = matter_ns.class_(
-    "MatterFactoryResetAction", automation.Action
-)
+MatterFactoryResetAction = matter_ns.class_("MatterFactoryResetAction", automation.Action)
 MatterEndpointRef = matter_ns.class_("MatterEndpointRef")
 MatterTurnOnAction = matter_ns.class_("MatterTurnOnAction", automation.Action)
 MatterTurnOffAction = matter_ns.class_("MatterTurnOffAction", automation.Action)
@@ -95,17 +74,13 @@ ON_OFF_SWITCH_SCHEMA = cv.All(_none_to_dict, cv.Schema({}))
 
 DIMMER_SWITCH_SCHEMA = cv.All(_none_to_dict, cv.Schema({}))
 
-TEMPERATURE_SENSOR_SCHEMA = cv.Schema(
-    {
-        cv.Required(CONF_SENSOR_ID): cv.use_id(sensor.Sensor),
-    }
-)
+TEMPERATURE_SENSOR_SCHEMA = cv.Schema({
+    cv.Required(CONF_SENSOR_ID): cv.use_id(sensor.Sensor),
+})
 
-LIGHT_SCHEMA = cv.Schema(
-    {
-        cv.Required(CONF_LIGHT_ID): cv.use_id(light.LightState),
-    }
-)
+LIGHT_SCHEMA = cv.Schema({
+    cv.Required(CONF_LIGHT_ID): cv.use_id(light.LightState),
+})
 
 
 def _validate_endpoint(config):
@@ -122,35 +97,32 @@ def _validate_endpoint(config):
 # Endpoint ids are assigned in list order, so entries must never be removed
 # or reordered once the device is commissioned — append only.
 ENDPOINT_SCHEMA = cv.All(
-    cv.Schema(
-        {
-            # Referenceable from matter.* actions via endpoint_ref.
-            cv.GenerateID(): cv.declare_id(MatterEndpointRef),
-            cv.Optional(CONF_ON_OFF_SWITCH): ON_OFF_SWITCH_SCHEMA,
-            cv.Optional(CONF_DIMMER_SWITCH): DIMMER_SWITCH_SCHEMA,
-            cv.Optional(CONF_TEMPERATURE_SENSOR): TEMPERATURE_SENSOR_SCHEMA,
-            cv.Optional(CONF_ON_OFF_LIGHT): LIGHT_SCHEMA,
-            cv.Optional(CONF_DIMMABLE_LIGHT): LIGHT_SCHEMA,
-        }
-    ),
+    cv.Schema({
+        # Referenceable from matter.* actions via endpoint_ref.
+        cv.GenerateID(): cv.declare_id(MatterEndpointRef),
+        cv.Optional(CONF_ON_OFF_SWITCH): ON_OFF_SWITCH_SCHEMA,
+        cv.Optional(CONF_DIMMER_SWITCH): DIMMER_SWITCH_SCHEMA,
+        cv.Optional(CONF_TEMPERATURE_SENSOR): TEMPERATURE_SENSOR_SCHEMA,
+        cv.Optional(CONF_ON_OFF_LIGHT): LIGHT_SCHEMA,
+        cv.Optional(CONF_DIMMABLE_LIGHT): LIGHT_SCHEMA,
+        cv.Optional(CONF_COLOR_TEMPERATURE_LIGHT): LIGHT_SCHEMA,
+        cv.Optional(CONF_EXTENDED_COLOR_LIGHT): LIGHT_SCHEMA,
+    }),
     _validate_endpoint,
 )
 
 CONFIG_SCHEMA = cv.All(
-    cv.Schema(
-        {
-            cv.GenerateID(): cv.declare_id(MatterComponent),
-            cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
-            cv.Optional(CONF_PASSCODE): _validate_passcode,
-            cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
-        }
-    ).extend(cv.COMPONENT_SCHEMA),
+    cv.Schema({
+        cv.GenerateID(): cv.declare_id(MatterComponent),
+        cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
+        cv.Optional(CONF_PASSCODE): _validate_passcode,
+        cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
+    }).extend(cv.COMPONENT_SCHEMA),
     cv.only_on_esp32,
     cv.only_with_framework(Framework.ESP_IDF),
     _require_platformio_toolchain,
     _require_vfs_select,  # TODO: Only needed when openthread is enabled
 )
-
 
 def _final_validate(_):
     full_config = fv.full_config.get()
@@ -161,7 +133,6 @@ def _final_validate(_):
             "should be possible but the spec forbids this and the connectedhomeip project doesn't support this). "
             "Please set `enable_ipv6: true` in the `network` configuration."
         )
-
 
 FINAL_VALIDATE_SCHEMA = _final_validate
 
@@ -203,21 +174,21 @@ def _write_matter_cmake_hook() -> Path:
         "    # The declarations remain available from CHIP headers and are implemented as no-ops\n"
         "    # in matter_ethernet_stub.cpp.\n"
         "    get_target_property(_matter_sources ${_matter_lib} SOURCES)\n"
-        '    list(FILTER _matter_sources EXCLUDE REGEX "/(ConnectivityManagerImpl_Ethernet|NetworkCommissioningDriver_Ethernet)\\\\.cpp$")\n'
-        '    set_target_properties(${_matter_lib} PROPERTIES SOURCES "${_matter_sources}")\n'
+        "    list(FILTER _matter_sources EXCLUDE REGEX \"/(ConnectivityManagerImpl_Ethernet|NetworkCommissioningDriver_Ethernet)\\\\.cpp$\")\n"
+        "    set_target_properties(${_matter_lib} PROPERTIES SOURCES \"${_matter_sources}\")\n"
         "\n"
         "    # esp-matter excludes ESP32DnssdImpl.cpp when CHIP Wi-Fi AP/station are disabled.\n"
         "    # ESPHome still provides the real network and mDNS stack, so add CHIP's ESP32 DNS-SD\n"
         "    # integration back for operational discovery.\n"
-        '    set(_matter_dnssd "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ESP32DnssdImpl.cpp")\n'
+        "    set(_matter_dnssd \"${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ESP32DnssdImpl.cpp\")\n"
         "    get_target_property(_matter_sources ${_matter_lib} SOURCES)\n"
-        '    list(FIND _matter_sources "${_matter_dnssd}" _matter_dnssd_index)\n'
+        "    list(FIND _matter_sources \"${_matter_dnssd}\" _matter_dnssd_index)\n"
         "    if(_matter_dnssd_index EQUAL -1)\n"
-        '        target_sources(${_matter_lib} PRIVATE "${_matter_dnssd}")\n'
+        "        target_sources(${_matter_lib} PRIVATE \"${_matter_dnssd}\")\n"
         "    endif()\n"
         "endfunction()\n"
         "\n"
-        'cmake_language(DEFER DIRECTORY "${CMAKE_SOURCE_DIR}" CALL esphome_matter_patch_esp_matter_target)\n',
+        "cmake_language(DEFER DIRECTORY \"${CMAKE_SOURCE_DIR}\" CALL esphome_matter_patch_esp_matter_target)\n",
     )
     return include_path
 
@@ -247,9 +218,7 @@ async def to_code(config):
 
     # There is no distinction between ethernet and wifi for esp-matter since esphome already manages the
     # connection layer. So it's easier to bundle these two together.
-    lan_enabled = (
-        "ethernet" in CORE.loaded_integrations or "wifi" in CORE.loaded_integrations
-    )
+    lan_enabled = "ethernet" in CORE.loaded_integrations or "wifi" in CORE.loaded_integrations
     thread_enabled = "openthread" in CORE.loaded_integrations
     connectivity_enabled = lan_enabled or thread_enabled
 
@@ -271,17 +240,11 @@ async def to_code(config):
         # it just enables CHIP_DEVICE_CONFIG_ENABLE_ETHERNET which doesn't seem to break anything important. It makes
         # connectedhomeip "think" it's connected via ethernet which prevents it from fucking with the wifi stack, while
         # keeping important services such as DNS-SD enabled.
-        add_idf_sdkconfig_option(
-            "CONFIG_ENABLE_ETHERNET_TELEMETRY", True
-        )  # connectedhomeip
+        add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", True) # connectedhomeip
 
     # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
-    add_idf_sdkconfig_option(
-        "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", thread_enabled
-    )  # esp-matter
-    add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_MATTER_OVER_THREAD", thread_enabled
-    )  # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", thread_enabled)  # esp-matter
+    add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", thread_enabled)  # connectedhomeip
     if thread_enabled:
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
         add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
@@ -296,11 +259,9 @@ async def to_code(config):
         # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
         # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
 
-    add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_CHIPOBLE", not connectivity_enabled
-    )  # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not connectivity_enabled)  # connectedhomeip
     if connectivity_enabled:
-        cg.add_define("MATTER_RENDEZVOUS_ON_NETWORK")  # esphome-matter
+        cg.add_define("MATTER_RENDEZVOUS_ON_NETWORK") # esphome-matter
     else:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
         # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
@@ -349,10 +310,18 @@ async def to_code(config):
             light_var = await cg.get_variable(ep_conf[CONF_ON_OFF_LIGHT][CONF_LIGHT_ID])
             cg.add(var.add_on_off_light(light_var, ref))
         elif CONF_DIMMABLE_LIGHT in ep_conf:
-            light_var = await cg.get_variable(
-                ep_conf[CONF_DIMMABLE_LIGHT][CONF_LIGHT_ID]
-            )
+            light_var = await cg.get_variable(ep_conf[CONF_DIMMABLE_LIGHT][CONF_LIGHT_ID])
             cg.add(var.add_dimmable_light(light_var, ref))
+        elif CONF_COLOR_TEMPERATURE_LIGHT in ep_conf:
+            light_var = await cg.get_variable(
+                ep_conf[CONF_COLOR_TEMPERATURE_LIGHT][CONF_LIGHT_ID]
+            )
+            cg.add(var.add_color_temperature_light(light_var, ref))
+        elif CONF_EXTENDED_COLOR_LIGHT in ep_conf:
+            light_var = await cg.get_variable(
+                ep_conf[CONF_EXTENDED_COLOR_LIGHT][CONF_LIGHT_ID]
+            )
+            cg.add(var.add_extended_color_light(light_var, ref))
 
 
 @automation.register_action(
@@ -368,11 +337,9 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
 
 # Accepts both `matter.turn_on: {id: my_endpoint}` and the short form
 # `matter.turn_on: my_endpoint`, like the light/switch component actions.
-MATTER_CLIENT_ACTION_SCHEMA = automation.maybe_simple_id(
-    {
-        cv.Required(CONF_ID): cv.use_id(MatterEndpointRef),
-    }
-)
+MATTER_CLIENT_ACTION_SCHEMA = automation.maybe_simple_id({
+    cv.Required(CONF_ID): cv.use_id(MatterEndpointRef),
+})
 
 
 async def _matter_client_action_to_code(config, action_id, template_arg):
@@ -381,47 +348,35 @@ async def _matter_client_action_to_code(config, action_id, template_arg):
     return var
 
 
-@automation.register_action(
-    "matter.turn_on", MatterTurnOnAction, MATTER_CLIENT_ACTION_SCHEMA
-)
+@automation.register_action("matter.turn_on", MatterTurnOnAction, MATTER_CLIENT_ACTION_SCHEMA)
 async def matter_turn_on_to_code(config, action_id, template_arg, args):
     return await _matter_client_action_to_code(config, action_id, template_arg)
 
 
-@automation.register_action(
-    "matter.turn_off", MatterTurnOffAction, MATTER_CLIENT_ACTION_SCHEMA
-)
+@automation.register_action("matter.turn_off", MatterTurnOffAction, MATTER_CLIENT_ACTION_SCHEMA)
 async def matter_turn_off_to_code(config, action_id, template_arg, args):
     return await _matter_client_action_to_code(config, action_id, template_arg)
 
 
-@automation.register_action(
-    "matter.toggle", MatterToggleAction, MATTER_CLIENT_ACTION_SCHEMA
-)
+@automation.register_action("matter.toggle", MatterToggleAction, MATTER_CLIENT_ACTION_SCHEMA)
 async def matter_toggle_to_code(config, action_id, template_arg, args):
     return await _matter_client_action_to_code(config, action_id, template_arg)
 
 
-@automation.register_action(
-    "matter.dim_up", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA
-)
+@automation.register_action("matter.dim_up", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA)
 async def matter_dim_up_to_code(config, action_id, template_arg, args):
     var = await _matter_client_action_to_code(config, action_id, template_arg)
     cg.add(var.set_direction(0))
     return var
 
 
-@automation.register_action(
-    "matter.dim_down", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA
-)
+@automation.register_action("matter.dim_down", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA)
 async def matter_dim_down_to_code(config, action_id, template_arg, args):
     var = await _matter_client_action_to_code(config, action_id, template_arg)
     cg.add(var.set_direction(1))
     return var
 
 
-@automation.register_action(
-    "matter.dim_stop", MatterDimStopAction, MATTER_CLIENT_ACTION_SCHEMA
-)
+@automation.register_action("matter.dim_stop", MatterDimStopAction, MATTER_CLIENT_ACTION_SCHEMA)
 async def matter_dim_stop_to_code(config, action_id, template_arg, args):
     return await _matter_client_action_to_code(config, action_id, template_arg)
