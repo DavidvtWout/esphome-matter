@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstring>
 #include <inttypes.h>
+#include <string>
 
 static const char *const TAG = "matter.actions";
 
@@ -71,23 +72,21 @@ void register_client_request_callbacks() {
 void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
                          chip::CommandId command, uint8_t move_mode) {
   auto &binding_table = chip::app::Clusters::Binding::Table::GetInstance();
-  char node_ids[128] = {};
-  size_t pos = 0;
+  std::string node_ids;
   for (const auto &entry : binding_table) {
     if (entry.local == endpoint_id &&
         (!entry.clusterId.has_value() || entry.clusterId.value() == cluster)) {
-      pos +=
-          snprintf(node_ids + pos, sizeof(node_ids) - pos,
-                   pos == 0 ? "0x%016" PRIx64 : " 0x%016" PRIx64, entry.nodeId);
-      if (pos >= sizeof(node_ids))
-        break;
+      if (!node_ids.empty())
+        node_ids += ",";
+      char node_id[21];
+      snprintf(node_id, sizeof(node_id), "%" PRIu64,
+               static_cast<uint64_t>(entry.nodeId));
+      node_ids += node_id;
     }
   }
-  ESP_LOGD(TAG,
-           "Sending command nodes=[%s] endpoint=%u cluster=0x%08" PRIx32
-           " command=0x%08" PRIx32 " bindings=%u",
-           node_ids, endpoint_id, static_cast<uint32_t>(cluster),
-           static_cast<uint32_t>(command), binding_table.Size());
+  ESP_LOGD(TAG, "Sending command nodes=[%s] endpoint=%u cluster=%u command=%u",
+           node_ids.empty() ? "none" : node_ids.c_str(), endpoint_id,
+           static_cast<uint32_t>(cluster), static_cast<uint32_t>(command));
 
   esp_matter::client::request_handle_t req;
   req.type = esp_matter::client::INVOKE_CMD;
@@ -96,7 +95,10 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
   req.request_data =
       reinterpret_cast<void *>(static_cast<uintptr_t>(move_mode));
   esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
-  esp_matter::client::cluster_update(endpoint_id, &req);
+  esp_err_t err = esp_matter::client::cluster_update(endpoint_id, &req);
+  if (err != ESP_OK) {
+    ESP_LOGW(TAG, "cluster_update failed: %s", esp_err_to_name(err));
+  }
 }
 
 } // namespace esphome::matter

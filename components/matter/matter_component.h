@@ -16,7 +16,6 @@ namespace esphome::matter {
 class MatterComponent : public Component {
 public:
   void setup() override;
-  void loop() override;
   void dump_config() override;
   float get_setup_priority() const override {
 #ifdef USE_OPENTHREAD

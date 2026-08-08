@@ -261,8 +261,6 @@ void MatterComponent::setup() {
   this->register_endpoint_callbacks_();
 }
 
-void MatterComponent::loop() {}
-
 void MatterComponent::factory_reset() {
   ESP_LOGW(TAG, "Matter factory reset. Erasing fabric data and rebooting");
   for (const char *ns : {"chip-config", "chip-counters", "CHIP_KVS"}) {
