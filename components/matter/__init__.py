@@ -29,6 +29,9 @@ CODEOWNERS = ["@DavidvtWout"]
 
 AUTO_LOAD = ["network"]
 
+# Only for matter-over-thread
+MIN_ESPHOME_VERSION = "2026.6.0"
+
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
     11111111,
@@ -154,6 +157,9 @@ CONFIG_SCHEMA = cv.All(
 
 def _final_validate(_):
     full_config = fv.full_config.get()
+    if "openthread" in full_config:
+        cv.validate_esphome_version(MIN_ESPHOME_VERSION)
+
     network_config = full_config.get("network", {})
     if not network_config.get(CONF_ENABLE_IPV6, False):
         raise cv.Invalid(
