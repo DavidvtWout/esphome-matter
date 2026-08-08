@@ -15,6 +15,9 @@
 
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
+#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
+#include <platform/ConnectivityManager.h>
+#endif
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ThreadStackManager.h>
 #endif
@@ -180,9 +183,6 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     break;
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
     ESP_LOGD(TAG, "DNS-SD restart needed");
-#ifdef USE_WIFI
-    chip::app::DnssdServer::Instance().StartServer();
-#endif
     break;
   default:
     ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
@@ -250,29 +250,22 @@ void MatterComponent::setup() {
     ESP_LOGD(TAG, "Matter started successfully");
   }
 
+#if defined(USE_WIFI) && CHIP_DEVICE_CONFIG_ENABLE_WIFI
+  // ESPHome owns the Wi-Fi driver and connection loop. Keep CHIP's Wi-Fi
+  // station support compiled in for Matter data-model semantics, but prevent
+  // ConnectivityManager from calling esp_wifi_connect()/disconnect().
+  if (chip::DeviceLayer::ConnectivityMgr().SetWiFiStationMode(
+          chip::DeviceLayer::ConnectivityManager::
+              kWiFiStationMode_ApplicationControlled) != CHIP_NO_ERROR) {
+    ESP_LOGW(TAG,
+             "Failed to mark CHIP Wi-Fi station as application-controlled");
+  }
+#endif
+
   this->register_endpoint_callbacks_();
 }
 
-void MatterComponent::loop() {
-#ifdef USE_WIFI
-  // CHIP re-advertises DNS-SD (the _matterc._udp / _matter._tcp records) only
-  // on kDnssdInitialized / kDnssdRestartNeeded events. On ESP32 those are
-  // posted by CHIP's WiFi connectivity manager when the station gets an IP —
-  // but that code is compiled out (CONFIG_ENABLE_WIFI_STATION=n) because
-  // ESPHome owns the WiFi driver. So CHIP never learns the ESPHome-managed
-  // interface came up and never advertises. We bridge that here: on the network
-  // up-edge, post the same event the WiFi manager would have, which drives
-  // DnssdServer::StartServer().
-  bool connected = network::is_connected();
-  if (connected && !this->network_was_connected_) {
-    ESP_LOGD(TAG, "Network up; requesting Matter DNS-SD (re)advertise");
-    chip::DeviceLayer::ChipDeviceEvent event;
-    event.Type = chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded;
-    chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
-  }
-  this->network_was_connected_ = connected;
-#endif // USE_WIFI
-}
+void MatterComponent::loop() {}
 
 void MatterComponent::factory_reset() {
   ESP_LOGW(TAG, "Matter factory reset. Erasing fabric data and rebooting");
