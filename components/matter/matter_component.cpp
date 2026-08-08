@@ -346,10 +346,11 @@ void MatterComponent::dump_config() {
       ESP_LOGCONFIG(
           TAG,
           "    [%u] CompressedFabricId: 0x%08" PRIx32 "%08" PRIx32
-          ", NodeId: 0x%08" PRIx32 "%08" PRIx32 ", VendorId: 0x%04x%s%s",
+          ", NodeId: 0x%08" PRIx32 "%08" PRIx32 " (%" PRIu64 ")"
+          ", VendorId: 0x%04x%s%s",
           fabric.GetFabricIndex(), (uint32_t)(compressed_fabric_id >> 32),
           (uint32_t)(compressed_fabric_id), (uint32_t)(node_id >> 32),
-          (uint32_t)(node_id), (uint16_t)fabric.GetVendorId(),
+          (uint32_t)(node_id), node_id, (uint16_t)fabric.GetVendorId(),
           label[0] ? ", Label: " : "", label);
     }
   }
