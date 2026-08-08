@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cinttypes>
 #include <cstring>
+#include <esp_matter_client.h>
 #include <esp_random.h>
 #include <nvs.h>
 #include <string>
@@ -253,6 +254,7 @@ void MatterComponent::setup() {
     ESP_LOGD(TAG, "Matter started successfully");
   }
 
+  esp_matter::client::binding_manager_init();
   this->register_endpoint_callbacks_();
 }
 
