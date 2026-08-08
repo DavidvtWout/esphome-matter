@@ -188,8 +188,11 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   case chip::DeviceLayer::DeviceEventType::kServerReady:
     ESP_LOGI(TAG, "Server ready!");
     break;
+  case chip::DeviceLayer::DeviceEventType::kThreadStateChange:
+    ESP_LOGV(TAG, "event: ThreadStateChange");
+    break;
   default:
-    ESP_LOGV(TAG, "Matter event: 0x%04X", event->Type);
+    ESP_LOGV(TAG, "event: 0x%04X", event->Type);
     break;
   }
 }

@@ -3,8 +3,14 @@
 
 #include "matter_actions.h"
 
+#include "esphome/core/log.h"
+
+#include <app/clusters/bindings/binding-table.h>
 #include <cstdio>
 #include <cstring>
+#include <inttypes.h>
+
+static const char *const TAG = "matter.actions";
 
 namespace esphome::matter {
 
@@ -64,6 +70,25 @@ void register_client_request_callbacks() {
 
 void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
                          chip::CommandId command, uint8_t move_mode) {
+  auto &binding_table = chip::app::Clusters::Binding::Table::GetInstance();
+  char node_ids[128] = {};
+  size_t pos = 0;
+  for (const auto &entry : binding_table) {
+    if (entry.local == endpoint_id &&
+        (!entry.clusterId.has_value() || entry.clusterId.value() == cluster)) {
+      pos +=
+          snprintf(node_ids + pos, sizeof(node_ids) - pos,
+                   pos == 0 ? "0x%016" PRIx64 : " 0x%016" PRIx64, entry.nodeId);
+      if (pos >= sizeof(node_ids))
+        break;
+    }
+  }
+  ESP_LOGD(TAG,
+           "Sending command nodes=[%s] endpoint=%u cluster=0x%08" PRIx32
+           " command=0x%08" PRIx32 " bindings=%u",
+           node_ids, endpoint_id, static_cast<uint32_t>(cluster),
+           static_cast<uint32_t>(command), binding_table.Size());
+
   esp_matter::client::request_handle_t req;
   req.type = esp_matter::client::INVOKE_CMD;
   req.command_path.mClusterId = cluster;
