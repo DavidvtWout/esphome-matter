@@ -180,6 +180,9 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     break;
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
     ESP_LOGD(TAG, "DNS-SD restart needed");
+#ifdef USE_WIFI
+    chip::app::DnssdServer::Instance().StartServer();
+#endif
     break;
   default:
     ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
@@ -235,7 +238,7 @@ void MatterComponent::setup() {
     this->mark_failed();
     return;
   }
-#endif
+#endif // USE_OPENTHREAD
 
   /* Matter start */
   esp_err_t err = esp_matter::start(event_callback);
@@ -268,7 +271,7 @@ void MatterComponent::loop() {
     chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
   }
   this->network_was_connected_ = connected;
-#endif
+#endif // USE_WIFI
 }
 
 void MatterComponent::factory_reset() {
