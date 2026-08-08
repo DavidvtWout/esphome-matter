@@ -221,6 +221,20 @@ def _write_matter_cmake_hook() -> Path:
         "    if(_matter_dnssd_index EQUAL -1)\n"
         '        target_sources(${_matter_lib} PRIVATE "${_matter_dnssd}")\n'
         "    endif()\n"
+        "\n"
+        "    # With CONFIG_ESP_MATTER_ENABLE_OPENTHREAD disabled, esp-matter skips CHIP's\n"
+        "    # ThreadStackManager initialization entirely. ESPHome already created the real\n"
+        "    # OpenThread stack, so keep CHIP from initializing another one but still allow\n"
+        "    # ThreadStackMgr().InitThreadStack() to run DoInit(esp_openthread_get_instance()).\n"
+        '    set(_matter_thread_stack "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ThreadStackManagerImpl.cpp")\n'
+        '    file(READ "${_matter_thread_stack}" _matter_thread_stack_content)\n'
+        '    if(NOT _matter_thread_stack_content MATCHES "ESPHome owns OpenThread stack")\n'
+        "        string(REPLACE\n"
+        '            "    openthread_init_stack();"\n'
+        '            "    // ESPHome owns OpenThread stack; only bind CHIP ThreadStackManager to the existing instance."\n'
+        '            _matter_thread_stack_content "${_matter_thread_stack_content}")\n'
+        '        file(WRITE "${_matter_thread_stack}" "${_matter_thread_stack_content}")\n'
+        "    endif()\n"
         "endfunction()\n"
         "\n"
         'cmake_language(DEFER DIRECTORY "${CMAKE_SOURCE_DIR}" CALL esphome_matter_patch_esp_matter_target)\n',

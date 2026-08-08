@@ -16,7 +16,7 @@
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#include <platform/ESP32/OpenthreadLauncher.h>
+#include <platform/ThreadStackManager.h>
 #endif
 #include <lib/support/Base64.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
@@ -223,6 +223,19 @@ void MatterComponent::setup() {
     this->mark_failed();
     return;
   }
+
+#ifdef USE_OPENTHREAD
+  // ESPHome owns the OpenThread task/stack. CHIP still needs its
+  // ThreadStackManager bound to that existing instance for Thread diagnostics
+  // and other Thread helpers.
+  if (chip::DeviceLayer::ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
+    ESP_LOGE(
+        TAG,
+        "Failed to bind CHIP ThreadStackManager to ESPHome OpenThread stack");
+    this->mark_failed();
+    return;
+  }
+#endif
 
   /* Matter start */
   esp_err_t err = esp_matter::start(event_callback);
