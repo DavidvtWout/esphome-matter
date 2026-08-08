@@ -145,7 +145,7 @@ MatterComponent *global_matter_component =
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
   case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
-    ESP_LOGI(TAG, "Interface IP Address changed");
+    ESP_LOGD(TAG, "Interface IP Address changed");
     break;
   case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
     ESP_LOGI(TAG, "Commissioning complete");
@@ -181,8 +181,14 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
     ESP_LOGD(TAG, "DNS-SD restart needed");
     break;
+  case chip::DeviceLayer::DeviceEventType::kBindingsChangedViaCluster:
+    ESP_LOGI(TAG, "Bindings updated");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kServerReady:
+    ESP_LOGI(TAG, "Server ready!");
+    break;
   default:
-    ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
+    ESP_LOGV(TAG, "Matter event: 0x%04X", event->Type);
     break;
   }
 }
@@ -235,7 +241,7 @@ void MatterComponent::setup() {
     this->mark_failed();
     return;
   }
-#endif
+#endif // USE_OPENTHREAD
 
   /* Matter start */
   esp_err_t err = esp_matter::start(event_callback);
@@ -250,26 +256,7 @@ void MatterComponent::setup() {
   this->register_endpoint_callbacks_();
 }
 
-void MatterComponent::loop() {
-#ifdef USE_WIFI
-  // CHIP re-advertises DNS-SD (the _matterc._udp / _matter._tcp records) only
-  // on kDnssdInitialized / kDnssdRestartNeeded events. On ESP32 those are
-  // posted by CHIP's WiFi connectivity manager when the station gets an IP —
-  // but that code is compiled out (CONFIG_ENABLE_WIFI_STATION=n) because
-  // ESPHome owns the WiFi driver. So CHIP never learns the ESPHome-managed
-  // interface came up and never advertises. We bridge that here: on the network
-  // up-edge, post the same event the WiFi manager would have, which drives
-  // DnssdServer::StartServer().
-  bool connected = network::is_connected();
-  if (connected && !this->network_was_connected_) {
-    ESP_LOGD(TAG, "Network up; requesting Matter DNS-SD (re)advertise");
-    chip::DeviceLayer::ChipDeviceEvent event;
-    event.Type = chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded;
-    chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
-  }
-  this->network_was_connected_ = connected;
-#endif
-}
+void MatterComponent::loop() {}
 
 void MatterComponent::factory_reset() {
   ESP_LOGW(TAG, "Matter factory reset. Erasing fabric data and rebooting");
@@ -296,7 +283,7 @@ void MatterComponent::dump_config() {
   payload.vendorID = CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID;
   payload.productID = CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID;
   payload.commissioningFlow = chip::CommissioningFlow::kStandard;
-#ifdef MATTER_RENDEZVOUS_ON_NETWORK
+#if defined(USE_OPENTHREAD) || defined(USE_WIFI) || defined(USE_ETHERNET)
   payload.rendezvousInformation.SetValue(
       chip::RendezvousInformationFlag::kOnNetwork);
 #else
