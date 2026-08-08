@@ -29,6 +29,9 @@ CODEOWNERS = ["@DavidvtWout"]
 
 AUTO_LOAD = ["network"]
 
+# Only for matter-over-thread
+MIN_ESPHOME_VERSION = "2026.6.0"
+
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
     11111111,
@@ -154,6 +157,9 @@ CONFIG_SCHEMA = cv.All(
 
 def _final_validate(_):
     full_config = fv.full_config.get()
+    if "openthread" in full_config:
+        cv.validate_esphome_version(MIN_ESPHOME_VERSION)
+
     network_config = full_config.get("network", {})
     if not network_config.get(CONF_ENABLE_IPV6, False):
         raise cv.Invalid(
@@ -215,6 +221,20 @@ def _write_matter_cmake_hook() -> Path:
         "    if(_matter_dnssd_index EQUAL -1)\n"
         '        target_sources(${_matter_lib} PRIVATE "${_matter_dnssd}")\n'
         "    endif()\n"
+        "\n"
+        "    # With CONFIG_ESP_MATTER_ENABLE_OPENTHREAD disabled, esp-matter skips CHIP's\n"
+        "    # ThreadStackManager initialization entirely. ESPHome already created the real\n"
+        "    # OpenThread stack, so keep CHIP from initializing another one but still allow\n"
+        "    # ThreadStackMgr().InitThreadStack() to run DoInit(esp_openthread_get_instance()).\n"
+        '    set(_matter_thread_stack "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/ESP32/ThreadStackManagerImpl.cpp")\n'
+        '    file(READ "${_matter_thread_stack}" _matter_thread_stack_content)\n'
+        '    if(NOT _matter_thread_stack_content MATCHES "ESPHome owns OpenThread stack")\n'
+        "        string(REPLACE\n"
+        '            "    openthread_init_stack();"\n'
+        '            "    // ESPHome owns OpenThread stack; only bind CHIP ThreadStackManager to the existing instance."\n'
+        '            _matter_thread_stack_content "${_matter_thread_stack_content}")\n'
+        '        file(WRITE "${_matter_thread_stack}" "${_matter_thread_stack_content}")\n'
+        "    endif()\n"
         "endfunction()\n"
         "\n"
         'cmake_language(DEFER DIRECTORY "${CMAKE_SOURCE_DIR}" CALL esphome_matter_patch_esp_matter_target)\n',
@@ -247,11 +267,11 @@ async def to_code(config):
 
     # There is no distinction between ethernet and wifi for esp-matter since esphome already manages the
     # connection layer. So it's easier to bundle these two together.
-    lan_enabled = (
+    use_ethernet_or_wifi = (
         "ethernet" in CORE.loaded_integrations or "wifi" in CORE.loaded_integrations
     )
-    thread_enabled = "openthread" in CORE.loaded_integrations
-    connectivity_enabled = lan_enabled or thread_enabled
+    use_openthread = "openthread" in CORE.loaded_integrations
+    use_connectivity = use_ethernet_or_wifi or use_openthread
 
     # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
@@ -261,12 +281,7 @@ async def to_code(config):
     add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
     add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
 
-    # These are connectedhomeip specific flags and must both be set to False since Wi-Fi is already managed by
-    # the ESPHome wifi component and enabling chip's Wi-Fi conflicts with this.
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", False)  # connectedhomeip
-
-    if lan_enabled:
+    if use_ethernet_or_wifi:
         # CONFIG_ENABLE_ETHERNET_TELEMETRY is just named completely wrong. Instead of what you would expect it to do,
         # it just enables CHIP_DEVICE_CONFIG_ENABLE_ETHERNET which doesn't seem to break anything important. It makes
         # connectedhomeip "think" it's connected via ethernet which prevents it from fucking with the wifi stack, while
@@ -275,20 +290,17 @@ async def to_code(config):
             "CONFIG_ENABLE_ETHERNET_TELEMETRY", True
         )  # connectedhomeip
 
-    # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled.
-    add_idf_sdkconfig_option(
-        "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", thread_enabled
-    )  # esp-matter
-    add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_MATTER_OVER_THREAD", thread_enabled
-    )  # connectedhomeip
-    if thread_enabled:
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CLI", False)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
-        add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", True)
+    if use_openthread:
+        # Force the Matter Thread DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
+        # component sources that the static-link step still discards unless an exported symbol is referenced.
+        cg.add_build_flag("-Wl,-u,esphome_matter_link_thread_dnssd")
+
+        # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled. It stops
+        # esp-matter from initializing an openthread stack (the openthread component already does that).
+        add_idf_sdkconfig_option(
+            "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False
+        )  # esp-matter
+
         add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
 
@@ -297,15 +309,29 @@ async def to_code(config):
         # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
 
     add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_CHIPOBLE", not connectivity_enabled
+        "CONFIG_ENABLE_CHIPOBLE", not use_connectivity
     )  # connectedhomeip
-    if connectivity_enabled:
+    add_idf_sdkconfig_option(
+        "CONFIG_ENABLE_MATTER_OVER_THREAD", not use_connectivity or use_openthread
+    )  # connectedhomeip
+    if use_connectivity:
         cg.add_define("MATTER_RENDEZVOUS_ON_NETWORK")  # esphome-matter
+
+        # These are connectedhomeip specific flags and must both be set to False since Wi-Fi is already managed by
+        # the ESPHome wifi component and enabling chip's Wi-Fi conflicts with this.
+        add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
+        add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_STATION", False)  # connectedhomeip
     else:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
         # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
         # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the
         # device. If the device supports both, it can be commissioned in either mode.
+
+        # TODO: only enable if device supports it
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CLI", False)
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
+        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
 
         # TODO: use CORE.data?
         add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)

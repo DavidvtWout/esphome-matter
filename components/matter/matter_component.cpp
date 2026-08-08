@@ -16,7 +16,7 @@
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#include <platform/ESP32/OpenthreadLauncher.h>
+#include <platform/ThreadStackManager.h>
 #endif
 #include <lib/support/Base64.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
@@ -179,8 +179,7 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     ESP_LOGI(TAG, "Fabric is committed");
     break;
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
-    ESP_LOGI(TAG, "DNS-SD restart needed");
-    chip::app::DnssdServer::Instance().StartServer();
+    ESP_LOGD(TAG, "DNS-SD restart needed");
     break;
   default:
     ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
@@ -225,22 +224,17 @@ void MatterComponent::setup() {
     return;
   }
 
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-  /* Set OpenThread platform config */
-  esp_openthread_platform_config_t ot_config = {
-      .radio_config = {.radio_mode = RADIO_MODE_NATIVE},
-      .host_config = {.host_connection_mode = HOST_CONNECTION_MODE_NONE},
-      .port_config = {.storage_partition_name = "nvs",
-                      .netif_queue_size = 10,
-                      .task_queue_size = 10},
-  };
-  // TODO:
-  //  esp_openthread_platform_config_t ot_config = {
-  //      .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
-  //      .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
-  //      .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
-  //  };
-  set_openthread_platform_config(&ot_config);
+#ifdef USE_OPENTHREAD
+  // ESPHome owns the OpenThread task/stack. CHIP still needs its
+  // ThreadStackManager bound to that existing instance for Thread diagnostics
+  // and other Thread helpers.
+  if (chip::DeviceLayer::ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
+    ESP_LOGE(
+        TAG,
+        "Failed to bind CHIP ThreadStackManager to ESPHome OpenThread stack");
+    this->mark_failed();
+    return;
+  }
 #endif
 
   /* Matter start */
@@ -257,6 +251,7 @@ void MatterComponent::setup() {
 }
 
 void MatterComponent::loop() {
+#ifdef USE_WIFI
   // CHIP re-advertises DNS-SD (the _matterc._udp / _matter._tcp records) only
   // on kDnssdInitialized / kDnssdRestartNeeded events. On ESP32 those are
   // posted by CHIP's WiFi connectivity manager when the station gets an IP —
@@ -273,6 +268,7 @@ void MatterComponent::loop() {
     chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
   }
   this->network_was_connected_ = connected;
+#endif
 }
 
 void MatterComponent::factory_reset() {
@@ -350,10 +346,11 @@ void MatterComponent::dump_config() {
       ESP_LOGCONFIG(
           TAG,
           "    [%u] CompressedFabricId: 0x%08" PRIx32 "%08" PRIx32
-          ", NodeId: 0x%08" PRIx32 "%08" PRIx32 ", VendorId: 0x%04x%s%s",
+          ", NodeId: 0x%08" PRIx32 "%08" PRIx32 " (%" PRIu64 ")"
+          ", VendorId: 0x%04x%s%s",
           fabric.GetFabricIndex(), (uint32_t)(compressed_fabric_id >> 32),
           (uint32_t)(compressed_fabric_id), (uint32_t)(node_id >> 32),
-          (uint32_t)(node_id), (uint16_t)fabric.GetVendorId(),
+          (uint32_t)(node_id), node_id, (uint16_t)fabric.GetVendorId(),
           label[0] ? ", Label: " : "", label);
     }
   }
