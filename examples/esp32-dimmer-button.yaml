@@ -1,18 +1,22 @@
 # This example involved a pre-configured openthread network. This way, the api is immediately available, even before
 # matter is commissioned.
+# After commissioning, the binding cluster (0x1e or 31) of the dimmer switch endpoint needs to be configured to point
+# to the node id and cluster id of a matter light. The frontend of the python-matter-server has "Binding" button
+# when you go to the binding cluster. This also adds the node id of the esphome device to the ACL of the light
+# to make it accept the commands that the esphome device will send after binding.
 
 esphome:
   name: matter-device
   friendly_name: Matter Device
 
 esp32:
+  toolchain: platformio
+  variant: # Set to your variant
   framework:
-    variant: ESP32C6
     type: esp-idf
 
 external_components:
   - source: github://DavidvtWout/esphome-matter@main
-    refresh: 0s
 
 logger:
 
@@ -40,14 +44,11 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.turn_on:
-        id: dimmer_endpoint
+      matter.turn_on: dimmer_endpoint
     on_press:
-      matter.dim_up:
-        id: dimmer_endpoint
+      matter.dim_up: dimmer_endpoint
     on_release:
-      matter.dim_stop:
-        id: dimmer_endpoint
+      matter.dim_stop: dimmer_endpoint
   - name: "Button down"
     id: button_down
     platform: gpio
@@ -58,11 +59,8 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.turn_off:
-        id: dimmer_endpoint
+      matter.turn_off: dimmer_endpoint
     on_press:
-      matter.dim_down:
-        id: dimmer_endpoint
+      matter.dim_down: dimmer_endpoint
     on_release:
-      matter.dim_stop:
-        id: dimmer_endpoint
+      matter.dim_stop: dimmer_endpoint
