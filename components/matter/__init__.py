@@ -271,12 +271,16 @@ async def to_code(config):
         )  # connectedhomeip
 
     if use_openthread:
+        # Force the Matter Thread DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
+        # component sources that the static-link step still discards unless an exported symbol is referenced.
+        cg.add_build_flag("-Wl,-u,esphome_matter_link_thread_dnssd")
+
         # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled. It stops
         # esp-matter from initializing an openthread stack (the openthread component already does that).
         add_idf_sdkconfig_option(
             "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False
         )  # esp-matter
-        # add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
+
         add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
 

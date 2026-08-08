@@ -179,8 +179,7 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     ESP_LOGI(TAG, "Fabric is committed");
     break;
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
-    ESP_LOGI(TAG, "DNS-SD restart needed");
-    chip::app::DnssdServer::Instance().StartServer();
+    ESP_LOGD(TAG, "DNS-SD restart needed");
     break;
   default:
     ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
@@ -239,6 +238,7 @@ void MatterComponent::setup() {
 }
 
 void MatterComponent::loop() {
+#ifdef USE_WIFI
   // CHIP re-advertises DNS-SD (the _matterc._udp / _matter._tcp records) only
   // on kDnssdInitialized / kDnssdRestartNeeded events. On ESP32 those are
   // posted by CHIP's WiFi connectivity manager when the station gets an IP —
@@ -255,6 +255,7 @@ void MatterComponent::loop() {
     chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
   }
   this->network_was_connected_ = connected;
+#endif
 }
 
 void MatterComponent::factory_reset() {
