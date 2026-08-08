@@ -290,6 +290,14 @@ async def to_code(config):
     add_idf_sdkconfig_option(
         "CONFIG_ENABLE_WIFI_STATION", not use_connectivity or use_wifi
     )  # connectedhomeip
+    if use_wifi:
+        # ESPHome already owns esp_netif, the Wi-Fi driver and the default STA
+        # netif. Keep CHIP Wi-Fi station support compiled in, but skip its
+        # platform Wi-Fi initialization to avoid resetting an active ESPHome
+        # connection attempt.
+        cg.add_build_flag(
+            "-Wl,--wrap=_ZN4chip11DeviceLayer8Internal10ESP32Utils13InitWiFiStackEv"
+        )
 
     add_idf_sdkconfig_option(
         "CONFIG_ENABLE_CHIPOBLE", not use_connectivity

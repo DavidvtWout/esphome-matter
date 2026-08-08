@@ -15,9 +15,6 @@
 
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
-#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
-#include <platform/ConnectivityManager.h>
-#endif
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ThreadStackManager.h>
 #endif
@@ -255,18 +252,6 @@ void MatterComponent::setup() {
   } else {
     ESP_LOGD(TAG, "Matter started successfully");
   }
-
-#if defined(USE_WIFI) && CHIP_DEVICE_CONFIG_ENABLE_WIFI
-  // ESPHome owns the Wi-Fi driver and connection loop. Keep CHIP's Wi-Fi
-  // station support compiled in for Matter data-model semantics, but prevent
-  // ConnectivityManager from calling esp_wifi_connect()/disconnect().
-  if (chip::DeviceLayer::ConnectivityMgr().SetWiFiStationMode(
-          chip::DeviceLayer::ConnectivityManager::
-              kWiFiStationMode_ApplicationControlled) != CHIP_NO_ERROR) {
-    ESP_LOGW(TAG,
-             "Failed to mark CHIP Wi-Fi station as application-controlled");
-  }
-#endif
 
   this->register_endpoint_callbacks_();
 }
