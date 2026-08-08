@@ -8,6 +8,7 @@
 #include <lib/support/CodeUtils.h>
 #include <openthread/error.h>
 #include <openthread/srp_client.h>
+#include <platform/OpenThread/OpenThreadDnssdImpl.h>
 
 #include <memory>
 #include <new>
@@ -211,19 +212,25 @@ CHIP_ERROR ChipDnssdFinalizeServiceUpdate() {
   return CHIP_NO_ERROR;
 }
 
-CHIP_ERROR ChipDnssdBrowse(const char *, DnssdServiceProtocol,
-                           chip::Inet::IPAddressType, chip::Inet::InterfaceId,
-                           DnssdBrowseCallback, void *, intptr_t *) {
-  ESP_LOGW(TAG, "ChipDnssdBrowse not yet implemented!");
-  return CHIP_ERROR_NOT_IMPLEMENTED;
+CHIP_ERROR ChipDnssdBrowse(const char *type, DnssdServiceProtocol protocol,
+                           chip::Inet::IPAddressType address_type,
+                           chip::Inet::InterfaceId interface,
+                           DnssdBrowseCallback callback, void *context,
+                           intptr_t *browse_identifier) {
+  ESP_LOGD(TAG, "Delegating Thread DNS-SD browse for %s",
+           type != nullptr ? type : "(null)");
+  return OpenThreadDnssdBrowse(type, protocol, address_type, interface,
+                               callback, context, browse_identifier);
 }
 
 CHIP_ERROR ChipDnssdStopBrowse(intptr_t) { return CHIP_ERROR_NOT_IMPLEMENTED; }
 
-CHIP_ERROR ChipDnssdResolve(DnssdService *, chip::Inet::InterfaceId,
-                            DnssdResolveCallback, void *) {
-  ESP_LOGW(TAG, "ChipDnssdResolve not yet implemented!");
-  return CHIP_ERROR_NOT_IMPLEMENTED;
+CHIP_ERROR ChipDnssdResolve(DnssdService *browse_result,
+                            chip::Inet::InterfaceId interface,
+                            DnssdResolveCallback callback, void *context) {
+  ESP_LOGD(TAG, "Delegating Thread DNS-SD resolve for %s",
+           browse_result != nullptr ? browse_result->mName : "(null)");
+  return OpenThreadDnssdResolve(browse_result, interface, callback, context);
 }
 
 void ChipDnssdResolveNoLongerNeeded(const char *) {}

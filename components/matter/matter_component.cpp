@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cinttypes>
 #include <cstring>
+#include <esp_matter_client.h>
 #include <esp_random.h>
 #include <nvs.h>
 #include <string>
@@ -187,8 +188,22 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   case chip::DeviceLayer::DeviceEventType::kServerReady:
     ESP_LOGI(TAG, "Server ready!");
     break;
+  case chip::DeviceLayer::DeviceEventType::kThreadStateChange:
+    ESP_LOGV(TAG, "event: ThreadStateChange");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kSecureSessionEstablished: {
+    const auto &s = event->SecureSessionEstablished;
+    ESP_LOGI(TAG,
+             "Secure session established: %s node=0x%016" PRIx64
+             " fabric=%u session=%u",
+             s.SecureSessionType == 2   ? "CASE"
+             : s.SecureSessionType == 1 ? "PASE"
+                                        : "?",
+             s.PeerNodeId, s.FabricIndex, s.LocalSessionId);
+    break;
+  }
   default:
-    ESP_LOGV(TAG, "Matter event: 0x%04X", event->Type);
+    ESP_LOGV(TAG, "event: 0x%04X", event->Type);
     break;
   }
 }
@@ -253,10 +268,9 @@ void MatterComponent::setup() {
     ESP_LOGD(TAG, "Matter started successfully");
   }
 
+  esp_matter::client::binding_manager_init();
   this->register_endpoint_callbacks_();
 }
-
-void MatterComponent::loop() {}
 
 void MatterComponent::factory_reset() {
   ESP_LOGW(TAG, "Matter factory reset. Erasing fabric data and rebooting");
