@@ -299,7 +299,7 @@ void MatterComponent::dump_config() {
   payload.vendorID = CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID;
   payload.productID = CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID;
   payload.commissioningFlow = chip::CommissioningFlow::kStandard;
-#ifdef MATTER_RENDEZVOUS_ON_NETWORK
+#if defined(USE_OPENTHREAD) || defined(USE_WIFI) || defined(USE_ETHERNET)
   payload.rendezvousInformation.SetValue(
       chip::RendezvousInformationFlag::kOnNetwork);
 #else
