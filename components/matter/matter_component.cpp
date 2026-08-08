@@ -148,7 +148,7 @@ MatterComponent *global_matter_component =
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
   case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
-    ESP_LOGI(TAG, "Interface IP Address changed");
+    ESP_LOGD(TAG, "Interface IP Address changed");
     break;
   case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
     ESP_LOGI(TAG, "Commissioning complete");
@@ -184,8 +184,14 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
     ESP_LOGD(TAG, "DNS-SD restart needed");
     break;
+  case chip::DeviceLayer::DeviceEventType::kBindingsChangedViaCluster:
+    ESP_LOGI(TAG, "Bindings updated");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kServerReady:
+    ESP_LOGI(TAG, "Server ready!");
+    break;
   default:
-    ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
+    ESP_LOGV(TAG, "Matter event: 0x%04X", event->Type);
     break;
   }
 }

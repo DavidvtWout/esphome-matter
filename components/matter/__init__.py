@@ -257,6 +257,14 @@ async def to_code(config):
     add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
     add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
 
+    # Disable Intermittently Connected Device (ICD).
+    add_idf_sdkconfig_option("CONFIG_ENABLE_ICD_SERVER", False)  # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ENABLE_ICD_LIT", False)  # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ENABLE_ICD_CIP", False)  # connectedhomeip
+    add_idf_sdkconfig_option(
+        "CONFIG_ENABLE_ICD_USER_ACTIVE_MODE_TRIGGER", False
+    )  # connectedhomeip
+
     add_idf_sdkconfig_option(
         "CONFIG_ENABLE_MATTER_OVER_THREAD", not use_connectivity or use_openthread
     )  # connectedhomeip
