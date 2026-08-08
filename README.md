@@ -2,10 +2,15 @@
 ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter 1.5.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.5.1).
 
 > [!WARNING]
-> This project is still in early-development so don't expect a perfectly working setup. matter-over-wifi is now sort
-> of working but only very few matter endpoints are supported yet. Currently only the `on_off_switch`, `dimmer_switch`,
-> `temperature_sensor`, `on_off_light` and `dimmable_light` endpoints are supported.
-> I will first focus on matter-over-thread and matter-over-ethernet and getting everything stable before I add useful features.
+> This project is still in early-development so don't expect a perfectly working setup. Both matter-over-wifi and
+> matter-over-thread are now working. It's possible to commission a device to a matter controller but some features such
+> as binding are still missing.
+> 
+> Only very few Matter endpoints are supported yet. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
+> `on_off_light` and `dimmable_light` endpoints are supported. More will be added soon!
+> 
+> Also, esphome-matter heavily relies on platformio now. So while esphome is moving to the esp-idf toolchain, this is
+> not yet supported by esphome-matter.
 
 # Contributing
 
@@ -15,9 +20,9 @@ Even if you have no experience with any of these: just building the project and 
 
 # Progress
 
-- matter-over-wifi: Working now! If you have configured `wifi` in the device config, matter announces itself via mDNS and you can commission it over-the-network.
-- matter-over-thread: The next step will be supporting the `openthread` component.
-- matter-over-ethernet: Not sure. But probably doesn't work yet.
+- matter-over-wifi: If you have configured `wifi` in the device config, matter announces itself via mDNS and you can commission it on-network.
+- matter-over-thread: When the `openthread` component is configured, `esphome-matter` attaches to the OpenThread stack and SRP client. On-network commissioning is working.
+- matter-over-ethernet: Not sure... If you have a device with ethernet port, please report if this works!
 - commissioning over BLE: If no network (`wifi`, `openthread`, `ethernet`) is configured at all, matter falls back to 
   BLE commissioning. This is how almost every matter device is commissioned. This mode is currently not compatible with
   the `api` component since this checks network connectivity in a rather naive way that always fails if no network is
@@ -30,12 +35,12 @@ See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for m
 
 Directly after flashing ESPHome (and after every restart), the commissioning code (starting with `MT:`) is printed in the logs:
 ```
-[C][matter:293]: Matter:
-[C][matter:314]:   SetupQRCode: MT:Y.K904QI14-O992WI00
-[C][matter:315]:   QR URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K904QI14-O992WI00
-[C][matter:323]:   Manual pairing code: 32552014321
-[C][matter:328]:   Commissioning window: open
-[C][matter:332]:   Fabrics: none
+[C][matter]: Matter:
+[C][matter]:   SetupQRCode: MT:Y.K904QI14-O992WI00
+[C][matter]:   QR URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K904QI14-O992WI00
+[C][matter]:   Manual pairing code: 32552014321
+[C][matter]:   Commissioning window: open
+[C][matter]:   Fabrics: none
 ```
 
 Copy the code and use this to commission the device. In python-matter-server you can commission the device with the `Commission existing device` option.
@@ -46,10 +51,8 @@ Keep in mind that the commissioning window remains open for only 15 minutes. A r
 ```yaml
 esphome:
   name: matter-device
-  friendly_name: Matter Device
 
 esp32:
-  # Native esp-idf isn't supported yet.
   toolchain: platformio
   variant: ESP32C6 # Set to your variant
   framework:
@@ -65,7 +68,11 @@ api:
 network:
   enable_ipv6: true
   
+# Either:
 wifi:
+  ...
+# Or:
+openthread:
   ...
 
 matter:
@@ -88,14 +95,11 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.turn_on:
-        id: dimmer_endpoint
+      matter.turn_on: dimmer_endpoint
     on_press:
-      matter.dim_up:
-        id: dimmer_endpoint
+      matter.dim_up: dimmer_endpoint
     on_release:
-      matter.dim_stop:
-        id: dimmer_endpoint
+      matter.dim_stop: dimmer_endpoint
   - name: "Button down"
     id: button_down
     platform: gpio
@@ -106,14 +110,11 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.turn_off:
-        id: dimmer_endpoint
+      matter.turn_off: dimmer_endpoint
     on_press:
-      matter.dim_down:
-        id: dimmer_endpoint
+      matter.dim_down: dimmer_endpoint
     on_release:
-      matter.dim_stop:
-        id: dimmer_endpoint
+      matter.dim_stop: dimmer_endpoint
 
 sensor:
   - platform: internal_temperature
