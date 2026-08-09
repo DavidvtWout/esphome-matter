@@ -266,8 +266,6 @@ async def to_code(config):
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
 
     add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
-    add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
-    add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
 
     # Disable Intermittently Connected Device (ICD).
     add_idf_sdkconfig_option("CONFIG_ENABLE_ICD_SERVER", False)  # connectedhomeip
