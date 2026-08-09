@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cinttypes>
 #include <cstring>
+#include <esp_matter_client.h>
 #include <esp_random.h>
 #include <nvs.h>
 #include <string>
@@ -24,6 +25,7 @@
 #include <setup_payload/SetupPayload.h>
 
 static const char *const TAG = "matter";
+static const char *const TAG_EVENT = "matter.event";
 
 // Keys in the "chip-factory" NVS namespace, matching CHIP's ESP32Config key
 // names.
@@ -145,50 +147,74 @@ MatterComponent *global_matter_component =
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
   case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
-    ESP_LOGD(TAG, "Interface IP Address changed");
+    ESP_LOGD(TAG_EVENT, "Interface IP Address changed");
     break;
   case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
-    ESP_LOGI(TAG, "Commissioning complete");
+    ESP_LOGI(TAG_EVENT, "Commissioning complete");
     break;
   case chip::DeviceLayer::DeviceEventType::kFailSafeTimerExpired:
-    ESP_LOGI(TAG, "Commissioning failed, fail safe timer expired");
+    ESP_LOGI(TAG_EVENT, "Commissioning failed, fail safe timer expired");
     break;
   case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStarted:
-    ESP_LOGI(TAG, "Commissioning session started");
+    ESP_LOGI(TAG_EVENT, "Commissioning session started");
     break;
   case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStopped:
-    ESP_LOGI(TAG, "Commissioning session stopped");
+    ESP_LOGI(TAG_EVENT, "Commissioning session stopped");
     break;
   case chip::DeviceLayer::DeviceEventType::kCommissioningWindowOpened:
-    ESP_LOGI(TAG, "Commissioning window opened");
+    ESP_LOGI(TAG_EVENT, "Commissioning window opened");
     break;
   case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
-    ESP_LOGI(TAG, "Commissioning window closed");
+    ESP_LOGI(TAG_EVENT, "Commissioning window closed");
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
-    ESP_LOGI(TAG, "Fabric removed");
+    ESP_LOGI(TAG_EVENT, "Fabric removed");
     // TODO: reopen commissioning window?
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
-    ESP_LOGI(TAG, "Fabric will be removed");
+    ESP_LOGI(TAG_EVENT, "Fabric will be removed");
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricUpdated:
-    ESP_LOGI(TAG, "Fabric is updated");
+    ESP_LOGI(TAG_EVENT, "Fabric is updated");
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
-    ESP_LOGI(TAG, "Fabric is committed");
+    ESP_LOGI(TAG_EVENT, "Fabric is committed");
     break;
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
-    ESP_LOGD(TAG, "DNS-SD restart needed");
+    ESP_LOGD(TAG_EVENT, "DNS-SD restart needed");
     break;
   case chip::DeviceLayer::DeviceEventType::kBindingsChangedViaCluster:
-    ESP_LOGI(TAG, "Bindings updated");
+    ESP_LOGI(TAG_EVENT, "Bindings updated");
     break;
   case chip::DeviceLayer::DeviceEventType::kServerReady:
-    ESP_LOGI(TAG, "Server ready!");
+    ESP_LOGI(TAG_EVENT, "Server ready!");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kSecureSessionEstablished: {
+    const auto &s = event->SecureSessionEstablished;
+    ESP_LOGI(TAG_EVENT,
+             "Secure session established: %s node=0x%016" PRIx64
+             " fabric=%u session=%u",
+             s.SecureSessionType == 2   ? "CASE"
+             : s.SecureSessionType == 1 ? "PASE"
+                                        : "?",
+             s.PeerNodeId, s.FabricIndex, s.LocalSessionId);
+    break;
+  }
+  case chip::DeviceLayer::DeviceEventType::kWiFiConnectivityChange: // 0x8000
+    ESP_LOGV(TAG_EVENT, "WiFiConnectivityChange");
+    break;
+  case chip::DeviceLayer::DeviceEventType::
+      kInternetConnectivityChange: // 0x8002
+    ESP_LOGV(TAG_EVENT, "InternetConnectivityChange");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kThreadStateChange: // 0x800B
+    ESP_LOGV(TAG_EVENT, "ThreadStateChange");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kDnssdInitialized: // 0x8012
+    ESP_LOGV(TAG_EVENT, "DnssdInitialized");
     break;
   default:
-    ESP_LOGV(TAG, "Matter event: 0x%04X", event->Type);
+    ESP_LOGV(TAG_EVENT, "0x%04X", event->Type);
     break;
   }
 }
@@ -253,10 +279,9 @@ void MatterComponent::setup() {
     ESP_LOGD(TAG, "Matter started successfully");
   }
 
+  esp_matter::client::binding_manager_init();
   this->register_endpoint_callbacks_();
 }
-
-void MatterComponent::loop() {}
 
 void MatterComponent::factory_reset() {
   ESP_LOGW(TAG, "Matter factory reset. Erasing fabric data and rebooting");
