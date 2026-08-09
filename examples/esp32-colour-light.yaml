@@ -1,7 +1,5 @@
 # Colour light endpoints on an ESP32-C6 with an SK6812 RGBW strip.
 #
-# NOT COMPILED. NOT FLASHED. NOT TESTED.
-#
 # extended_color_light  = OnOff + LevelControl + ColorControl (HueSaturation + ColorTemperature)
 # color_temperature_light = OnOff + LevelControl + ColorControl (ColorTemperature only)
 #
@@ -36,6 +34,11 @@ logger:
 
 api:
 
+# OTA splits the application region into two slots, so the flash figure with
+# OTA enabled is the one that decides whether a 4 MB part is viable.
+ota:
+  - platform: esphome
+
 network:
   enable_ipv6: true
 
@@ -54,10 +57,20 @@ light:
   - platform: esp32_rmt_led_strip
     id: led_strip
     name: "LED Strip"
-    pin: GPIO5
+    # GPIO4, GPIO5, GPIO8, GPIO9 and GPIO15 are strapping pins on the ESP32-C6.
+    # GPIO10 is unrestricted: not strapping, not SPI flash (24-30), not
+    # USB-JTAG (12/13), not UART0 (16/17), not JTAG (4-7).
+    #
+    # To test with no strip wired, an ESP32-C6-DevKitC-1 has one addressable
+    # RGB LED on GPIO8 (Espressif user guide). GPIO8 is a strapping pin, so
+    # ESPHome warns; the board's own resistor network is designed for it.
+    # Use `number: GPIO8` with `ignore_strapping_warning: true`, num_leds: 1.
+    pin: GPIO10
     num_leds: 10
     chipset: SK6812
-    rgbw_order: GRBW
+    # rgb_order is required. RGBW is selected with is_rgbw, not a separate key.
+    rgb_order: GRB
+    is_rgbw: true
     default_transition_length: 500ms
     restore_mode: RESTORE_DEFAULT_OFF
 
