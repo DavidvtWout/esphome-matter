@@ -345,6 +345,7 @@ async def to_code(config):
     "matter.factory_reset",
     MatterFactoryResetAction,
     cv.Schema({cv.GenerateID(): cv.use_id(MatterComponent)}),
+    synchronous=True,
 )
 async def matter_factory_reset_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
@@ -365,35 +366,35 @@ async def _matter_client_action_to_code(config, action_id, template_arg):
     return var
 
 
-@automation.register_action("matter.turn_on", MatterTurnOnAction, MATTER_CLIENT_ACTION_SCHEMA)
+@automation.register_action("matter.turn_on", MatterTurnOnAction, MATTER_CLIENT_ACTION_SCHEMA, synchronous=True)
 async def matter_turn_on_to_code(config, action_id, template_arg, args):
     return await _matter_client_action_to_code(config, action_id, template_arg)
 
 
-@automation.register_action("matter.turn_off", MatterTurnOffAction, MATTER_CLIENT_ACTION_SCHEMA)
+@automation.register_action("matter.turn_off", MatterTurnOffAction, MATTER_CLIENT_ACTION_SCHEMA, synchronous=True)
 async def matter_turn_off_to_code(config, action_id, template_arg, args):
     return await _matter_client_action_to_code(config, action_id, template_arg)
 
 
-@automation.register_action("matter.toggle", MatterToggleAction, MATTER_CLIENT_ACTION_SCHEMA)
+@automation.register_action("matter.toggle", MatterToggleAction, MATTER_CLIENT_ACTION_SCHEMA, synchronous=True)
 async def matter_toggle_to_code(config, action_id, template_arg, args):
     return await _matter_client_action_to_code(config, action_id, template_arg)
 
 
-@automation.register_action("matter.dim_up", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA)
+@automation.register_action("matter.dim_up", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA, synchronous=True)
 async def matter_dim_up_to_code(config, action_id, template_arg, args):
     var = await _matter_client_action_to_code(config, action_id, template_arg)
     cg.add(var.set_direction(0))
     return var
 
 
-@automation.register_action("matter.dim_down", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA)
+@automation.register_action("matter.dim_down", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA, synchronous=True)
 async def matter_dim_down_to_code(config, action_id, template_arg, args):
     var = await _matter_client_action_to_code(config, action_id, template_arg)
     cg.add(var.set_direction(1))
     return var
 
 
-@automation.register_action("matter.dim_stop", MatterDimStopAction, MATTER_CLIENT_ACTION_SCHEMA)
+@automation.register_action("matter.dim_stop", MatterDimStopAction, MATTER_CLIENT_ACTION_SCHEMA, synchronous=True)
 async def matter_dim_stop_to_code(config, action_id, template_arg, args):
     return await _matter_client_action_to_code(config, action_id, template_arg)

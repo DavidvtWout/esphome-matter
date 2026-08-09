@@ -17,13 +17,14 @@ esp32:
   # ESPHome defaults flash_size to 4MB and does NOT derive it from the board.
   # Matter is large, so this figure decides whether the image fits. Set it to the
   # flash your board actually has:
-  #   ESP32-C6-DevKitC-1-N8   -> 8MB
+  #   ESP32-C6-DevKitC-1-N8   -> 8MB  (set here)
+  #   Waveshare ESP32-C6-Zero-B -> 8MB
   #   ESP32-C6-DevKitM-1      -> 4MB
   #   Seeed XIAO ESP32C6      -> 4MB
   #   DFRobot Beetle ESP32-C6 -> 4MB
   #   GLEDOPTO GL-C-010WL     -> 4MB (and variant: ESP32, not ESP32C6)
   # Declaring more flash than the chip has stops it booting.
-  flash_size: 4MB
+  flash_size: 8MB
   framework:
     type: esp-idf
 
