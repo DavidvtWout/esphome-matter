@@ -64,6 +64,12 @@ class MatterLight : public light::LightRemoteValuesListener {
     return this->type == MatterLightType::COLOR_TEMPERATURE || this->type == MatterLightType::EXTENDED_COLOR;
   }
   bool has_hue_saturation() const { return this->type == MatterLightType::EXTENDED_COLOR; }
+  // True when the ESPHome light has a dedicated white element (an RGBW strip,
+  // for instance). Matter has no white channel, so saturation is the only place
+  // it can be represented; see the conversion helpers in matter_endpoints.cpp.
+  bool has_white_channel() const {
+    return this->light->get_traits().supports_color_capability(light::ColorCapability::WHITE);
+  }
   const char *type_name() const;
 
   // ESPHome light changed (main loop): mirror the state to the Matter attributes.

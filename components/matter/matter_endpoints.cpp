@@ -189,6 +189,29 @@ void rgb_to_matter_hs(float r, float g, float b, uint8_t *hue_out, uint8_t *sat_
   *sat_out = static_cast<uint8_t>(sat_raw);
 }
 
+// Matter has no white channel. On a light with a dedicated white element the
+// RGB triple carries the hue and ESPHome's color_brightness / white pair carries
+// how much of the output is coloured versus white, so saturation has to account
+// for both. A light with no white element reports color_brightness 1 and white
+// 0, which leaves the result identical to rgb_to_matter_hs.
+void light_to_matter_hs(const light::LightColorValues &values, bool has_white, uint8_t *hue_out,
+                        uint8_t *sat_out) {
+  rgb_to_matter_hs(values.get_red(), values.get_green(), values.get_blue(), hue_out, sat_out);
+  if (!has_white)
+    return;
+  const float cb = values.get_color_brightness();
+  const float w = values.get_white();
+  const float denom = cb + w;
+  if (denom <= 1e-6f)
+    return;  // nothing lit; leave the RGB-derived saturation alone
+  long sat_raw = std::lroundf(static_cast<float>(*sat_out) * (cb / denom));
+  if (sat_raw > 254)
+    sat_raw = 254;
+  if (sat_raw < 0)
+    sat_raw = 0;
+  *sat_out = static_cast<uint8_t>(sat_raw);
+}
+
 // Value is fixed at 1.0: Matter keeps brightness in LevelControl, separate from
 // the hue/saturation pair, so folding it in here would double-apply it.
 void matter_hs_to_rgb(uint8_t hue_raw, uint8_t sat_raw, float *r, float *g, float *b) {
@@ -238,7 +261,7 @@ void MatterLight::push_state_to_matter() {
 
   uint8_t hue = 0, sat = 0;
   if (do_hs)
-    rgb_to_matter_hs(values.get_red(), values.get_green(), values.get_blue(), &hue, &sat);
+    light_to_matter_hs(values, this->has_white_channel(), &hue, &sat);
 
   // ESPHome and Matter both use mireds. A light reporting 0 has no valid
   // colour temperature yet, so leave the attribute alone rather than write junk.
@@ -248,7 +271,7 @@ void MatterLight::push_state_to_matter() {
 
   // Report which mode the light is actually in, or controllers show stale
   // colour after a colour-temperature change (and vice versa).
-  bool in_ct_mode = this->light->current_values.get_color_mode() == light::ColorMode::COLOR_TEMPERATURE;
+  bool in_ct_mode = values.get_color_mode() == light::ColorMode::COLOR_TEMPERATURE;
   auto color_mode = static_cast<uint8_t>(in_ct_mode ? 2 : 0);
 
   chip::DeviceLayer::SystemLayer().ScheduleLambda(
@@ -326,9 +349,9 @@ void MatterLight::apply_matter_update(uint32_t cluster_id, uint32_t attribute_id
     // Hue and saturation arrive as separate attribute writes. Read the current
     // pair and replace only the one that changed, or setting hue would reset
     // saturation to whatever the last RGB round-trip happened to produce.
+    const bool has_white = this->has_white_channel();
     uint8_t hue = 0, sat = 0;
-    rgb_to_matter_hs(this->light->remote_values.get_red(), this->light->remote_values.get_green(),
-                     this->light->remote_values.get_blue(), &hue, &sat);
+    light_to_matter_hs(this->light->remote_values, has_white, &hue, &sat);
     if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
       if (hue == val.val.u8)
         return;
@@ -338,22 +361,33 @@ void MatterLight::apply_matter_update(uint32_t cluster_id, uint32_t attribute_id
         return;
       sat = val.val.u8;
     }
+    // On a light with a white element, desaturation is rendered by the white
+    // LED rather than by washing the RGB triple out to grey: the triple stays at
+    // the pure hue and the colour/white split carries the saturation. Without a
+    // white element the saturation is folded into the RGB triple as before.
     float r, g, b;
-    matter_hs_to_rgb(hue, sat, &r, &g, &b);
+    matter_hs_to_rgb(hue, has_white ? 254 : sat, &r, &g, &b);
     EchoGuard guard(this->applying_from_matter_);
     auto call = this->light->make_call();
-    if (this->light->get_traits().supports_color_mode(light::ColorMode::RGB_COLOR_TEMPERATURE) ||
-        this->light->get_traits().supports_color_mode(light::ColorMode::RGB_WHITE) ||
-        this->light->get_traits().supports_color_mode(light::ColorMode::RGB)) {
+    const auto &traits = this->light->get_traits();
+    if (traits.supports_color_mode(light::ColorMode::RGB_COLOR_TEMPERATURE) ||
+        traits.supports_color_mode(light::ColorMode::RGB_WHITE) ||
+        traits.supports_color_mode(light::ColorMode::RGB)) {
       call.set_rgb(r, g, b);
+    }
+    if (has_white) {
+      const float sat_f = static_cast<float>(sat) / 254.0f;
+      call.set_color_mode_if_supported(light::ColorMode::RGB_WHITE);
+      call.set_color_brightness_if_supported(sat_f);
+      call.set_white_if_supported(1.0f - sat_f);
     }
     call.set_transition_length(0);
     call.perform();
   } else if (this->has_color_temperature() && cluster_id == ColorControl::Id &&
              attribute_id == ColorControl::Attributes::ColorTemperatureMireds::Id) {
     // Silently ignored rather than treated as an error: extended_color_light
-    // must advertise ColorTemperature, but the ESPHome light behind it may be
-    // RGB-only (an SK6812 strip, for instance).
+    // must advertise ColorTemperature, but the ESPHome light behind it may have
+    // no COLOR_TEMPERATURE capability at all.
     if (!this->light->get_traits().supports_color_capability(light::ColorCapability::COLOR_TEMPERATURE))
       return;
     auto mireds = static_cast<float>(val.val.u16);
