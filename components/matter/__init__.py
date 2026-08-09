@@ -219,6 +219,13 @@ async def to_code(config):
     use_wifi = "wifi" in CORE.loaded_integrations
     use_ethernet = "ethernet" in CORE.loaded_integrations
     use_connectivity = use_openthread or use_wifi or use_ethernet
+    # An IP-bearing transport (Wi-Fi or Ethernet) is up before Matter starts, so
+    # the device can be commissioned over the network. Thread is not: the node
+    # has no operational dataset until a commissioner gives it one, and the
+    # commissioner reaches it over BLE. So BLE must stay compiled in whenever
+    # Thread is the transport, even though Thread counts as connectivity
+    # elsewhere in this function.
+    use_ip_transport = use_wifi or use_ethernet
 
     # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
@@ -271,19 +278,22 @@ async def to_code(config):
         )
 
     add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_CHIPOBLE", not use_connectivity
+        "CONFIG_ENABLE_CHIPOBLE", not use_ip_transport
     )  # connectedhomeip
-    if not use_connectivity:
+    if not use_ip_transport:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
         # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
         # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the
         # device. If the device supports both, it can be commissioned in either mode.
 
         # TODO: only enable if device supports it
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CLI", False)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
+        # When the openthread component is configured it already sets these and
+        # owns the stack, so only force them on for the no-network case.
+        if not use_openthread:
+            add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
+            add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CLI", False)
+            add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
+            add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
 
         # TODO: use CORE.data?
         add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
