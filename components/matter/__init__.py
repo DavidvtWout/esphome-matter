@@ -314,8 +314,9 @@ async def to_code(config):
         cg.add_build_flag(
             "-Wl,--wrap=_ZN4chip11DeviceLayer8Internal10ESP32Utils13InitWiFiStackEv"
         )
+        cg.add_build_flag("-Wl,-u,esphome_matter_link_wifi_dnssd")
     if use_wifi or use_ethernet:
-        # lwIP must add the route to thread network via the border router to its routing table.
+        # lwIP must add the route to the thread network via the border router to its routing table.
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_ND6_ROUTE_INFO_OPTION_SUPPORT", True)
 
     add_idf_sdkconfig_option(

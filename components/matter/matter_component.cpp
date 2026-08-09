@@ -210,6 +210,9 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   case chip::DeviceLayer::DeviceEventType::kThreadStateChange: // 0x800B
     ESP_LOGV(TAG_EVENT, "ThreadStateChange");
     break;
+  case chip::DeviceLayer::DeviceEventType::kDnssdInitialized: // 0x8012
+    ESP_LOGV(TAG_EVENT, "DnssdInitialized");
+    break;
   default:
     ESP_LOGV(TAG_EVENT, "0x%04X", event->Type);
     break;
