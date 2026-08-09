@@ -16,7 +16,7 @@
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#include <platform/ESP32/OpenthreadLauncher.h>
+#include <platform/ThreadStackManager.h>
 #endif
 #include <lib/support/Base64.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
@@ -145,7 +145,7 @@ MatterComponent *global_matter_component =
 static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   switch (event->Type) {
   case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
-    ESP_LOGI(TAG, "Interface IP Address changed");
+    ESP_LOGD(TAG, "Interface IP Address changed");
     break;
   case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
     ESP_LOGI(TAG, "Commissioning complete");
@@ -179,11 +179,16 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     ESP_LOGI(TAG, "Fabric is committed");
     break;
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
-    ESP_LOGI(TAG, "DNS-SD restart needed");
-    chip::app::DnssdServer::Instance().StartServer();
+    ESP_LOGD(TAG, "DNS-SD restart needed");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kBindingsChangedViaCluster:
+    ESP_LOGI(TAG, "Bindings updated");
+    break;
+  case chip::DeviceLayer::DeviceEventType::kServerReady:
+    ESP_LOGI(TAG, "Server ready!");
     break;
   default:
-    ESP_LOGD(TAG, "Matter event: 0x%04X", event->Type);
+    ESP_LOGV(TAG, "Matter event: 0x%04X", event->Type);
     break;
   }
 }
@@ -225,23 +230,18 @@ void MatterComponent::setup() {
     return;
   }
 
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-  /* Set OpenThread platform config */
-  esp_openthread_platform_config_t ot_config = {
-      .radio_config = {.radio_mode = RADIO_MODE_NATIVE},
-      .host_config = {.host_connection_mode = HOST_CONNECTION_MODE_NONE},
-      .port_config = {.storage_partition_name = "nvs",
-                      .netif_queue_size = 10,
-                      .task_queue_size = 10},
-  };
-  // TODO:
-  //  esp_openthread_platform_config_t ot_config = {
-  //      .radio_config = ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG(),
-  //      .host_config = ESP_OPENTHREAD_DEFAULT_HOST_CONFIG(),
-  //      .port_config = ESP_OPENTHREAD_DEFAULT_PORT_CONFIG(),
-  //  };
-  set_openthread_platform_config(&ot_config);
-#endif
+#ifdef USE_OPENTHREAD
+  // ESPHome owns the OpenThread task/stack. CHIP still needs its
+  // ThreadStackManager bound to that existing instance for Thread diagnostics
+  // and other Thread helpers.
+  if (chip::DeviceLayer::ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
+    ESP_LOGE(
+        TAG,
+        "Failed to bind CHIP ThreadStackManager to ESPHome OpenThread stack");
+    this->mark_failed();
+    return;
+  }
+#endif // USE_OPENTHREAD
 
   /* Matter start */
   esp_err_t err = esp_matter::start(event_callback);
@@ -256,24 +256,7 @@ void MatterComponent::setup() {
   this->register_endpoint_callbacks_();
 }
 
-void MatterComponent::loop() {
-  // CHIP re-advertises DNS-SD (the _matterc._udp / _matter._tcp records) only
-  // on kDnssdInitialized / kDnssdRestartNeeded events. On ESP32 those are
-  // posted by CHIP's WiFi connectivity manager when the station gets an IP —
-  // but that code is compiled out (CONFIG_ENABLE_WIFI_STATION=n) because
-  // ESPHome owns the WiFi driver. So CHIP never learns the ESPHome-managed
-  // interface came up and never advertises. We bridge that here: on the network
-  // up-edge, post the same event the WiFi manager would have, which drives
-  // DnssdServer::StartServer().
-  bool connected = network::is_connected();
-  if (connected && !this->network_was_connected_) {
-    ESP_LOGD(TAG, "Network up; requesting Matter DNS-SD (re)advertise");
-    chip::DeviceLayer::ChipDeviceEvent event;
-    event.Type = chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded;
-    chip::DeviceLayer::PlatformMgr().PostEventOrDie(&event);
-  }
-  this->network_was_connected_ = connected;
-}
+void MatterComponent::loop() {}
 
 void MatterComponent::factory_reset() {
   ESP_LOGW(TAG, "Matter factory reset. Erasing fabric data and rebooting");
@@ -300,7 +283,7 @@ void MatterComponent::dump_config() {
   payload.vendorID = CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID;
   payload.productID = CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_ID;
   payload.commissioningFlow = chip::CommissioningFlow::kStandard;
-#ifdef MATTER_RENDEZVOUS_ON_NETWORK
+#if defined(USE_OPENTHREAD) || defined(USE_WIFI) || defined(USE_ETHERNET)
   payload.rendezvousInformation.SetValue(
       chip::RendezvousInformationFlag::kOnNetwork);
 #else
@@ -350,10 +333,11 @@ void MatterComponent::dump_config() {
       ESP_LOGCONFIG(
           TAG,
           "    [%u] CompressedFabricId: 0x%08" PRIx32 "%08" PRIx32
-          ", NodeId: 0x%08" PRIx32 "%08" PRIx32 ", VendorId: 0x%04x%s%s",
+          ", NodeId: 0x%08" PRIx32 "%08" PRIx32 " (%" PRIu64 ")"
+          ", VendorId: 0x%04x%s%s",
           fabric.GetFabricIndex(), (uint32_t)(compressed_fabric_id >> 32),
           (uint32_t)(compressed_fabric_id), (uint32_t)(node_id >> 32),
-          (uint32_t)(node_id), (uint16_t)fabric.GetVendorId(),
+          (uint32_t)(node_id), node_id, (uint16_t)fabric.GetVendorId(),
           label[0] ? ", Label: " : "", label);
     }
   }
