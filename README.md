@@ -1,16 +1,16 @@
 # esphome-matter
+
+![GitHub stars](https://img.shields.io/github/stars/DavidvtWout/esphome-matter)
+![GitHub forks](https://img.shields.io/github/forks/DavidvtWout/esphome-matter)
+![GitHub watchers](https://img.shields.io/github/watchers/DavidvtWout/esphome-matter)
+
 ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter 1.5.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.5.1).
 
 > [!WARNING]
 > This project is still in early-development so don't expect a perfectly working setup. Both matter-over-wifi and
-> matter-over-thread are now working. It's possible to commission a device to a matter controller but some features such
-> as binding are still missing.
-> 
-> Only very few Matter endpoints are supported yet. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
-> `on_off_light` and `dimmable_light` endpoints are supported. More will be added soon!
-> 
-> Also, esphome-matter heavily relies on platformio now. So while esphome is moving to the esp-idf toolchain, this is
-> not yet supported by esphome-matter.
+> matter-over-thread are now working. It's possible to commission a device to a matter controller, but only very few Matter endpoints are supported yet. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
+> `on_off_light` and `dimmable_light` endpoints are supported. More will be added!
+
 
 # Contributing
 
@@ -20,16 +20,11 @@ Even if you have no experience with any of these: just building the project and 
 
 # Progress
 
-- matter-over-wifi: If you have configured `wifi` in the device config, matter announces itself via mDNS and you can commission it on-network.
-- matter-over-thread: When the `openthread` component is configured, `esphome-matter` attaches to the OpenThread stack and SRP client. On-network commissioning is working.
-- matter-over-ethernet: Not sure... If you have a device with ethernet port, please report if this works!
-- commissioning over BLE: If no network (`wifi`, `openthread`, `ethernet`) is configured at all, matter falls back to 
-  BLE commissioning. This is how almost every matter device is commissioned. This mode is currently not compatible with
-  the `api` component since this checks network connectivity in a rather naive way that always fails if no network is
-  configured. This bug can only be fixed in ESPHome itself.
-- binding: Binding (for example a button to a light) requires matter devices to find each other via dns-sd. This is not yet working.
+matter-over-thread and matter-over-wifi with a pre-configured network are both working! matter-over-ethernet hasn't been tested yet. Binding (for example a button to a light) is also working now for matter-over-thread. Binding also works on wifi, but sometimes it takes a few seconds before connection is made.
 
-See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for more planned features.
+Testing has so far been done on ESP32-C3, ESP32-C6 and ESP32-H2. Other variants should probably also work but are still untested.
+
+See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for bugs and features that are being worked on.
 
 # Commissioning
 
@@ -43,7 +38,7 @@ Directly after flashing ESPHome (and after every restart), the commissioning cod
 [C][matter]:   Fabrics: none
 ```
 
-Copy the code and use this to commission the device. In python-matter-server you can commission the device with the `Commission existing device` option.
+Copy the code or open the link en scan the QR-code to commission the device. In python-matter-server you can commission the device with the `Commission existing device` option.
 Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window but only if it hasn't joined any fabrics yet.
 
 # Example config
