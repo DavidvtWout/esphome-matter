@@ -11,6 +11,7 @@ ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter
 > matter-over-thread are now working. It's possible to commission a device to a matter controller, but only very few Matter endpoints are supported yet. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
 > `on_off_light` and `dimmable_light` endpoints are supported. More will be added!
 
+That being said, esphome-matter is usable now so give it a try!
 
 # Contributing
 
