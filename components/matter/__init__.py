@@ -310,6 +310,9 @@ async def to_code(config):
         # platform Wi-Fi initialization to avoid resetting an active ESPHome
         # connection attempt.
         cg.add_build_flag(
+            "-Wl,--wrap=_ZN4chip11DeviceLayer23ConnectivityManagerImpl8InitWiFiEv"
+        )
+        cg.add_build_flag(
             "-Wl,--wrap=_ZN4chip11DeviceLayer8Internal10ESP32Utils13InitWiFiStackEv"
         )
         cg.add_build_flag("-Wl,-u,esphome_matter_link_wifi_dnssd")
