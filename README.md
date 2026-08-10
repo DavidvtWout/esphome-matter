@@ -23,7 +23,7 @@ Even if you have no experience with any of these: just building the project and 
 
 matter-over-thread and matter-over-wifi with a pre-configured network are both working! matter-over-ethernet hasn't been tested yet. Binding (for example a button to a light) is also working now for matter-over-thread. Binding also works on wifi, but sometimes it takes a few seconds before connection is made.
 
-So far, `ESP32-C3`, `ESP32-C6` and `ESP32-H2` have been tested and confirmed to work. `ESP32-S3` is not yet usable because wifi doesn't connect.
+So far, `ESP32-C3`, `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been tested and confirmed to work!
 
 See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for bugs and features that are being worked on.
 
