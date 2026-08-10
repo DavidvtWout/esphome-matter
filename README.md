@@ -15,7 +15,7 @@ That being said, esphome-matter is usable now so give it a try!
 
 # Contributing
 
-Help is very welcome! I'm not deeply experienced in the ESPHome, Espressif, or connectedhomeip ecosystems. If you know your way around any of these and spot something wrong or have ideas, please open an issue or PR.
+Help is very welcome! I'm still a bit new to the ESPHome, Espressif, and connectedhomeip ecosystems. If you know your way around any of these and spot something wrong or have ideas, please open an issue or PR.
 
 Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas.
 
@@ -23,7 +23,7 @@ Even if you have no experience with any of these: just building the project and 
 
 matter-over-thread and matter-over-wifi with a pre-configured network are both working! matter-over-ethernet hasn't been tested yet. Binding (for example a button to a light) is also working now for matter-over-thread. Binding also works on wifi, but sometimes it takes a few seconds before connection is made.
 
-Testing has so far been done on ESP32-C3, ESP32-C6 and ESP32-H2. Other variants should probably also work but are still untested.
+So far, `ESP32-C3`, `ESP32-C6` and `ESP32-H2` have been tested and confirmed to work. `ESP32-S3` is not yet usable because wifi doesn't connect.
 
 See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for bugs and features that are being worked on.
 
@@ -39,7 +39,7 @@ Directly after flashing ESPHome (and after every restart), the commissioning cod
 [C][matter]:   Fabrics: none
 ```
 
-Copy the code or open the link en scan the QR-code to commission the device. In python-matter-server you can commission the device with the `Commission existing device` option.
+Copy the code or open the link and scan the QR-code to commission the device. In python-matter-server you can commission the device with the `Commission existing device` option.
 Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window but only if it hasn't joined any fabrics yet.
 
 # Example config
