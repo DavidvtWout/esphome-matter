@@ -185,6 +185,18 @@ def _write_matter_cmake_hook() -> Path:
         '            _matter_thread_stack_content "${_matter_thread_stack_content}")\n'
         '        file(WRITE "${_matter_thread_stack}" "${_matter_thread_stack_content}")\n'
         "    endif()\n"
+        "\n"
+        "    # Our Thread DNS-SD bridge owns ChipDnssdPublishService() so Matter advertises via\n"
+        "    # ESPHome's existing OpenThread SRP client, but CHIP's OpenThread helper already\n"
+        "    # implements DNS browse/resolve through ThreadStackMgr(). Pull in that helper so\n"
+        "    # operational CASE discovery can resolve peers after commissioning.\n"
+        '    set(_matter_openthread_dnssd "${_matter_dir}/connectedhomeip/connectedhomeip/src/platform/OpenThread/OpenThreadDnssdImpl.cpp")\n'
+        "    get_target_property(_matter_sources ${_matter_lib} SOURCES)\n"
+        '    list(FIND _matter_sources "${_matter_openthread_dnssd}" _matter_openthread_dnssd_index)\n'
+        "    if(CONFIG_ENABLE_MATTER_OVER_THREAD AND _matter_openthread_dnssd_index EQUAL -1)\n"
+        '        target_sources(${_matter_lib} PRIVATE "${_matter_openthread_dnssd}")\n'
+        "    endif()\n"
+        "\n"
         "endfunction()\n"
         "\n"
         "cmake_language(DEFER DIRECTORY \"${CMAKE_SOURCE_DIR}\" CALL esphome_matter_patch_esp_matter_target)\n",
@@ -232,8 +244,6 @@ async def to_code(config):
     add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
 
     add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
-    add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT", True)
-    add_idf_sdkconfig_option("CONFIG_LWIP_HOOK_ND6_GET_GW_DEFAULT", True)
 
     # Disable Intermittently Connected Device (ICD).
     add_idf_sdkconfig_option("CONFIG_ENABLE_ICD_SERVER", False)  # connectedhomeip
@@ -257,6 +267,10 @@ async def to_code(config):
             "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False
         )  # esp-matter
 
+        # Force the Matter Thread DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
+        # component sources that the static-link step still discards unless an exported symbol is referenced.
+        cg.add_build_flag("-Wl,-u,esphome_matter_link_thread_dnssd")
+        # add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
         add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)  # esp-matter
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
 
@@ -276,6 +290,10 @@ async def to_code(config):
         cg.add_build_flag(
             "-Wl,--wrap=_ZN4chip11DeviceLayer8Internal10ESP32Utils13InitWiFiStackEv"
         )
+        cg.add_build_flag("-Wl,-u,esphome_matter_link_wifi_dnssd")
+    if use_wifi or use_ethernet:
+        # lwIP must add the route to the thread network via the border router to its routing table.
+        add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_ND6_ROUTE_INFO_OPTION_SUPPORT", True)
 
     add_idf_sdkconfig_option(
         "CONFIG_ENABLE_CHIPOBLE", not use_ip_transport

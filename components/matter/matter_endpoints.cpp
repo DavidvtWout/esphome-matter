@@ -126,9 +126,7 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   }
 #endif
 
-  if (!this->on_off_switches_.empty() || !this->dimmer_switches_.empty()) {
-    register_client_request_callbacks();
-  }
+  register_client_request_callbacks();
 
   return true;
 }

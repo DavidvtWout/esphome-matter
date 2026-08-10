@@ -14,16 +14,16 @@
 #   A: I haven't implemented support for that so don't know... Just don't do that?
 
 esphome:
-  name: matter-device
-  friendly_name: Matter Device
+  name: matter-ble-commissioning
 
 esp32:
+  toolchain: platformio
+  variant: # Set to your variant
   framework:
     type: esp-idf
 
 external_components:
   - source: github://DavidvtWout/esphome-matter@main
-    refresh: 0s
 
 logger:
 
