@@ -21,7 +21,7 @@ from esphome.coroutine import CoroPriority, coroutine_with_priority
 import esphome.final_validate as fv
 from esphome.helpers import write_file_if_changed
 
-from .kconfig import disable_unused_clusters, write_kconfig_projbuild
+from .kconfig import disable_unused_clusters
 
 from .const import *
 
@@ -233,8 +233,6 @@ def _write_matter_cmake_hook() -> Path:
     return include_path
 
 
-# Wifi, ethernet and thread run at COMMUNICATION priority. Matter needs to start just after that and
-# NETWORK_SERVICES is the next CoroPriority so we choose that one.
 @coroutine_with_priority(CoroPriority.NETWORK_SERVICES)
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
@@ -244,8 +242,6 @@ async def to_code(config):
         name="espressif/esp_matter",
         ref="1.5.1",
     )
-
-    write_kconfig_projbuild()
 
     CORE.add_job(_set_executable_component_name)
 
@@ -259,7 +255,8 @@ async def to_code(config):
     use_openthread = "openthread" in CORE.loaded_integrations
     use_wifi = "wifi" in CORE.loaded_integrations
     use_ethernet = "ethernet" in CORE.loaded_integrations
-    use_connectivity = use_openthread or use_wifi or use_ethernet
+    # has_connectivity determines whether the device should be commissioned over BLE or not.
+    has_connectivity = use_openthread or use_wifi  # or use_ethernet
 
     # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
@@ -276,7 +273,7 @@ async def to_code(config):
     )  # connectedhomeip
 
     add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_MATTER_OVER_THREAD", not use_connectivity or use_openthread
+        "CONFIG_ENABLE_MATTER_OVER_THREAD", not has_connectivity or use_openthread
     )  # connectedhomeip
     if use_openthread:
         # Force the Matter Thread DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
@@ -301,8 +298,9 @@ async def to_code(config):
         # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
 
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
+    # CONFIG_ENABLE_WIFI_STATION is enabled by default and must explicitly be disabled when not needed.
     add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_WIFI_STATION", not use_connectivity or use_wifi
+        "CONFIG_ENABLE_WIFI_STATION", not has_connectivity or use_wifi
     )  # connectedhomeip
     if use_wifi:
         # ESPHome already owns esp_netif, the Wi-Fi driver and the default STA
@@ -319,11 +317,17 @@ async def to_code(config):
     if use_wifi or use_ethernet:
         # lwIP must add the route to the thread network via the border router to its routing table.
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_ND6_ROUTE_INFO_OPTION_SUPPORT", True)
+    if use_ethernet:
+        # Has nothing to do with telemetry... But this is how connectedhomeip names the option that enables ethernet.
+        add_idf_sdkconfig_option(
+            "CONFIG_ENABLE_ETHERNET_TELEMETRY", True
+        )  # connectedhomeip
 
+    # CONFIG_ENABLE_CHIPOBLE is enabled by default and must explicitly be disabled when not needed.
     add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_CHIPOBLE", not use_connectivity
+        "CONFIG_ENABLE_CHIPOBLE", not has_connectivity
     )  # connectedhomeip
-    if not use_connectivity:
+    if not has_connectivity:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
         # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
         # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the

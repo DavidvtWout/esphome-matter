@@ -113,23 +113,6 @@ DISABLED_CLUSTERS = [
 ]
 
 
-def write_kconfig_projbuild() -> None:
-    # connectedhomeip's Kconfig defines GPIO_RANGE_MAX with chip-specific defaults for
-    # ESP32/S2/C3/S3/H2 but not for C6 or other targets. The symbol also has
-    # `depends on ENABLE_ETHERNET_TELEMETRY`, making it invisible (str_value='') when that
-    # option is off, which crashes kconfgen's write_json_menus (int('', 10) on the range
-    # endpoint). Adding a fallback default of 255 here fixes both cases: visible-but-no-C6-
-    # default AND invisible (Kconfiglib evaluates defaults even for invisible symbols).
-    # There are probably better, less hacky approaches, but simply using
-    # add_idf_sdkconfig_option(GPIO_RANGE_MAX, 255) didn't work...
-    kconfig_projbuild_path = CORE.relative_build_path("src/Kconfig.projbuild")
-    kconfig_projbuild_path.parent.mkdir(parents=True, exist_ok=True)
-    write_file_if_changed(
-        kconfig_projbuild_path,
-        "config GPIO_RANGE_MAX\n    int\n    default 255\n",
-    )
-
-
 def disable_unused_clusters() -> None:
     for name in DISABLED_CLUSTERS:
         add_idf_sdkconfig_option(f"CONFIG_SUPPORT_{name}_CLUSTER", False)
