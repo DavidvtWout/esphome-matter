@@ -9,6 +9,9 @@ MatterFactoryResetAction = matter_ns.class_(
     "MatterFactoryResetAction", automation.Action
 )
 MatterEndpointRef = matter_ns.class_("MatterEndpointRef")
+MatterInvokeBoundCommandAction = matter_ns.class_(
+    "MatterInvokeBoundCommandAction", automation.Action
+)
 MatterTurnOnAction = matter_ns.class_("MatterTurnOnAction", automation.Action)
 MatterTurnOffAction = matter_ns.class_("MatterTurnOffAction", automation.Action)
 MatterToggleAction = matter_ns.class_("MatterToggleAction", automation.Action)

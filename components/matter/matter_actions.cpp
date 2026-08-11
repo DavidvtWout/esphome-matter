@@ -41,20 +41,10 @@ static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
     return;
   }
   ESP_LOGV(TAG, "client_invoke_cb");
-  using namespace chip::app::Clusters;
-  char cmd_data[48] = "{}";
-  if (req_handle->command_path.mClusterId == LevelControl::Id) {
-    if (req_handle->command_path.mCommandId ==
-        LevelControl::Commands::MoveWithOnOff::Id) {
-      uint8_t mode = static_cast<uint8_t>(
-          reinterpret_cast<uintptr_t>(req_handle->request_data));
-      snprintf(cmd_data, sizeof(cmd_data),
-               "{\"0:U8\": %u, \"1:U8\": 50, \"2:U8\": 0, \"3:U8\": 0}", mode);
-    } else {
-      // StopWithOnOff: OptionsMask=0, OptionsOverride=0
-      strcpy(cmd_data, "{\"0:U8\": 0, \"1:U8\": 0}");
-    }
-  }
+  const char *cmd_data =
+      req_handle->request_data != nullptr
+          ? static_cast<const char *>(req_handle->request_data)
+          : "{}";
   ESP_LOGV(TAG, "client_invoke_cb: %s", cmd_data);
   esp_matter::client::interaction::invoke::send_request(
       nullptr, peer_device, req_handle->command_path, cmd_data,
@@ -70,19 +60,10 @@ client_group_invoke_cb(uint8_t fabric_index,
     return;
   }
   ESP_LOGV(TAG, "client_group_invoke_cb");
-  using namespace chip::app::Clusters;
-  char cmd_data[48] = "{}";
-  if (req_handle->command_path.mClusterId == LevelControl::Id) {
-    if (req_handle->command_path.mCommandId ==
-        LevelControl::Commands::MoveWithOnOff::Id) {
-      uint8_t mode = static_cast<uint8_t>(
-          reinterpret_cast<uintptr_t>(req_handle->request_data));
-      snprintf(cmd_data, sizeof(cmd_data),
-               "{\"0:U8\": %u, \"1:U8\": 50, \"2:U8\": 0, \"3:U8\": 0}", mode);
-    } else {
-      strcpy(cmd_data, "{\"0:U8\": 0, \"1:U8\": 0}");
-    }
-  }
+  const char *cmd_data =
+      req_handle->request_data != nullptr
+          ? static_cast<const char *>(req_handle->request_data)
+          : "{}";
   ESP_LOGV(TAG, "client_group_invoke_cb: %s", cmd_data);
   esp_matter::client::interaction::invoke::send_group_request(
       fabric_index, req_handle->command_path, cmd_data);
@@ -94,7 +75,7 @@ void register_client_request_callbacks() {
 }
 
 void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
-                         chip::CommandId command, uint8_t move_mode) {
+                         chip::CommandId command, const char *command_data) {
   auto &binding_table = chip::app::Clusters::Binding::Table::GetInstance();
   std::string node_ids;
   for (const auto &entry : binding_table) {
@@ -123,7 +104,7 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
   req.command_path.mClusterId = cluster;
   req.command_path.mCommandId = command;
   req.request_data =
-      reinterpret_cast<void *>(static_cast<uintptr_t>(move_mode));
+      const_cast<char *>(command_data != nullptr ? command_data : "{}");
   esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
   esp_err_t err = esp_matter::client::cluster_update(endpoint_id, &req);
   if (err != ESP_OK) {
