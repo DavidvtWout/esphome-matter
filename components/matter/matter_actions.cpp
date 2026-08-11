@@ -108,9 +108,15 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
       node_ids += node_id;
     }
   }
-  ESP_LOGD(TAG, "Sending command nodes=[%s] endpoint=%u cluster=%u command=%u",
-           node_ids.empty() ? "none" : node_ids.c_str(), endpoint_id,
-           static_cast<uint32_t>(cluster), static_cast<uint32_t>(command));
+
+  if (node_ids.empty()) {
+    ESP_LOGW(TAG, "No bound nodes for endpoint=%u cluster=%u", endpoint_id,
+             static_cast<uint32_t>(cluster));
+    return;
+  }
+  ESP_LOGV(TAG, "Sending command nodes=[%s] endpoint=%u cluster=%u command=%u",
+           node_ids.c_str(), endpoint_id, static_cast<uint32_t>(cluster),
+           static_cast<uint32_t>(command));
 
   esp_matter::client::request_handle_t req;
   req.type = esp_matter::client::INVOKE_CMD;
