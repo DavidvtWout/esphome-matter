@@ -22,14 +22,9 @@ from .const import (
 )
 from .types import (
     MatterComponent,
-    MatterDimAction,
-    MatterDimStopAction,
     MatterEndpointRef,
     MatterFactoryResetAction,
     MatterInvokeBoundCommandAction,
-    MatterToggleAction,
-    MatterTurnOffAction,
-    MatterTurnOnAction,
 )
 
 
@@ -389,53 +384,82 @@ async def matter_invoke_bound_command_to_code(config, action_id, template_arg, a
     return var
 
 
-async def _matter_client_action_to_code(config, action_id, template_arg):
+async def _new_invoke_bound_command_action(
+    config, action_id, template_arg, cluster_id, command_id, payload
+):
     var = cg.new_Pvariable(action_id, template_arg)
-    await cg.register_parented(var, config[CONF_ID])
+    endpoint_ref = await cg.get_variable(config[CONF_ID])
+    cg.add(var.set_endpoint_ref(endpoint_ref))
+    cg.add(var.set_cluster_id(cluster_id))
+    cg.add(var.set_command_id(command_id))
+    cg.add(var.set_payload(payload))
     return var
 
 
 @automation.register_action(
-    "matter.turn_on", MatterTurnOnAction, MATTER_CLIENT_ACTION_SCHEMA
+    "matter.turn_on", MatterInvokeBoundCommandAction, MATTER_CLIENT_ACTION_SCHEMA
 )
 async def matter_turn_on_to_code(config, action_id, template_arg, args):
-    return await _matter_client_action_to_code(config, action_id, template_arg)
+    return await _new_invoke_bound_command_action(
+        config, action_id, template_arg, 0x0006, 0x01, "{}"
+    )
 
 
 @automation.register_action(
-    "matter.turn_off", MatterTurnOffAction, MATTER_CLIENT_ACTION_SCHEMA
+    "matter.turn_off", MatterInvokeBoundCommandAction, MATTER_CLIENT_ACTION_SCHEMA
 )
 async def matter_turn_off_to_code(config, action_id, template_arg, args):
-    return await _matter_client_action_to_code(config, action_id, template_arg)
+    return await _new_invoke_bound_command_action(
+        config, action_id, template_arg, 0x0006, 0x00, "{}"
+    )
 
 
 @automation.register_action(
-    "matter.toggle", MatterToggleAction, MATTER_CLIENT_ACTION_SCHEMA
+    "matter.toggle", MatterInvokeBoundCommandAction, MATTER_CLIENT_ACTION_SCHEMA
 )
 async def matter_toggle_to_code(config, action_id, template_arg, args):
-    return await _matter_client_action_to_code(config, action_id, template_arg)
+    return await _new_invoke_bound_command_action(
+        config, action_id, template_arg, 0x0006, 0x02, "{}"
+    )
 
 
 @automation.register_action(
-    "matter.dim_up", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA
+    "matter.dim_up", MatterInvokeBoundCommandAction, MATTER_CLIENT_ACTION_SCHEMA
 )
 async def matter_dim_up_to_code(config, action_id, template_arg, args):
-    var = await _matter_client_action_to_code(config, action_id, template_arg)
-    cg.add(var.set_direction(0))
-    return var
+    return await _new_invoke_bound_command_action(
+        config,
+        action_id,
+        template_arg,
+        0x0008,
+        0x05,
+        '{"0:U8": 0, "1:U8": 50, "2:U8": 0, "3:U8": 0}',
+    )
 
 
 @automation.register_action(
-    "matter.dim_down", MatterDimAction, MATTER_CLIENT_ACTION_SCHEMA
+    "matter.dim_down", MatterInvokeBoundCommandAction, MATTER_CLIENT_ACTION_SCHEMA
 )
 async def matter_dim_down_to_code(config, action_id, template_arg, args):
-    var = await _matter_client_action_to_code(config, action_id, template_arg)
-    cg.add(var.set_direction(1))
-    return var
+    return await _new_invoke_bound_command_action(
+        config,
+        action_id,
+        template_arg,
+        0x0008,
+        0x05,
+        '{"0:U8": 1, "1:U8": 50, "2:U8": 0, "3:U8": 0}',
+    )
 
 
 @automation.register_action(
-    "matter.dim_stop", MatterDimStopAction, MATTER_CLIENT_ACTION_SCHEMA
+    "matter.dim_stop", MatterInvokeBoundCommandAction, MATTER_CLIENT_ACTION_SCHEMA
 )
 async def matter_dim_stop_to_code(config, action_id, template_arg, args):
-    return await _matter_client_action_to_code(config, action_id, template_arg)
+    return await _new_invoke_bound_command_action(
+        config,
+        action_id,
+        template_arg,
+        0x0008,
+        0x07,
+        '{"0:U8": 0, "1:U8": 0}',
+    )

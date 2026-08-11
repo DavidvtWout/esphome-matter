@@ -12,8 +12,3 @@ MatterEndpointRef = matter_ns.class_("MatterEndpointRef")
 MatterInvokeBoundCommandAction = matter_ns.class_(
     "MatterInvokeBoundCommandAction", automation.Action
 )
-MatterTurnOnAction = matter_ns.class_("MatterTurnOnAction", automation.Action)
-MatterTurnOffAction = matter_ns.class_("MatterTurnOffAction", automation.Action)
-MatterToggleAction = matter_ns.class_("MatterToggleAction", automation.Action)
-MatterDimAction = matter_ns.class_("MatterDimAction", automation.Action)
-MatterDimStopAction = matter_ns.class_("MatterDimStopAction", automation.Action)
