@@ -203,6 +203,9 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   case chip::DeviceLayer::DeviceEventType::kWiFiConnectivityChange: // 0x8000
     ESP_LOGV(TAG_EVENT, "WiFiConnectivityChange");
     break;
+  case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange: // 0x8001
+    ESP_LOGV(TAG_EVENT, "ThreadConnectivityChange");
+    break;
   case chip::DeviceLayer::DeviceEventType::
       kInternetConnectivityChange: // 0x8002
     ESP_LOGV(TAG_EVENT, "InternetConnectivityChange");

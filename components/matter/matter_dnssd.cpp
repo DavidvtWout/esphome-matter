@@ -48,6 +48,38 @@ const char *protocol_to_srp_suffix(chip::Dnssd::DnssdServiceProtocol protocol) {
   return protocol_string[0] == '?' ? nullptr : protocol_string;
 }
 
+struct ResolveContext {
+  chip::Dnssd::DnssdResolveCallback callback;
+  void *context;
+};
+
+void resolve_callback(void *context, chip::Dnssd::DnssdService *service,
+                      const chip::Span<chip::Inet::IPAddress> &addresses,
+                      CHIP_ERROR error) {
+  auto *resolve_context = static_cast<ResolveContext *>(context);
+
+  if (service != nullptr) {
+    ESP_LOGD(TAG, "resolved %s.%s.%s as %s:%u", safe_string(service->mName),
+             safe_string(service->mType),
+             protocol_to_string(service->mProtocol),
+             safe_string(service->mHostName), service->mPort);
+    for (const auto &address : addresses) {
+      char address_string[chip::Inet::IPAddress::kMaxStringLength];
+      address.ToString(address_string);
+      ESP_LOGV(TAG, "%s address: %s", safe_string(service->mHostName),
+               address_string);
+    }
+  } else {
+    ESP_LOGW(TAG, "resolved service=(null)");
+  }
+
+  if (resolve_context->callback != nullptr) {
+    resolve_context->callback(resolve_context->context, service, addresses,
+                              error);
+  }
+  chip::Platform::Delete(resolve_context);
+}
+
 #ifdef USE_OPENTHREAD
 CHIP_ERROR map_ot_error(otError error) {
   switch (error) {
@@ -142,41 +174,6 @@ CHIP_ERROR build_srp_service(const chip::Dnssd::DnssdService *service,
   return CHIP_NO_ERROR;
 }
 #endif // USE_OPENTHREAD
-
-#ifdef USE_WIFI
-struct WifiResolveContext {
-  chip::Dnssd::DnssdResolveCallback callback;
-  void *context;
-};
-
-void wifi_resolve_callback(void *context, chip::Dnssd::DnssdService *service,
-                           const chip::Span<chip::Inet::IPAddress> &addresses,
-                           CHIP_ERROR error) {
-  auto *resolve_context = static_cast<WifiResolveContext *>(context);
-
-  if (service != nullptr) {
-    ESP_LOGD(TAG, "resolved %s.%s.%s as %s:%u", safe_string(service->mName),
-             safe_string(service->mType),
-             protocol_to_string(service->mProtocol),
-             safe_string(service->mHostName), service->mPort);
-    for (const auto &address : addresses) {
-      char address_string[chip::Inet::IPAddress::kMaxStringLength];
-      address.ToString(address_string);
-      ESP_LOGV(TAG, "%s address: %s", safe_string(service->mHostName),
-               address_string);
-    }
-  } else {
-    ESP_LOGW(TAG, "resolved service=(null)");
-  }
-
-  if (resolve_context->callback != nullptr) {
-    resolve_context->callback(resolve_context->context, service, addresses,
-                              error);
-  }
-  chip::Platform::Delete(resolve_context);
-}
-#endif // USE_WIFI
-
 } // namespace
 
 extern "C" void esphome_matter_link_dnssd() {}
@@ -187,7 +184,7 @@ namespace Dnssd {
 CHIP_ERROR ChipDnssdInit(DnssdAsyncReturnCallback init_callback,
                          DnssdAsyncReturnCallback error_callback,
                          void *context) {
-  ESP_LOGI(TAG, "DNS-SD bridge linked");
+  ESP_LOGD(TAG, "DNS-SD initialized");
 #ifdef USE_OPENTHREAD
   // Prevent OpenThreadDnssdInit from being called.
   if (init_callback != nullptr) {
@@ -321,24 +318,24 @@ CHIP_ERROR ChipDnssdResolve(DnssdService *service,
              protocol_to_string(service->mProtocol));
   }
 
-#ifdef USE_OPENTHREAD
-  return OpenThreadDnssdResolve(service, interface, callback, context);
-#endif // USE_OPENTHREAD
-#ifdef USE_WIFI
-  auto *resolve_context = chip::Platform::New<WifiResolveContext>();
+  auto *resolve_context = chip::Platform::New<ResolveContext>();
   VerifyOrReturnError(resolve_context != nullptr, CHIP_ERROR_NO_MEMORY);
   resolve_context->callback = callback;
   resolve_context->context = context;
 
-  CHIP_ERROR error = EspDnssdResolve(service, interface, wifi_resolve_callback,
-                                     resolve_context);
+#ifdef USE_OPENTHREAD
+  CHIP_ERROR error = OpenThreadDnssdResolve(service, interface,
+                                            resolve_callback, resolve_context);
+#endif // USE_OPENTHREAD
+#ifdef USE_WIFI
+  CHIP_ERROR error =
+      EspDnssdResolve(service, interface, resolve_callback, resolve_context);
+#endif // USE_WIFI
   if (error != CHIP_NO_ERROR) {
-    ESP_LOGW(TAG, "Wi-Fi DNS-SD resolve start failed: %" CHIP_ERROR_FORMAT,
-             error.Format());
+    ESP_LOGW(TAG, "resolve start failed: %" CHIP_ERROR_FORMAT, error.Format());
     chip::Platform::Delete(resolve_context);
   }
   return error;
-#endif // USE_WIFI
 }
 
 void ChipDnssdResolveNoLongerNeeded(const char *instance_name) {}
