@@ -10,6 +10,7 @@ from esphome.const import (
     CONF_VALUE,
 )
 from esphome.core import ID
+from esphome.types import ConfigType
 
 from .clusters import MATTER_COMMANDS
 from .const import *
@@ -38,215 +39,43 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
 # ------------------------------------------------ #
 
 
-def _resolve_cluster_id(cluster_id: int | str) -> int:
-    if isinstance(cluster_id, str):
-        try:
-            return MATTER_COMMANDS[cluster_id]["id"]
-        except KeyError as err:
-            raise cv.Invalid(f"Unknown Matter cluster '{cluster_id}'") from err
-    return cluster_id
-
-
-def _resolve_command_id(cluster_id: int | str, command_id: int | str) -> int:
-    if not isinstance(command_id, str):
-        return command_id
-    cluster_id = _resolve_cluster_id(cluster_id)
-    for cluster in MATTER_COMMANDS.values():
-        if cluster["id"] == cluster_id:
-            try:
-                return cluster["commands"][command_id]["id"]
-            except KeyError as err:
-                raise cv.Invalid(
-                    f"Unknown Matter command '{command_id}' for cluster 0x{cluster_id:04X}"
-                ) from err
-    raise cv.Invalid("Command names require a known cluster name or ID")
-
-
-def _command_spec(cluster_id: int | str, command_id: int | str) -> dict | None:
-    cluster_id = _resolve_cluster_id(cluster_id)
-    command_id = _resolve_command_id(cluster_id, command_id)
-    for cluster in MATTER_COMMANDS.values():
-        if cluster["id"] != cluster_id:
-            continue
-        for command in cluster["commands"].values():
-            if command["id"] == command_id:
-                return command
-    return None
-
-
-def _field_validator(field_type: str):
-    try:
-        return {
-            "U8": cv.uint8_t,
-            "U16": cv.uint16_t,
-            "U32": cv.uint32_t,
-            "I8": cv.int_range(min=-128, max=127),
-            "I16": cv.int_range(min=-32768, max=32767),
-            "I32": cv.int_range(min=-2147483648, max=2147483647),
-        }[field_type]
-    except KeyError as err:
-        raise cv.Invalid(f"Unsupported Matter field type '{field_type}'") from err
-
-
-def _build_payload(spec: dict, value) -> str:
-    if value is None:
-        value = {}
-    if isinstance(value, str):
-        return value
-
-    fields = [] if spec is None else spec.get("fields", [])
-    if not fields:
-        if value not in ({}, None):
-            raise cv.Invalid("This command does not take a value")
-        return "{}"
-
-    if not isinstance(value, dict):
-        value = {fields[0]["key"]: value}
-
-    payload = {}
-    for i, field in enumerate(fields):
-        if field["key"] in value:
-            field_value = value[field["key"]]
-        elif field["default"] is not None:
-            field_value = field["default"]
-        else:
-            raise cv.Invalid(f"Missing value field '{field['key']}'")
-        field_type = field["type"]
-        payload[f"{i}:{field_type}"] = _field_validator(field_type)(field_value)
-    return json.dumps(payload)
-
-
-def _validate_invoke_bound_command(config):
-    config = dict(config)
-    cluster_id = _resolve_cluster_id(config[CONF_CLUSTER_ID])
-    command_id = _resolve_command_id(cluster_id, config[CONF_COMMAND])
-    config[CONF_CLUSTER_ID] = cluster_id
-    config[CONF_COMMAND_ID] = command_id
-    config[CONF_PAYLOAD] = _build_payload(
-        _command_spec(cluster_id, command_id), config.get(CONF_VALUE)
-    )
-    return config
-
-
-def _command_schema(cluster_name: str, command_name: str):
-    schema = {
-        cv.Required(CONF_ENDPOINT_ID): cv.use_id(MatterEndpointRef),
-    }
-    for field in MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name].get(
-        "fields", []
-    ):
-        key = field["key"]
-        validator = _field_validator(field["type"])
-        if field["default"] is None:
-            schema[cv.Required(key)] = validator
-        else:
-            schema[cv.Optional(key, default=field["default"])] = validator
-    return automation.maybe_conf(CONF_ENDPOINT_ID, schema)
-
-
-def _payload_from_action_config(
-    config, cluster_id: int | str, command_id: int | str, default_value=None
-):
-    spec = _command_spec(cluster_id, command_id)
-    field_keys = (
-        [] if spec is None else [field["key"] for field in spec.get("fields", [])]
-    )
-    direct_value = {key: config[key] for key in field_keys if key in config}
-
-    if CONF_VALUE in config:
-        value = config[CONF_VALUE]
-        if direct_value:
-            if not isinstance(value, dict):
-                raise cv.Invalid(
-                    "Direct command fields can only be combined with a dict value"
-                )
-            value = {**value, **direct_value}
-    elif direct_value:
-        value = {**(default_value or {}), **direct_value}
-    else:
-        value = default_value
-
-    return _build_payload(spec, value)
-
-
-async def _new_send_command_action(
-    config,
-    action_id: ID,
-    template_arg: cg.TemplateArguments,
-    cluster_id: int | str,
-    command_id: int | str,
-    default_value=None,
-):
-    var = cg.new_Pvariable(action_id, template_arg)
-    # TODO: set endpoint_id instead of endpoint_ref
-    endpoint_ref = await cg.get_variable(config[CONF_ENDPOINT_ID])
-    cg.add(var.set_endpoint_ref(endpoint_ref))
-    cg.add(var.set_cluster_id(_resolve_cluster_id(cluster_id)))
-    cg.add(var.set_command_id(_resolve_command_id(cluster_id, command_id)))
-    cg.add(
-        var.set_payload(
-            _payload_from_action_config(config, cluster_id, command_id, default_value)
-        )
-    )
-    return var
-
-
-def _snake_case(name):
-    name = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
-    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
-    return name.lower()
-
-
-def register_bound_command_actions():
-    for cluster_name, cluster in MATTER_COMMANDS.items():
-        for command_name in cluster[CONF_COMMANDS]:
-            action_name = (
-                f"matter.{_snake_case(cluster_name)}.{_snake_case(command_name)}"
-            )
-
-            async def to_code(
-                config, action_id: ID, template_arg: cg.TemplateArguments, args
-            ):
-                return await _new_send_command_action(
-                    config,
-                    action_id,
-                    template_arg,
-                    cluster_name,
-                    command_name,
-                )
-
-            to_code.__name__ = f"matter_{_snake_case(cluster_name)}_{_snake_case(command_name)}_to_code"
-            automation.register_action(
-                action_name,
-                MatterSendCommandAction,
-                _command_schema(cluster_name, command_name),
-                synchronous=True,
-            )(to_code)
-
-
-SEND_COMMAND_SCHEMA = cv.All(
+@automation.register_action(
+    "matter._send_command",
+    MatterSendCommandAction,
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(MatterSendCommandAction),
             cv.Required(CONF_ENDPOINT_ID): cv.Any(
                 cv.uint16_t, cv.use_id(MatterEndpointRef)
             ),
-            cv.Required(CONF_CLUSTER_ID): cv.Any(str, cv.hex_uint32_t),
-            cv.Required(CONF_COMMAND): cv.Any(str, cv.hex_uint32_t),
-            cv.Optional(CONF_VALUE): cv.Any(str, cv.uint32_t, dict),
+            cv.Required(CONF_CLUSTER_ID): cv.hex_uint32_t,
+            cv.Required(CONF_COMMAND_ID): cv.hex_uint32_t,
+            cv.Required(CONF_PAYLOAD): str,
         }
     ),
-    _validate_invoke_bound_command,
-)
-
-
-@automation.register_action(
-    "matter._send_command",
-    MatterSendCommandAction,
-    SEND_COMMAND_SCHEMA,
     synchronous=True,
 )
-async def matter_send_command_to_code(config, action_id, template_arg, args):
+async def matter_send_command_to_code(
+    config: ConfigType, action_id: ID, template_arg, args
+):
+    """The matter._send_command action is an escape hatch to send arbitrary commands that have not
+    yet been implemented by esphome-matter. It doesn't support payload formatting so you have to
+    provide an esp-matter compatible string yourself.
+
+      matter._send_command:
+        endpoint_id: some_endpoint
+        cluster_id: 8 # LevelControl
+        command_id: 0 # MoveToLevel
+        payload: '{"0:U8":0,"1:U16":50,"2:U8":0,"3:U8":0}'
+
+    Don't forget to also enable the cluster if it isn't enabled by default:
+
+      esp32:
+        framework:
+          sdkconfig_options:
+            CONFIG_SUPPORT_<>_CLUSTER=y  # For example CONFIG_SUPPORT_MICROWAVE_OVEN_CONTROL_CLUSTER
+
+    """
     var = cg.new_Pvariable(action_id, template_arg)
     endpoint_id = config[CONF_ENDPOINT_ID]
     if isinstance(endpoint_id, ID):
@@ -264,96 +93,151 @@ async def matter_send_command_to_code(config, action_id, template_arg, args):
 # TODO: matter._send_command_to_nodes (send commands to multiple node without using the binding cluster)
 
 
-def _send_command_schema(*fields):
+def register_bound_command_actions():
+    """Registers all commands from MATTER_COMMANDS as esphome actions.
+
+    Actions are named after the snake_case cluster and command names:
+      matter.cluster_name.command_name
+
+    Commands that have no mandatory fields may be called with only the endpoint_id:
+      matter.on_off.on: some_endpoint
+    or
+      matter.on_off.on:
+        endpoint_id: some_endpoint
+
+    Commands that do have mandatory fields must be called like this:
+      matter.level_control.move_with_on_off:
+        endpoint_id: some_endpoint
+        move_mode: 0  # up
+        rate: 50      # ~20% per second
+    """
+    for cluster_name, cluster in MATTER_COMMANDS.items():
+        for command_name in cluster[CONF_COMMANDS]:
+            automation.register_action(
+                f"matter.{_snake_case(cluster_name)}.{_snake_case(command_name)}",
+                MatterSendCommandAction,
+                _command_schema(cluster_name, command_name),
+                synchronous=True,
+            )(_make_send_command_to_code(cluster_name, command_name))
+
+
+def _make_send_command_to_code(cluster_name: str, command_name: str):
+    async def to_code(config, action_id: ID, template_arg: cg.TemplateArguments, args):
+        return await _new_send_command_action(
+            config,
+            action_id,
+            template_arg,
+            cluster_name,
+            command_name,
+        )
+
+    to_code.__name__ = (
+        f"matter_{_snake_case(cluster_name)}_{_snake_case(command_name)}_to_code"
+    )
+    return to_code
+
+
+async def _new_send_command_action(
+    config: ConfigType,
+    action_id: ID,
+    template_arg: cg.TemplateArguments,
+    cluster_name: str,
+    command_name: str,
+):
+    cluster_id, command_id = _resolve_command_id(cluster_name, command_name)
+
+    var = cg.new_Pvariable(action_id, template_arg)
+    # TODO: set endpoint_id instead of endpoint_ref
+    endpoint_ref = await cg.get_variable(config[CONF_ENDPOINT_ID])
+    cg.add(var.set_endpoint_ref(endpoint_ref))
+    cg.add(var.set_cluster_id(cluster_id))
+    cg.add(var.set_command_id(command_id))
+    cg.add(var.set_payload(_build_payload(config, cluster_name, command_name)))
+    return var
+
+
+def _build_payload(config, cluster_name: str, command_name: str) -> str:
+    """Creates a payload that's compatible with esp_matter::client::request_handle.request_data.
+
+    It's JSON formatted crap... Here's an example:
+
+       {"0:U8":0,"1:U16":10}
+
+    This means that the first field is an uint8 with a value of 0 and the second field is uint16 with value 10.
+    """
+    payload = {}
+
+    command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
+    for i, field in enumerate(command.get("fields", [])):
+        field_type = field["type"]
+        field_value = config.get(field["key"], field.get("default"))
+        if field_value is None:
+            raise cv.Invalid(
+                f"matter.{_snake_case(cluster_name)}.{_snake_case(command_name)}: missing required field '{field['key']}'"
+            )
+
+        payload[f"{i}:{field_type}"] = _field_validator(field_type)(field_value)
+
+    return json.dumps(payload)
+
+
+def _resolve_command_id(cluster_name: str, command_name: str) -> tuple[int, int]:
+    """Resolves a cluster and command name to their numerical value.
+
+    e.g.: _resolve_command_id("LevelControl", "StopWithOnOff") -> (8, 7)
+    """
+    try:
+        cluster = MATTER_COMMANDS[cluster_name]
+    except KeyError as err:
+        raise cv.Invalid(f"Unknown Matter cluster '{cluster_name}'") from err
+
+    try:
+        command = cluster["commands"][command_name]
+    except KeyError as err:
+        raise cv.Invalid(
+            f"Unknown Matter command '{cluster_name}.{command_name}'"
+        ) from err
+
+    return cluster["id"], command["id"]
+
+
+def _field_validator(field_type: str):
+    try:
+        return {
+            "U8": cv.uint8_t,
+            "U16": cv.uint16_t,
+            "U32": cv.uint32_t,
+            "I8": cv.int_range(min=-128, max=127),
+            "I16": cv.int_range(min=-32768, max=32767),
+            "I32": cv.int_range(min=-2147483648, max=2147483647),
+        }[field_type]
+    except KeyError as err:
+        raise cv.Invalid(f"Unsupported Matter field type '{field_type}'") from err
+
+
+def _command_schema(cluster_name: str, command_name: str):
     schema = {
         cv.Required(CONF_ENDPOINT_ID): cv.use_id(MatterEndpointRef),
     }
-    for field in fields:
-        schema[cv.Optional(field)] = cv.uint32_t
-    return automation.maybe_conf(CONF_ENDPOINT_ID, schema)
+
+    command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
+    has_required = False
+    for field in command.get("fields", []):
+        key = field["key"]
+        validator = _field_validator(field["type"])
+        if field["default"] is None:
+            schema[cv.Required(key)] = validator
+            has_required = True
+        else:
+            schema[cv.Optional(key, default=field["default"])] = validator
+
+    if has_required:
+        return schema
+    else:
+        return automation.maybe_conf(CONF_ENDPOINT_ID, schema)
 
 
-@automation.register_action(
-    "matter.turn_off",
-    MatterSendCommandAction,
-    _send_command_schema(),
-    synchronous=True,
-)
-async def matter_turn_off_to_code(config, action_id, template_arg, args):
-    return await _new_send_command_action(
-        config, action_id, template_arg, CLUSTER_ON_OFF, COMMAND_OFF
-    )
-
-
-@automation.register_action(
-    "matter.turn_on",
-    MatterSendCommandAction,
-    _send_command_schema(),
-    synchronous=True,
-)
-async def matter_turn_on_to_code(config, action_id, template_arg, args):
-    return await _new_send_command_action(
-        config, action_id, template_arg, CLUSTER_ON_OFF, COMMAND_ON
-    )
-
-
-@automation.register_action(
-    "matter.toggle",
-    MatterSendCommandAction,
-    _send_command_schema(),
-    synchronous=True,
-)
-async def matter_toggle_to_code(config, action_id, template_arg, args):
-    return await _new_send_command_action(
-        config, action_id, template_arg, CLUSTER_ON_OFF, COMMAND_TOGGLE
-    )
-
-
-@automation.register_action(
-    "matter.dim_up",
-    MatterSendCommandAction,
-    _send_command_schema(FIELD_RATE),
-    synchronous=True,
-)
-async def matter_dim_up_to_code(config, action_id, template_arg, args):
-    return await _new_send_command_action(
-        config,
-        action_id,
-        template_arg,
-        CLUSTER_LEVEL_CONTROL,
-        COMMAND_MOVE_WITH_ON_OFF,
-        {"move_mode": 0, FIELD_RATE: 50},
-    )
-
-
-@automation.register_action(
-    "matter.dim_down",
-    MatterSendCommandAction,
-    _send_command_schema(FIELD_RATE),
-    synchronous=True,
-)
-async def matter_dim_down_to_code(config, action_id, template_arg, args):
-    return await _new_send_command_action(
-        config,
-        action_id,
-        template_arg,
-        CLUSTER_LEVEL_CONTROL,
-        COMMAND_MOVE_WITH_ON_OFF,
-        {"move_mode": 1, FIELD_RATE: 50},
-    )
-
-
-@automation.register_action(
-    "matter.dim_stop",
-    MatterSendCommandAction,
-    _send_command_schema(),
-    synchronous=True,
-)
-async def matter_dim_stop_to_code(config, action_id, template_arg, args):
-    return await _new_send_command_action(
-        config,
-        action_id,
-        template_arg,
-        CLUSTER_LEVEL_CONTROL,
-        COMMAND_STOP_WITH_ON_OFF,
-    )
+def _snake_case(name):
+    name = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
+    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
+    return name.lower()

@@ -9,6 +9,4 @@ MatterFactoryResetAction = matter_ns.class_(
     "MatterFactoryResetAction", automation.Action
 )
 MatterEndpointRef = matter_ns.class_("MatterEndpointRef")
-MatterSendCommandAction = matter_ns.class_(
-    "MatterInvokeBoundCommandAction", automation.Action
-)
+MatterSendCommandAction = matter_ns.class_("MatterSendCommandAction", automation.Action)

@@ -40,8 +40,12 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x42,
                 "fields": [
                     _field("U8", FIELD_ON_OFF_CONTROL, 0),
-                    _field("U16", FIELD_ON_TIME),
-                    _field("U16", FIELD_OFF_WAIT_TIME, 0),
+                    _field(
+                        "U16", FIELD_ON_TIME
+                    ),  # TODO: support s (multiply seconds by 10)
+                    _field(
+                        "U16", FIELD_OFF_WAIT_TIME, 0
+                    ),  # TODO: support s (multiply seconds by 10)
                 ],
             },
         },
@@ -52,8 +56,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE_TO_LEVEL: {
                 "id": 0x00,
                 "fields": [
-                    _field("U8", FIELD_LEVEL),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field("U8", FIELD_LEVEL),  # TODO: support %
+                    _field("U16", FIELD_TRANSITION_TIME, 0),  # TODO: support s
                     _field("U8", CONF_OPTIONS_MASK, 0),
                     _field("U8", CONF_OPTIONS_OVERRIDE, 0),
                 ],
@@ -61,8 +65,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE: {
                 "id": 0x01,
                 "fields": [
-                    _field("U8", FIELD_MOVE_MODE),
-                    _field("U8", FIELD_RATE),
+                    _field("U8", FIELD_MOVE_MODE),  # TODO: support up/down aliases
+                    _field("U8", FIELD_RATE),  # TODO: support %/s?
                     _field("U8", CONF_OPTIONS_MASK, 0),
                     _field("U8", CONF_OPTIONS_OVERRIDE, 0),
                 ],
@@ -71,8 +75,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x02,
                 "fields": [
                     _field("U8", FIELD_STEP_MODE),
-                    _field("U8", FIELD_STEP_SIZE),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field("U8", FIELD_STEP_SIZE),  # TODO: support %
+                    _field("U16", FIELD_TRANSITION_TIME, 0),  # TODO: support s
                     _field("U8", CONF_OPTIONS_MASK, 0),
                     _field("U8", CONF_OPTIONS_OVERRIDE, 0),
                 ],

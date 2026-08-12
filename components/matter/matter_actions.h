@@ -22,8 +22,7 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
                          chip::CommandId command,
                          const char *command_data = "{}");
 
-template <typename... Ts>
-class MatterInvokeBoundCommandAction : public Action<Ts...> {
+template <typename... Ts> class MatterSendCommandAction : public Action<Ts...> {
 public:
   void set_endpoint_ref(MatterEndpointRef *endpoint_ref) {
     this->endpoint_ref_ = endpoint_ref;
