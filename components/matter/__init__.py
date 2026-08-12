@@ -18,11 +18,14 @@ import esphome.final_validate as fv
 from esphome.helpers import write_file_if_changed
 from esphome.types import ConfigType
 
+from .actions import register_bound_command_actions
 from .endpoints import ENDPOINT_SCHEMA, configure_endpoints
 from .kconfig import disable_unused_clusters
 from .types import MatterComponent
 
 from .const import *
+
+register_bound_command_actions()
 
 CODEOWNERS = ["@DavidvtWout"]
 
