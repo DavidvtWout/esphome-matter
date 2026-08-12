@@ -29,6 +29,8 @@ See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for b
 
 # Commissioning
 
+If Home Assistant is your Matter Commissioner, you must check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
+
 Directly after flashing ESPHome (and after every restart), the commissioning code (starting with `MT:`) is printed in the logs:
 ```
 [C][matter]: Matter:
