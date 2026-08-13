@@ -4,6 +4,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components.esp32 import (
     add_idf_component,
+    add_partition,
     add_idf_sdkconfig_option,
     require_vfs_select,
 )
@@ -81,6 +82,7 @@ CONFIG_SCHEMA = cv.All(
             cv.GenerateID(): cv.declare_id(MatterComponent),
             cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
             cv.Optional(CONF_PASSCODE): _validate_passcode,
+            cv.Optional(CONF_FACTORY_DATA, default=False): cv.boolean,
             cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
         }
     ).extend(cv.COMPONENT_SCHEMA),
@@ -93,6 +95,7 @@ CONFIG_SCHEMA = cv.All(
 
 def _final_validate(_):
     full_config = fv.full_config.get()
+    config = full_config.get("matter", {})
     if "openthread" in full_config:
         cv.validate_esphome_version(MIN_ESPHOME_VERSION)
 
@@ -101,6 +104,13 @@ def _final_validate(_):
         raise cv.Invalid(
             "Matter requires IPv6 to be enabled in the network component. "
             "Please set `enable_ipv6: true` in the `network` configuration."
+        )
+    if config.get(CONF_FACTORY_DATA, False) and (
+        CONF_DISCRIMINATOR not in config or CONF_PASSCODE not in config
+    ):
+        raise cv.Invalid(
+            "matter.factory_data requires `discriminator` and `passcode` to be set "
+            "to the same values used when generating the factory partition."
         )
 
 
@@ -187,6 +197,20 @@ async def to_code(config: ConfigType):
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
     if CONF_PASSCODE in config:
         cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
+
+    if config[CONF_FACTORY_DATA]:
+        add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_DATA_MODEL", True)
+        add_idf_sdkconfig_option("CONFIG_MBEDTLS_HARDWARE_AES", True)
+        add_idf_sdkconfig_option("CONFIG_MBEDTLS_HARDWARE_MPI", True)
+
+        cg.add_define("USE_MATTER_FACTORY_DATA")
+        add_partition("matter_factory", "data", "nvs", 0x10000)
+        add_idf_sdkconfig_option("CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER", True)
+        add_idf_sdkconfig_option("CONFIG_FACTORY_PARTITION_DAC_PROVIDER", True)
+        add_idf_sdkconfig_option("CONFIG_FACTORY_COMMISSIONABLE_DATA_PROVIDER", True)
+        add_idf_sdkconfig_option(
+            "CONFIG_CHIP_FACTORY_NAMESPACE_PARTITION_LABEL", "matter_factory"
+        )
 
     use_openthread = "openthread" in CORE.loaded_integrations
     use_wifi = "wifi" in CORE.loaded_integrations

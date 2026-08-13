@@ -1,5 +1,6 @@
 CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
+CONF_FACTORY_DATA = "factory_data"
 CONF_ENDPOINTS = "endpoints"
 
 # Lights
