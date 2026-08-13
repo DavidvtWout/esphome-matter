@@ -6,10 +6,13 @@
 
 ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter 1.5.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.5.1).
 
-> [!WARNING]
-> This project is still in early-development so don't expect a perfectly working setup. Both matter-over-wifi and
-> matter-over-thread are now working. It's possible to commission a device to a matter controller, but only very few Matter endpoints are supported yet. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
-> `on_off_light` and `dimmable_light` endpoints are supported. More will be added!
+> This project is still in early-development so don't expect a perfectly working setup. Both
+> matter-over-wifi and matter-over-thread are now working. It's possible to commission a
+> device to a matter controller, but many features are still missing.
+>
+> Treat this component as an experimental preview. It is usable for testing, but the public
+> YAML interface is not stable yet: action, cluster, attribute, and endpoint names may still
+> change and break existing configurations.
 
 That being said, esphome-matter is usable now so give it a try!
 
