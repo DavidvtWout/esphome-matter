@@ -6,10 +6,13 @@
 
 ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter 1.5.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.5.1).
 
-> [!WARNING]
-> This project is still in early-development so don't expect a perfectly working setup. Both matter-over-wifi and
-> matter-over-thread are now working. It's possible to commission a device to a matter controller, but only very few Matter endpoints are supported yet. Currently only the `on_off_switch`, `dimmer_switch`, `temperature_sensor`,
-> `on_off_light` and `dimmable_light` endpoints are supported. More will be added!
+> This project is still in early-development so don't expect a perfectly working setup. Both
+> matter-over-wifi and matter-over-thread are now working. It's possible to commission a
+> device to a matter controller, but many features are still missing.
+>
+> Treat this component as an experimental preview. It is usable for testing, but the public
+> YAML interface is not stable yet: action, cluster, attribute, and endpoint names may still
+> change and break existing configurations.
 
 That being said, esphome-matter is usable now so give it a try!
 
@@ -93,11 +96,14 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.turn_on: dimmer_endpoint
+      matter.on_off.on: dimmer_endpoint
     on_press:
-      matter.dim_up: dimmer_endpoint
+      matter.level_control.move_with_on_off:
+        endpoint_id: dimmer_endpoint
+        move_mode: 0 # Move up
+        rate: 50  # ~20% per second
     on_release:
-      matter.dim_stop: dimmer_endpoint
+      matter.level_control.stop_with_on_off: dimmer_endpoint
   - name: "Button down"
     id: button_down
     platform: gpio
@@ -108,11 +114,14 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.turn_off: dimmer_endpoint
+      matter.on_off.off: dimmer_endpoint
     on_press:
-      matter.dim_down: dimmer_endpoint
+      matter.level_control.move_with_on_off:
+        endpoint_id: dimmer_endpoint
+        move_mode: 1 # Move down
+        rate: 50  # ~20% per second
     on_release:
-      matter.dim_stop: dimmer_endpoint
+      matter.level_control.stop_with_on_off: dimmer_endpoint
 
 sensor:
   - platform: internal_temperature
@@ -138,4 +147,57 @@ light:
     # issue a command at nearly the same time, they enter a feedback loop and the light
     # toggles on/off indefinitely.
     internal: true
+```
+
+# Actions
+
+See [docs/actions.md](./docs/actions.md) for a more complete overview of available actions.
+
+
+### OnOff cluster
+
+OnOff commands are used for simple binary devices such as lights, plugs and relays.
+
+```yaml
+# Turn off, turn on, or toggle a bound device.
+matter.on_off.off: some_id
+matter.on_off.on: some_id
+matter.on_off.toggle: some_id
+
+# Intended for motion sensors temporarily turning on a light.
+matter.on_off.on_with_timed_off:
+  endpoint_id: some_id
+  on_time: 150  # How long to turn on the light in multiples of 100ms. So 150 means 15 seconds.
+  # on_off_control: 
+  # off_wait_time:  # Time before accepting another on_with_timed_off command, in multiples of 100ms.
+```
+
+### LevelControl cluster
+
+LevelControl commands are used for dimming. Levels are raw Matter brightness levels, normally `0` to `254`.
+
+The following commands also have a version without `_with_on_off`. These commands don't turn on or off the light so that's usually not what you want.
+
+```yaml
+# Move directly to a brightness level.
+matter.level_control.move_to_level_with_on_off:
+  endpoint_id: some_id
+  level: 128
+  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+
+# Move continuously up or down.
+matter.level_control.move_with_on_off:
+  endpoint_id: some_id
+  move_mode: 0  # 0=up, 1=down.
+  # rate:  # Level units per second.
+
+# Step once by a fixed amount.
+matter.level_control.step_with_on_off:
+  endpoint_id: some_id
+  step_mode: 0  # 0=up, 1=down.
+  step_size: 25
+  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+
+# Stop a previous move command.
+matter.level_control.stop_with_on_off: some_id
 ```

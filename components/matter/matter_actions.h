@@ -8,75 +8,46 @@
 
 #include <esp_matter.h>
 
+#include <string>
+
 namespace esphome::matter {
 
 // Registers the esp_matter client request callbacks that build outgoing
-// command payloads. Called once during endpoint creation.
+// command data payloads. Called once during endpoint creation.
 void register_client_request_callbacks();
 
 // Sends a client command through the Binding cluster of the given local
-// endpoint. move_mode is only used for LevelControl Move commands.
+// endpoint. command_data must use esp-matter's JSON command-data format.
 void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
-                         chip::CommandId command, uint8_t move_mode = 0);
+                         chip::CommandId command,
+                         const char *command_data = "{}");
 
-template <typename... Ts>
-class MatterTurnOnAction : public Action<Ts...>,
-                           public Parented<MatterEndpointRef> {
+template <typename... Ts> class MatterSendCommandAction : public Action<Ts...> {
 public:
-  void play(Ts... x) override {
-    using namespace chip::app::Clusters;
-    send_client_command(this->parent_->endpoint_id, OnOff::Id,
-                        OnOff::Commands::On::Id);
+  void set_endpoint_ref(MatterEndpointRef *endpoint_ref) {
+    this->endpoint_ref_ = endpoint_ref;
   }
-};
-
-template <typename... Ts>
-class MatterTurnOffAction : public Action<Ts...>,
-                            public Parented<MatterEndpointRef> {
-public:
-  void play(Ts... x) override {
-    using namespace chip::app::Clusters;
-    send_client_command(this->parent_->endpoint_id, OnOff::Id,
-                        OnOff::Commands::Off::Id);
+  void set_endpoint_id(uint16_t endpoint_id) {
+    this->endpoint_id_ = endpoint_id;
   }
-};
+  void set_cluster_id(uint32_t cluster_id) { this->cluster_id_ = cluster_id; }
+  void set_command_id(uint32_t command_id) { this->command_id_ = command_id; }
+  void set_data(const char *data) { this->data_ = data; }
 
-template <typename... Ts>
-class MatterToggleAction : public Action<Ts...>,
-                           public Parented<MatterEndpointRef> {
-public:
   void play(Ts... x) override {
-    using namespace chip::app::Clusters;
-    send_client_command(this->parent_->endpoint_id, OnOff::Id,
-                        OnOff::Commands::Toggle::Id);
-  }
-};
-
-template <typename... Ts>
-class MatterDimAction : public Action<Ts...>,
-                        public Parented<MatterEndpointRef> {
-public:
-  void set_direction(uint8_t direction) { this->direction_ = direction; }
-  void play(Ts... x) override {
-    using namespace chip::app::Clusters;
-    send_client_command(this->parent_->endpoint_id, LevelControl::Id,
-                        LevelControl::Commands::MoveWithOnOff::Id,
-                        this->direction_);
+    uint16_t endpoint_id = this->endpoint_ref_ != nullptr
+                               ? this->endpoint_ref_->endpoint_id
+                               : this->endpoint_id_;
+    send_client_command(endpoint_id, this->cluster_id_, this->command_id_,
+                        this->data_.c_str());
   }
 
 protected:
-  uint8_t direction_{0}; // 0 = up, 1 = down
-};
-
-template <typename... Ts>
-class MatterDimStopAction : public Action<Ts...>,
-                            public Parented<MatterEndpointRef> {
-public:
-  void play(Ts... x) override {
-    using namespace chip::app::Clusters;
-    send_client_command(this->parent_->endpoint_id, LevelControl::Id,
-                        LevelControl::Commands::StopWithOnOff::Id);
-  }
+  MatterEndpointRef *endpoint_ref_{nullptr};
+  uint16_t endpoint_id_{0};
+  uint32_t cluster_id_{0};
+  uint32_t command_id_{0};
+  std::string data_{"{}"};
 };
 
 } // namespace esphome::matter
