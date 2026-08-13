@@ -29,15 +29,13 @@ Identify commands make a bound device identify itself. This is mostly useful whi
 ```yaml
 # Ask the device to identify itself for a number of seconds.
 matter.identify.identify:
-  endpoint_id: some_id
-  identify_time: 10  # Seconds. Use 0 to stop identifying.
+  endpoint_id:
+  identify_time:  # Seconds. Use 0 to stop identifying.
 
 # Trigger a specific identify effect, if the bound device supports it.
-# Common effect_identifier values are 0=blink, 1=breathe, 2=okay,
-# 0xFE=finish current effect and 0xFF=stop current effect.
 matter.identify.trigger_effect:
-  endpoint_id: some_id
-  effect_identifier: 0
+  endpoint_id:
+  effect_identifier:  # 0=blink, 1=breathe, 2=okay, 0xFE=finish current effect, 0xFF=stop current effect.
   # effect_variant: 
 ```
 
@@ -56,17 +54,17 @@ matter.on_off.toggle: some_id
 matter.on_off.off_with_effect:
   endpoint_id: some_id
   effect_identifier: 0
-  # effect_variant: 
+  # effect_variant: 0
 
 # Turn on and recall the device's global scene, if the device supports scenes.
 matter.on_off.on_with_recall_global_scene: some_id
 
 # Intended for motion sensors temporarily turning on a light.
 matter.on_off.on_with_timed_off:
-  endpoint_id: some_id
-  on_time: 150  # How long to turn on the light in multiples of 100ms. So 150 means 15 seconds.
-  # on_off_control: 
-  # off_wait_time:  # Time before accepting another on_with_timed_off command, in multiples of 100ms.
+  endpoint_id:
+  on_time:  # How long to turn on the light in multiples of 100ms. So 150 means 15 seconds.
+  # on_off_control: 0  # No idea what this does. You'll have to figure that out yourself.
+  # off_wait_time: 0  # Time before accepting another on_with_timed_off command, in multiples of 100ms.
 ```
 
 ### LevelControl cluster
@@ -78,45 +76,45 @@ The commands with `_with_on_off` also affect the OnOff state, which is usually w
 ```yaml
 # Move directly to a brightness level.
 matter.level_control.move_to_level:
-  endpoint_id: some_id
-  level: 128
-  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+  endpoint_id:
+  level:
+  # transition_time: 0  # In multiples of 100ms. So 10 means 1 second.
 
 # Move continuously up or down until a stop command is sent or the device
 # reaches its minimum/maximum level.
 matter.level_control.move:
-  endpoint_id: some_id
-  move_mode: 0  # 0=up, 1=down.
-  rate: 50  # Level units per second.
+  endpoint_id:
+  move_mode:  # 0=up, 1=down.
+  rate:  # Level units per second.
 
 # Step once by a fixed amount.
 matter.level_control.step:
-  endpoint_id: some_id
-  step_mode: 0  # 0=up, 1=down.
-  step_size: 25
-  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+  endpoint_id:
+  step_mode:  # 0=up, 1=down.
+  step_size:
+  # transition_time: 0  # In multiples of 100ms. So 10 means 1 second.
 
 # Stop a previous move command.
 matter.level_control.stop: some_id
 
 # Move directly to a brightness level and allow the device to update OnOff state.
 matter.level_control.move_to_level_with_on_off:
-  endpoint_id: some_id
-  level: 128
-  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+  endpoint_id:
+  level:
+  # transition_time: 0  # In multiples of 100ms. So 10 means 1 second.
 
 # Move continuously up or down and allow the device to update OnOff state.
 matter.level_control.move_with_on_off:
-  endpoint_id: some_id
-  move_mode: 0  # 0=up, 1=down.
-  # rate:  # Level units per second.
+  endpoint_id:
+  move_mode:  # 0=up, 1=down.
+  rate:  # Level units per second.
 
 # Step once by a fixed amount and allow the device to update OnOff state.
 matter.level_control.step_with_on_off:
-  endpoint_id: some_id
-  step_mode: 0  # 0=up, 1=down.
-  step_size: 25
-  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+  endpoint_id:
+  step_mode:  # 0=up, 1=down.
+  step_size:
+  # transition_time: 0  # In multiples of 100ms. So 10 means 1 second.
 
 # Stop a previous move-with-on-off command.
 matter.level_control.stop_with_on_off: some_id
