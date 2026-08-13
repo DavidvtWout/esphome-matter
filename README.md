@@ -35,6 +35,8 @@ Connectivity depends on which ESPHome networking components are configured:
 - **Matter-over-Ethernet**: Isn't supported yet and isn't actively being worked on. Feel free to implement it ;)
 - **BLE commissioning**: Currently broken but this is something that I want to work on. The idea is that esphome-matter falls back to BLE commissioning (the default for most matter devices) when no `wifi`, `openthread`, or `ethernet` component is configured.
 
+Binding (for example a button to a light) is working for matter-over-thread. For matter-over-wifi it also works but might be less stable because the CASE session is sometimes dropped.
+
 So far, `ESP32-C3`, `ESP32-C5` `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been tested and confirmed to work!
 
 See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for bugs and features that are being worked on.
