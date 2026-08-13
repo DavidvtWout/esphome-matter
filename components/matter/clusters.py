@@ -58,8 +58,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_LEVEL),  # TODO: support %
                     _field("U16", FIELD_TRANSITION_TIME, 0),  # TODO: support s
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE: {
@@ -67,8 +67,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_MOVE_MODE),  # TODO: support up/down aliases
                     _field("U8", FIELD_RATE),  # TODO: support %/s?
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STEP: {
@@ -77,15 +77,15 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U8", FIELD_STEP_MODE),
                     _field("U8", FIELD_STEP_SIZE),  # TODO: support %
                     _field("U16", FIELD_TRANSITION_TIME, 0),  # TODO: support s
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STOP: {
                 "id": 0x03,
                 "fields": [
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_TO_LEVEL_WITH_ON_OFF: {
@@ -93,8 +93,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_LEVEL),
                     _field("U16", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_WITH_ON_OFF: {
@@ -102,8 +102,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_MOVE_MODE),
                     _field("U8", FIELD_RATE, 50),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STEP_WITH_ON_OFF: {
@@ -112,15 +112,15 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U8", FIELD_STEP_MODE),
                     _field("U8", FIELD_STEP_SIZE),
                     _field("U16", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STOP_WITH_ON_OFF: {
                 "id": 0x07,
                 "fields": [
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             # COMMAND_MOVE_TO_CLOSEST_FREQUENCY: {"id": 0x08},
@@ -135,8 +135,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U8", FIELD_HUE),
                     _field("U8", FIELD_DIRECTION, 0),
                     _field("U16", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_HUE: {
@@ -144,8 +144,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_MOVE_MODE),
                     _field("U8", FIELD_RATE, 50),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STEP_HUE: {
@@ -154,8 +154,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U8", FIELD_STEP_MODE),
                     _field("U8", FIELD_STEP_SIZE),
                     _field("U8", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_TO_SATURATION: {
@@ -163,8 +163,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_SATURATION),
                     _field("U16", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_SATURATION: {
@@ -172,8 +172,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_MOVE_MODE),
                     _field("U8", FIELD_RATE, 50),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STEP_SATURATION: {
@@ -182,8 +182,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U8", FIELD_STEP_MODE),
                     _field("U8", FIELD_STEP_SIZE),
                     _field("U8", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_TO_HUE_AND_SATURATION: {
@@ -192,8 +192,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U8", FIELD_HUE),
                     _field("U8", FIELD_SATURATION),
                     _field("U16", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_TO_COLOR: {
@@ -202,8 +202,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U16", FIELD_COLOR_X),
                     _field("U16", FIELD_COLOR_Y),
                     _field("U16", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_COLOR: {
@@ -211,8 +211,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("I16", FIELD_RATE_X),
                     _field("I16", FIELD_RATE_Y),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STEP_COLOR: {
@@ -221,8 +221,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("I16", FIELD_STEP_X),
                     _field("I16", FIELD_STEP_Y),
                     _field("U16", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_TO_COLOR_TEMPERATURE: {
@@ -230,8 +230,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U16", FIELD_COLOR_TEMPERATURE_MIREDS),
                     _field("U16", FIELD_TRANSITION_TIME, 0),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             # COMMAND_ENHANCED_MOVE_TO_HUE: {"id": 0x40},
@@ -246,15 +246,15 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U8", FIELD_DIRECTION),
                     _field("U16", FIELD_TIME),
                     _field("U16", FIELD_START_HUE),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STOP_MOVE_STEP: {
                 "id": 0x47,
                 "fields": [
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_MOVE_COLOR_TEMPERATURE: {
@@ -264,8 +264,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U16", FIELD_RATE),
                     _field("U16", FIELD_COLOR_TEMPERATURE_MINIMUM_MIREDS),
                     _field("U16", FIELD_COLOR_TEMPERATURE_MAXIMUM_MIREDS),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
             COMMAND_STEP_COLOR_TEMPERATURE: {
@@ -276,8 +276,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U16", FIELD_TRANSITION_TIME, 0),
                     _field("U16", FIELD_COLOR_TEMPERATURE_MINIMUM_MIREDS),
                     _field("U16", FIELD_COLOR_TEMPERATURE_MAXIMUM_MIREDS),
-                    _field("U8", CONF_OPTIONS_MASK, 0),
-                    _field("U8", CONF_OPTIONS_OVERRIDE, 0),
+                    _field("U8", FIELD_OPTIONS_MASK, 0),
+                    _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
             },
         },

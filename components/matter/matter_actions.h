@@ -13,7 +13,7 @@
 namespace esphome::matter {
 
 // Registers the esp_matter client request callbacks that build outgoing
-// command payloads. Called once during endpoint creation.
+// command data payloads. Called once during endpoint creation.
 void register_client_request_callbacks();
 
 // Sends a client command through the Binding cluster of the given local
@@ -32,14 +32,14 @@ public:
   }
   void set_cluster_id(uint32_t cluster_id) { this->cluster_id_ = cluster_id; }
   void set_command_id(uint32_t command_id) { this->command_id_ = command_id; }
-  void set_payload(const char *payload) { this->payload_ = payload; }
+  void set_data(const char *data) { this->data_ = data; }
 
   void play(Ts... x) override {
     uint16_t endpoint_id = this->endpoint_ref_ != nullptr
                                ? this->endpoint_ref_->endpoint_id
                                : this->endpoint_id_;
     send_client_command(endpoint_id, this->cluster_id_, this->command_id_,
-                        this->payload_.c_str());
+                        this->data_.c_str());
   }
 
 protected:
@@ -47,7 +47,7 @@ protected:
   uint16_t endpoint_id_{0};
   uint32_t cluster_id_{0};
   uint32_t command_id_{0};
-  std::string payload_{"{}"};
+  std::string data_{"{}"};
 };
 
 } // namespace esphome::matter

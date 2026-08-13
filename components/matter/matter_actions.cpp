@@ -19,8 +19,7 @@ static void invoke_response_cb(void *,
                                const chip::app::ConcreteCommandPath &path,
                                const chip::app::StatusIB &status,
                                chip::TLV::TLVReader *) {
-  ESP_LOGD(TAG,
-           "Invoke response endpoint=%u cluster=%lu command=%lu status=0x%02x",
+  ESP_LOGD(TAG, "Response: endpoint=%u cluster=%lu command=%lu status=0x%02x",
            static_cast<unsigned>(path.mEndpointId),
            static_cast<unsigned long>(path.mClusterId),
            static_cast<unsigned long>(path.mCommandId),
@@ -28,7 +27,7 @@ static void invoke_response_cb(void *,
 }
 
 static void invoke_failure_cb(void *, CHIP_ERROR error) {
-  ESP_LOGE(TAG, "Invoke failed: %" CHIP_ERROR_FORMAT, error.Format());
+  ESP_LOGW(TAG, "Send command failed: %" CHIP_ERROR_FORMAT, error.Format());
 }
 
 // Builds the JSON command payload for outgoing client commands. Called by
@@ -37,15 +36,13 @@ static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
                              esp_matter::client::request_handle_t *req_handle,
                              void *priv_data) {
   if (req_handle->type != esp_matter::client::INVOKE_CMD) {
-    ESP_LOGV(TAG, "skipping client_invoke_cb");
     return;
   }
-  ESP_LOGV(TAG, "client_invoke_cb");
   const char *cmd_data =
       req_handle->request_data != nullptr
           ? static_cast<const char *>(req_handle->request_data)
           : "{}";
-  ESP_LOGV(TAG, "client_invoke_cb: %s", cmd_data);
+  ESP_LOGV(TAG, "Sending request");
   esp_matter::client::interaction::invoke::send_request(
       nullptr, peer_device, req_handle->command_path, cmd_data,
       invoke_response_cb, invoke_failure_cb, chip::NullOptional);
@@ -56,15 +53,13 @@ client_group_invoke_cb(uint8_t fabric_index,
                        esp_matter::client::request_handle_t *req_handle,
                        void *priv_data) {
   if (req_handle->type != esp_matter::client::INVOKE_CMD) {
-    ESP_LOGV(TAG, "skipping client_group_invoke_cb");
     return;
   }
-  ESP_LOGV(TAG, "client_group_invoke_cb");
   const char *cmd_data =
       req_handle->request_data != nullptr
           ? static_cast<const char *>(req_handle->request_data)
           : "{}";
-  ESP_LOGV(TAG, "client_group_invoke_cb: %s", cmd_data);
+  ESP_LOGV(TAG, "Sending group request");
   esp_matter::client::interaction::invoke::send_group_request(
       fabric_index, req_handle->command_path, cmd_data);
 }
@@ -95,9 +90,12 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
              static_cast<uint32_t>(cluster));
     return;
   }
-  ESP_LOGV(TAG, "Sending command nodes=[%s] endpoint=%u cluster=%u command=%u",
-           node_ids.c_str(), endpoint_id, static_cast<uint32_t>(cluster),
-           static_cast<uint32_t>(command));
+  ESP_LOGD(
+      TAG,
+      "Sending command: nodes=[%s] endpoint=%u cluster=%u command=%u data=%s",
+      node_ids.c_str(), endpoint_id, static_cast<uint32_t>(cluster),
+      static_cast<uint32_t>(command),
+      command_data != nullptr ? command_data : "{}");
 
   esp_matter::client::request_handle_t req;
   req.type = esp_matter::client::INVOKE_CMD;

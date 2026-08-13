@@ -50,7 +50,7 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
             ),
             cv.Required(CONF_CLUSTER_ID): cv.hex_uint32_t,
             cv.Required(CONF_COMMAND_ID): cv.hex_uint32_t,
-            cv.Required(CONF_PAYLOAD): str,
+            cv.Required(CONF_DATA): str,
         }
     ),
     synchronous=True,
@@ -59,14 +59,14 @@ async def matter_send_command_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
     """The matter._send_command action is an escape hatch to send arbitrary commands that have not
-    yet been implemented by esphome-matter. It doesn't support payload formatting so you have to
+    yet been implemented by esphome-matter. It doesn't support data formatting so you have to
     provide an esp-matter compatible string yourself.
 
       matter._send_command:
         endpoint_id: some_endpoint
         cluster_id: 8 # LevelControl
         command_id: 0 # MoveToLevel
-        payload: '{"0:U8":0,"1:U16":50,"2:U8":0,"3:U8":0}'
+        data: '{"0:U8":0,"1:U16":50,"2:U8":0,"3:U8":0}'
 
     Don't forget to also enable the cluster if it isn't enabled by default:
 
@@ -85,7 +85,7 @@ async def matter_send_command_to_code(
         cg.add(var.set_endpoint_id(endpoint_id))
     cg.add(var.set_cluster_id(config[CONF_CLUSTER_ID]))
     cg.add(var.set_command_id(config[CONF_COMMAND_ID]))
-    cg.add(var.set_payload(config[CONF_PAYLOAD]))
+    cg.add(var.set_data(config[CONF_DATA]))
     return var
 
 
@@ -152,12 +152,12 @@ async def _new_send_command_action(
     cg.add(var.set_endpoint_ref(endpoint_ref))
     cg.add(var.set_cluster_id(cluster_id))
     cg.add(var.set_command_id(command_id))
-    cg.add(var.set_payload(_build_payload(config, cluster_name, command_name)))
+    cg.add(var.set_data(_build_data(config, cluster_name, command_name)))
     return var
 
 
-def _build_payload(config, cluster_name: str, command_name: str) -> str:
-    """Creates a payload that's compatible with esp_matter::client::request_handle.request_data.
+def _build_data(config, cluster_name: str, command_name: str) -> str:
+    """Creates a date payload that's compatible with esp_matter::client::request_handle.request_data.
 
     It's JSON formatted crap... Here's an example:
 
@@ -165,7 +165,7 @@ def _build_payload(config, cluster_name: str, command_name: str) -> str:
 
     This means that the first field is an uint8 with a value of 0 and the second field is uint16 with value 10.
     """
-    payload = {}
+    data = {}
 
     command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
     for i, field in enumerate(command.get("fields", [])):
@@ -176,9 +176,9 @@ def _build_payload(config, cluster_name: str, command_name: str) -> str:
                 f"matter.{_snake_case(cluster_name)}.{_snake_case(command_name)}: missing required field '{field['key']}'"
             )
 
-        payload[f"{i}:{field_type}"] = _field_validator(field_type)(field_value)
+        data[f"{i}:{field_type}"] = _field_validator(field_type)(field_value)
 
-    return json.dumps(payload)
+    return json.dumps(data)
 
 
 def _resolve_command_id(cluster_name: str, command_name: str) -> tuple[int, int]:
