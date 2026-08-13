@@ -19,6 +19,7 @@
 #include <platform/ESP32/ESP32DnssdImpl.h>
 #endif // USE_WIFI
 
+#include <cstring>
 #include <memory>
 #include <new>
 #include <string>
@@ -48,18 +49,42 @@ const char *protocol_to_srp_suffix(chip::Dnssd::DnssdServiceProtocol protocol) {
   return protocol_string[0] == '?' ? nullptr : protocol_string;
 }
 
-struct ResolveContext {
+struct MatterResolveContext {
   chip::Dnssd::DnssdResolveCallback callback;
   void *context;
+  char name[chip::Dnssd::Common::kInstanceNameMaxLength + 1] = "";
+  char type[chip::Dnssd::kDnssdTypeMaxSize + 1] = "";
+  chip::Dnssd::DnssdServiceProtocol protocol =
+      chip::Dnssd::DnssdServiceProtocol::kDnssdProtocolUnknown;
 };
 
 void resolve_callback(void *context, chip::Dnssd::DnssdService *service,
                       const chip::Span<chip::Inet::IPAddress> &addresses,
                       CHIP_ERROR error) {
-  auto *resolve_context = static_cast<ResolveContext *>(context);
+  auto *resolve_context = static_cast<MatterResolveContext *>(context);
 
-  if (service != nullptr) {
-    ESP_LOGD(TAG, "resolved %s.%s.%s as %s:%u", safe_string(service->mName),
+  if (error != CHIP_NO_ERROR) {
+#ifdef USE_OPENTHREAD
+    if (error.IsRange(chip::ChipError::Range::kOpenThread)) {
+      otError ot_error = static_cast<otError>(error.GetValue());
+      ESP_LOGW(TAG,
+               "Resolve %s.%s.%s failed: chip=0x%08" CHIP_ERROR_INTEGER_FORMAT
+               " openthread=%u (%s)",
+               safe_string(resolve_context->name),
+               safe_string(resolve_context->type),
+               protocol_to_string(resolve_context->protocol), error.AsInteger(),
+               static_cast<unsigned>(ot_error),
+               otThreadErrorToString(ot_error));
+    } else
+#endif // USE_OPENTHREAD
+      ESP_LOGW(TAG, "Resolve %s.%s.%s failed: %" CHIP_ERROR_FORMAT,
+               safe_string(resolve_context->name),
+               safe_string(resolve_context->type),
+               protocol_to_string(resolve_context->protocol), error.Format());
+  } else if (service == nullptr) {
+    ESP_LOGW(TAG, "Can't resolve because DnssdService isn't initialized");
+  } else {
+    ESP_LOGD(TAG, "Resolved %s.%s.%s as %s:%u", safe_string(service->mName),
              safe_string(service->mType),
              protocol_to_string(service->mProtocol),
              safe_string(service->mHostName), service->mPort);
@@ -69,8 +94,6 @@ void resolve_callback(void *context, chip::Dnssd::DnssdService *service,
       ESP_LOGV(TAG, "%s address: %s", safe_string(service->mHostName),
                address_string);
     }
-  } else {
-    ESP_LOGW(TAG, "resolved service=(null)");
   }
 
   if (resolve_context->callback != nullptr) {
@@ -205,7 +228,7 @@ CHIP_ERROR ChipDnssdPublishService(const DnssdService *service,
   if (service == nullptr) {
     ESP_LOGW(TAG, "Can't publish because DnssdService isn't initialized");
   } else {
-    ESP_LOGD(TAG, "publishing %s.%s.%s as %s:%u", service->mName,
+    ESP_LOGD(TAG, "Publishing %s.%s.%s as %s:%u", service->mName,
              service->mType, protocol_to_string(service->mProtocol),
              service->mHostName, service->mPort);
   }
@@ -234,7 +257,7 @@ CHIP_ERROR ChipDnssdPublishService(const DnssdService *service,
   if (chip_error == CHIP_NO_ERROR) {
     matter_services.push_back(std::move(entry));
   } else {
-    ESP_LOGW(TAG, "publish failed: %d", error);
+    ESP_LOGW(TAG, "Publish failed: %d", error);
   }
 
   if (callback != nullptr) {
@@ -250,13 +273,13 @@ CHIP_ERROR ChipDnssdPublishService(const DnssdService *service,
 }
 
 CHIP_ERROR ChipDnssdRemoveServices() {
-  ESP_LOGD(TAG, "remove services");
+  ESP_LOGD(TAG, "Remove services");
 #ifdef USE_OPENTHREAD
   auto lock = esphome::openthread::InstanceLock::try_acquire(2000);
   VerifyOrReturnError(static_cast<bool>(lock), CHIP_ERROR_INCORRECT_STATE);
 
   for (auto &entry : matter_services) {
-    ESP_LOGD(TAG, "marking service for removal: %s.%s", entry->instance.c_str(),
+    ESP_LOGD(TAG, "Marking service for removal: %s.%s", entry->instance.c_str(),
              entry->type.c_str());
     entry->invalid = true;
   }
@@ -268,7 +291,7 @@ CHIP_ERROR ChipDnssdRemoveServices() {
 }
 
 CHIP_ERROR ChipDnssdFinalizeServiceUpdate() {
-  ESP_LOGD(TAG, "finalize service update");
+  ESP_LOGD(TAG, "Finalize service update");
 #ifdef USE_OPENTHREAD
   auto lock = esphome::openthread::InstanceLock::try_acquire(2000);
   VerifyOrReturnError(static_cast<bool>(lock), CHIP_ERROR_INCORRECT_STATE);
@@ -276,7 +299,7 @@ CHIP_ERROR ChipDnssdFinalizeServiceUpdate() {
   otInstance *instance = lock.get_instance();
   for (auto it = matter_services.begin(); it != matter_services.end();) {
     if ((*it)->invalid) {
-      ESP_LOGD(TAG, "removing stale service: %s.%s", (*it)->instance.c_str(),
+      ESP_LOGD(TAG, "Removing stale service: %s.%s", (*it)->instance.c_str(),
                (*it)->type.c_str());
       otSrpClientClearService(instance, &(*it)->service);
       it = matter_services.erase(it);
@@ -293,7 +316,7 @@ CHIP_ERROR ChipDnssdBrowse(const char *type, DnssdServiceProtocol protocol,
                            chip::Inet::InterfaceId interface,
                            DnssdBrowseCallback callback, void *context,
                            intptr_t *browse_identifier) {
-  ESP_LOGD(TAG, "browse type=%s protocol=%s", type != nullptr ? type : "(null)",
+  ESP_LOGD(TAG, "Browse type=%s protocol=%s", type != nullptr ? type : "(null)",
            protocol_to_string(protocol));
 #ifdef USE_OPENTHREAD
   return OpenThreadDnssdBrowse(type, protocol, address_type, interface,
@@ -315,14 +338,19 @@ CHIP_ERROR ChipDnssdResolve(DnssdService *service,
     ESP_LOGW(TAG, "Can't resolve because DnssdService isn't initialized");
     return CHIP_ERROR_INVALID_ARGUMENT;
   } else {
-    ESP_LOGD(TAG, "resolving %s.%s.%s", service->mName, service->mType,
+    ESP_LOGD(TAG, "Resolving %s.%s.%s", service->mName, service->mType,
              protocol_to_string(service->mProtocol));
   }
 
-  auto *resolve_context = chip::Platform::New<ResolveContext>();
+  auto *resolve_context = chip::Platform::New<MatterResolveContext>();
   VerifyOrReturnError(resolve_context != nullptr, CHIP_ERROR_NO_MEMORY);
   resolve_context->callback = callback;
   resolve_context->context = context;
+  strncpy(resolve_context->name, service->mName, sizeof(resolve_context->name));
+  resolve_context->name[sizeof(resolve_context->name) - 1] = '\0';
+  strncpy(resolve_context->type, service->mType, sizeof(resolve_context->type));
+  resolve_context->type[sizeof(resolve_context->type) - 1] = '\0';
+  resolve_context->protocol = service->mProtocol;
 
 #ifdef USE_OPENTHREAD
   CHIP_ERROR error = OpenThreadDnssdResolve(service, interface,
@@ -333,7 +361,7 @@ CHIP_ERROR ChipDnssdResolve(DnssdService *service,
       EspDnssdResolve(service, interface, resolve_callback, resolve_context);
 #endif // USE_WIFI
   if (error != CHIP_NO_ERROR) {
-    ESP_LOGW(TAG, "resolve start failed: %" CHIP_ERROR_FORMAT, error.Format());
+    ESP_LOGW(TAG, "Resolve start failed: %" CHIP_ERROR_FORMAT, error.Format());
     chip::Platform::Delete(resolve_context);
   }
   return error;
