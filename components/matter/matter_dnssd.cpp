@@ -313,6 +313,7 @@ CHIP_ERROR ChipDnssdResolve(DnssdService *service,
 
   if (service == nullptr) {
     ESP_LOGW(TAG, "Can't resolve because DnssdService isn't initialized");
+    return CHIP_ERROR_INVALID_ARGUMENT;
   } else {
     ESP_LOGD(TAG, "resolving %s.%s.%s", service->mName, service->mType,
              protocol_to_string(service->mProtocol));
