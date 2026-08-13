@@ -67,10 +67,6 @@ private:
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
-  // Tracks network connectivity so we can tell CHIP to (re)advertise DNS-SD
-  // when the ESPHome-managed interface comes up (see loop() in
-  // matter_component.cpp).
-  bool network_was_connected_{false};
   std::vector<MatterOnOffSwitch> on_off_switches_;
   std::vector<MatterDimmerSwitch> dimmer_switches_;
 #ifdef USE_SENSOR

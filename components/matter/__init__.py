@@ -212,19 +212,12 @@ async def to_code(config: ConfigType):
         "CONFIG_ENABLE_MATTER_OVER_THREAD", not has_connectivity or use_openthread
     )  # connectedhomeip
     if use_openthread:
-        # Force the Matter Thread DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
-        # component sources that the static-link step still discards unless an exported symbol is referenced.
-        cg.add_build_flag("-Wl,-u,esphome_matter_link_thread_dnssd")
-
         # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled. It stops
         # esp-matter from initializing an openthread stack (the openthread component already does that).
         add_idf_sdkconfig_option(
             "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False
         )  # esp-matter
 
-        # Force the Matter Thread DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
-        # component sources that the static-link step still discards unless an exported symbol is referenced.
-        cg.add_build_flag("-Wl,-u,esphome_matter_link_thread_dnssd")
         # add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
         add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)  # esp-matter
         add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
@@ -232,6 +225,11 @@ async def to_code(config: ConfigType):
         # TODO: fix the network implementation of ESPHome. Currently the network component doesn't even support IPv6-only.
         # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
         # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
+
+    if use_openthread or use_wifi:
+        # Force the Matter DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
+        # component sources that the static-link step still discards unless an exported symbol is referenced.
+        cg.add_build_flag("-Wl,-u,esphome_matter_link_dnssd")
 
     add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
     # CONFIG_ENABLE_WIFI_STATION is enabled by default and must explicitly be disabled when not needed.
@@ -249,7 +247,6 @@ async def to_code(config: ConfigType):
         cg.add_build_flag(
             "-Wl,--wrap=_ZN4chip11DeviceLayer8Internal10ESP32Utils13InitWiFiStackEv"
         )
-        cg.add_build_flag("-Wl,-u,esphome_matter_link_wifi_dnssd")
     if use_wifi or use_ethernet:
         # lwIP must add the route to the thread network via the border router to its routing table.
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_ND6_ROUTE_INFO_OPTION_SUPPORT", True)
