@@ -22,9 +22,18 @@ Help is very welcome! I'm still a bit new to the ESPHome, Espressif, and connect
 
 Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas.
 
-# Progress
+# Supported Hardware
 
-matter-over-thread and matter-over-wifi with a pre-configured network are both working! matter-over-ethernet isn't supported yet and isn't actively being worked on. Binding (for example a button to a light) is working now for matter-over-thread. Binding also works on wifi, but sometimes it takes a few seconds before a connection is made.
+The component only supports `ESP32` targets built with the **ESP-IDF** framework; the Arduino framework is not
+supported. It further requires the `platformio` toolchain (`esp32.toolchain: platformio`).
+
+Connectivity depends on which ESPHome networking components are configured:
+
+- **Matter-over-Wi-Fi**: If `wifi` is configured, Matter announces itself over mDNS and can be commissioned
+  on the network.
+- **Matter-over-Thread**: Requires the `openthread` component and ESPHome **2026.6.0** or newer.
+- **Matter-over-Ethernet**: Isn't supported yet and isn't actively being worked on. Feel free to implement it ;)
+- **BLE commissioning**: Currently broken but this is something that I want to work on. The idea is that esphome-matter falls back to BLE commissioning (the default for most matter devices) when no `wifi`, `openthread`, or `ethernet` component is configured.
 
 So far, `ESP32-C3`, `ESP32-C5` `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been tested and confirmed to work!
 
@@ -32,9 +41,11 @@ See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for b
 
 # Commissioning
 
-If Home Assistant is your Matter Commissioner, you must check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
+Because ESPHome devices already have their Wi-Fi or Thread credentials from your YAML configuration, commissioning
+works differently than with most other Matter devices. You still need to commission the device to a Matter fabric, but this does not happen over BLE (bluetooth) like with most matter devices.
 
-Directly after flashing ESPHome (and after every restart), the commissioning code (starting with `MT:`) is printed in the logs:
+After flashing, the device prints a setup code (`SetupQRCode`) to the logs on every boot:
+
 ```
 [C][matter]: Matter:
 [C][matter]:   SetupQRCode: MT:Y.K904QI14-O992WI00
@@ -44,7 +55,18 @@ Directly after flashing ESPHome (and after every restart), the commissioning cod
 [C][matter]:   Fabrics: none
 ```
 
-Copy the code or open the link and scan the QR-code to commission the device. In python-matter-server you can commission the device with the `Commission existing device` option.
+Copy the code or open the link and scan the QR-code to commission the device.
+
+- **Home Assistant**: If HA is your Matter Commissioner, you must check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
+- **python-matter-server**: Commission the device with the `Commission existing device` option. Accepts dev certificates by default.
+- **Homey**: ???
+- **Google Home**: ???
+- **Apple Home**: ???
+- **Samsung SmartThings**: ???
+- **Amazon**: ???
+
+If you tried commissioning to any of the smart home systems with a `???`, please [leave a comment](https://github.com/DavidvtWout/esphome-matter/discussions/44)!
+
 Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window but only if it hasn't joined any fabrics yet.
 
 # Example config
@@ -77,6 +99,9 @@ openthread:
   ...
 
 matter:
+  # Endpoint order is significant: each entry is assigned an endpoint ID based on its position
+  # in the list. Once a device has been commissioned, existing entries should not be removed
+  # or reordered or the Matter fabric may lose track of previously bound endpoints.
   endpoints:
     - dimmer_switch:
       id: dimmer_endpoint
@@ -201,3 +226,16 @@ matter.level_control.step_with_on_off:
 # Stop a previous move command.
 matter.level_control.stop_with_on_off: some_id
 ```
+
+# Current Limitations
+
+- Only one device type is supported per endpoint.
+- Matter-over-Ethernet has not been verified.
+- BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
+- The commissioning window cannot be manually re-opened after a device has joined a fabric.
+
+# See Also
+
+- [esp-matter](https://github.com/espressif/esp-matter)
+- [connectedhomeip (espressif's fork)](https://github.com/espressif/connectedhomeip)
+- [Matter specification (CSA)](https://csa-iot.org/all-solutions/matter/)
