@@ -24,7 +24,7 @@ That being said, esphome-matter is usable now so give it a try!
 
 Help is very welcome! I'm still a bit new to the ESPHome, Espressif, and connectedhomeip ecosystems. If you know your way around any of these and spot something wrong or have ideas, please open an issue or PR.
 
-Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas.
+Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas. 
 
 # Supported Hardware
 
@@ -244,4 +244,4 @@ matter.level_control.stop_with_on_off: some_id
 
 - [esp-matter](https://github.com/espressif/esp-matter)
 - [connectedhomeip (espressif's fork)](https://github.com/espressif/connectedhomeip)
-- [Matter specification (CSA)](https://csa-iot.org/all-solutions/matter/)
+- [Matter specification (CSA)](https://csa-iot.org/developer-resource/specifications-download-request/)
