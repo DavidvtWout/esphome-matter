@@ -11,7 +11,7 @@ CONF_COLOUR_TEMPERATURE_LIGHT = "color_temperature_light"
 CONF_EXTENDED_COLOUR_LIGHT = "extended_color_light"
 
 # Switches
-CONF_ON_OFF_SWITCH = "on_off_switch"
+CONF_ON_OFF_LIGHT_SWITCH = "on_off_light_switch"
 CONF_DIMMER_SWITCH = "dimmer_switch"
 
 # Sensors
