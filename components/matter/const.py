@@ -9,11 +9,19 @@ CONF_COLOUR_TEMPERATURE_LIGHT = "color_temperature_light"
 CONF_EXTENDED_COLOUR_LIGHT = "extended_color_light"
 
 # Switches
-CONF_ON_OFF_SWITCH = "on_off_switch"
+CONF_ON_OFF_LIGHT_SWITCH = "on_off_light_switch"
 CONF_DIMMER_SWITCH = "dimmer_switch"
+CONF_COLOUR_DIMMER_SWITCH = "color_dimmer_switch"
+CONF_GENERIC_SWITCH = "generic_switch"
 
 # Sensors
 CONF_TEMPERATURE_SENSOR = "temperature_sensor"
+CONF_HUMIDITY_SENSOR = "humidity_sensor"
+CONF_OCCUPANCY_SENSOR = "occupancy_sensor"
+CONF_CONTACT_SENSOR = "contact_sensor"
+CONF_LIGHT_SENSOR = "light_sensor"
+CONF_PRESSURE_SENSOR = "pressure_sensor"
+CONF_FLOW_SENSOR = "flow_sensor"
 
 # Actions
 CONF_CLUSTER_ID = "cluster_id"

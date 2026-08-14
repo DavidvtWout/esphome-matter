@@ -16,29 +16,8 @@ from .const import *
 from .types import MatterEndpointRef
 
 
-def _none_to_dict(value):
-    """Allow a bare `on_off_switch:` (no options)."""
-    return {} if value is None else value
-
-
-# Client switch endpoints take no options: they only define the Matter device
-# type (clusters + Binding). Behaviour is wired in YAML automations using the
-# matter.* actions, referencing the endpoint's id.
-ON_OFF_SWITCH_SCHEMA = cv.All(_none_to_dict, cv.Schema({}))
-
-DIMMER_SWITCH_SCHEMA = cv.All(_none_to_dict, cv.Schema({}))
-
-TEMPERATURE_SENSOR_SCHEMA = cv.Schema(
-    {
-        cv.Required(CONF_SENSOR_ID): cv.use_id(sensor.Sensor),
-    }
-)
-
-LIGHT_SCHEMA = cv.Schema(
-    {
-        cv.Required(CONF_LIGHT_ID): cv.use_id(light.LightState),
-    }
-)
+def _maybe_empty_schema(schema):
+    return lambda value: schema({} if value is None else value)
 
 
 def _validate_endpoint(config):
@@ -51,19 +30,43 @@ def _validate_endpoint(config):
     return config
 
 
-# Each list entry is one Matter endpoint; the key selects the device type.
-# Endpoint ids are assigned in list order, so entries must never be removed
-# or reordered once the device is commissioned; append only.
+LIGHT_SCHEMA = _maybe_empty_schema(
+    cv.Schema(
+        {
+            cv.Required(CONF_LIGHT_ID): cv.use_id(light.LightState),
+        }
+    )
+)
+SENSOR_SCHEMA = _maybe_empty_schema(
+    cv.Schema(
+        {
+            cv.Required(CONF_SENSOR_ID): cv.use_id(sensor.Sensor),
+        }
+    )
+)
+
 ENDPOINT_SCHEMA = cv.All(
     cv.Schema(
         {
-            # Referenceable from matter.* actions via endpoint_ref.
             cv.GenerateID(): cv.declare_id(MatterEndpointRef),
-            cv.Optional(CONF_ON_OFF_SWITCH): ON_OFF_SWITCH_SCHEMA,
-            cv.Optional(CONF_DIMMER_SWITCH): DIMMER_SWITCH_SCHEMA,
-            cv.Optional(CONF_TEMPERATURE_SENSOR): TEMPERATURE_SENSOR_SCHEMA,
+            # Lights
             cv.Optional(CONF_ON_OFF_LIGHT): LIGHT_SCHEMA,
             cv.Optional(CONF_DIMMABLE_LIGHT): LIGHT_SCHEMA,
+            cv.Optional(CONF_COLOUR_TEMPERATURE_LIGHT): LIGHT_SCHEMA,
+            cv.Optional(CONF_EXTENDED_COLOUR_LIGHT): LIGHT_SCHEMA,
+            # Switches
+            cv.Optional(CONF_ON_OFF_LIGHT_SWITCH): cv.Schema({}),
+            cv.Optional(CONF_DIMMER_SWITCH): cv.Schema({}),
+            cv.Optional(CONF_COLOUR_DIMMER_SWITCH): cv.Schema({}),
+            cv.Optional(CONF_GENERIC_SWITCH): cv.Schema({}),
+            # Sensors
+            cv.Optional(CONF_TEMPERATURE_SENSOR): SENSOR_SCHEMA,
+            cv.Optional(CONF_HUMIDITY_SENSOR): SENSOR_SCHEMA,
+            cv.Optional(CONF_OCCUPANCY_SENSOR): SENSOR_SCHEMA,
+            cv.Optional(CONF_CONTACT_SENSOR): SENSOR_SCHEMA,
+            cv.Optional(CONF_LIGHT_SENSOR): SENSOR_SCHEMA,
+            cv.Optional(CONF_PRESSURE_SENSOR): SENSOR_SCHEMA,
+            cv.Optional(CONF_FLOW_SENSOR): SENSOR_SCHEMA,
         }
     ),
     _validate_endpoint,
@@ -73,7 +76,7 @@ ENDPOINT_SCHEMA = cv.All(
 async def configure_endpoints(var, config: ConfigType):
     for ep_conf in config[CONF_ENDPOINTS]:
         ref = cg.new_Pvariable(ep_conf[CONF_ID])
-        if CONF_ON_OFF_SWITCH in ep_conf:
+        if CONF_ON_OFF_LIGHT_SWITCH in ep_conf:
             cg.add(var.add_on_off_switch(ref))
         elif CONF_DIMMER_SWITCH in ep_conf:
             cg.add(var.add_dimmer_switch(ref))
