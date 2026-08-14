@@ -7,6 +7,7 @@
 
 #include "matter_endpoints.h"
 
+#include <functional>
 #include <vector>
 
 #include <esp_matter.h>
@@ -28,39 +29,21 @@ public:
   }
 
   void factory_reset();
-  void add_on_off_switch(MatterEndpointRef *ref,
-                         uint16_t requested_endpoint_id = 0) {
-    this->on_off_switches_.push_back({ref, requested_endpoint_id, 0});
+  template <typename ConfigT,
+            esp_matter::endpoint_t *(*CreateFn)(esp_matter::node_t *, ConfigT *,
+                                                uint8_t, void *)>
+  void register_endpoint(MatterEndpointRef *ref) {
+    this->endpoint_registrations_.push_back(
+        new MatterEndpointRegistration<ConfigT, CreateFn>(ref));
   }
-  void add_dimmer_switch(MatterEndpointRef *ref,
-                         uint16_t requested_endpoint_id = 0) {
-    this->dimmer_switches_.push_back({ref, requested_endpoint_id, 0});
-  }
+#ifdef USE_LIGHT
+  void map_light_to_endpoint(light::LightState *light, MatterEndpointRef *ref);
+#endif
 #ifdef USE_SENSOR
-  void add_temperature_sensor(sensor::Sensor *sensor, MatterEndpointRef *ref,
-                              uint16_t requested_endpoint_id = 0) {
-    this->temperature_sensors_.push_back(
-        {sensor, ref, requested_endpoint_id, 0});
-  }
+  void map_sensor_to_endpoint(sensor::Sensor *sensor, MatterEndpointRef *ref);
 #endif
 #ifdef USE_LIGHT
-  void add_on_off_light(light::LightState *light, MatterEndpointRef *ref,
-                        uint16_t requested_endpoint_id = 0) {
-    this->lights_.push_back(
-        new MatterLight(light, false, ref, requested_endpoint_id));
-  }
-  void add_dimmable_light(light::LightState *light, MatterEndpointRef *ref,
-                          uint16_t requested_endpoint_id = 0) {
-    this->lights_.push_back(
-        new MatterLight(light, true, ref, requested_endpoint_id));
-  }
-  MatterLight *get_light_by_endpoint(uint16_t endpoint_id) {
-    for (auto *ml : this->lights_) {
-      if (ml->endpoint_id == endpoint_id)
-        return ml;
-    }
-    return nullptr;
-  }
+  MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
 #endif
   // Public wrapper around the protected Component scheduler; used by the
   // Matter-thread callbacks to hop onto the main loop (defer is thread-safe).
@@ -75,14 +58,9 @@ private:
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
-  std::vector<MatterOnOffSwitch> on_off_switches_;
-  std::vector<MatterDimmerSwitch> dimmer_switches_;
-#ifdef USE_SENSOR
-  std::vector<MatterTemperatureSensor> temperature_sensors_;
-#endif
-#ifdef USE_LIGHT
-  std::vector<MatterLight *> lights_;
-#endif
+
+  std::vector<MatterEndpointRegistrationBase *> endpoint_registrations_;
+  std::vector<MatterEndpointMappingBase *> mappings_;
 };
 
 extern MatterComponent *
