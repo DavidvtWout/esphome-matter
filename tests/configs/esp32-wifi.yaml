@@ -1,0 +1,87 @@
+esphome:
+  name: matter-ci-wifi
+
+substitutions:
+  esp32_variant: ESP32C6
+
+esp32:
+  toolchain: platformio
+  variant: ${esp32_variant}
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+wifi:
+  ssid: ci-test-network
+  password: ci-test-password
+
+matter:
+  endpoints:
+    - dimmer_switch:
+      id: dimmer_endpoint
+    - temperature_sensor:
+        sensor_id: internal_temp
+    - on_off_light:
+        light_id: user_led
+
+binary_sensor:
+  - id: button_up
+    platform: gpio
+    pin:
+      number: GPIO0
+      mode:
+        pullup: true
+        input: true
+      inverted: true
+    on_click:
+      matter.on_off.on: dimmer_endpoint
+    on_press:
+      matter.level_control.move_with_on_off:
+        endpoint_id: dimmer_endpoint
+        move_mode: 0
+        rate: 50
+    on_release:
+      matter.level_control.stop_with_on_off: dimmer_endpoint
+  - id: button_down
+    platform: gpio
+    pin:
+      number: GPIO1
+      mode:
+        pullup: true
+        input: true
+      inverted: true
+    on_click:
+      matter.on_off.off: dimmer_endpoint
+    on_press:
+      matter.level_control.move_with_on_off:
+        endpoint_id: dimmer_endpoint
+        move_mode: 1
+        rate: 50
+    on_release:
+      matter.level_control.stop_with_on_off: dimmer_endpoint
+
+sensor:
+  - platform: internal_temperature
+    id: internal_temp
+
+output:
+  - platform: gpio
+    pin:
+      number: GPIO15
+      inverted: true
+    id: user_led_pin
+
+light:
+  - platform: binary
+    output: user_led_pin
+    id: user_led
+    internal: true

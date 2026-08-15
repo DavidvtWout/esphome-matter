@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  DEFAULT_PYTHON: "3.12"  # Same as ESPHome
+
+jobs:
+  validate:
+    name: Validate config (ESPHome ${{ matrix.esphome-version }})
+    runs-on: ubuntu-24.04
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        esphome-version:
+          - 2026.6.0
+          - 2026.6.5
+          - 2026.7.4
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+
+      - name: Install ESPHome
+        if: matrix.esphome-version != 'latest'
+        run: python -m pip install "esphome==${{ matrix.esphome-version }}"
+
+      - name: Check ESPHome config
+        run: esphome config tests/configs/esp32-all-endpoints.yaml
+
+  compile:
+    name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})
+    runs-on: ubuntu-24.04
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - tests/configs/esp32-thread.yaml
+          - tests/configs/esp32-wifi.yaml
+        esphome-version:
+          - 2026.6.0
+          - 2026.6.5
+          - 2026.7.4
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+
+      - name: Install ESPHome
+        if: matrix.esphome-version != 'latest'
+        run: python -m pip install "esphome==${{ matrix.esphome-version }}"
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v6
+        with:
+          path: ~/.platformio
+          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}
+          restore-keys: |
+            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-
+            ${{ runner.os }}-platformio-
+
+      - name: Compile ESPHome config
+        run: esphome compile "${{ matrix.config }}"
+
+  compile-all-wifi-variants:
+    name: Compile matter-over-wifi ${{ matrix.esp32-variant }} (ESPHome ${{ matrix.esphome-version }})
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        esphome-version:
+          - 2026.7.4
+        esp32-variant:
+          - ESP32
+          - ESP32C2
+          - ESP32C3
+          - ESP32C5
+          - ESP32C6
+          - ESP32S2
+          - ESP32S3
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+
+      - name: Install ESPHome
+        run: python -m pip install "esphome==${{ matrix.esphome-version }}"
+
+      - name: Compile ESPHome config
+        run: esphome -s esp32_variant "${{ matrix.esp32-variant }}" compile tests/configs/esp32-wifi.yaml
+
+  compile-all-thread-variants:
+    name: Compile matter-over-thread ${{ matrix.esp32-variant }} (ESPHome ${{ matrix.esphome-version }})
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        esphome-version:
+          - 2026.7.4
+        esp32-variant:
+          - ESP32C5
+          - ESP32C6
+          - ESP32H2
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+
+      - name: Install ESPHome
+        run: python -m pip install "esphome==${{ matrix.esphome-version }}"
+
+      - name: Compile ESPHome config
+        run: esphome -s esp32_variant "${{ matrix.esp32-variant }}" compile tests/configs/esp32-thread.yaml

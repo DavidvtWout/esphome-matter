@@ -1,5 +1,8 @@
-configs/
+/configs/
+tests/configs/.esphome/
+tests/configs/build/
 .pre-commit-config.yaml
+__pycache__
 
 # Distribution / packaging
 .Python
