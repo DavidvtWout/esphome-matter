@@ -22,7 +22,7 @@ That being said, esphome-matter is usable now so give it a try!
 
 # Contributing
 
-Help is very welcome! I'm still a bit new to the ESPHome, Espressif, and connectedhomeip ecosystems. If you know your way around any of these and spot something wrong or have ideas, please open an issue or PR.
+Help is very welcome! There is a [discussion page](https://github.com/DavidvtWout/esphome-matter/discussions/47) with issues that need to be resolved before esphome-matter is considered "releasable".
 
 Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas. 
 
