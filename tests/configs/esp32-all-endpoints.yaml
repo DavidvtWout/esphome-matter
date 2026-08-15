@@ -1,0 +1,63 @@
+esphome:
+  name: matter-ci-all-endpoints
+
+esp32:
+  toolchain: platformio
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+external_components:
+  - source:
+      type: local
+      path: ../../components
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+matter:
+  endpoints:
+    - on_off_switch:
+      id: on_off_switch_endpoint
+    - dimmer_switch:
+      id: dimmer_switch_endpoint
+    - temperature_sensor:
+        sensor_id: internal_temp
+      id: temperature_sensor_endpoint
+    - on_off_light:
+        light_id: binary_status_light
+      id: on_off_light_endpoint
+    - dimmable_light:
+        light_id: dimmable_status_light
+      id: dimmable_light_endpoint
+
+sensor:
+  - platform: internal_temperature
+    id: internal_temp
+    name: Internal Temperature
+
+output:
+  - platform: template
+    type: binary
+    id: binary_status_light_output
+    write_action:
+      - lambda: (void) state;
+  - platform: template
+    type: float
+    id: dimmable_status_light_output
+    write_action:
+      - lambda: (void) state;
+
+light:
+  - platform: binary
+    id: binary_status_light
+    name: Binary Status Light
+    output: binary_status_light_output
+  - platform: monochromatic
+    id: dimmable_status_light
+    name: Dimmable Status Light
+    output: dimmable_status_light_output
