@@ -59,8 +59,11 @@ After flashing, the device prints a setup code (`SetupQRCode`) to the logs on ev
 
 Copy the code or open the link and scan the QR-code to commission the device.
 
-- **Home Assistant**: If HA is your Matter Commissioner, you must check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
-- **python-matter-server**: Commission the device with the `Commission existing device` option. Accepts dev certificates by default.
+
+- **Home Assistant / matterjs server**: Start the matterjs-server with: `matterjs-server --enable-test-net-dcl=true`. Commission the device with the `Commission existing device` option.
+- **Home Assistant Matter app (HA-OS only)**: Check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
+- **IKEA Home smart**: The Dirigera accepts the device right away.
+- **python-matter-server**: Works right away, but python-matter-server is discontinued.
 - **Homey**: ???
 - **Google Home**: ???
 - **Apple Home**: ???
