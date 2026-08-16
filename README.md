@@ -72,7 +72,7 @@ Copy the code or open the link and scan the QR-code to commission the device.
 
 If you tried commissioning to any of the smart home systems with a `???`, please [leave a comment](https://github.com/DavidvtWout/esphome-matter/discussions/44)!
 
-Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window but only if it hasn't joined any fabrics yet.
+Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
 
 # Example config
 
@@ -237,7 +237,6 @@ matter.level_control.stop_with_on_off: some_id
 - Only one device type is supported per endpoint.
 - Matter-over-Ethernet has not been verified.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
-- The commissioning window cannot be manually re-opened after a device has joined a fabric.
 
 # See Also
 
