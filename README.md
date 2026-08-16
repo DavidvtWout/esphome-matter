@@ -13,10 +13,6 @@ ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter
 > Treat this component as an experimental preview. It is usable for testing, but the public
 > YAML interface is not stable yet: action, cluster, attribute, and endpoint names may still
 > change and break existing configurations.
-> 
-> By default, this component uses the built-in development DAC. This is fine for testing,
-> but it is public test key material, so it does not provide real security and some ecosystems
-> may warn or reject it. Support for generated certificates via [esp-matter-mfg-tool](https://github.com/espressif/esp-matter-tools/tree/main/mfg_tool) is a planned feature.
 
 That being said, esphome-matter is usable now so give it a try!
 
