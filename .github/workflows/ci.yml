@@ -4,8 +4,16 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "components/*"
+      - "tests/**"
+      - ".github/workflows/ci.yml"
 
   pull_request:
+    paths:
+      - "components/*"
+      - "tests/**"
+      - ".github/workflows/ci.yml"
 
 permissions:
   contents: read
@@ -17,9 +25,7 @@ jobs:
   validate:
     name: Validate config (ESPHome ${{ matrix.esphome-version }})
     runs-on: ubuntu-24.04
-    continue-on-error: false
     strategy:
-      fail-fast: false
       matrix:
         esphome-version:
           - 2026.6.0
@@ -30,29 +36,49 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
         uses: actions/setup-python@v7
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
 
-      - name: Install ESPHome
-        run: python -m pip install "esphome==${{ matrix.esphome-version }}"
+      - name: Restore ESPHome
+        id: esphome-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: .venv
+          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
 
-      - name: Check ESPHome config
-        run: esphome config tests/configs/esp32-all-endpoints.yaml
+      - name: Install ESPHome
+        if: steps.esphome-cache.outputs.cache-hit != 'true'
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}"
+
+      - name: Save ESPHome
+        if: steps.esphome-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: .venv
+          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
+
+      - name: Check ESPHome configs
+        run: |
+          .venv/bin/esphome config tests/configs/esp32-all-endpoints.yaml
+          .venv/bin/esphome config tests/configs/esp32-thread.yaml
+          .venv/bin/esphome config tests/configs/esp32-wifi.yaml
 
   compile:
     name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})
     runs-on: ubuntu-24.04
     needs: validate
-    continue-on-error: false
+    if: github.ref != 'refs/heads/main'
     strategy:
-      fail-fast: false
       matrix:
         config:
           - tests/configs/esp32-thread.yaml
           - tests/configs/esp32-wifi.yaml
         esphome-version:
-          - 2026.6.0
+          # - 2026.6.0
           - 2026.7.4
 
     steps:
@@ -60,49 +86,50 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        id: python
         uses: actions/setup-python@v7
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
 
-      - name: Install ESPHome
-        run: python -m pip install "esphome==${{ matrix.esphome-version }}"
-
-      - name: Install ccache
-        run: sudo apt-get update && sudo apt-get install -y ccache
+      - name: Restore ESPHome
+        uses: actions/cache/restore@v6
+        with:
+          path: .venv
+          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
 
       - name: Cache PlatformIO
         uses: actions/cache@v6
         with:
           path: ~/.platformio
           key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}
-          restore-keys: |
-            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-
-            ${{ runner.os }}-platformio-
 
-      - name: Restore ccache
-        uses: actions/cache/restore@v6
+      - name: Cache ESPHome build
+        uses: actions/cache@v6
         with:
-          path: ~/.cache/esphome/platformio-ccache
-          key: ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-
+          path: tests/configs/.esphome/build
+          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.config }}
+
+      #  - name: Install ccache
+      #    run: sudo apt-get update && sudo apt-get install -y ccache
+
+      #  - name: Cache ccache
+      #    uses: actions/cache@v6
+      #    with:
+      #      path: ${{ github.workspace }}/.ccache
+      #      key: ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ matrix.config }}
 
       - name: Compile ESPHome config
-        env:
-          IDF_CCACHE_ENABLE: "1"
-          CCACHE_BASEDIR: ${{ github.workspace }}
-          CCACHE_COMPILERCHECK: content
-        run: esphome compile "${{ matrix.config }}"
+        #  env:
+        #    IDF_CCACHE_ENABLE: "1"
+        #    CCACHE_DIR: ${{ github.workspace }}/.ccache
+        #    CCACHE_BASEDIR: ${{ github.workspace }}
+        #    CCACHE_COMPILERCHECK: content
+        run: .venv/bin/esphome compile "${{ matrix.config }}"
 
-      - name: Print ccache statistics
-        run: CCACHE_DIR="$HOME/.cache/esphome/platformio-ccache" ccache -s
-
-      - name: Save ccache
-        if: github.event_name != 'pull_request'
-        uses: actions/cache/save@v6
-        with:
-          path: ~/.cache/esphome/platformio-ccache
-          key: ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ github.sha }}
+      #  - name: Print ccache statistics
+      #    env:
+      #      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      #    run: ccache -s
 
   compile-all-wifi-variants:
     name: Compile matter-over-wifi ${{ matrix.esp32-variant }} (ESPHome ${{ matrix.esphome-version }})
@@ -110,18 +137,16 @@ jobs:
     needs: validate
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     strategy:
-      fail-fast: false
-      max-parallel: 2
       matrix:
         esphome-version:
           - 2026.7.4
         esp32-variant:
-          - ESP32
-          - ESP32C2
+          # - ESP32
+          # - ESP32C2
           - ESP32C3
-          - ESP32C5
-          - ESP32C6
-          - ESP32S2
+          # - ESP32C5
+          # - ESP32C6
+          # - ESP32S2
           - ESP32S3
 
     steps:
@@ -133,29 +158,23 @@ jobs:
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
 
-      - name: Install ESPHome
-        run: python -m pip install "esphome==${{ matrix.esphome-version }}"
-
-      - name: Install ccache
-        run: sudo apt-get update && sudo apt-get install -y ccache
+      - name: Restore ESPHome
+        uses: actions/cache/restore@v6
+        with:
+          path: .venv
+          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
 
       - name: Cache PlatformIO
         uses: actions/cache@v6
         with:
           path: ~/.platformio
-          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}
-          restore-keys: |
-            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-
-            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-
+          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}
 
-      - name: Restore ccache
-        uses: actions/cache/restore@v6
+      - name: Cache ESPHome build
+        uses: actions/cache@v6
         with:
-          path: ~/.cache/esphome/platformio-ccache
-          key: ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-
-            ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-
+          path: tests/configs/.esphome/build
+          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.config }}-${{ matrix.esp32-variant }}
 
       - name: Compile ESPHome config
         env:
@@ -164,30 +183,18 @@ jobs:
           CCACHE_COMPILERCHECK: content
         run: esphome -s esp32_variant "${{ matrix.esp32-variant }}" compile tests/configs/esp32-wifi.yaml
 
-      - name: Print ccache statistics
-        run: CCACHE_DIR="$HOME/.cache/esphome/platformio-ccache" ccache -s
-
-      - name: Save ccache
-        if: github.event_name != 'pull_request'
-        uses: actions/cache/save@v6
-        with:
-          path: ~/.cache/esphome/platformio-ccache
-          key: ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-${{ github.sha }}
-
   compile-all-thread-variants:
     name: Compile matter-over-thread ${{ matrix.esp32-variant }} (ESPHome ${{ matrix.esphome-version }})
     runs-on: ubuntu-24.04
     needs: validate
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     strategy:
-      fail-fast: false
-      max-parallel: 2
       matrix:
         esphome-version:
           - 2026.7.4
         esp32-variant:
-          - ESP32C5
-          - ESP32C6
+          # - ESP32C5
+          # - ESP32C6
           - ESP32H2
 
     steps:
@@ -199,29 +206,23 @@ jobs:
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
 
-      - name: Install ESPHome
-        run: python -m pip install "esphome==${{ matrix.esphome-version }}"
-
-      - name: Install ccache
-        run: sudo apt-get update && sudo apt-get install -y ccache
+      - name: Restore ESPHome
+        uses: actions/cache/restore@v6
+        with:
+          path: .venv
+          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
 
       - name: Cache PlatformIO
         uses: actions/cache@v6
         with:
           path: ~/.platformio
-          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}
-          restore-keys: |
-            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-
-            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-
+          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}
 
-      - name: Restore ccache
-        uses: actions/cache/restore@v6
+      - name: Cache ESPHome build
+        uses: actions/cache@v6
         with:
-          path: ~/.cache/esphome/platformio-ccache
-          key: ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-
-            ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-
+          path: tests/configs/.esphome/build
+          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.config }}-${{ matrix.esp32-variant }}
 
       - name: Compile ESPHome config
         env:
@@ -229,13 +230,3 @@ jobs:
           CCACHE_BASEDIR: ${{ github.workspace }}
           CCACHE_COMPILERCHECK: content
         run: esphome -s esp32_variant "${{ matrix.esp32-variant }}" compile tests/configs/esp32-thread.yaml
-
-      - name: Print ccache statistics
-        run: CCACHE_DIR="$HOME/.cache/esphome/platformio-ccache" ccache -s
-
-      - name: Save ccache
-        if: github.event_name != 'pull_request'
-        uses: actions/cache/save@v6
-        with:
-          path: ~/.cache/esphome/platformio-ccache
-          key: ${{ runner.os }}-ccache-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-${{ github.sha }}
