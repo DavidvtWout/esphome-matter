@@ -1,7 +1,7 @@
 from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import light, sensor
+from esphome.components import climate, light, sensor
 from esphome.const import (
     CONF_COMMAND,
     CONF_ID,
@@ -40,6 +40,12 @@ LIGHT_SCHEMA = cv.Schema(
     }
 )
 
+THERMOSTAT_SCHEMA = cv.Schema(
+    {
+        cv.Required(CONF_CLIMATE_ID): cv.use_id(climate.Climate),
+    }
+)
+
 
 def _validate_endpoint(config):
     device_types = [k for k in config if k != CONF_ID]
@@ -62,6 +68,7 @@ ENDPOINT_SCHEMA = cv.All(
             cv.Optional(CONF_ON_OFF_SWITCH): ON_OFF_SWITCH_SCHEMA,
             cv.Optional(CONF_DIMMER_SWITCH): DIMMER_SWITCH_SCHEMA,
             cv.Optional(CONF_TEMPERATURE_SENSOR): TEMPERATURE_SENSOR_SCHEMA,
+            cv.Optional(CONF_THERMOSTAT): THERMOSTAT_SCHEMA,
             cv.Optional(CONF_ON_OFF_LIGHT): LIGHT_SCHEMA,
             cv.Optional(CONF_DIMMABLE_LIGHT): LIGHT_SCHEMA,
         }
@@ -81,6 +88,10 @@ async def configure_endpoints(var, config: ConfigType):
             opts = ep_conf[CONF_TEMPERATURE_SENSOR]
             sens = await cg.get_variable(opts[CONF_SENSOR_ID])
             cg.add(var.add_temperature_sensor(sens, ref))
+        elif CONF_THERMOSTAT in ep_conf:
+            opts = ep_conf[CONF_THERMOSTAT]
+            climate_var = await cg.get_variable(opts[CONF_CLIMATE_ID])
+            cg.add(var.add_thermostat(climate_var, ref))
         elif CONF_ON_OFF_LIGHT in ep_conf:
             light_var = await cg.get_variable(ep_conf[CONF_ON_OFF_LIGHT][CONF_LIGHT_ID])
             cg.add(var.add_on_off_light(light_var, ref))

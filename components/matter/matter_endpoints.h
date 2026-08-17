@@ -6,6 +6,9 @@
 #ifdef USE_LIGHT
 #include "esphome/components/light/light_state.h"
 #endif
+#ifdef USE_CLIMATE
+#include "esphome/components/climate/climate.h"
+#endif
 
 #ifdef USE_MATTER
 
@@ -67,6 +70,26 @@ public:
   MatterEndpointRef *ref;
   uint16_t endpoint_id{0};
 };
+#endif
+
+#ifdef USE_CLIMATE
+
+class MatterClimate {
+ public:
+  MatterClimate(climate::Climate *climate, MatterEndpointRef *ref)
+      : climate(climate), ref(ref) {}
+
+  void push_state_to_matter();
+
+  void apply_matter_update(uint32_t cluster_id,
+                           uint32_t attribute_id,
+                           esp_matter_attr_val_t val);
+
+  climate::Climate *climate;
+  MatterEndpointRef *ref;
+  uint16_t endpoint_id{0};
+};
+
 #endif
 
 // Common esp_matter attribute update callback, passed to node::create().
