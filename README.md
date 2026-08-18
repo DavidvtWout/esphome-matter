@@ -57,20 +57,20 @@ After flashing, the device prints a setup code (`SetupQRCode`) to the logs on ev
 [C][matter]:   Fabrics: none
 ```
 
-Copy the code or open the link and scan the QR-code to commission the device.
+Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device.
 
 
 - **Home Assistant / matterjs server**: Start the matterjs-server with: `matterjs-server --enable-test-net-dcl=true`. Commission the device with the `Commission existing device` option.
 - **Home Assistant Matter app (HA-OS only)**: Check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
 - **IKEA Home smart**: The Dirigera accepts the device right away.
+- **Apple Home**: Accepts the device right away.
+- **Google Home**: Android's [Multi-admin commissioning](https://developers.home.google.com/apis/android/commissioning/multi-admin) accepts the device. Google Nest still unknown.
 - **python-matter-server**: Works right away, but python-matter-server is discontinued.
 - **Homey**: ???
-- **Google Home**: ???
-- **Apple Home**: ???
 - **Samsung SmartThings**: ???
 - **Amazon**: ???
 
-If you tried commissioning to any of the smart home systems with a `???`, please [leave a comment](https://github.com/DavidvtWout/esphome-matter/discussions/44)!
+If you tried commissioning to any of the unknown smart home systems, please [leave a comment](https://github.com/DavidvtWout/esphome-matter/discussions/44)!
 
 Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
 
