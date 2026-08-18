@@ -34,38 +34,22 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
-
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v7
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-
-      - name: Restore ESPHome
-        id: esphome-cache
-        uses: actions/cache/restore@v6
-        with:
-          path: .venv
-          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
-
       - name: Install ESPHome
-        if: steps.esphome-cache.outputs.cache-hit != 'true'
         run: |
           python -m venv .venv
           .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}"
 
-      - name: Save ESPHome
-        if: steps.esphome-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v6
-        with:
-          path: .venv
-          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
-
-      - name: Check ESPHome configs
-        run: |
-          .venv/bin/esphome config tests/configs/esp32-all-endpoints.yaml
-          .venv/bin/esphome config tests/configs/esp32-thread.yaml
-          .venv/bin/esphome config tests/configs/esp32-wifi.yaml
+      - name: Check tests/configs/esp32-all-endpoints.yaml
+        run: .venv/bin/esphome config tests/configs/esp32-all-endpoints.yaml
+      - name: Check tests/configs/esp32-thread.yaml
+        run: .venv/bin/esphome config tests/configs/esp32-thread.yaml
+      - name: Check tests/configs/esp32-wifi.yaml
+        run: .venv/bin/esphome config tests/configs/esp32-wifi.yaml
 
   compile:
     name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})
@@ -84,25 +68,23 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
-
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v7
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-
-      - name: Restore ESPHome
-        uses: actions/cache/restore@v6
-        with:
-          path: .venv
-          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
+      - name: Install ESPHome
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}"
 
       - name: Cache PlatformIO
         uses: actions/cache@v6
         with:
           path: ~/.platformio
-          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}
-
+          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-${{ matrix.config }}
+          restore-keys: |
+            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-
       - name: Cache ESPHome build
         uses: actions/cache@v6
         with:
@@ -152,36 +134,32 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
-
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         uses: actions/setup-python@v7
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-
-      - name: Restore ESPHome
-        uses: actions/cache/restore@v6
-        with:
-          path: .venv
-          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
+      - name: Install ESPHome
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}"
 
       - name: Cache PlatformIO
         uses: actions/cache@v6
         with:
           path: ~/.platformio
-          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}
-
+          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-wifi
+          restore-keys: |
+            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-
       - name: Cache ESPHome build
         uses: actions/cache@v6
         with:
           path: tests/configs/.esphome/build
-          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.config }}-${{ matrix.esp32-variant }}
+          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-wifi
+          restore-keys: |
+            ${{ runner.os }}-build-${{ matrix.esphome-version }}-
 
       - name: Compile ESPHome config
-        env:
-          IDF_CCACHE_ENABLE: "1"
-          CCACHE_BASEDIR: ${{ github.workspace }}
-          CCACHE_COMPILERCHECK: content
-        run: esphome -s esp32_variant "${{ matrix.esp32-variant }}" compile tests/configs/esp32-wifi.yaml
+        run: .venv/bin/esphome -s esp32_variant "${{ matrix.esp32-variant }}" compile tests/configs/esp32-wifi.yaml
 
   compile-all-thread-variants:
     name: Compile matter-over-thread ${{ matrix.esp32-variant }} (ESPHome ${{ matrix.esphome-version }})
@@ -200,33 +178,29 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
-
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         uses: actions/setup-python@v7
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-
-      - name: Restore ESPHome
-        uses: actions/cache/restore@v6
-        with:
-          path: .venv
-          key: ${{ runner.os }}-python-${{ steps.python.outputs.python-version }}-esphome-${{ matrix.esphome-version }}
+      - name: Install ESPHome
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}"
 
       - name: Cache PlatformIO
         uses: actions/cache@v6
         with:
           path: ~/.platformio
-          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}
-
+          key: ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-thread
+          restore-keys: |
+            ${{ runner.os }}-platformio-${{ matrix.esphome-version }}-
       - name: Cache ESPHome build
         uses: actions/cache@v6
         with:
           path: tests/configs/.esphome/build
-          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.config }}-${{ matrix.esp32-variant }}
+          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.esp32-variant }}-thread
+          restore-keys: |
+            ${{ runner.os }}-build-${{ matrix.esphome-version }}-
 
       - name: Compile ESPHome config
-        env:
-          IDF_CCACHE_ENABLE: "1"
-          CCACHE_BASEDIR: ${{ github.workspace }}
-          CCACHE_COMPILERCHECK: content
-        run: esphome -s esp32_variant "${{ matrix.esp32-variant }}" compile tests/configs/esp32-thread.yaml
+        run: .venv/bin/esphome -s esp32_variant "${{ matrix.esp32-variant }}" compile tests/configs/esp32-thread.yaml
