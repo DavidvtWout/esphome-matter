@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components.esp32 import (
@@ -15,7 +13,6 @@ from esphome.const import (
 from esphome.core import CORE
 from esphome.coroutine import CoroPriority, coroutine_with_priority
 import esphome.final_validate as fv
-from esphome.helpers import write_file_if_changed
 from esphome.types import ConfigType
 
 from .actions import register_bound_command_actions
@@ -115,9 +112,8 @@ async def _set_executable_component_name():
     # the app component "src".
     if CORE.using_toolchain_platformio:
         key = "board_build.cmake_extra_args"
-        value = (
-            CORE.platformio_options.get(key, "") + " -DEXECUTABLE_COMPONENT_NAME=src"
-        )
+        value = CORE.platformio_options.get(key, "")
+        value += " -DEXECUTABLE_COMPONENT_NAME=src"
         cg.add_platformio_option(key, value)
 
 
@@ -169,6 +165,7 @@ async def to_code(config: ConfigType):
         add_idf_sdkconfig_option(
             "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False
         )  # esp-matter
+        cg.add_build_flag("-Wl,--wrap=_Z21openthread_init_stackv")
 
         # add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
         add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)  # esp-matter
