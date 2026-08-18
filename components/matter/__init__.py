@@ -83,7 +83,6 @@ CONFIG_SCHEMA = cv.All(
     ).extend(cv.COMPONENT_SCHEMA),
     cv.only_on_esp32,
     cv.only_with_framework(Framework.ESP_IDF),
-    _require_platformio_toolchain,
     _require_vfs_select,  # TODO: Only needed when openthread is enabled
 )
 
@@ -104,19 +103,6 @@ def _final_validate(_):
 FINAL_VALIDATE_SCHEMA = _final_validate
 
 
-# The esp32 component already sets board_build.cmake_extra_args at FINAL priority so we need
-# to set it after that to prevent this platformio option from being overwritten.
-@coroutine_with_priority(CoroPriority.FINAL - 1)
-async def _set_executable_component_name():
-    # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but ESPHome names
-    # the app component "src".
-    if CORE.using_toolchain_platformio:
-        key = "board_build.cmake_extra_args"
-        value = CORE.platformio_options.get(key, "")
-        value += " -DEXECUTABLE_COMPONENT_NAME=src"
-        cg.add_platformio_option(key, value)
-
-
 @coroutine_with_priority(CoroPriority.NETWORK_SERVICES)
 async def to_code(config: ConfigType):
     var = cg.new_Pvariable(config[CONF_ID])
@@ -127,9 +113,11 @@ async def to_code(config: ConfigType):
         ref="1.5.1",
     )
 
-    CORE.add_job(_set_executable_component_name)
-
     cg.add_define("USE_MATTER")
+
+    # esp-matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but ESPHome names
+    # the component "src".
+    cg.add_cmake_arg("EXECUTABLE_COMPONENT_NAME", "src")
 
     if CONF_DISCRIMINATOR in config:
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
