@@ -5,13 +5,13 @@ on:
     branches:
       - main
     paths:
-      - "components/*"
+      - "components/**"
       - "tests/**"
       - ".github/workflows/ci.yml"
 
   pull_request:
     paths:
-      - "components/*"
+      - "components/**"
       - "tests/**"
       - ".github/workflows/ci.yml"
 
