@@ -30,8 +30,9 @@ openthread:
 
 matter:
   endpoints:
-    - dimmer_switch:
+    1:
       id: dimmer_endpoint
+      dimmer_switch:
 
 # The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
 binary_sensor:

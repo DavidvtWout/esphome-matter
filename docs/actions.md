@@ -9,8 +9,9 @@ First define an endpoint that supports binding and give it an `id`:
 ```yaml
 matter:
   endpoints:
-    - dimmer_switch:
+    1:
       id: dimmer_endpoint
+      dimmer_switch:
 
 binary_sensor:
   - name: "Some button"

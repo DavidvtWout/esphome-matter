@@ -1,82 +1,44 @@
 
-# Lights
+Each endpoint is defined by its ID which can range from 0 to 65534. An endpoint at id 0 with device type `Root Node` is always created. This device type defines clusters such as `AccessControl`, `BasicInformation`, diagnostic clusters and clusters that are used for commissioning.
+
+Beneath an endpoint are clusters. Clusters are collections of attributes and commands with more or less a single function. For example the `OnOff` cluster defines attributes such as the state, startup behaviour and defines commands such as `on`, `off` and `toggle`.
+
+
+# Device types
+
+To make cluster management more convenient, Matter defines device types. For example the `Dimmable Light` creates clusters such as `OnOff` and `LevelControll`. Different device types may define the same clusters so if you're not sure, it's best to assign only a single device type to each endpoint.
+
+
+### Lights
 
 ```yaml
-matter:
-  endpoints:
-    - on_off_light:
-        light_id: user_led
+# A simple light that can only be turned on and off.
+on_off_light:
+  light_id:
 
-output:
-  # Seeed studio XIAO-ESP32-C6
-  - platform: gpio
-    pin:
-      number: GPIO15
-      inverted: true
-    id: user_led_pin
-
-light:
-  - platform: binary
-    id: user_led
-    name: "User LED"
-    output: user_led_pin
+# Dimmable light.
+dimmable_light:
+  light_id:
 ```
 
-# Sensors
+### Switches
 
 ```yaml
-matter:
-  endpoints:
-    - temperature_sensor:
-        sensor_id: internal_temperature
+# Defines the OnOff cluster.
+on_off_light_switch:
 
-sensor:
-  - platform: internal_temperature
-    name: "Internal Temperature"
-    id: internal_temperature
+# Defines both the OnOff and LevelControl clusters.
+dimmer_switch:
 ```
 
-# Switches
+##### Binding
+Switches defined by the matter component automatically get the binding cluster (id 30). Some Matter controllers such as matterjs-server allow binding from the UI. 
 
-esphome-matter supports two types of switches; `on_off_switch` and `dimmer_switch`. The first one allows the
-`matter.turn_on` and `matter.turn_off` actions on it. The second one also `matter.dim_up`, `matter.dim_down` and 
-`matter.dim_stop`.
+See [docs/actions.md](./docs/actions.md) for a list of available commands on each cluster.
+
+### Sensors
 
 ```yaml
-matter:
-  endpoints:
-    - dimmer_switch:
-      id: dimmer_endpoint
-
-binary_sensor:
-  - platform: gpio
-    pin: ...
-    on_click:
-      matter.turn_on:
-        id: dimmer_endpoint
-    on_press:
-      matter.dim_up:
-        id: dimmer_endpoint
-    on_release:
-      matter.dim_stop:
-        id: dimmer_endpoint
-  - platform: gpio
-    pin:
-      number: GPIO1
-      mode:
-        pullup: true
-        input: true
-      inverted: true
-    on_click:
-      matter.turn_off:
-        id: dimmer_endpoint
-    on_press:
-      matter.dim_down:
-        id: dimmer_endpoint
-    on_release:
-      matter.dim_stop:
-        id: dimmer_endpoint
+temperature_sensor:
+  sensor_id:  # Point to the ID of a temperature sensor
 ```
-
-### Binding
-Switches defined by the matter component automatically get the binding cluster (id 30).
