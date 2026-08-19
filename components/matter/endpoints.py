@@ -41,16 +41,6 @@ LIGHT_SCHEMA = cv.Schema(
 )
 
 
-def _validate_endpoint(config):
-    device_types = [k for k in config if k != CONF_ID]
-    if len(device_types) != 1:
-        raise cv.Invalid(
-            "Each endpoint must have exactly one device type "
-            "(multiple device types per endpoint are not supported yet)"
-        )
-    return config
-
-
 # Each list entry is one Matter endpoint; the key selects the device type.
 # Endpoint ids are assigned in list order, so entries must never be removed
 # or reordered once the device is commissioned; append only.
@@ -66,26 +56,27 @@ ENDPOINT_SCHEMA = cv.All(
             cv.Optional(CONF_DIMMABLE_LIGHT): LIGHT_SCHEMA,
         }
     ),
-    _validate_endpoint,
 )
 
 
 async def configure_endpoints(var, config: ConfigType):
-    for ep_conf in config[CONF_ENDPOINTS]:
-        ref = cg.new_Pvariable(ep_conf[CONF_ID])
-        if CONF_ON_OFF_SWITCH in ep_conf:
-            cg.add(var.add_on_off_switch(ref))
-        elif CONF_DIMMER_SWITCH in ep_conf:
-            cg.add(var.add_dimmer_switch(ref))
-        elif CONF_TEMPERATURE_SENSOR in ep_conf:
-            opts = ep_conf[CONF_TEMPERATURE_SENSOR]
+    for endpoint_id, endpoint_config in config[CONF_ENDPOINTS].items():
+        ref = cg.new_Pvariable(endpoint_config[CONF_ID])
+        if CONF_ON_OFF_SWITCH in endpoint_config:
+            cg.add(var.add_on_off_switch(ref, endpoint_id))
+        elif CONF_DIMMER_SWITCH in endpoint_config:
+            cg.add(var.add_dimmer_switch(ref, endpoint_id))
+        elif CONF_TEMPERATURE_SENSOR in endpoint_config:
+            opts = endpoint_config[CONF_TEMPERATURE_SENSOR]
             sens = await cg.get_variable(opts[CONF_SENSOR_ID])
-            cg.add(var.add_temperature_sensor(sens, ref))
-        elif CONF_ON_OFF_LIGHT in ep_conf:
-            light_var = await cg.get_variable(ep_conf[CONF_ON_OFF_LIGHT][CONF_LIGHT_ID])
-            cg.add(var.add_on_off_light(light_var, ref))
-        elif CONF_DIMMABLE_LIGHT in ep_conf:
+            cg.add(var.add_temperature_sensor(sens, ref, endpoint_id))
+        elif CONF_ON_OFF_LIGHT in endpoint_config:
             light_var = await cg.get_variable(
-                ep_conf[CONF_DIMMABLE_LIGHT][CONF_LIGHT_ID]
+                endpoint_config[CONF_ON_OFF_LIGHT][CONF_LIGHT_ID]
             )
-            cg.add(var.add_dimmable_light(light_var, ref))
+            cg.add(var.add_on_off_light(light_var, ref, endpoint_id))
+        elif CONF_DIMMABLE_LIGHT in endpoint_config:
+            light_var = await cg.get_variable(
+                endpoint_config[CONF_DIMMABLE_LIGHT][CONF_LIGHT_ID]
+            )
+            cg.add(var.add_dimmable_light(light_var, ref, endpoint_id))

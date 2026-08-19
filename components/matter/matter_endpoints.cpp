@@ -6,17 +6,122 @@
 #include "matter_component.h"
 
 #include <cmath>
+#include <esp_matter_cluster.h>
 
 static const char *const TAG = "matter";
 
 namespace esphome::matter {
 
+namespace {
+
+struct EspMatterNodeHeader {
+  void *endpoint_list;
+  uint16_t min_unused_endpoint_id;
+};
+
+esp_matter::endpoint_t *resume_endpoint_at_id(esp_matter::node_t *node,
+                                              uint16_t endpoint_id,
+                                              uint8_t flags, void *priv_data) {
+  if (endpoint_id == 0)
+    return esp_matter::endpoint::create(node, flags, priv_data);
+
+  if (esp_matter::endpoint::get(node, endpoint_id) != nullptr) {
+    ESP_LOGE(TAG, "Matter endpoint id %u is already in use", endpoint_id);
+    return nullptr;
+  }
+
+  // esp-matter only exposes endpoint::resume(node, id) for IDs below its
+  // private min_unused_endpoint_id. Static ESPHome endpoints are created before
+  // esp_matter::start(), so advance that private allocator watermark directly
+  // and then let esp-matter's resume path add the endpoint normally.
+  auto *node_header = reinterpret_cast<EspMatterNodeHeader *>(node);
+  if (node_header->min_unused_endpoint_id <= endpoint_id)
+    node_header->min_unused_endpoint_id = endpoint_id + 1;
+
+  return esp_matter::endpoint::resume(node, flags, endpoint_id, priv_data);
+}
+
+template <typename ConfigT>
+esp_matter::endpoint_t *
+create_endpoint_at_id(esp_matter::node_t *node, ConfigT *config,
+                      uint16_t endpoint_id, uint8_t flags, void *priv_data,
+                      esp_err_t (*add)(esp_matter::endpoint_t *, ConfigT *)) {
+  esp_matter::endpoint_t *ep =
+      resume_endpoint_at_id(node, endpoint_id, flags, priv_data);
+  if (ep == nullptr)
+    return nullptr;
+
+  esp_matter::cluster_t *descriptor_cluster =
+      esp_matter::cluster::descriptor::create(ep, &(config->descriptor),
+                                              esp_matter::CLUSTER_FLAG_SERVER);
+  if (descriptor_cluster == nullptr) {
+    ESP_LOGE(TAG, "Failed to create descriptor cluster");
+    return nullptr;
+  }
+
+  if (add(ep, config) != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to add endpoint clusters");
+    return nullptr;
+  }
+
+  return ep;
+}
+
+esp_matter::endpoint_t *create_on_off_switch_endpoint(
+    esp_matter::node_t *node,
+    esp_matter::endpoint::on_off_light_switch::config_t *config,
+    uint16_t endpoint_id) {
+  if (endpoint_id == 0) {
+    return esp_matter::endpoint::on_off_light_switch::create(
+        node, config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+  }
+
+  esp_matter::endpoint_t *ep = create_endpoint_at_id(
+      node, config, endpoint_id, esp_matter::ENDPOINT_FLAG_NONE, nullptr,
+      esp_matter::endpoint::on_off_light_switch::add);
+  if (ep == nullptr)
+    return nullptr;
+
+  esp_matter::cluster_t *binding_cluster = esp_matter::cluster::binding::create(
+      ep, &(config->binding), esp_matter::CLUSTER_FLAG_SERVER);
+  if (binding_cluster == nullptr) {
+    ESP_LOGE(TAG, "Failed to create binding cluster");
+    return nullptr;
+  }
+  return ep;
+}
+
+esp_matter::endpoint_t *create_dimmer_switch_endpoint(
+    esp_matter::node_t *node,
+    esp_matter::endpoint::dimmer_switch::config_t *config,
+    uint16_t endpoint_id) {
+  if (endpoint_id == 0) {
+    return esp_matter::endpoint::dimmer_switch::create(
+        node, config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+  }
+
+  esp_matter::endpoint_t *ep = create_endpoint_at_id(
+      node, config, endpoint_id, esp_matter::ENDPOINT_FLAG_NONE, nullptr,
+      esp_matter::endpoint::dimmer_switch::add);
+  if (ep == nullptr)
+    return nullptr;
+
+  esp_matter::cluster_t *binding_cluster = esp_matter::cluster::binding::create(
+      ep, &(config->binding), esp_matter::CLUSTER_FLAG_SERVER);
+  if (binding_cluster == nullptr) {
+    ESP_LOGE(TAG, "Failed to create binding cluster");
+    return nullptr;
+  }
+  return ep;
+}
+
+} // namespace
+
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   for (auto &sw : this->on_off_switches_) {
     esp_matter::endpoint::on_off_light_switch::config_t sw_config;
-    esp_matter::endpoint_t *ep =
-        esp_matter::endpoint::on_off_light_switch::create(
-            node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    esp_matter::endpoint_t *ep = create_on_off_switch_endpoint(
+        node, &sw_config, sw.requested_endpoint_id);
     if (ep == nullptr) {
       ESP_LOGE(TAG, "Failed to create on_off_switch endpoint");
       return false;
@@ -28,8 +133,8 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
 
   for (auto &sw : this->dimmer_switches_) {
     esp_matter::endpoint::dimmer_switch::config_t sw_config;
-    esp_matter::endpoint_t *ep = esp_matter::endpoint::dimmer_switch::create(
-        node, &sw_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    esp_matter::endpoint_t *ep = create_dimmer_switch_endpoint(
+        node, &sw_config, sw.requested_endpoint_id);
     if (ep == nullptr) {
       ESP_LOGE(TAG, "Failed to create dimmer_switch endpoint");
       return false;
@@ -43,8 +148,13 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   for (auto &ts : this->temperature_sensors_) {
     esp_matter::endpoint::temperature_sensor::config_t ts_config;
     esp_matter::endpoint_t *ep =
-        esp_matter::endpoint::temperature_sensor::create(
-            node, &ts_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+        ts.requested_endpoint_id == 0
+            ? esp_matter::endpoint::temperature_sensor::create(
+                  node, &ts_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr)
+            : create_endpoint_at_id(
+                  node, &ts_config, ts.requested_endpoint_id,
+                  esp_matter::ENDPOINT_FLAG_NONE, nullptr,
+                  esp_matter::endpoint::temperature_sensor::add);
     if (ep == nullptr) {
       ESP_LOGE(TAG, "Failed to create temperature_sensor endpoint");
       return false;
@@ -60,12 +170,24 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
     esp_matter::endpoint_t *ep = nullptr;
     if (ml->dimmable) {
       esp_matter::endpoint::dimmable_light::config_t light_config;
-      ep = esp_matter::endpoint::dimmable_light::create(
-          node, &light_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+      ep = ml->requested_endpoint_id == 0
+               ? esp_matter::endpoint::dimmable_light::create(
+                     node, &light_config, esp_matter::ENDPOINT_FLAG_NONE,
+                     nullptr)
+               : create_endpoint_at_id(
+                     node, &light_config, ml->requested_endpoint_id,
+                     esp_matter::ENDPOINT_FLAG_NONE, nullptr,
+                     esp_matter::endpoint::dimmable_light::add);
     } else {
       esp_matter::endpoint::on_off_light::config_t light_config;
-      ep = esp_matter::endpoint::on_off_light::create(
-          node, &light_config, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+      ep = ml->requested_endpoint_id == 0
+               ? esp_matter::endpoint::on_off_light::create(
+                     node, &light_config, esp_matter::ENDPOINT_FLAG_NONE,
+                     nullptr)
+               : create_endpoint_at_id(node, &light_config,
+                                       ml->requested_endpoint_id,
+                                       esp_matter::ENDPOINT_FLAG_NONE, nullptr,
+                                       esp_matter::endpoint::on_off_light::add);
     }
     if (ep == nullptr) {
       ESP_LOGE(TAG, "Failed to create %s endpoint",
