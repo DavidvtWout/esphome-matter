@@ -26,11 +26,13 @@ public:
 // automations via the matter.* actions, targeting the endpoint's ref id.
 struct MatterOnOffSwitch {
   MatterEndpointRef *ref;
+  uint16_t requested_endpoint_id;
   uint16_t endpoint_id;
 };
 
 struct MatterDimmerSwitch {
   MatterEndpointRef *ref;
+  uint16_t requested_endpoint_id;
   uint16_t endpoint_id;
 };
 
@@ -38,6 +40,7 @@ struct MatterDimmerSwitch {
 struct MatterTemperatureSensor {
   sensor::Sensor *sensor;
   MatterEndpointRef *ref;
+  uint16_t requested_endpoint_id;
   uint16_t endpoint_id;
 };
 #endif
@@ -48,8 +51,10 @@ struct MatterTemperatureSensor {
 // listener registration pointer stays stable.
 class MatterLight : public light::LightRemoteValuesListener {
 public:
-  MatterLight(light::LightState *light, bool dimmable, MatterEndpointRef *ref)
-      : light(light), dimmable(dimmable), ref(ref) {}
+  MatterLight(light::LightState *light, bool dimmable, MatterEndpointRef *ref,
+              uint16_t requested_endpoint_id)
+      : light(light), dimmable(dimmable), ref(ref),
+        requested_endpoint_id(requested_endpoint_id) {}
 
   // ESPHome light changed (main loop): mirror the state to the Matter
   // attributes.
@@ -65,6 +70,7 @@ public:
   light::LightState *light;
   bool dimmable;
   MatterEndpointRef *ref;
+  uint16_t requested_endpoint_id;
   uint16_t endpoint_id{0};
 };
 #endif

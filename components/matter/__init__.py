@@ -92,7 +92,11 @@ CONFIG_SCHEMA = cv.All(
             ): _validate_basic_information_name,
             cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
             cv.Optional(CONF_PASSCODE): _validate_passcode,
-            cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
+            cv.Optional(CONF_ENDPOINTS, default={}): cv.Schema(
+                {
+                    cv.int_range(min=0, max=65534): ENDPOINT_SCHEMA,
+                }
+            ),
         }
     ).extend(cv.COMPONENT_SCHEMA),
     cv.only_on_esp32,

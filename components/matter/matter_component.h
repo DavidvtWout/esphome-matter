@@ -26,23 +26,31 @@ public:
   }
 
   void factory_reset();
-  void add_on_off_switch(MatterEndpointRef *ref) {
-    this->on_off_switches_.push_back({ref, 0});
+  void add_on_off_switch(MatterEndpointRef *ref,
+                         uint16_t requested_endpoint_id = 0) {
+    this->on_off_switches_.push_back({ref, requested_endpoint_id, 0});
   }
-  void add_dimmer_switch(MatterEndpointRef *ref) {
-    this->dimmer_switches_.push_back({ref, 0});
+  void add_dimmer_switch(MatterEndpointRef *ref,
+                         uint16_t requested_endpoint_id = 0) {
+    this->dimmer_switches_.push_back({ref, requested_endpoint_id, 0});
   }
 #ifdef USE_SENSOR
-  void add_temperature_sensor(sensor::Sensor *sensor, MatterEndpointRef *ref) {
-    this->temperature_sensors_.push_back({sensor, ref, 0});
+  void add_temperature_sensor(sensor::Sensor *sensor, MatterEndpointRef *ref,
+                              uint16_t requested_endpoint_id = 0) {
+    this->temperature_sensors_.push_back(
+        {sensor, ref, requested_endpoint_id, 0});
   }
 #endif
 #ifdef USE_LIGHT
-  void add_on_off_light(light::LightState *light, MatterEndpointRef *ref) {
-    this->lights_.push_back(new MatterLight(light, false, ref));
+  void add_on_off_light(light::LightState *light, MatterEndpointRef *ref,
+                        uint16_t requested_endpoint_id = 0) {
+    this->lights_.push_back(
+        new MatterLight(light, false, ref, requested_endpoint_id));
   }
-  void add_dimmable_light(light::LightState *light, MatterEndpointRef *ref) {
-    this->lights_.push_back(new MatterLight(light, true, ref));
+  void add_dimmable_light(light::LightState *light, MatterEndpointRef *ref,
+                          uint16_t requested_endpoint_id = 0) {
+    this->lights_.push_back(
+        new MatterLight(light, true, ref, requested_endpoint_id));
   }
   MatterLight *get_light_by_endpoint(uint16_t endpoint_id) {
     for (auto *ml : this->lights_) {
