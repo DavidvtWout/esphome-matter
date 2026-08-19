@@ -104,15 +104,15 @@ openthread:
   ...
 
 matter:
-  # Endpoint order is significant: each entry is assigned an endpoint ID based on its position
-  # in the list. Once a device has been commissioned, existing entries should not be removed
-  # or reordered or the Matter fabric may lose track of previously bound endpoints.
   endpoints:
-    - dimmer_switch:
+    1:
       id: dimmer_endpoint
-    - temperature_sensor:
+      dimmer_switch:
+    2:
+      temperature_sensor:
         sensor_id: internal_temp
-    - on_off_light:
+    3:
+      on_off_light:
         light_id: user_led
 
 # The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
@@ -179,6 +179,9 @@ light:
     internal: true
 ```
 
+More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
+
+
 # Actions
 
 See [docs/actions.md](./docs/actions.md) for a more complete overview of available actions.
@@ -234,9 +237,8 @@ matter.level_control.stop_with_on_off: some_id
 
 # Current Limitations
 
-- Only one device type is supported per endpoint.
-- Matter-over-Ethernet has not been verified.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
+
 
 # See Also
 
