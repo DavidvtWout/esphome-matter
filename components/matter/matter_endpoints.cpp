@@ -42,14 +42,12 @@ esp_matter::endpoint_t *resume_endpoint_at_id(esp_matter::node_t *node,
 
 } // namespace
 
-esp_matter::endpoint_t *
-create_endpoint_for_registration(esp_matter::node_t *node,
-                                 uint16_t endpoint_id) {
-  if (auto *endpoint = esp_matter::endpoint::get(node, endpoint_id);
-      endpoint != nullptr)
-    return endpoint;
-  return resume_endpoint_at_id(node, endpoint_id,
-                               esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+void MatterComponent::register_endpoint(uint16_t endpoint_id) {
+  for (uint16_t registered_endpoint_id : this->endpoint_ids_) {
+    if (registered_endpoint_id == endpoint_id)
+      return;
+  }
+  this->endpoint_ids_.push_back(endpoint_id);
 }
 
 void MatterComponent::register_binding(uint16_t endpoint_id) {
@@ -181,8 +179,31 @@ void MatterSensorMapping::push_state_to_matter(float value) {
 #endif
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
-  for (auto *endpoint : this->endpoint_registrations_) {
-    if (!endpoint->create_endpoint(node))
+  for (uint16_t endpoint_id : this->endpoint_ids_) {
+    esp_matter::endpoint_t *endpoint = resume_endpoint_at_id(
+        node, endpoint_id, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    if (endpoint == nullptr) {
+      ESP_LOGE(TAG, "Failed to create endpoint %u", endpoint_id);
+      return false;
+    }
+
+    if (endpoint_id != 0) {
+      esp_matter::cluster::descriptor::config_t config;
+      esp_matter::cluster_t *descriptor_cluster =
+          esp_matter::cluster::descriptor::create(
+              endpoint, &config, esp_matter::CLUSTER_FLAG_SERVER);
+      if (descriptor_cluster == nullptr) {
+        ESP_LOGE(TAG, "Failed to create endpoint %u descriptor cluster",
+                 endpoint_id);
+        return false;
+      }
+    }
+
+    ESP_LOGV(TAG, "Endpoint created: id=%u", endpoint_id);
+  }
+
+  for (auto *device_type_registration : this->device_type_registrations_) {
+    if (!device_type_registration->add_clusters(node))
       return false;
   }
 
