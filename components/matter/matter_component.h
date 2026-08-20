@@ -27,18 +27,19 @@ public:
   }
 
   void factory_reset();
+
+  // Endpoints
   template <typename ConfigT,
-            esp_matter::endpoint_t *(*CreateFn)(esp_matter::node_t *, ConfigT *,
-                                                uint8_t, void *)>
-  void register_endpoint(MatterEndpointRef *ref) {
+            esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
+  void register_endpoint(uint16_t endpoint_id) {
     this->endpoint_registrations_.push_back(
-        new MatterEndpointRegistration<ConfigT, CreateFn>(ref));
+        new MatterEndpointRegistration<ConfigT, AddFn>(endpoint_id));
   }
 #ifdef USE_LIGHT
-  void map_light_to_endpoint(light::LightState *light, MatterEndpointRef *ref);
+  void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
 #endif
 #ifdef USE_SENSOR
-  void map_sensor_to_endpoint(sensor::Sensor *sensor, MatterEndpointRef *ref);
+  void map_sensor_to_endpoint(sensor::Sensor *sensor, uint16_t endpoint_id);
 #endif
 #ifdef USE_LIGHT
   MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
