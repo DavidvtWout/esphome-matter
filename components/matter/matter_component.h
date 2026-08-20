@@ -29,13 +29,14 @@ public:
   void factory_reset();
 
   // Endpoints
+  void register_endpoint(uint16_t endpoint_id);
+  void register_binding(uint16_t endpoint_id);
   template <typename ConfigT,
             esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
-  void register_endpoint(uint16_t endpoint_id) {
-    this->endpoint_registrations_.push_back(
-        new MatterEndpointRegistration<ConfigT, AddFn>(endpoint_id));
+  void register_device_type(uint16_t endpoint_id) {
+    this->device_type_registrations_.push_back(
+        new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id));
   }
-  void register_binding(uint16_t endpoint_id);
 #ifdef USE_LIGHT
   void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
 #endif
@@ -59,8 +60,9 @@ private:
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
 
-  std::vector<MatterEndpointRegistrationBase *> endpoint_registrations_;
+  std::vector<uint16_t> endpoint_ids_;
   std::vector<uint16_t> binding_endpoint_ids_;
+  std::vector<MatterDeviceTypeRegistrationBase *> device_type_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;
 };
 

@@ -21,62 +21,44 @@ namespace esphome::matter {
 class MatterLightMapping;
 #endif
 
-esp_matter::endpoint_t *
-create_endpoint_for_registration(esp_matter::node_t *node,
-                                 uint16_t endpoint_id);
-
-class MatterEndpointRegistrationBase {
+class MatterDeviceTypeRegistrationBase {
 public:
-  explicit MatterEndpointRegistrationBase(uint16_t endpoint_id)
+  explicit MatterDeviceTypeRegistrationBase(uint16_t endpoint_id)
       : endpoint_id_(endpoint_id) {}
-  virtual ~MatterEndpointRegistrationBase() = default;
+  virtual ~MatterDeviceTypeRegistrationBase() = default;
 
-  virtual bool create_endpoint(esp_matter::node_t *node) = 0;
+  virtual bool add_clusters(esp_matter::node_t *node) = 0;
 
   uint16_t endpoint_id() const { return this->endpoint_id_; }
 
 protected:
-  esp_matter::endpoint_t *endpoint_{nullptr};
   uint16_t endpoint_id_;
 };
 
 template <typename ConfigT,
           esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
-class MatterEndpointRegistration : public MatterEndpointRegistrationBase {
+class MatterDeviceTypeRegistration : public MatterDeviceTypeRegistrationBase {
 public:
-  explicit MatterEndpointRegistration(uint16_t endpoint_id)
-      : MatterEndpointRegistrationBase(endpoint_id) {}
+  explicit MatterDeviceTypeRegistration(uint16_t endpoint_id)
+      : MatterDeviceTypeRegistrationBase(endpoint_id) {}
 
-  bool create_endpoint(esp_matter::node_t *node) override {
+  bool add_clusters(esp_matter::node_t *node) override {
     ConfigT config;
-    bool existing_endpoint =
-        esp_matter::endpoint::get(node, this->endpoint_id_) != nullptr;
-    this->endpoint_ =
-        create_endpoint_for_registration(node, this->endpoint_id_);
-    if (this->endpoint_ == nullptr) {
-      ESP_LOGE("matter", "Failed to create endpoint %u", this->endpoint_id_);
+    esp_matter::endpoint_t *endpoint =
+        esp_matter::endpoint::get(node, this->endpoint_id_);
+    if (endpoint == nullptr) {
+      ESP_LOGE("matter", "Cannot add clusters for missing endpoint %u",
+               this->endpoint_id_);
       return false;
     }
 
-    if (this->endpoint_id_ != 0 && !existing_endpoint) {
-      esp_matter::cluster_t *descriptor_cluster =
-          esp_matter::cluster::descriptor::create(
-              this->endpoint_, &(config.descriptor),
-              esp_matter::CLUSTER_FLAG_SERVER);
-      if (descriptor_cluster == nullptr) {
-        ESP_LOGE("matter", "Failed to create endpoint %u descriptor cluster",
-                 this->endpoint_id_);
-        return false;
-      }
-    }
-
-    if (AddFn(this->endpoint_, &config) != ESP_OK) {
+    if (AddFn(endpoint, &config) != ESP_OK) {
       ESP_LOGE("matter", "Failed to add endpoint %u clusters",
                this->endpoint_id_);
       return false;
     }
 
-    ESP_LOGD("matter", "Endpoint created: id=%u", this->endpoint_id_);
+    ESP_LOGD("matter", "Device type added: endpoint_id=%u", this->endpoint_id_);
     return true;
   }
 };
