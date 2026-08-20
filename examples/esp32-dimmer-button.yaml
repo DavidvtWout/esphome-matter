@@ -45,11 +45,14 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.turn_on: dimmer_endpoint
+      matter.on_off.on: dimmer_endpoint
     on_press:
-      matter.dim_up: dimmer_endpoint
+      matter.level_control.move_with_on_off:
+        endpoint_id: dimmer_endpoint
+        move_mode: 0 # up
+        rate: 50
     on_release:
-      matter.dim_stop: dimmer_endpoint
+      matter.level_control.stop_with_on_off: dimmer_endpoint
   - name: "Button down"
     id: button_down
     platform: gpio
@@ -60,8 +63,11 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.turn_off: dimmer_endpoint
+      matter.on_off.off: dimmer_endpoint
     on_press:
-      matter.dim_down: dimmer_endpoint
+      matter.level_control.move_with_on_off:
+        endpoint_id: dimmer_endpoint
+        move_mode: 1 # down
+        rate: 50
     on_release:
-      matter.dim_stop: dimmer_endpoint
+      matter.level_control.stop_with_on_off: dimmer_endpoint

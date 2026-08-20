@@ -26,9 +26,11 @@ wifi:
 
 matter:
   endpoints:
-    - dimmer_switch:
+    1:
       id: dimmer_endpoint
-    - temperature_sensor:
+      dimmer_switch:
+    2:
+      temperature_sensor:
         sensor_id: internal_temp
 
 binary_sensor:

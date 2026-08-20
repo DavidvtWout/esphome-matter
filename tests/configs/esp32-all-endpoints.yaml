@@ -21,19 +21,24 @@ network:
 
 matter:
   endpoints:
-    - on_off_switch:
+    1:
       id: on_off_switch_endpoint
-    - dimmer_switch:
+      on_off_light_switch:
+    2:
       id: dimmer_switch_endpoint
-    - temperature_sensor:
-        sensor_id: internal_temp
+      dimmer_switch:
+    42:
       id: temperature_sensor_endpoint
-    - on_off_light:
-        light_id: binary_status_light
+      temperature_sensor:
+        sensor_id: internal_temp
+    3:
       id: on_off_light_endpoint
-    - dimmable_light:
-        light_id: dimmable_status_light
+      on_off_light:
+        light_id: binary_status_light
+    4:
       id: dimmable_light_endpoint
+      dimmable_light:
+        light_id: dimmable_status_light
 
 sensor:
   - platform: internal_temperature
