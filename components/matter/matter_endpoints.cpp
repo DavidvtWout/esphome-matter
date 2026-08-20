@@ -11,6 +11,7 @@ static const char *const TAG = "matter";
 
 namespace esphome::matter {
 
+#ifdef USE_CLIMATE
 namespace {
 
 struct ThermostatCapabilities {
@@ -67,6 +68,7 @@ uint8_t climate_mode_to_matter_mode(climate::ClimateMode mode) {
 }
 
 }  // namespace
+#endif  // USE_CLIMATE
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   for (auto &sw : this->on_off_switches_) {
