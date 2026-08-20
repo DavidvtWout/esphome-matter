@@ -52,6 +52,10 @@ create_endpoint_for_registration(esp_matter::node_t *node,
                                esp_matter::ENDPOINT_FLAG_NONE, nullptr);
 }
 
+void MatterComponent::register_binding(uint16_t endpoint_id) {
+  this->binding_endpoint_ids_.push_back(endpoint_id);
+}
+
 #ifdef USE_LIGHT
 void MatterComponent::map_light_to_endpoint(light::LightState *light,
                                             uint16_t endpoint_id) {
@@ -180,6 +184,25 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   for (auto *endpoint : this->endpoint_registrations_) {
     if (!endpoint->create_endpoint(node))
       return false;
+  }
+
+  for (uint16_t endpoint_id : this->binding_endpoint_ids_) {
+    esp_matter::endpoint_t *endpoint =
+        esp_matter::endpoint::get(node, endpoint_id);
+    if (endpoint == nullptr) {
+      ESP_LOGE(TAG, "Cannot create binding cluster for missing endpoint %u",
+               endpoint_id);
+      return false;
+    }
+    esp_matter::cluster::binding::config_t config;
+    esp_matter::cluster_t *binding_cluster =
+        esp_matter::cluster::binding::create(endpoint, &config,
+                                             esp_matter::CLUSTER_FLAG_SERVER);
+    if (binding_cluster == nullptr) {
+      ESP_LOGE(TAG, "Failed to create endpoint %u binding cluster",
+               endpoint_id);
+      return false;
+    }
   }
 
   register_client_request_callbacks();

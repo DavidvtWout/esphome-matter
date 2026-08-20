@@ -51,9 +51,11 @@ DEVICE_TYPES = {
     # Switches
     CONF_ON_OFF_LIGHT_SWITCH: {
         "schema": EMPTY_SCHEMA,
+        CONF_ENABLE_BINDING: True,
     },
     CONF_DIMMER_SWITCH: {
         "schema": EMPTY_SCHEMA,
+        CONF_ENABLE_BINDING: True,
     },
     # Sensors
     CONF_TEMPERATURE_SENSOR: {

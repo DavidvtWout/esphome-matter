@@ -32,7 +32,10 @@ dimmer_switch:
 ```
 
 ##### Binding
-Switches defined by the matter component automatically get the binding cluster (id 30). Some Matter controllers such as matterjs-server allow binding from the UI. 
+Endpoints with switch device types get the Binding cluster (id 30) by default.
+Set `enable_binding: false` on an endpoint to disable that default, or
+`enable_binding: true` to add the Binding cluster to another endpoint. Some
+Matter controllers such as matterjs-server allow binding from the UI.
 
 See [docs/actions.md](./docs/actions.md) for a list of available commands on each cluster.
 

@@ -1,10 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.const import (
-    CONF_ID,
-    CONF_LIGHT_ID,
-    CONF_SENSOR_ID,
-)
+from esphome.const import CONF_LIGHT_ID, CONF_SENSOR_ID
 from esphome.types import ConfigType
 
 from .const import *
@@ -16,6 +12,7 @@ ENDPOINT_SCHEMA = cv.All(
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(MatterEndpointRef),
+            cv.Optional(CONF_ENABLE_BINDING): cv.boolean,
         }
         | {
             cv.Optional(dt_name): dt_config["schema"]
@@ -23,6 +20,16 @@ ENDPOINT_SCHEMA = cv.All(
         }
     ),
 )
+
+
+def _endpoint_binding_enabled(endpoint_config: ConfigType) -> bool:
+    if CONF_ENABLE_BINDING in endpoint_config:
+        return endpoint_config[CONF_ENABLE_BINDING]
+    return any(
+        DEVICE_TYPES[device_type].get(CONF_ENABLE_BINDING, False)
+        for device_type in endpoint_config
+        if device_type in DEVICE_TYPES
+    )
 
 
 async def configure_endpoints(var, config: ConfigType):
@@ -41,3 +48,5 @@ async def configure_endpoints(var, config: ConfigType):
             elif CONF_LIGHT_ID in device_config:
                 light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
                 cg.add(var.map_light_to_endpoint(light_, endpoint_id))
+        if _endpoint_binding_enabled(endpoint_config):
+            cg.add(var.register_binding(endpoint_id))

@@ -4,6 +4,7 @@ CONF_MATTER = "matter"
 CONF_ENDPOINTS = "endpoints"
 
 KEY_ENDPOINT_ID_MAP = "endpoint_id_map"
+CONF_ENABLE_BINDING = "enable_binding"
 
 # Lights
 CONF_ON_OFF_LIGHT = "on_off_light"

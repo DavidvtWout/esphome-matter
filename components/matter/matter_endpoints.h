@@ -14,21 +14,12 @@
 #include <esp_matter_cluster.h>
 
 #include <cstdint>
-#include <type_traits>
 
 namespace esphome::matter {
 
 #ifdef USE_LIGHT
 class MatterLightMapping;
 #endif
-
-template <typename ConfigT, typename = void>
-struct MatterEndpointConfigHasBinding : std::false_type {};
-
-template <typename ConfigT>
-struct MatterEndpointConfigHasBinding<
-    ConfigT, std::void_t<decltype(std::declval<ConfigT>().binding)>>
-    : std::true_type {};
 
 esp_matter::endpoint_t *
 create_endpoint_for_registration(esp_matter::node_t *node,
@@ -83,18 +74,6 @@ public:
       ESP_LOGE("matter", "Failed to add endpoint %u clusters",
                this->endpoint_id_);
       return false;
-    }
-
-    if constexpr (MatterEndpointConfigHasBinding<ConfigT>::value) {
-      esp_matter::cluster_t *binding_cluster =
-          esp_matter::cluster::binding::create(this->endpoint_,
-                                               &(config.binding),
-                                               esp_matter::CLUSTER_FLAG_SERVER);
-      if (binding_cluster == nullptr) {
-        ESP_LOGE("matter", "Failed to create endpoint %u binding cluster",
-                 this->endpoint_id_);
-        return false;
-      }
     }
 
     ESP_LOGD("matter", "Endpoint created: id=%u", this->endpoint_id_);
