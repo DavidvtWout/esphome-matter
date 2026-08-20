@@ -1,6 +1,9 @@
 CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
+CONF_MATTER = "matter"
 CONF_ENDPOINTS = "endpoints"
+
+KEY_ENDPOINT_ID_MAP = "endpoint_id_map"
 
 # Lights
 CONF_ON_OFF_LIGHT = "on_off_light"

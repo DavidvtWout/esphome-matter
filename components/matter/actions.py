@@ -9,7 +9,7 @@ from esphome.const import (
     CONF_ID,
     CONF_VALUE,
 )
-from esphome.core import ID
+from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .clusters import MATTER_COMMANDS
@@ -46,7 +46,7 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
         {
             cv.GenerateID(): cv.declare_id(MatterSendCommandAction),
             cv.Required(CONF_ENDPOINT_ID): cv.Any(
-                cv.uint16_t, cv.use_id(MatterEndpointRef)
+                cv.use_id(MatterEndpointRef), cv.uint16_t
             ),
             cv.Required(CONF_CLUSTER_ID): cv.hex_uint32_t,
             cv.Required(CONF_COMMAND_ID): cv.hex_uint32_t,
@@ -77,12 +77,7 @@ async def matter_send_command_to_code(
 
     """
     var = cg.new_Pvariable(action_id, template_arg)
-    endpoint_id = config[CONF_ENDPOINT_ID]
-    if isinstance(endpoint_id, ID):
-        endpoint_ref = await cg.get_variable(endpoint_id)
-        cg.add(var.set_endpoint_ref(endpoint_ref))
-    else:
-        cg.add(var.set_endpoint_id(endpoint_id))
+    cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
     cg.add(var.set_cluster_id(config[CONF_CLUSTER_ID]))
     cg.add(var.set_command_id(config[CONF_COMMAND_ID]))
     cg.add(var.set_data(config[CONF_DATA]))
@@ -147,13 +142,20 @@ async def _new_send_command_action(
     cluster_id, command_id = _resolve_command_id(cluster_name, command_name)
 
     var = cg.new_Pvariable(action_id, template_arg)
-    # TODO: set endpoint_id instead of endpoint_ref
-    endpoint_ref = await cg.get_variable(config[CONF_ENDPOINT_ID])
-    cg.add(var.set_endpoint_ref(endpoint_ref))
+    cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
     cg.add(var.set_cluster_id(cluster_id))
     cg.add(var.set_command_id(command_id))
     cg.add(var.set_data(_build_data(config, cluster_name, command_name)))
     return var
+
+
+def _resolve_endpoint_id(endpoint_id: ID | int) -> int:
+    if not isinstance(endpoint_id, ID):
+        return endpoint_id
+    endpoint_ids = CORE.data.get(CONF_MATTER, {}).get(KEY_ENDPOINT_ID_MAP, {})
+    if endpoint_id in endpoint_ids:
+        return endpoint_ids[endpoint_id]
+    raise cv.Invalid(f"Unknown Matter endpoint id '{endpoint_id}'")
 
 
 def _build_data(config, cluster_name: str, command_name: str) -> str:
@@ -217,7 +219,9 @@ def _field_validator(field_type: str):
 
 def _command_schema(cluster_name: str, command_name: str):
     schema = {
-        cv.Required(CONF_ENDPOINT_ID): cv.use_id(MatterEndpointRef),
+        cv.Required(CONF_ENDPOINT_ID): cv.Any(
+            cv.use_id(MatterEndpointRef), cv.uint16_t
+        ),
     }
 
     command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
