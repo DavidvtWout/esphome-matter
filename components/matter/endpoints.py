@@ -35,6 +35,8 @@ def _endpoint_binding_enabled(endpoint_config: ConfigType) -> bool:
 async def configure_endpoints(var, config: ConfigType):
     for endpoint_id, endpoint_config in config[CONF_ENDPOINTS].items():
         cg.add(var.register_endpoint(endpoint_id))
+        if _endpoint_binding_enabled(endpoint_config):
+            cg.add(var.register_binding(endpoint_id))
         for device_type, device_config in endpoint_config.items():
             if device_type not in DEVICE_TYPES:
                 continue
@@ -42,12 +44,10 @@ async def configure_endpoints(var, config: ConfigType):
                 cg.RawExpression(f"esp_matter::endpoint::{device_type}::config_t"),
                 cg.RawExpression(f"esp_matter::endpoint::{device_type}::add"),
             )
-            cg.add(register_device_type(endpoint_id))
+            cg.add(register_device_type(endpoint_id, device_type))
             if CONF_SENSOR_ID in device_config:
                 sensor_ = await cg.get_variable(device_config[CONF_SENSOR_ID])
                 cg.add(var.map_sensor_to_endpoint(sensor_, endpoint_id))
             elif CONF_LIGHT_ID in device_config:
                 light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
                 cg.add(var.map_light_to_endpoint(light_, endpoint_id))
-        if _endpoint_binding_enabled(endpoint_config):
-            cg.add(var.register_binding(endpoint_id))

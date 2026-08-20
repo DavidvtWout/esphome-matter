@@ -7,6 +7,7 @@
 
 #include <platform/CHIPDeviceLayer.h>
 
+#include <algorithm>
 #include <cmath>
 #include <esp_matter_cluster.h>
 
@@ -16,29 +17,12 @@ namespace esphome::matter {
 
 namespace {
 
+// Mirrors the start of esp-matter's private node layout to advance its endpoint
+// allocator watermark.
 struct EspMatterNodeHeader {
   void *endpoint_list;
   uint16_t min_unused_endpoint_id;
 };
-
-esp_matter::endpoint_t *resume_endpoint_at_id(esp_matter::node_t *node,
-                                              uint16_t endpoint_id,
-                                              uint8_t flags, void *priv_data) {
-  if (esp_matter::endpoint::get(node, endpoint_id) != nullptr) {
-    ESP_LOGE(TAG, "Matter endpoint id %u is already in use", endpoint_id);
-    return nullptr;
-  }
-
-  // esp-matter only exposes endpoint::resume(node, id) for IDs below its
-  // private min_unused_endpoint_id. Static ESPHome endpoints are created before
-  // esp_matter::start(), so advance that private allocator watermark directly
-  // and then let esp-matter's resume path add the endpoint normally.
-  auto *node_header = reinterpret_cast<EspMatterNodeHeader *>(node);
-  if (node_header->min_unused_endpoint_id <= endpoint_id)
-    node_header->min_unused_endpoint_id = endpoint_id + 1;
-
-  return esp_matter::endpoint::resume(node, flags, endpoint_id, priv_data);
-}
 
 } // namespace
 
@@ -51,6 +35,11 @@ void MatterComponent::register_endpoint(uint16_t endpoint_id) {
 }
 
 void MatterComponent::register_binding(uint16_t endpoint_id) {
+  this->register_endpoint(endpoint_id);
+  for (uint16_t registered_endpoint_id : this->binding_endpoint_ids_) {
+    if (registered_endpoint_id == endpoint_id)
+      return;
+  }
   this->binding_endpoint_ids_.push_back(endpoint_id);
 }
 
@@ -179,21 +168,42 @@ void MatterSensorMapping::push_state_to_matter(float value) {
 #endif
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
+  if (!this->endpoint_ids_.empty()) {
+    // esp-matter only resumes endpoint IDs below its private
+    // min_unused_endpoint_id. ESPHome creates all static endpoints before
+    // esp_matter::start(), so advance the single node's allocator watermark
+    // once before resuming them.
+    uint16_t max_endpoint_id = *std::max_element(this->endpoint_ids_.begin(),
+                                                 this->endpoint_ids_.end());
+    auto *node_header = reinterpret_cast<EspMatterNodeHeader *>(node);
+    if (node_header->min_unused_endpoint_id <= max_endpoint_id)
+      node_header->min_unused_endpoint_id = max_endpoint_id + 1;
+  }
+
+  // Create endpoints
   for (uint16_t endpoint_id : this->endpoint_ids_) {
-    esp_matter::endpoint_t *endpoint = resume_endpoint_at_id(
-        node, endpoint_id, esp_matter::ENDPOINT_FLAG_NONE, nullptr);
+    if (esp_matter::endpoint::get(node, endpoint_id) != nullptr) {
+      ESP_LOGE(TAG, "Matter endpoint id %u is already in use", endpoint_id);
+      return false;
+    }
+
+    esp_matter::endpoint_t *endpoint = esp_matter::endpoint::resume(
+        node, esp_matter::ENDPOINT_FLAG_NONE, endpoint_id, nullptr);
     if (endpoint == nullptr) {
       ESP_LOGE(TAG, "Failed to create endpoint %u", endpoint_id);
       return false;
     }
 
-    if (endpoint_id != 0) {
-      esp_matter::cluster::descriptor::config_t config;
-      esp_matter::cluster_t *descriptor_cluster =
-          esp_matter::cluster::descriptor::create(
-              endpoint, &config, esp_matter::CLUSTER_FLAG_SERVER);
-      if (descriptor_cluster == nullptr) {
-        ESP_LOGE(TAG, "Failed to create endpoint %u descriptor cluster",
+    // Add binding cluster
+    if (std::find(this->binding_endpoint_ids_.begin(),
+                  this->binding_endpoint_ids_.end(),
+                  endpoint_id) != this->binding_endpoint_ids_.end()) {
+      esp_matter::cluster::binding::config_t config;
+      esp_matter::cluster_t *binding_cluster =
+          esp_matter::cluster::binding::create(endpoint, &config,
+                                               esp_matter::CLUSTER_FLAG_SERVER);
+      if (binding_cluster == nullptr) {
+        ESP_LOGE(TAG, "Failed to create endpoint %u binding cluster",
                  endpoint_id);
         return false;
       }
@@ -202,28 +212,10 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
     ESP_LOGV(TAG, "Endpoint created: id=%u", endpoint_id);
   }
 
+  // Add device types to endpoints
   for (auto *device_type_registration : this->device_type_registrations_) {
     if (!device_type_registration->add_clusters(node))
       return false;
-  }
-
-  for (uint16_t endpoint_id : this->binding_endpoint_ids_) {
-    esp_matter::endpoint_t *endpoint =
-        esp_matter::endpoint::get(node, endpoint_id);
-    if (endpoint == nullptr) {
-      ESP_LOGE(TAG, "Cannot create binding cluster for missing endpoint %u",
-               endpoint_id);
-      return false;
-    }
-    esp_matter::cluster::binding::config_t config;
-    esp_matter::cluster_t *binding_cluster =
-        esp_matter::cluster::binding::create(endpoint, &config,
-                                             esp_matter::CLUSTER_FLAG_SERVER);
-    if (binding_cluster == nullptr) {
-      ESP_LOGE(TAG, "Failed to create endpoint %u binding cluster",
-               endpoint_id);
-      return false;
-    }
   }
 
   register_client_request_callbacks();
@@ -270,8 +262,7 @@ endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
 }
 
 // Wires ESPHome entities to Matter attributes. Must run after
-// esp_matter::start(). Bare endpoints and client switch endpoints have no
-// wiring here.
+// esp_matter::start().
 void MatterComponent::register_endpoint_callbacks_() {
   for (auto *mapping : this->mappings_) {
     mapping->register_callbacks();

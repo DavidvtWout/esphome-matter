@@ -1,7 +1,7 @@
 #pragma once
+
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
-
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
 
@@ -33,9 +33,10 @@ public:
   void register_binding(uint16_t endpoint_id);
   template <typename ConfigT,
             esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
-  void register_device_type(uint16_t endpoint_id) {
+  void register_device_type(uint16_t endpoint_id, const char *device_type) {
     this->device_type_registrations_.push_back(
-        new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id));
+        new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id,
+                                                         device_type));
   }
 #ifdef USE_LIGHT
   void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);

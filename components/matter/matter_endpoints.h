@@ -1,5 +1,7 @@
 #pragma once
+
 #include "esphome/core/defines.h"
+#ifdef USE_MATTER
 #include "esphome/core/log.h"
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
@@ -7,8 +9,6 @@
 #ifdef USE_LIGHT
 #include "esphome/components/light/light_state.h"
 #endif
-
-#ifdef USE_MATTER
 
 #include <esp_matter.h>
 #include <esp_matter_cluster.h>
@@ -23,8 +23,9 @@ class MatterLightMapping;
 
 class MatterDeviceTypeRegistrationBase {
 public:
-  explicit MatterDeviceTypeRegistrationBase(uint16_t endpoint_id)
-      : endpoint_id_(endpoint_id) {}
+  MatterDeviceTypeRegistrationBase(uint16_t endpoint_id,
+                                   const char *device_type)
+      : endpoint_id_(endpoint_id), device_type_(device_type) {}
   virtual ~MatterDeviceTypeRegistrationBase() = default;
 
   virtual bool add_clusters(esp_matter::node_t *node) = 0;
@@ -33,32 +34,34 @@ public:
 
 protected:
   uint16_t endpoint_id_;
+  const char *device_type_;
 };
 
 template <typename ConfigT,
           esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
 class MatterDeviceTypeRegistration : public MatterDeviceTypeRegistrationBase {
 public:
-  explicit MatterDeviceTypeRegistration(uint16_t endpoint_id)
-      : MatterDeviceTypeRegistrationBase(endpoint_id) {}
+  MatterDeviceTypeRegistration(uint16_t endpoint_id, const char *device_type)
+      : MatterDeviceTypeRegistrationBase(endpoint_id, device_type) {}
 
   bool add_clusters(esp_matter::node_t *node) override {
     ConfigT config;
     esp_matter::endpoint_t *endpoint =
         esp_matter::endpoint::get(node, this->endpoint_id_);
     if (endpoint == nullptr) {
-      ESP_LOGE("matter", "Cannot add clusters for missing endpoint %u",
-               this->endpoint_id_);
+      ESP_LOGE("matter", "Cannot add %s device type for missing endpoint %u",
+               this->device_type_, this->endpoint_id_);
       return false;
     }
 
     if (AddFn(endpoint, &config) != ESP_OK) {
-      ESP_LOGE("matter", "Failed to add endpoint %u clusters",
-               this->endpoint_id_);
+      ESP_LOGE("matter", "Failed to add %s device type to endpoint %u",
+               this->device_type_, this->endpoint_id_);
       return false;
     }
 
-    ESP_LOGD("matter", "Device type added: endpoint_id=%u", this->endpoint_id_);
+    ESP_LOGD("matter", "Added device type %s to endpoint %u",
+             this->device_type_, this->endpoint_id_);
     return true;
   }
 };

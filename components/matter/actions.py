@@ -219,6 +219,7 @@ def _field_validator(field_type: str):
 
 def _command_schema(cluster_name: str, command_name: str):
     schema = {
+        # TODO: validate endpoint id to exist
         cv.Required(CONF_ENDPOINT_ID): cv.Any(
             cv.use_id(MatterEndpointRef), cv.uint16_t
         ),
