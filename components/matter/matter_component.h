@@ -35,6 +35,7 @@ public:
     this->endpoint_registrations_.push_back(
         new MatterEndpointRegistration<ConfigT, AddFn>(endpoint_id));
   }
+  void register_binding(uint16_t endpoint_id);
 #ifdef USE_LIGHT
   void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
 #endif
@@ -59,6 +60,7 @@ private:
   uint32_t passcode_{0};
 
   std::vector<MatterEndpointRegistrationBase *> endpoint_registrations_;
+  std::vector<uint16_t> binding_endpoint_ids_;
   std::vector<MatterEndpointMappingBase *> mappings_;
 };
 
