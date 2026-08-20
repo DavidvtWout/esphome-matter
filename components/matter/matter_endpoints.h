@@ -1,5 +1,7 @@
 #pragma once
+
 #include "esphome/core/defines.h"
+#ifdef USE_MATTER
 #include "esphome/core/log.h"
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
@@ -7,8 +9,6 @@
 #ifdef USE_LIGHT
 #include "esphome/components/light/light_state.h"
 #endif
-
-#ifdef USE_MATTER
 
 #include <esp_matter.h>
 #include <esp_matter_cluster.h>

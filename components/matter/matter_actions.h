@@ -1,8 +1,7 @@
 #pragma once
+
 #include "esphome/core/defines.h"
-
 #ifdef USE_MATTER
-
 #include "esphome/core/automation.h"
 
 #include <esp_matter.h>
