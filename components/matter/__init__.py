@@ -78,7 +78,11 @@ CONFIG_SCHEMA = cv.All(
             cv.GenerateID(): cv.declare_id(MatterComponent),
             cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
             cv.Optional(CONF_PASSCODE): _validate_passcode,
-            cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
+            cv.Optional(CONF_ENDPOINTS, default={}): cv.Schema(
+                {
+                    cv.int_range(min=0, max=65534): ENDPOINT_SCHEMA,
+                }
+            ),
         }
     ).extend(cv.COMPONENT_SCHEMA),
     cv.only_on_esp32,
@@ -121,6 +125,12 @@ async def _set_executable_component_name():
 async def to_code(config: ConfigType):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
+
+    # Register endpoint IDs globally for later use by actions, etc...
+    CORE.data.setdefault(CONF_MATTER, {})[KEY_ENDPOINT_ID_MAP] = {
+        endpoint_config[CONF_ID]: endpoint_id
+        for endpoint_id, endpoint_config in config.get(CONF_ENDPOINTS, {}).items()
+    }
 
     add_idf_component(
         name="espressif/esp_matter",
