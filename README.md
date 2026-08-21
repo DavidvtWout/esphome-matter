@@ -41,6 +41,29 @@ So far, `ESP32-C3`, `ESP32-C5` `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been t
 
 See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for bugs and features that are being worked on.
 
+# Compatibility with popular ecosystems 
+
+esphome-matter based devices will show up as "uncertified test devices" in the ecosystems. This is because the devices are not certified by the Connectivity Standards Alliance (CSA) and are not part of the official Matter certification program. However, the devices should in theory still ve functional and can be used in ecosystems that allow the user to add uncertified devices. The ecosystems usually inform the user about the uncertified status of the device during the commissioning process.
+
+## ESPHome-based devices created with esphome-matter have been tested with:
+
+Note! Each ecosystem has their own specialties. Please see the seperate "Commissioning" section below for more details on pairing your devices.
+
+- **Apple iOS (iPhone or iPad) and tvOS 16 (Apple TV) - "Home" app by Apple**: Working
+- **Google Home Ecosystem (Android or Google Nest smart speakers/display) - "Google Home" app**: Not tested
+- **Amazon Alexa (Amazon Echo smart speakers/displays)** : Not tested
+- **Tuya Smart (SmartLife) app**: Not tested
+- **Samsung SmartThings (Station or Hub v2 and later)**: Not tested
+- **LG ThinQ**: Not tested
+- **Homey Pro**: Not tested
+- **Home Assistant - Matter integration**: Not tested
+- **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): Not tested
+- **Aqara Hubs**: Not tested
+- **flic**: Not tested
+- **Yandex Smart Home**: Yandex currently seem to not allow to pair test devices, so sphome-matter open source devices will not work with Yandex Smart Home. Please contact Yandex and request this feature to allow it to support uncertified DIY and test devices someday.
+
+Please report any outdated or newly discovered information on compatible ecosystems, devices, and device types or issues.
+
 # Commissioning
 
 Because ESPHome devices already have their Wi-Fi or Thread credentials from your YAML configuration, commissioning
