@@ -1,6 +1,8 @@
 CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
 CONF_ENDPOINTS = "endpoints"
+CONF_VENDOR_NAME = "vendor_name"
+CONF_PRODUCT_NAME = "product_name"
 
 # Lights
 CONF_ON_OFF_LIGHT = "on_off_light"
