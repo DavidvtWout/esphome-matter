@@ -11,6 +11,31 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+
+      esphome-cmake-args = pkgs.esphome.overridePythonAttrs (old: {
+        version = "2026.9.0-dev";
+        src = pkgs.fetchFromGitHub {
+          owner = "DavidvtWout";
+          repo = "esphome";
+          rev = "cmake-args";
+          hash = "sha256-P+9pu8NIlO+93mi7znOjCYnXwIsb4CjGaejOAwaConI=";
+        };
+        postPatch = ''
+          substituteInPlace pyproject.toml \
+            --replace-fail "setuptools==84.0.0" "setuptools" \
+            --replace-fail "wheel>=0.43,<0.48" "wheel"
+        '';
+        patches = [ ];
+        dependencies =
+          old.dependencies
+          ++ (with pkgs.python3.pkgs; [
+            (toPythonModule pkgs.platformio-core)
+            filelock
+            platformdirs
+          ]);
+        doCheck = false;
+      });
+
       preCommitCheck = pre-commit-hooks.lib.${system}.run {
         src = ./.;
         hooks.clang-format.enable = true;
@@ -20,9 +45,10 @@
     in
     {
       checks.${system}.pre-commit = preCommitCheck;
+      formatter.${system} = pkgs.nixfmt;
 
       devShells.${system}.default = pkgs.mkShell {
-        packages = with pkgs; [ esphome ];
+        packages = [ esphome-cmake-args ];
         shellHook = preCommitCheck.shellHook;
       };
     };
