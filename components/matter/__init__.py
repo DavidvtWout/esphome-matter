@@ -9,6 +9,7 @@ from esphome.const import (
     CONF_ENABLE_IPV6,
     CONF_ID,
     Framework,
+    __version__ as ESPHOME_VERSION,
 )
 from esphome.core import CORE
 from esphome.coroutine import CoroPriority, coroutine_with_priority
@@ -28,8 +29,8 @@ CODEOWNERS = ["@DavidvtWout"]
 
 AUTO_LOAD = ["network"]
 
-# Only for matter-over-thread
-MIN_ESPHOME_VERSION = "2026.6.0"
+MIN_ESPHOME_THREAD_VERSION = "2026.6.0"
+MIN_ESPHOME_IDF_TOOLCHAIN_VERSION = "2026.9.0"
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -90,7 +91,9 @@ CONFIG_SCHEMA = cv.All(
 def _final_validate(_):
     full_config = fv.full_config.get()
     if "openthread" in full_config:
-        cv.validate_esphome_version(MIN_ESPHOME_VERSION)
+        cv.validate_esphome_version(MIN_ESPHOME_THREAD_VERSION)
+    if CORE.using_toolchain_esp_idf:
+        cv.validate_esphome_version(MIN_ESPHOME_IDF_TOOLCHAIN_VERSION)
 
     network_config = full_config.get("network", {})
     if not network_config.get(CONF_ENABLE_IPV6, False):
@@ -101,6 +104,19 @@ def _final_validate(_):
 
 
 FINAL_VALIDATE_SCHEMA = _final_validate
+
+
+# The esp32 component already sets board_build.cmake_extra_args at FINAL priority so we need
+# to set it after that to prevent this platformio option from being overwritten.
+@coroutine_with_priority(CoroPriority.FINAL - 1)
+async def _set_executable_component_name():
+    # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but ESPHome names
+    # the app component "src".
+    if CORE.using_toolchain_platformio:
+        key = "board_build.cmake_extra_args"
+        value = CORE.platformio_options.get(key, "")
+        value += " -DEXECUTABLE_COMPONENT_NAME=src"
+        cg.add_platformio_option(key, value)
 
 
 @coroutine_with_priority(CoroPriority.NETWORK_SERVICES)
@@ -115,9 +131,12 @@ async def to_code(config: ConfigType):
 
     cg.add_define("USE_MATTER")
 
-    # esp-matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but ESPHome names
-    # the component "src".
-    cg.add_cmake_arg("EXECUTABLE_COMPONENT_NAME", "src")
+    # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but ESPHome
+    # names the app component "src".
+    try:
+        cg.add_cmake_arg("EXECUTABLE_COMPONENT_NAME", "src")
+    except AttributeError:
+        CORE.add_job(_set_executable_component_name)
 
     if CONF_DISCRIMINATOR in config:
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
