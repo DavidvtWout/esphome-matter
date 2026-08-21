@@ -18,13 +18,11 @@ public:
   void setup() override;
   void dump_config() override;
   float get_setup_priority() const override {
-#ifdef USE_OPENTHREAD
-    // Must run after the OpenThreadSrpComponent.
+    // Must run after ESPHome's network service components. On Wi-Fi/Ethernet
+    // this lets ESPHome initialize the shared mDNS responder before Matter
+    // publishes DNS-SD records; on Thread it keeps Matter after SRP setup.
     return setup_priority::AFTER_CONNECTION - 5.0f;
-#else
-    return setup_priority::AFTER_CONNECTION;
-// TODO: AFTER_BLUETOOTH in BLE commissioning mode.
-#endif
+    // TODO: AFTER_BLUETOOTH in BLE commissioning mode.
   }
 
   void factory_reset();
