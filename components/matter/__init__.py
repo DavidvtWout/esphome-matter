@@ -56,6 +56,13 @@ def _validate_passcode(value):
     return value
 
 
+def _validate_basic_information_name(value):
+    value = cv.string_strict(value)
+    if not (0 < len(value) <= 32):
+        raise cv.Invalid("Matter vendor and product names must be 1 to 32 characters")
+    return value
+
+
 def _require_vfs_select(config):
     """Register VFS select requirement during config validation."""
     if CORE.is_esp32:
@@ -76,6 +83,12 @@ CONFIG_SCHEMA = cv.All(
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(MatterComponent),
+            cv.Optional(
+                CONF_VENDOR_NAME, default="ESPHome"
+            ): _validate_basic_information_name,
+            cv.Optional(
+                CONF_PRODUCT_NAME, default=lambda: CORE.name[:32]
+            ): _validate_basic_information_name,
             cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
             cv.Optional(CONF_PASSCODE): _validate_passcode,
             cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
@@ -130,6 +143,12 @@ async def to_code(config: ConfigType):
     CORE.add_job(_set_executable_component_name)
 
     cg.add_define("USE_MATTER")
+    cg.add_build_flag(
+        f'-DCHIP_DEVICE_CONFIG_DEVICE_VENDOR_NAME=\\"{config[CONF_VENDOR_NAME]}\\"'
+    )
+    cg.add_build_flag(
+        f'-DCHIP_DEVICE_CONFIG_DEVICE_PRODUCT_NAME=\\"{config[CONF_PRODUCT_NAME]}\\"'
+    )
 
     if CONF_DISCRIMINATOR in config:
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
