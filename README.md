@@ -104,6 +104,10 @@ openthread:
   ...
 
 matter:
+  # vendor and product name can be at most 32 characters.
+  # vendor_name: defaults to ESPHome
+  # product_name: defaults to esphome.name
+  
   # Endpoint order is significant: each entry is assigned an endpoint ID based on its position
   # in the list. Once a device has been commissioned, existing entries should not be removed
   # or reordered or the Matter fabric may lose track of previously bound endpoints.
