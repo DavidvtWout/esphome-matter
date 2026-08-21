@@ -2,6 +2,9 @@
 #ifdef USE_MATTER
 
 #include "esphome/components/network/util.h"
+#ifdef USE_OPENTHREAD
+#include "esphome/components/openthread/openthread.h"
+#endif // USE_OPENTHREAD
 #include "esphome/core/application.h"
 #include "esphome/core/log.h"
 #include "matter_component.h"
@@ -20,6 +23,9 @@
 #include <platform/ThreadStackManager.h>
 #endif
 #include <lib/support/Base64.h>
+#ifdef USE_OPENTHREAD
+#include <openthread/ip6.h>
+#endif // USE_OPENTHREAD
 #include <setup_payload/ManualSetupPayloadGenerator.h>
 #include <setup_payload/QRCodeSetupPayloadGenerator.h>
 #include <setup_payload/SetupPayload.h>
@@ -203,18 +209,67 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
   case chip::DeviceLayer::DeviceEventType::kWiFiConnectivityChange: // 0x8000
     ESP_LOGV(TAG_EVENT, "WiFiConnectivityChange");
     break;
-  case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange: // 0x8001
-    ESP_LOGV(TAG_EVENT, "ThreadConnectivityChange");
+  case chip::DeviceLayer::DeviceEventType::
+      kThreadConnectivityChange: { // 0x8001
+    switch (event->ThreadConnectivityChange.Result) {
+    case chip::DeviceLayer::kConnectivity_Established:
+      ESP_LOGI(TAG_EVENT, "ThreadConnectivityChange: established");
+      break;
+    case chip::DeviceLayer::kConnectivity_Lost:
+      ESP_LOGW(TAG_EVENT, "ThreadConnectivityChange: lost");
+      break;
+    case chip::DeviceLayer::kConnectivity_NoChange:
+      ESP_LOGV(TAG_EVENT, "ThreadConnectivityChange: no_change");
+      break;
+    default:
+      ESP_LOGV(TAG_EVENT, "ThreadConnectivityChange: unknown (%d)",
+               static_cast<int>(event->ThreadConnectivityChange.Result));
+      break;
+    }
     break;
+  }
   case chip::DeviceLayer::DeviceEventType::
       kInternetConnectivityChange: // 0x8002
     ESP_LOGV(TAG_EVENT, "InternetConnectivityChange");
     break;
-  case chip::DeviceLayer::DeviceEventType::kThreadStateChange: // 0x800B
-    ESP_LOGV(TAG_EVENT, "ThreadStateChange");
+  case chip::DeviceLayer::DeviceEventType::kThreadStateChange: { // 0x800B
+    const auto &thread_state = event->ThreadStateChange;
+    if (thread_state.RoleChanged)
+      ESP_LOGD(TAG_EVENT, "Thread role changed");
+    if (thread_state.NetDataChanged)
+      ESP_LOGD(TAG_EVENT, "Thread network data changed");
+    if (thread_state.ChildNodesChanged)
+      ESP_LOGD(TAG_EVENT, "Thread child nodes changed");
+    if (thread_state.AddressChanged) {
+#ifdef USE_OPENTHREAD
+      ESP_LOGD(TAG_EVENT, "Thread address(es) changed");
+      auto lock = esphome::openthread::InstanceLock::try_acquire(2000);
+      if (lock) {
+        otInstance *instance = lock.get_instance();
+        for (const otNetifAddress *addr = otIp6GetUnicastAddresses(instance);
+             addr != nullptr; addr = addr->mNext) {
+          char address[OT_IP6_ADDRESS_STRING_SIZE];
+          otIp6AddressToString(&addr->mAddress, address, sizeof(address));
+          ESP_LOGD(TAG_EVENT, "  address %s/%u valid=%s preferred=%s rloc=%s",
+                   address, static_cast<unsigned>(addr->mPrefixLength),
+                   YESNO(addr->mValid), YESNO(addr->mPreferred),
+                   YESNO(addr->mRloc));
+        }
+      } else {
+        ESP_LOGW(TAG_EVENT,
+                 "ThreadStateChange: address list unavailable; failed to "
+                 "acquire OpenThread lock");
+      }
+#endif // USE_OPENTHREAD
+    }
+    if (!thread_state.RoleChanged && !thread_state.AddressChanged &&
+        !thread_state.NetDataChanged && !thread_state.ChildNodesChanged)
+      ESP_LOGV(TAG_EVENT, "ThreadStateChange: flags=0x%08" PRIx32,
+               thread_state.OpenThread.Flags);
     break;
+  }
   case chip::DeviceLayer::DeviceEventType::kDnssdInitialized: // 0x8012
-    ESP_LOGV(TAG_EVENT, "DnssdInitialized");
+    ESP_LOGD(TAG_EVENT, "DnssdInitialized");
     break;
   default:
     ESP_LOGV(TAG_EVENT, "0x%04X", event->Type);
