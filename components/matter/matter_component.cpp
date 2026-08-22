@@ -27,6 +27,7 @@
 static const char *const TAG = "matter";
 static const char *const TAG_EVENT = "matter.event";
 
+#ifndef USE_MATTER_FACTORY_DATA
 // Keys in the "chip-factory" NVS namespace, matching CHIP's ESP32Config key
 // names.
 static constexpr const char *NVS_NAMESPACE = "chip-factory";
@@ -138,6 +139,7 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator,
 
   return true;
 }
+#endif // USE_MATTER_FACTORY_DATA
 
 namespace esphome::matter {
 
@@ -224,6 +226,10 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
 
 void MatterComponent::setup() {
   global_matter_component = this;
+#ifdef USE_MATTER_FACTORY_DATA
+  this->discriminator_ = MATTER_DISCRIMINATOR;
+  this->passcode_ = MATTER_PASSCODE;
+#else
   uint16_t discriminator;
   uint32_t passcode;
   if (!load_or_generate_commissioning_data(discriminator, passcode)) {
@@ -244,6 +250,7 @@ void MatterComponent::setup() {
       nvs_close(h);
     }
   }
+#endif // USE_MATTER_FACTORY_DATA
 
   esp_matter::node::config_t node_config;
   esp_matter::node_t *node = esp_matter::node::create(
