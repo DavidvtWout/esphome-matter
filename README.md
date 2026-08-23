@@ -81,7 +81,10 @@ esphome:
   name: matter-device
 
 esp32:
-  toolchain: platformio
+  # The default toolchain in ESPHome is `esp-idf`. esphome-matter supports this
+  # toolchain starting at ESPHome version 2026.9.0. If you're still using an older
+  # version you need to set toolchain to platformio:
+  # toolchain: platformio
   variant: ESP32C6 # Set to your variant
   framework:
     type: esp-idf
