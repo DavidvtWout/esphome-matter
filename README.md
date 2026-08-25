@@ -50,7 +50,7 @@ esphome-matter based devices will show up as "uncertified test devices" in the e
 Note! Each ecosystem has their own specialties. Please see the seperate "Commissioning" section below for more details on pairing your devices.
 
 - **Home Assistant - Matter integration**: Not tested
-- **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): Verified working
+- **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): Not tested
 - **Homey Pro**: Not tested
 - **LG ThinQ**: Not tested
 - **Apple iOS (iPhone or iPad) and tvOS 16 (Apple TV) - "Home" app by Apple**: Reported working
@@ -60,7 +60,7 @@ Note! Each ecosystem has their own specialties. Please see the seperate "Commiss
 - **Samsung SmartThings (Station or Hub v2 and later)**: Not tested
 - **Aqara Hubs**: Not tested
 - **Flic**: Not tested
-- **Yandex Smart Home**: Yandex currently seem to not allow to pair test devices, so sphome-matter open source devices will not work with Yandex Smart Home. Please contact Yandex and request this feature to allow it to support uncertified DIY and test devices someday.
+- **Yandex Smart Home**: Not tested, (and for reference; Yandex is known to not allow pairing any Matter test devices, so be aware that DYI devices will likely not work with Yandex Smart Home, however please feel free to try and also consider contacting Yandex and ask if they plan to allow uncertified DIY and test devices).
 
 Please report any outdated or newly discovered information on compatible ecosystems, devices, and device types or issues.
 
