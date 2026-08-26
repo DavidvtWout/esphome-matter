@@ -52,6 +52,19 @@ public:
     return nullptr;
   }
 #endif
+#ifdef USE_CLIMATE
+  void add_thermostat(climate::Climate *climate, MatterEndpointRef *ref) {
+    this->climates_.push_back(new MatterClimate(climate, ref));
+  }
+
+  MatterClimate *get_climate_by_endpoint(uint16_t endpoint_id) {
+    for (auto *mc : this->climates_) {
+      if (mc->endpoint_id == endpoint_id)
+        return mc;
+    }
+    return nullptr;
+  }
+#endif
   // Public wrapper around the protected Component scheduler; used by the
   // Matter-thread callbacks to hop onto the main loop (defer is thread-safe).
   void defer_to_main_loop(std::function<void()> &&f) {
@@ -72,6 +85,9 @@ private:
 #endif
 #ifdef USE_LIGHT
   std::vector<MatterLight *> lights_;
+#endif
+#ifdef USE_CLIMATE
+  std::vector<MatterClimate *> climates_;
 #endif
 };
 

@@ -17,6 +17,10 @@ CONF_DIMMER_SWITCH = "dimmer_switch"
 # Sensors
 CONF_TEMPERATURE_SENSOR = "temperature_sensor"
 
+# Climate
+CONF_THERMOSTAT = "thermostat"
+CONF_CLIMATE_ID = "climate_id"
+
 # Actions
 CONF_CLUSTER_ID = "cluster_id"
 CONF_COMMAND_ID = "command_id"
