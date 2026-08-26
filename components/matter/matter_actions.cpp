@@ -5,6 +5,7 @@
 
 #include "esphome/core/log.h"
 
+#include <app/DeviceProxy.h>
 #include <app/clusters/bindings/binding-table.h>
 #include <cstdio>
 #include <cstring>
@@ -15,23 +16,9 @@ static const char *const TAG = "matter.actions";
 
 namespace esphome::matter {
 
-static void invoke_response_cb(void *,
-                               const chip::app::ConcreteCommandPath &path,
-                               const chip::app::StatusIB &status,
-                               chip::TLV::TLVReader *) {
-  ESP_LOGD(TAG, "Response: endpoint=%u cluster=%lu command=%lu status=0x%02x",
-           static_cast<unsigned>(path.mEndpointId),
-           static_cast<unsigned long>(path.mClusterId),
-           static_cast<unsigned long>(path.mCommandId),
-           static_cast<unsigned>(status.mStatus));
-}
-
-static void invoke_failure_cb(void *, CHIP_ERROR error) {
-  ESP_LOGW(TAG, "Send command failed: %" CHIP_ERROR_FORMAT, error.Format());
-}
-
 // Builds the JSON command payload for outgoing client commands. Called by
-// esp_matter for every command sent through cluster_update().
+// esp_matter once per matching binding entry for every command sent through
+// cluster_update(), so a single action fans out to one call per bound node.
 static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
                              esp_matter::client::request_handle_t *req_handle,
                              void *priv_data) {
@@ -42,10 +29,30 @@ static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
       req_handle->request_data != nullptr
           ? static_cast<const char *>(req_handle->request_data)
           : "{}";
-  ESP_LOGV(TAG, "Sending request");
+  // Captured into the response/failure callbacks below so each log line names
+  // the node it came from; without it, fan-out to several bound nodes produces
+  // indistinguishable lines. Captured rather than passed through send_request's
+  // void *ctx because a 64-bit NodeId does not fit in a 32-bit pointer.
+  const uint64_t node_id = static_cast<uint64_t>(peer_device->GetDeviceId());
+  ESP_LOGV(TAG, "Sending request to node=%" PRIu64, node_id);
   esp_matter::client::interaction::invoke::send_request(
       nullptr, peer_device, req_handle->command_path, cmd_data,
-      invoke_response_cb, invoke_failure_cb, chip::NullOptional);
+      [node_id](void *, const chip::app::ConcreteCommandPath &path,
+                const chip::app::StatusIB &status, chip::TLV::TLVReader *) {
+        ESP_LOGD(TAG,
+                 "Response: node=%" PRIu64
+                 " endpoint=%u cluster=%lu command=%lu status=0x%02x",
+                 node_id, static_cast<unsigned>(path.mEndpointId),
+                 static_cast<unsigned long>(path.mClusterId),
+                 static_cast<unsigned long>(path.mCommandId),
+                 static_cast<unsigned>(status.mStatus));
+      },
+      [node_id](void *, CHIP_ERROR error) {
+        ESP_LOGW(TAG,
+                 "Send command to node=%" PRIu64 " failed: %" CHIP_ERROR_FORMAT,
+                 node_id, error.Format());
+      },
+      chip::NullOptional);
 }
 
 static void
