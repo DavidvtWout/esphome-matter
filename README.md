@@ -43,26 +43,25 @@ See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for b
 
 # Compatibility with popular ecosystems 
 
-esphome-matter based devices will show up as "uncertified test devices" in the ecosystems. This is because the devices are not certified by the Connectivity Standards Alliance (CSA) and are not part of the official Matter certification program. However, the devices should in theory still ve functional and can be used in ecosystems that allow the user to add uncertified devices. The ecosystems usually inform or warn the user about the device not being certified during the commissioning process (and may then show the manufacturer/model values as "Test").
+esphome-matter based devices will show up as "uncertified test devices" in the ecosystems. This is because the devices are not certified by the Connectivity Standards Alliance (CSA) and are not part of the official Matter certification program. The devices should still be functional, but the ecosystems might inform or warn the user about the device not being certified during the commissioning process.
 
-## ESPHome-based devices created with esphome-matter have been tested with:
+### ESPHome-based devices created with esphome-matter have been tested with:
 
-Note! Each ecosystem has their own specialties. Please see the seperate "Commissioning" section below for more details on pairing your devices.
+- **Home Assistant (using matterjs-server)**: ✅️ Tested and working but requires enabling the "test-net DCL" option ([See Commissioning](#ecosystem-specific-settings))
+- **IKEA Home Smart**: ✅️
+- **Apple iOS (iPhone or iPad) and tvOS 16 (Apple TV) - "Home" app by Apple**: ✅️
+- **Google Home Ecosystem (Android or Google Nest smart speakers/display) - "Google Home" app**: ❓
+- **Samsung SmartThings (Station or Hub v2 and later)**: ❓
+- **Amazon Alexa (Amazon Echo)** : ❓
+- **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): ❓
+- **Homey Pro**: ❓
+- **LG ThinQ**: ❓
+- **Tuya Smart (SmartLife) app**: ❓
+- **Aqara Hubs**: ❓
+- **Flic**: ❓
+- **Yandex Smart Home**: ❓ (and for reference; Yandex is known to not allow pairing any Matter test devices)
 
-- **Home Assistant - Matter integration**: Not tested
-- **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): Not tested
-- **Homey Pro**: Not tested
-- **LG ThinQ**: Not tested
-- **Apple iOS (iPhone or iPad) and tvOS 16 (Apple TV) - "Home" app by Apple**: Reported working
-- **Google Home Ecosystem (Android or Google Nest smart speakers/display) - "Google Home" app**: Not tested
-- **Amazon Alexa (Amazon Echo smart speakers/displays)** : Not tested
-- **Tuya Smart (SmartLife) app**: Not tested
-- **Samsung SmartThings (Station or Hub v2 and later)**: Not tested
-- **Aqara Hubs**: Not tested
-- **Flic**: Not tested
-- **Yandex Smart Home**: Not tested, (and for reference; Yandex is known to not allow pairing any Matter test devices, so be aware that DYI devices will likely not work with Yandex Smart Home, however please feel free to try and also consider contacting Yandex and ask if they plan to allow uncertified DIY and test devices).
-
-Please report any outdated or newly discovered information on compatible ecosystems, devices, and device types or issues.
+Please [report](https://github.com/DavidvtWout/esphome-matter/discussions/44)! any outdated or newly discovered information on compatible ecosystems, devices, and device types or issues.
 
 # Commissioning
 
@@ -82,20 +81,16 @@ After flashing, the device prints a setup code (`SetupQRCode`) to the logs on ev
 
 Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device.
 
+Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
+
+
+### Ecosystem specific settings
 
 - **Home Assistant / matterjs server**: Start the matterjs-server with: `matterjs-server --enable-test-net-dcl=true`. Commission the device with the `Commission existing device` option.
 - **Home Assistant Matter app (HA-OS only)**: Check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
-- **IKEA Home smart**: The Dirigera accepts the device right away.
-- **Apple Home**: Accepts the device right away.
-- **Google Home**: Android's [Multi-admin commissioning](https://developers.home.google.com/apis/android/commissioning/multi-admin) accepts the device. Google Nest still unknown.
-- **python-matter-server**: Works right away, but python-matter-server is discontinued.
-- **Homey**: ???
-- **Samsung SmartThings**: ???
-- **Amazon**: ???
 
-If you tried commissioning to any of the unknown smart home systems, please [leave a comment](https://github.com/DavidvtWout/esphome-matter/discussions/44)!
+So far, **IKEA Home smart**, **Apple Home** and the **Android Matter Commissioning API** have been confirmed to accept commissioning right away.
 
-Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
 
 # Example config
 
