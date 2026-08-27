@@ -27,6 +27,8 @@ openthread:
   channel: 15
 
 matter:
+  unicast_delay: 400ms
+  min_command_interval: 250ms
   endpoints:
     - dimmer_switch:
       id: dimmer_endpoint
@@ -68,6 +70,13 @@ binary_sensor:
         rate: 50
     on_release:
       matter.level_control.stop_with_on_off: dimmer_endpoint
+    on_double_click:
+      matter._send_command:
+        endpoint_id: dimmer_endpoint
+        cluster_id: 0x0008
+        command_id: 0x00
+        data: '{"0:U8":128,"1:U16":0,"2:U8":0,"3:U8":0}'
+        absolute: true
 
 sensor:
   - platform: internal_temperature

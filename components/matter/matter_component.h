@@ -58,6 +58,38 @@ public:
     this->defer(std::move(f));
   }
 
+  // Public wrapper around the protected Component scheduler, used by the
+  // outbound command queue in matter_actions.cpp. The id-keyed overload avoids
+  // the heap allocation a named timeout would need. Unlike defer(), the
+  // scheduler's set_timeout() is not thread-safe, so this must only be called
+  // from the main loop task.
+  void schedule_command_pump(uint32_t id, uint32_t delay_ms,
+                             std::function<void()> &&f) {
+    this->set_timeout(id, delay_ms, std::move(f));
+  }
+
+  // Delay between sending a command to the group (multicast) bindings of an
+  // endpoint and sending it to its unicast bindings. Multicast is unreliable
+  // but immediate; unicast is reliable but can be delayed for seconds while
+  // MRP retransmits or a CASE session is established. Holding the unicast back
+  // gives a rapid second command a chance to supersede the first one before it
+  // goes out, which stops a late unicast from undoing a newer multicast.
+  // Defaults to 0, which preserves the original send-immediately behaviour.
+  void set_unicast_delay(uint32_t delay_ms) {
+    this->unicast_delay_ms_ = delay_ms;
+  }
+  uint32_t get_unicast_delay() const { return this->unicast_delay_ms_; }
+
+  // Minimum spacing between two commands sent to the same local endpoint and
+  // cluster. Some devices drop commands that arrive back-to-back. Defaults to
+  // 0 (no rate limiting).
+  void set_min_command_interval(uint32_t interval_ms) {
+    this->min_command_interval_ms_ = interval_ms;
+  }
+  uint32_t get_min_command_interval() const {
+    return this->min_command_interval_ms_;
+  }
+
 private:
   // Defined in matter_endpoints.cpp
   bool create_endpoints_(esp_matter::node_t *node);
@@ -65,6 +97,8 @@ private:
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
+  uint32_t unicast_delay_ms_{0};
+  uint32_t min_command_interval_ms_{0};
   std::vector<MatterOnOffSwitch> on_off_switches_;
   std::vector<MatterDimmerSwitch> dimmer_switches_;
 #ifdef USE_SENSOR

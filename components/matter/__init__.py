@@ -92,6 +92,12 @@ CONFIG_SCHEMA = cv.All(
             ): _validate_basic_information_name,
             cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
             cv.Optional(CONF_PASSCODE): _validate_passcode,
+            cv.Optional(
+                CONF_UNICAST_DELAY, default="0ms"
+            ): cv.positive_time_period_milliseconds,
+            cv.Optional(
+                CONF_MIN_COMMAND_INTERVAL, default="0ms"
+            ): cv.positive_time_period_milliseconds,
             cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
         }
     ).extend(cv.COMPONENT_SCHEMA),
@@ -156,6 +162,9 @@ async def to_code(config: ConfigType):
         cg.add_cmake_arg("EXECUTABLE_COMPONENT_NAME", "src")
     except AttributeError:
         CORE.add_job(_set_executable_component_name)
+
+    cg.add(var.set_unicast_delay(config[CONF_UNICAST_DELAY]))
+    cg.add(var.set_min_command_interval(config[CONF_MIN_COMMAND_INTERVAL]))
 
     if CONF_DISCRIMINATOR in config:
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])

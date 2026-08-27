@@ -119,3 +119,45 @@ matter.level_control.step_with_on_off:
 # Stop a previous move-with-on-off command.
 matter.level_control.stop_with_on_off: some_id
 ```
+
+### Command delivery
+
+A bound endpoint can have two kinds of bindings, and esphome-matter sends to both:
+
+- **Group bindings** are sent as a multicast to every device in the group at once. Multicast is
+  unacknowledged, so a command that is lost on the air is simply gone.
+- **Unicast bindings** are sent to one device each, over an acknowledged session. Delivery is
+  reliable, but a command can take seconds to arrive while retransmissions run or while a session
+  is established.
+
+Binding the same endpoint both ways gives you the responsiveness of the group and the reliability
+of the unicasts. The catch is the timing difference: if you press a button twice in quick
+succession, the second multicast can arrive before the first unicast, and the late unicast then
+undoes it. Two options control this.
+
+```yaml
+matter:
+  unicast_delay: 0ms          # Hold unicast commands back this long.
+  min_command_interval: 0ms   # Minimum spacing between commands to one endpoint and cluster.
+```
+
+`unicast_delay` sends the multicast immediately but queues the unicast. While a command is
+waiting, a newer command for the same endpoint and cluster can replace it, so only the newest
+state is actually sent. Set it a little longer than the gap between two of your own button
+presses (a few hundred milliseconds) if you are seeing a stale unicast win. The cost is that
+unicast-only bindings also get that much extra latency, which is why the default is `0ms`.
+
+`min_command_interval` paces commands going to the same endpoint and cluster. Some devices ignore
+commands that arrive back-to-back; giving them a gap makes bursts (for example a dimmer sending
+many `move` commands) more reliable.
+
+Both options only affect the unicast path. Group commands are always sent immediately, since
+delaying them would give up the one advantage multicast has.
+
+Only commands that fully determine what they write can replace a queued command: `on`, `off`,
+`move_to_level` and `move_to_level_with_on_off`. Commands whose result depends on the current
+state of the device — `toggle`, `move`, `step` and the ColorControl commands — are queued in
+order and every one of them is sent, because dropping or reordering one would leave the device
+out of sync. Note that this makes `toggle` a poor fit for group bindings for the same reason: a
+single lost multicast leaves that device inverted for good. Track the state in ESPHome and send
+`on` or `off` instead.
