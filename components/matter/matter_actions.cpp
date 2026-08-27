@@ -20,11 +20,9 @@ namespace esphome::matter {
 
 namespace {
 
-// Longest chain of relative commands (Toggle, Move, Step, ...) kept queued for
-// one local endpoint and cluster. Beyond this the oldest is dropped: the queue
-// exists to pace and reorder-protect a burst of button presses, not to buffer an
-// unbounded backlog that would replay minutes later.
-constexpr size_t MAX_PENDING_COMMANDS = 8;
+// Fallback for the queue depth if the component is somehow not available yet.
+// Matches the default of MatterComponent::max_pending_commands.
+constexpr size_t DEFAULT_MAX_PENDING_COMMANDS = 8;
 
 // Base for the scheduler ids handed to MatterComponent::schedule_command_pump.
 // Offset well away from 0 so these cannot collide with any small integer id
@@ -99,6 +97,17 @@ uint32_t configured_min_interval() {
   return global_matter_component != nullptr
              ? global_matter_component->get_min_command_interval()
              : 0;
+}
+
+// Longest chain of relative commands (Toggle, Move, Step, ...) kept queued for
+// one local endpoint and cluster. Beyond this the oldest is dropped: the queue
+// exists to pace and reorder-protect a burst of button presses, not to buffer an
+// unbounded backlog that would replay minutes later.
+size_t configured_max_pending() {
+  return global_matter_component != nullptr
+             ? static_cast<size_t>(
+                   global_matter_component->get_max_pending_commands())
+             : DEFAULT_MAX_PENDING_COMMANDS;
 }
 
 }  // namespace
@@ -326,11 +335,13 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
                static_cast<uint32_t>(cluster));
       queue->pending.clear();
     }
-  } else if (queue->pending.size() >= MAX_PENDING_COMMANDS) {
+  } else if (queue->pending.size() >= configured_max_pending()) {
     ESP_LOGW(TAG,
-             "Command queue full for endpoint=%u cluster=0x%04" PRIx32
-             "; dropping oldest command",
-             endpoint_id, static_cast<uint32_t>(cluster));
+             "Command queue for endpoint=%u cluster=0x%04" PRIx32
+             " is at its limit of %u; dropping oldest command. Raise "
+             "max_pending_commands or lower min_command_interval.",
+             endpoint_id, static_cast<uint32_t>(cluster),
+             static_cast<unsigned>(configured_max_pending()));
     queue->pending.pop_front();
   }
   queue->pending.push_back({command, data});

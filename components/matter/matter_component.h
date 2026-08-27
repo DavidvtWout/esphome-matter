@@ -90,6 +90,18 @@ public:
     return this->min_command_interval_ms_;
   }
 
+  // How many relative commands (Toggle, Move, Step, ...) may be queued for one
+  // local endpoint and cluster before the oldest is dropped. Absolute commands
+  // replace the queue rather than extending it, so they never hit this limit.
+  // Raise it for automations that legitimately burst; lower it to bound how far
+  // behind the device can lag when the queue is being paced.
+  void set_max_pending_commands(uint8_t max_pending) {
+    this->max_pending_commands_ = max_pending;
+  }
+  uint8_t get_max_pending_commands() const {
+    return this->max_pending_commands_;
+  }
+
 private:
   // Defined in matter_endpoints.cpp
   bool create_endpoints_(esp_matter::node_t *node);
@@ -99,6 +111,7 @@ private:
   uint32_t passcode_{0};
   uint32_t unicast_delay_ms_{0};
   uint32_t min_command_interval_ms_{0};
+  uint8_t max_pending_commands_{8};
   std::vector<MatterOnOffSwitch> on_off_switches_;
   std::vector<MatterDimmerSwitch> dimmer_switches_;
 #ifdef USE_SENSOR

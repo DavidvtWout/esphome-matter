@@ -98,6 +98,9 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(
                 CONF_MIN_COMMAND_INTERVAL, default="0ms"
             ): cv.positive_time_period_milliseconds,
+            cv.Optional(CONF_MAX_PENDING_COMMANDS, default=8): cv.int_range(
+                min=1, max=64
+            ),
             cv.Optional(CONF_ENDPOINTS, default=[]): cv.ensure_list(ENDPOINT_SCHEMA),
         }
     ).extend(cv.COMPONENT_SCHEMA),
@@ -165,6 +168,7 @@ async def to_code(config: ConfigType):
 
     cg.add(var.set_unicast_delay(config[CONF_UNICAST_DELAY]))
     cg.add(var.set_min_command_interval(config[CONF_MIN_COMMAND_INTERVAL]))
+    cg.add(var.set_max_pending_commands(config[CONF_MAX_PENDING_COMMANDS]))
 
     if CONF_DISCRIMINATOR in config:
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])

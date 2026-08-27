@@ -29,6 +29,7 @@ openthread:
 matter:
   unicast_delay: 400ms
   min_command_interval: 250ms
+  max_pending_commands: 4
   endpoints:
     - dimmer_switch:
       id: dimmer_endpoint

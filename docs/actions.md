@@ -139,6 +139,7 @@ undoes it. Two options control this.
 matter:
   unicast_delay: 0ms          # Hold unicast commands back this long.
   min_command_interval: 0ms   # Minimum spacing between commands to one endpoint and cluster.
+  max_pending_commands: 8     # How many commands may wait in the queue for one endpoint and cluster.
 ```
 
 `unicast_delay` sends the multicast immediately but queues the unicast. While a command is
@@ -153,6 +154,12 @@ many `move` commands) more reliable.
 
 Both options only affect the unicast path. Group commands are always sent immediately, since
 delaying them would give up the one advantage multicast has.
+
+`max_pending_commands` bounds the queue. Only commands that cannot replace one another pile up
+(see below), so this is really a limit on how long a burst can be: with `min_command_interval`
+set, a burst longer than this takes more than `max_pending_commands * min_command_interval` to
+drain, and the oldest commands are dropped with a warning rather than replayed seconds late.
+Raise it for automations that legitimately send long bursts.
 
 Only commands that fully determine what they write can replace a queued command: `on`, `off`,
 `move_to_level` and `move_to_level_with_on_off`. Commands whose result depends on the current
