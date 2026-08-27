@@ -262,6 +262,15 @@ async def to_code(config: ConfigType):
     # into the mbedTLS library so the symbol is present at link time.
     add_idf_sdkconfig_option("CONFIG_MBEDTLS_HKDF_C", True)
 
+    try:
+        from esphome.components.esp32 import require_certificate_bundle
+
+        # Supported from ESPHome 2026.9.0
+        require_certificate_bundle()
+    except ImportError:
+        # TODO: remove when esphome-matter requires ESPHome >=2026.9.0
+        add_idf_sdkconfig_option("CONFIG_MBEDTLS_CERTIFICATE_BUNDLE", True)
+
     # connectedhomeip's GN build sets CHIP_HAVE_CONFIG_H=1 for all its sources (src/BUILD.gn).
     # Without it, SystemConfig.h can't find the GN-generated SystemBuildConfig.h and
     # CHIPDeviceBuildConfig.h that live in the chip component's binary dir (already in
