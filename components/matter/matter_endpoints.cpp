@@ -194,6 +194,17 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       return false;
     }
 
+    // Create "empty" descriptor cluster. Connectedhomip fills this internally.
+    esp_matter::cluster::descriptor::config_t descriptor_config;
+    esp_matter::cluster_t *descriptor_cluster =
+        esp_matter::cluster::descriptor::create(
+            endpoint, &descriptor_config, esp_matter::CLUSTER_FLAG_SERVER);
+    if (descriptor_cluster == nullptr) {
+      ESP_LOGE(TAG, "Failed to create descriptor cluster for endpoint %u",
+               endpoint_id);
+      return false;
+    }
+
     // Add binding cluster
     if (std::find(this->binding_endpoint_ids_.begin(),
                   this->binding_endpoint_ids_.end(),
