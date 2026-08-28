@@ -4,7 +4,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/DavidvtWout/esphome-matter)
 ![GitHub watchers](https://img.shields.io/github/watchers/DavidvtWout/esphome-matter)
 
-ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter 1.5.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.5.1).
+ESPHome external component adding Matter 1.6 support.
 
 > This project is still in early-development so don't expect a perfectly working setup. Both
 > matter-over-wifi and matter-over-thread are now working. It's possible to commission a

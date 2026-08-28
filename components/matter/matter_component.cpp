@@ -20,7 +20,7 @@
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#include <platform/ThreadStackManager.h>
+#include <platform/ESP32/ThreadStackManagerImpl.h>
 #endif
 #include <lib/support/Base64.h>
 #ifdef USE_OPENTHREAD
@@ -327,13 +327,13 @@ void MatterComponent::setup() {
   }
 
 #ifdef USE_OPENTHREAD
-  // ESPHome owns the OpenThread task/stack. CHIP still needs its
+  // ESPHome owns the OpenThread task/stack. connectedhomeip still needs its
   // ThreadStackManager bound to that existing instance for Thread diagnostics
   // and other Thread helpers.
-  if (chip::DeviceLayer::ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
-    ESP_LOGE(
-        TAG,
-        "Failed to bind CHIP ThreadStackManager to ESPHome OpenThread stack");
+  if (chip::DeviceLayer::ThreadStackMgrImpl()._AttachToThreadStack() !=
+      CHIP_NO_ERROR) {
+    ESP_LOGE(TAG, "Failed to attach ESPHome OpenThread stack to "
+                  "connectedhomeip ThreadStackManager");
     this->mark_failed();
     return;
   }
