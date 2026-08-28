@@ -121,6 +121,7 @@ FINAL_VALIDATE_SCHEMA = _final_validate
 
 # The esp32 component already sets board_build.cmake_extra_args at FINAL priority so we need
 # to set it after that to prevent this platformio option from being overwritten.
+# TODO: remove when esphome-matter requires ESPHome >=2026.9.0
 @coroutine_with_priority(CoroPriority.FINAL - 1)
 async def _set_executable_component_name():
     # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but ESPHome names
@@ -138,17 +139,11 @@ async def to_code(config: ConfigType):
     await cg.register_component(var, config)
 
     add_idf_component(
-        name="espressif/esp_matter",
-        ref="1.5.1",
+        name="davidvtwout/esp_matter",
+        ref="1.6.0~2",
     )
 
     cg.add_define("USE_MATTER")
-    cg.add_build_flag(
-        f'-DCHIP_DEVICE_CONFIG_DEVICE_VENDOR_NAME=\\"{config[CONF_VENDOR_NAME]}\\"'
-    )
-    cg.add_build_flag(
-        f'-DCHIP_DEVICE_CONFIG_DEVICE_PRODUCT_NAME=\\"{config[CONF_PRODUCT_NAME]}\\"'
-    )
 
     # esp_matter's CMakeLists.txt defaults EXECUTABLE_COMPONENT_NAME to "main", but ESPHome
     # names the app component "src".
@@ -157,10 +152,26 @@ async def to_code(config: ConfigType):
     except AttributeError:
         CORE.add_job(_set_executable_component_name)
 
+    add_idf_sdkconfig_option("CONFIG_MBEDTLS_HKDF_C", True)
+    try:
+        from esphome.components.esp32 import require_certificate_bundle
+
+        # Supported from ESPHome 2026.9.0
+        require_certificate_bundle()
+    except ImportError:
+        # TODO: remove when esphome-matter requires ESPHome >=2026.9.0
+        add_idf_sdkconfig_option("CONFIG_MBEDTLS_CERTIFICATE_BUNDLE", True)
+
     if CONF_DISCRIMINATOR in config:
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
     if CONF_PASSCODE in config:
         cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
+    cg.add_build_flag(
+        f'-DCHIP_DEVICE_CONFIG_DEVICE_VENDOR_NAME=\\"{config[CONF_VENDOR_NAME]}\\"'
+    )
+    cg.add_build_flag(
+        f'-DCHIP_DEVICE_CONFIG_DEVICE_PRODUCT_NAME=\\"{config[CONF_PRODUCT_NAME]}\\"'
+    )
 
     use_openthread = "openthread" in CORE.loaded_integrations
     use_wifi = "wifi" in CORE.loaded_integrations
@@ -168,54 +179,30 @@ async def to_code(config: ConfigType):
     # has_connectivity determines whether the device should be commissioned over BLE or not.
     has_connectivity = use_openthread or use_wifi  # or use_ethernet
 
-    # CONFIG_USE_MINIMAL_MDNS=n makes matter use the espressif/mdns component which is also used by ESPHome.
-    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)  # connectedhomeip
-    add_idf_sdkconfig_option("CONFIG_ENABLE_EXTENDED_DISCOVERY", True)
+    # CONFIG_USE_MINIMAL_MDNS=n makes connectedhomeip use the espressif/mdns component.
+    add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)
 
-    add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
-
-    # Disable Intermittently Connected Device (ICD).
-    add_idf_sdkconfig_option("CONFIG_ENABLE_ICD_SERVER", False)  # connectedhomeip
-    add_idf_sdkconfig_option("CONFIG_ENABLE_ICD_LIT", False)  # connectedhomeip
-    add_idf_sdkconfig_option("CONFIG_ENABLE_ICD_CIP", False)  # connectedhomeip
+    # CONFIG_ENABLE_MATTER_OVER_THREAD is enabled by default and must explicitly be disabled when not needed.
     add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_ICD_USER_ACTIVE_MODE_TRIGGER", False
-    )  # connectedhomeip
-
-    add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_MATTER_OVER_THREAD", not has_connectivity or use_openthread
-    )  # connectedhomeip
+        "CONFIG_ENABLE_MATTER_OVER_THREAD", use_openthread or not has_connectivity
+    )
     if use_openthread:
-        # ESP_MATTER_ENABLE_OPENTHREAD is enabled by default and must explicitly be disabled. It stops
-        # esp-matter from initializing an openthread stack (the openthread component already does that).
-        add_idf_sdkconfig_option(
-            "CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False
-        )  # esp-matter
-        cg.add_build_flag("-Wl,--wrap=_Z21openthread_init_stackv")
-
-        # add_idf_sdkconfig_option("CONFIG_OPENTHREAD_DNS_CLIENT", True)
-        add_idf_sdkconfig_option("CONFIG_ENABLE_CHIP_DATA_MODEL", True)  # esp-matter
-        add_idf_sdkconfig_option("CONFIG_LWIP_MULTICAST_PING", True)
-
-        # TODO: fix the network implementation of ESPHome. Currently the network component doesn't even support IPv6-only.
-        # add_idf_sdkconfig_option("CONFIG_LWIP_IPV4", False)
-        # add_idf_sdkconfig_option("CONFIG_DISABLE_IPV4", True)  # connectedhomeip
+        # Prevent esp-matter from trying to initialize another openthread stack.
+        add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False)
+    if use_openthread or not has_connectivity:
+        add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
 
     if use_openthread or use_wifi:
         # Force the Matter DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
         # component sources that the static-link step still discards unless an exported symbol is referenced.
         cg.add_build_flag("-Wl,-u,esphome_matter_link_dnssd")
 
-    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)  # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ENABLE_WIFI_AP", False)
     # CONFIG_ENABLE_WIFI_STATION is enabled by default and must explicitly be disabled when not needed.
     add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_WIFI_STATION", not has_connectivity or use_wifi
-    )  # connectedhomeip
+        "CONFIG_ENABLE_WIFI_STATION", use_wifi or not has_connectivity
+    )
     if use_wifi:
-        # ESPHome already owns esp_netif, the Wi-Fi driver and the default STA
-        # netif. Keep CHIP Wi-Fi station support compiled in, but skip its
-        # platform Wi-Fi initialization to avoid resetting an active ESPHome
-        # connection attempt.
         cg.add_build_flag(
             "-Wl,--wrap=_ZN4chip11DeviceLayer23ConnectivityManagerImpl8InitWiFiEv"
         )
@@ -225,16 +212,12 @@ async def to_code(config: ConfigType):
     if use_wifi or use_ethernet:
         # lwIP must add the route to the thread network via the border router to its routing table.
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_ND6_ROUTE_INFO_OPTION_SUPPORT", True)
-    if use_ethernet:
-        # Has nothing to do with telemetry... But this is how connectedhomeip names the option that enables ethernet.
-        add_idf_sdkconfig_option(
-            "CONFIG_ENABLE_ETHERNET_TELEMETRY", True
-        )  # connectedhomeip
+
+    # Has nothing to do with telemetry... But this is how connectedhomeip names the option that enables ethernet.
+    add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", use_ethernet)
 
     # CONFIG_ENABLE_CHIPOBLE is enabled by default and must explicitly be disabled when not needed.
-    add_idf_sdkconfig_option(
-        "CONFIG_ENABLE_CHIPOBLE", not has_connectivity
-    )  # connectedhomeip
+    add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not has_connectivity)
     if not has_connectivity:
         # If no network is configured, commissioning over the network isn't possible and esphome-matter must fall
         # back to BlueTooth (BLE) commissioning (the default for most matter devices). In this mode, the device can be
@@ -254,33 +237,6 @@ async def to_code(config: ConfigType):
         add_idf_sdkconfig_option("CONFIG_BT_NIMBLE_ENABLE_CONN_REATTEMPT", False)
         # TODO: set USE_BLE_ONLY_FOR_COMMISSIONING to false if other esphome components need it?
         # TODO: stop api from restarting device in commissioning mode?
-
-    # TODO: ENABLE_ESP32_FACTORY_DATA_PROVIDER?
-
-    # CHIP's mbedTLS crypto backend calls mbedtls_hkdf() (CHIPCryptoPALmbedTLS.cpp).
-    # ESP-IDF's mbedTLS disables HKDF by default; enabling this compiles mbedtls/hkdf.c
-    # into the mbedTLS library so the symbol is present at link time.
-    add_idf_sdkconfig_option("CONFIG_MBEDTLS_HKDF_C", True)
-
-    try:
-        from esphome.components.esp32 import require_certificate_bundle
-
-        # Supported from ESPHome 2026.9.0
-        require_certificate_bundle()
-    except ImportError:
-        # TODO: remove when esphome-matter requires ESPHome >=2026.9.0
-        add_idf_sdkconfig_option("CONFIG_MBEDTLS_CERTIFICATE_BUNDLE", True)
-
-    # connectedhomeip's GN build sets CHIP_HAVE_CONFIG_H=1 for all its sources (src/BUILD.gn).
-    # Without it, SystemConfig.h can't find the GN-generated SystemBuildConfig.h and
-    # CHIPDeviceBuildConfig.h that live in the chip component's binary dir (already in
-    # PlatformIO's CPPPATH via the chip CMakeLists.txt INTERFACE include_directories).
-    # Adding this define to PlatformIO's src compilation makes CHIP headers work when
-    # included from our ESPHome component files.
-    cg.add_build_flag("-DCHIP_HAVE_CONFIG_H=1")
-
-    # TODO: probably not needed?
-    cg.add_build_flag("-DCHIP_CRYPTO_KEYSTORE_RAW=1")
 
     disable_unused_clusters()
     await configure_endpoints(var, config)
