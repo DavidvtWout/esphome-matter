@@ -197,11 +197,11 @@ static void send_to_group_bindings_(uint16_t endpoint_id,
         (entry.clusterId.has_value() && entry.clusterId.value() != cluster)) {
       continue;
     }
-    if (entry.type == MATTER_UNICAST_BINDING) {
+    if (entry.type == chip::app::Clusters::Binding::MATTER_UNICAST_BINDING) {
       (*unicast_count)++;
       continue;
     }
-    if (entry.type != MATTER_MULTICAST_BINDING) {
+    if (entry.type != chip::app::Clusters::Binding::MATTER_MULTICAST_BINDING) {
       continue;
     }
     (*group_count)++;
