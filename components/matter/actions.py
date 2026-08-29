@@ -7,6 +7,7 @@ import esphome.config_validation as cv
 from esphome.const import (
     CONF_COMMAND,
     CONF_ID,
+    CONF_TYPE,
     CONF_VALUE,
 )
 from esphome.core import CORE, ID
@@ -18,6 +19,7 @@ from .types import (
     MatterComponent,
     MatterEndpointRef,
     MatterFactoryResetAction,
+    MatterSetAttributeAction,
     MatterSendCommandAction,
 )
 
@@ -31,6 +33,79 @@ from .types import (
 async def matter_factory_reset_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
+    return var
+
+
+# ------------------------------ #
+#  matter._set_attribute action  #
+# ------------------------------ #
+
+ATTRIBUTE_VALUE_TYPES = {
+    "BOOL": (cv.boolean, "esp_matter_bool"),
+    "FLOAT": (cv.float_, "esp_matter_float"),
+    "I8": (cv.int_range(min=-128, max=127), "esp_matter_int8"),
+    "U8": (cv.uint8_t, "esp_matter_uint8"),
+    "I16": (cv.int_range(min=-32768, max=32767), "esp_matter_int16"),
+    "U16": (cv.uint16_t, "esp_matter_uint16"),
+    "I32": (cv.int_range(min=-2147483648, max=2147483647), "esp_matter_int32"),
+    "U32": (cv.uint32_t, "esp_matter_uint32"),
+    "I64": (
+        cv.int_range(min=-9223372036854775808, max=9223372036854775807),
+        "esp_matter_int64",
+    ),
+    "U64": (
+        cv.int_range(min=0, max=18446744073709551615),
+        "esp_matter_uint64",
+    ),
+    "ENUM8": (cv.uint8_t, "esp_matter_enum8"),
+    "ENUM16": (cv.uint16_t, "esp_matter_enum16"),
+    "BITMAP8": (cv.uint8_t, "esp_matter_bitmap8"),
+    "BITMAP16": (cv.uint16_t, "esp_matter_bitmap16"),
+    "BITMAP32": (cv.uint32_t, "esp_matter_bitmap32"),
+}
+
+
+def _validate_set_attribute(config):
+    validator, _ = ATTRIBUTE_VALUE_TYPES[config[CONF_TYPE]]
+    config[CONF_VALUE] = validator(config[CONF_VALUE])
+    return config
+
+
+@automation.register_action(
+    "matter._set_attribute",
+    MatterSetAttributeAction,
+    cv.All(
+        cv.Schema(
+            {
+                cv.GenerateID(): cv.declare_id(MatterSetAttributeAction),
+                cv.Required(CONF_ENDPOINT_ID): cv.Any(
+                    cv.use_id(MatterEndpointRef), cv.uint16_t
+                ),
+                cv.Required(CONF_CLUSTER_ID): cv.hex_uint32_t,
+                cv.Required(CONF_ATTRIBUTE_ID): cv.hex_uint32_t,
+                cv.Required(CONF_TYPE): cv.one_of(*ATTRIBUTE_VALUE_TYPES, upper=True),
+                cv.Required(CONF_VALUE): object,
+            }
+        ),
+        _validate_set_attribute,
+    ),
+    synchronous=True,
+)
+async def matter_set_attribute_to_code(
+    config: ConfigType, action_id: ID, template_arg, args
+):
+    """The matter._set_attribute action is an escape hatch to set arbitrary attribute values.
+    Mainly for debugging purposes so don't use it if you don't know what you're doing.
+    """
+    var = cg.new_Pvariable(action_id, template_arg)
+    cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
+    cg.add(var.set_cluster_id(config[CONF_CLUSTER_ID]))
+    cg.add(var.set_attribute_id(config[CONF_ATTRIBUTE_ID]))
+    _, constructor = ATTRIBUTE_VALUE_TYPES[config[CONF_TYPE]]
+    value = config[CONF_VALUE]
+    if isinstance(value, bool):
+        value = str(value).lower()
+    cg.add(var.set_value(cg.RawExpression(f"{constructor}({value})")))
     return var
 
 

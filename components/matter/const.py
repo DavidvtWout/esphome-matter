@@ -31,6 +31,7 @@ CONF_FLOW_SENSOR = "flow_sensor"
 
 # Actions
 CONF_CLUSTER_ID = "cluster_id"
+CONF_ATTRIBUTE_ID = "attribute_id"
 CONF_COMMAND_ID = "command_id"
 CONF_ENDPOINT_ID = "endpoint_id"
 CONF_COMMANDS = "commands"
