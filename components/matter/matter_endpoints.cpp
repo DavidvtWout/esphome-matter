@@ -5,6 +5,11 @@
 #include "matter_actions.h"
 #include "matter_component.h"
 
+#ifdef USE_SENSOR
+#include <app/clusters/temperature-measurement-server/TemperatureMeasurementCluster.h>
+#include <data_model_provider/esp_matter_data_model_provider.h>
+#endif
+
 #include <cmath>
 
 static const char *const TAG = "matter";
@@ -166,6 +171,41 @@ endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
   return ESP_OK;
 }
 
+#ifdef USE_SENSOR
+static void update_temperature_attribute(uint16_t endpoint_id, float value) {
+  // Matter spec: MeasuredValue = temperature in °C * 100, nullable int16
+  // (valid range -273.15 °C .. 327.67 °C). Out-of-range or NaN reports null.
+  bool is_null = std::isnan(value) || value < -273.15f || value > 327.67f;
+  int16_t raw = is_null ? 0 : static_cast<int16_t>(lroundf(value * 100.0f));
+
+  chip::DeviceLayer::SystemLayer().ScheduleLambda([endpoint_id, raw,
+                                                   is_null]() {
+    chip::app::DataModel::Nullable<int16_t> measured_value;
+    if (!is_null)
+      measured_value.SetNonNull(raw);
+
+    auto *server =
+        esp_matter::data_model::provider::get_instance().registry().Get(
+            {endpoint_id, chip::app::Clusters::TemperatureMeasurement::Id});
+    if (server == nullptr) {
+      ESP_LOGE(TAG, "Temperature cluster missing on endpoint %u", endpoint_id);
+      return;
+    }
+
+    auto *temperature_cluster =
+        static_cast<chip::app::Clusters::TemperatureMeasurementCluster *>(
+            server);
+    CHIP_ERROR err = temperature_cluster->SetMeasuredValue(measured_value);
+    if (err != CHIP_NO_ERROR) {
+      ESP_LOGE(
+          TAG,
+          "Failed to update temperature on endpoint %u: %" CHIP_ERROR_FORMAT,
+          endpoint_id, err.Format());
+    }
+  });
+}
+#endif
+
 // Wires ESPHome entities to Matter attributes. Must run after
 // esp_matter::start(). Client switch endpoints have no wiring here: their
 // behaviour comes from matter.* actions in YAML automations.
@@ -173,23 +213,10 @@ void MatterComponent::register_endpoint_callbacks_() {
 #ifdef USE_SENSOR
   for (const auto &ts : this->temperature_sensors_) {
     uint16_t eid = ts.endpoint_id;
-    ts.sensor->add_on_state_callback([eid](float value) {
-      // Matter spec: MeasuredValue = temperature in °C * 100, nullable int16
-      // (valid range -273.15 °C .. 327.67 °C). Out-of-range or NaN reports
-      // null.
-      bool is_null = std::isnan(value) || value < -273.15f || value > 327.67f;
-      int16_t raw = is_null ? 0 : static_cast<int16_t>(lroundf(value * 100.0f));
-      // Attribute updates must run in the Matter thread (same pattern as the
-      // esp-matter sensors example).
-      chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, raw, is_null]() {
-        using namespace chip::app::Clusters;
-        esp_matter_attr_val_t val = esp_matter_nullable_int16(
-            is_null ? nullable<int16_t>() : nullable<int16_t>(raw));
-        esp_matter::attribute::update(
-            eid, TemperatureMeasurement::Id,
-            TemperatureMeasurement::Attributes::MeasuredValue::Id, &val);
-      });
-    });
+    ts.sensor->add_on_state_callback(
+        [eid](float value) { update_temperature_attribute(eid, value); });
+    if (ts.sensor->has_state())
+      update_temperature_attribute(eid, ts.sensor->state);
   }
 #endif
 
