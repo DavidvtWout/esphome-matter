@@ -1,6 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.const import CONF_LIGHT_ID, CONF_SENSOR_ID
+from esphome.const import CONF_BINARY_SENSOR_ID, CONF_LIGHT_ID, CONF_SENSOR_ID
 from esphome.types import ConfigType
 
 from .const import *
@@ -48,6 +48,11 @@ async def configure_endpoints(var, config: ConfigType):
             if CONF_SENSOR_ID in device_config:
                 sensor_ = await cg.get_variable(device_config[CONF_SENSOR_ID])
                 cg.add(var.map_sensor_to_endpoint(sensor_, endpoint_id))
+            elif CONF_BINARY_SENSOR_ID in device_config:
+                binary_sensor_ = await cg.get_variable(
+                    device_config[CONF_BINARY_SENSOR_ID]
+                )
+                cg.add(var.map_binary_sensor_to_endpoint(binary_sensor_, endpoint_id))
             elif CONF_LIGHT_ID in device_config:
                 light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
                 cg.add(var.map_light_to_endpoint(light_, endpoint_id))

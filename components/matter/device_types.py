@@ -1,7 +1,7 @@
 from esphome import automation
 import esphome.config_validation as cv
-from esphome.components import light, sensor
-from esphome.const import CONF_LIGHT_ID, CONF_SENSOR_ID
+from esphome.components import binary_sensor, light, sensor
+from esphome.const import CONF_BINARY_SENSOR_ID, CONF_LIGHT_ID, CONF_SENSOR_ID
 
 from .const import *
 
@@ -29,6 +29,19 @@ SENSOR_SCHEMA = cv.All(
         cv.Schema(
             {
                 cv.Optional(CONF_SENSOR_ID): cv.use_id(sensor.Sensor),
+            }
+        ),
+    ),
+)
+BINARY_SENSOR_SCHEMA = cv.All(
+    empty_to_dict,
+    automation.maybe_conf(
+        CONF_BINARY_SENSOR_ID,
+        cv.Schema(
+            {
+                cv.Optional(CONF_BINARY_SENSOR_ID): cv.use_id(
+                    binary_sensor.BinarySensor
+                ),
             }
         ),
     ),
@@ -72,10 +85,10 @@ DEVICE_TYPES = {
         "schema": SENSOR_SCHEMA,
     },
     CONF_OCCUPANCY_SENSOR: {
-        "schema": SENSOR_SCHEMA,
+        "schema": BINARY_SENSOR_SCHEMA,
     },
     CONF_CONTACT_SENSOR: {
-        "schema": SENSOR_SCHEMA,
+        "schema": BINARY_SENSOR_SCHEMA,
     },
     CONF_LIGHT_SENSOR: {
         "schema": SENSOR_SCHEMA,

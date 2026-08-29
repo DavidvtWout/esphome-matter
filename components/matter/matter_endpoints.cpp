@@ -6,6 +6,10 @@
 #include "matter_component.h"
 
 #include <platform/CHIPDeviceLayer.h>
+#ifdef USE_BINARY_SENSOR
+#include <app/clusters/boolean-state-server/CodegenIntegration.h>
+#include <app/clusters/occupancy-sensor-server/CodegenIntegration.h>
+#endif // USE_BINARY_SENSOR
 #ifdef USE_SENSOR
 #include <app/clusters/temperature-measurement-server/TemperatureMeasurementCluster.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
@@ -209,6 +213,63 @@ void MatterSensorMapping::push_state_to_matter(float value) {
   }
 }
 #endif // USE_SENSOR
+
+// -------------------------------------------------------------------- //
+//  Binary sensors                                                      //
+// -------------------------------------------------------------------- //
+
+#ifdef USE_BINARY_SENSOR
+
+// Register binary sensors from endpoints.py
+void MatterComponent::map_binary_sensor_to_endpoint(
+    binary_sensor::BinarySensor *binary_sensor, uint16_t endpoint_id) {
+  this->mappings_.push_back(
+      new MatterBinarySensorMapping(binary_sensor, endpoint_id));
+}
+
+MatterBinarySensorMapping::MatterBinarySensorMapping(
+    binary_sensor::BinarySensor *binary_sensor, uint16_t endpoint_id)
+    : MatterEndpointMappingBase(endpoint_id), binary_sensor_(binary_sensor) {}
+
+void MatterBinarySensorMapping::register_callbacks() {
+  if (this->binary_sensor_ == nullptr)
+    return;
+  this->binary_sensor_->add_on_state_callback(
+      [this](bool value) { this->push_state_to_matter(value); });
+  if (this->binary_sensor_->has_state())
+    this->push_state_to_matter(this->binary_sensor_->state);
+}
+
+void MatterBinarySensorMapping::push_state_to_matter(bool value) {
+  using namespace chip::app::Clusters;
+  uint16_t eid = this->endpoint_id();
+  bool has_occupancy = this->has_server_cluster(OccupancySensing::Id);
+  bool has_boolean_state = this->has_server_cluster(BooleanState::Id);
+  if (!has_occupancy && !has_boolean_state)
+    return;
+  chip::DeviceLayer::SystemLayer().ScheduleLambda(
+      [eid, value, has_occupancy, has_boolean_state]() {
+        if (has_occupancy) {
+          auto *server = OccupancySensing::FindClusterOnEndpoint(eid);
+          if (server == nullptr) {
+            ESP_LOGE(TAG, "Occupancy cluster missing on endpoint %u", eid);
+          } else {
+            server->SetOccupancy(value);
+          }
+        }
+
+        if (has_boolean_state) {
+          auto *server = BooleanState::FindClusterOnEndpoint(eid);
+          if (server == nullptr) {
+            ESP_LOGE(TAG, "Boolean State cluster missing on endpoint %u", eid);
+          } else {
+            server->SetStateValue(value);
+          }
+        }
+      });
+}
+
+#endif // USE_BINARY_SENSOR
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   if (!this->endpoint_ids_.empty()) {

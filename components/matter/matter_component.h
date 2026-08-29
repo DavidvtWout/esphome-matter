@@ -44,6 +44,10 @@ public:
 #ifdef USE_SENSOR
   void map_sensor_to_endpoint(sensor::Sensor *sensor, uint16_t endpoint_id);
 #endif
+#ifdef USE_BINARY_SENSOR
+  void map_binary_sensor_to_endpoint(binary_sensor::BinarySensor *binary_sensor,
+                                     uint16_t endpoint_id);
+#endif
 #ifdef USE_LIGHT
   MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
 #endif
