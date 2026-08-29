@@ -6,6 +6,10 @@
 #include "matter_component.h"
 
 #include <platform/CHIPDeviceLayer.h>
+#ifdef USE_SENSOR
+#include <app/clusters/temperature-measurement-server/TemperatureMeasurementCluster.h>
+#include <data_model_provider/esp_matter_data_model_provider.h>
+#endif // USE_SENSOR
 
 #include <algorithm>
 #include <cmath>
@@ -48,14 +52,14 @@ void MatterComponent::map_light_to_endpoint(light::LightState *light,
                                             uint16_t endpoint_id) {
   this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
 }
-#endif
+#endif // USE_LIGHT
 
 #ifdef USE_SENSOR
 void MatterComponent::map_sensor_to_endpoint(sensor::Sensor *sensor,
                                              uint16_t endpoint_id) {
   this->mappings_.push_back(new MatterSensorMapping(sensor, endpoint_id));
 }
-#endif
+#endif // USE_SENSOR
 
 bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
   auto *endpoint = esp_matter::endpoint::get(this->endpoint_id());
@@ -136,7 +140,7 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     call.perform();
   }
 }
-#endif
+#endif // USE_LIGHT
 
 #ifdef USE_SENSOR
 MatterSensorMapping::MatterSensorMapping(sensor::Sensor *sensor,
@@ -148,6 +152,8 @@ void MatterSensorMapping::register_callbacks() {
     return;
   this->sensor_->add_on_state_callback(
       [this](float value) { this->push_state_to_matter(value); });
+  if (this->sensor_->has_state())
+    this->push_state_to_matter(this->sensor_->state);
 }
 
 void MatterSensorMapping::push_state_to_matter(float value) {
@@ -157,15 +163,32 @@ void MatterSensorMapping::push_state_to_matter(float value) {
     bool is_null = std::isnan(value) || value < -273.15f || value > 327.67f;
     int16_t raw = is_null ? 0 : static_cast<int16_t>(lroundf(value * 100.0f));
     chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, raw, is_null]() {
-      esp_matter_attr_val_t val = esp_matter_nullable_int16(
-          is_null ? nullable<int16_t>() : nullable<int16_t>(raw));
-      esp_matter::attribute::update(
-          eid, TemperatureMeasurement::Id,
-          TemperatureMeasurement::Attributes::MeasuredValue::Id, &val);
+      chip::app::DataModel::Nullable<int16_t> measured_value;
+      if (!is_null)
+        measured_value.SetNonNull(raw);
+
+      auto *server =
+          esp_matter::data_model::provider::get_instance().registry().Get(
+              {eid, TemperatureMeasurement::Id});
+      if (server == nullptr) {
+        ESP_LOGE(TAG, "Temperature cluster missing on endpoint %u", eid);
+        return;
+      }
+
+      auto *temperature_cluster =
+          static_cast<chip::app::Clusters::TemperatureMeasurementCluster *>(
+              server);
+      CHIP_ERROR err = temperature_cluster->SetMeasuredValue(measured_value);
+      if (err != CHIP_NO_ERROR) {
+        ESP_LOGE(
+            TAG,
+            "Failed to update temperature on endpoint %u: %" CHIP_ERROR_FORMAT,
+            eid, err.Format());
+      }
     });
   }
 }
-#endif
+#endif // USE_SENSOR
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   if (!this->endpoint_ids_.empty()) {
@@ -268,7 +291,7 @@ endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
       [ml, cluster_id, attribute_id, val_copy]() {
         ml->apply_matter_update(cluster_id, attribute_id, val_copy);
       });
-#endif
+#endif // USE_LIGHT
   return ESP_OK;
 }
 
