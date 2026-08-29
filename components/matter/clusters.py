@@ -60,6 +60,28 @@ def _seconds(multiplier=1):
     return _validate
 
 
+def _percentage(multiplier=254):
+    def _validate(value: int | str):
+        if isinstance(value, int):
+            return value
+
+        return round(cv.percentage(value) * multiplier)
+
+    return _validate
+
+
+def _percentage_per_second(multiplier=254):
+    def _validate(value: int | str):
+        if isinstance(value, int):
+            return value
+        if not isinstance(value, str) or not value.endswith("%/s"):
+            raise cv.Invalid("Expected a percentage rate such as 50%/s")
+
+        return round(cv.percentage(value.removesuffix("/s")) * multiplier)
+
+    return _validate
+
+
 MATTER_COMMANDS: dict[int | str, dict] = {
     CLUSTER_IDENTIFY: {
         "id": 0x0003,
@@ -107,7 +129,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE_TO_LEVEL: {
                 "id": 0x00,
                 "fields": [
-                    Field("U8", FIELD_LEVEL),  # TODO: support %
+                    Field("U8", FIELD_LEVEL, unit=_percentage()),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
                     ),
@@ -119,7 +141,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x01,
                 "fields": [
                     Field("U8", FIELD_MOVE_MODE),  # TODO: support up/down aliases
-                    Field("U8", FIELD_RATE),  # TODO: support %/s?
+                    Field("U8", FIELD_RATE, unit=_percentage_per_second()),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -128,7 +150,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x02,
                 "fields": [
                     Field("U8", FIELD_STEP_MODE),
-                    Field("U8", FIELD_STEP_SIZE),  # TODO: support %
+                    Field("U8", FIELD_STEP_SIZE, unit=_percentage()),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
                     ),
@@ -146,7 +168,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE_TO_LEVEL_WITH_ON_OFF: {
                 "id": 0x04,
                 "fields": [
-                    Field("U8", FIELD_LEVEL),
+                    Field("U8", FIELD_LEVEL, unit=_percentage()),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
                     ),
@@ -158,7 +180,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x05,
                 "fields": [
                     Field("U8", FIELD_MOVE_MODE),
-                    Field("U8", FIELD_RATE),
+                    Field("U8", FIELD_RATE, unit=_percentage_per_second()),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -167,7 +189,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x06,
                 "fields": [
                     Field("U8", FIELD_STEP_MODE),
-                    Field("U8", FIELD_STEP_SIZE),
+                    Field("U8", FIELD_STEP_SIZE, unit=_percentage()),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
                     ),
@@ -204,7 +226,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x01,
                 "fields": [
                     Field("U8", FIELD_MOVE_MODE),
-                    Field("U8", FIELD_RATE),
+                    Field("U8", FIELD_RATE, unit=_percentage_per_second()),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -222,7 +244,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE_TO_SATURATION: {
                 "id": 0x03,
                 "fields": [
-                    Field("U8", FIELD_SATURATION),
+                    Field("U8", FIELD_SATURATION, unit=_percentage()),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
                     ),
@@ -234,7 +256,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x04,
                 "fields": [
                     Field("U8", FIELD_MOVE_MODE),
-                    Field("U8", FIELD_RATE),
+                    Field("U8", FIELD_RATE, unit=_percentage_per_second()),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -243,7 +265,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x05,
                 "fields": [
                     Field("U8", FIELD_STEP_MODE),
-                    Field("U8", FIELD_STEP_SIZE),
+                    Field("U8", FIELD_STEP_SIZE, unit=_percentage()),
                     Field("U8", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
@@ -253,7 +275,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x06,
                 "fields": [
                     Field("U8", FIELD_HUE),
-                    Field("U8", FIELD_SATURATION),
+                    Field("U8", FIELD_SATURATION, unit=_percentage()),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
                     ),
