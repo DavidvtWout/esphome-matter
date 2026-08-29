@@ -11,7 +11,9 @@
 #include <app/clusters/occupancy-sensor-server/CodegenIntegration.h>
 #endif // USE_BINARY_SENSOR
 #ifdef USE_SENSOR
+#include <app/clusters/flow-measurement-server/FlowMeasurementCluster.h>
 #include <app/clusters/illuminance-measurement-server/IlluminanceMeasurementCluster.h>
+#include <app/clusters/pressure-measurement-server/PressureMeasurementCluster.h>
 #include <app/clusters/relative-humidity-measurement-server/RelativeHumidityMeasurementCluster.h>
 #include <app/clusters/temperature-measurement-server/TemperatureMeasurementCluster.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
@@ -70,7 +72,66 @@ illuminance_sensor_value_to_matter(float value) {
   measured_value.SetNonNull(static_cast<uint16_t>(encoded));
   return measured_value;
 }
+
+chip::app::DataModel::Nullable<int16_t>
+pressure_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<int16_t> measured_value;
+  if (!std::isnan(value) && value >= -327670.0f && value <= 327670.0f) {
+    measured_value.SetNonNull(
+        static_cast<int16_t>(std::lroundf(value / 10.0f)));
+  }
+  return measured_value;
+}
+
+chip::app::DataModel::Nullable<uint16_t>
+flow_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<uint16_t> measured_value;
+  if (!std::isnan(value) && value >= 0.0f && value <= 6553.4f) {
+    measured_value.SetNonNull(
+        static_cast<uint16_t>(std::lroundf(value * 10.0f)));
+  }
+  return measured_value;
+}
+
+template <typename ClusterT, chip::ClusterId ClusterId, typename ValueT>
+void publish_measurement(uint16_t endpoint_id,
+                         chip::app::DataModel::Nullable<ValueT> measured_value,
+                         const char *name) {
+  chip::DeviceLayer::SystemLayer().ScheduleLambda([endpoint_id, measured_value,
+                                                   name]() {
+    auto *server =
+        esp_matter::data_model::provider::get_instance().registry().Get(
+            {endpoint_id, ClusterId});
+    if (server == nullptr) {
+      ESP_LOGE(TAG, "%s cluster missing on endpoint %u", name, endpoint_id);
+      return;
+    }
+
+    auto *cluster = static_cast<ClusterT *>(server);
+    CHIP_ERROR err = cluster->SetMeasuredValue(measured_value);
+    if (err != CHIP_NO_ERROR) {
+      ESP_LOGE(TAG, "Failed to update %s on endpoint %u: %" CHIP_ERROR_FORMAT,
+               name, endpoint_id, err.Format());
+    }
+  });
+}
 #endif // USE_SENSOR
+
+#ifdef USE_BINARY_SENSOR
+template <typename FindCluster, typename SetValue>
+void publish_binary_state(uint16_t endpoint_id, bool value, const char *name,
+                          FindCluster find_cluster, SetValue set_value) {
+  chip::DeviceLayer::SystemLayer().ScheduleLambda(
+      [endpoint_id, value, name, find_cluster, set_value]() {
+        auto *cluster = find_cluster(endpoint_id);
+        if (cluster == nullptr) {
+          ESP_LOGE(TAG, "%s cluster missing on endpoint %u", name, endpoint_id);
+          return;
+        }
+        set_value(cluster, value);
+      });
+}
+#endif // USE_BINARY_SENSOR
 
 } // namespace
 
@@ -224,72 +285,27 @@ void MatterSensorMapping::push_state_to_matter(float value) {
   using namespace chip::app::Clusters;
   uint16_t eid = this->endpoint_id();
   if (this->has_server_cluster(TemperatureMeasurement::Id)) {
-    auto measured_value = temperature_sensor_value_to_matter(value);
-    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, measured_value]() {
-      auto *server =
-          esp_matter::data_model::provider::get_instance().registry().Get(
-              {eid, TemperatureMeasurement::Id});
-      if (server == nullptr) {
-        ESP_LOGE(TAG, "Temperature cluster missing on endpoint %u", eid);
-        return;
-      }
-
-      auto *temperature_cluster =
-          static_cast<chip::app::Clusters::TemperatureMeasurementCluster *>(
-              server);
-      CHIP_ERROR err = temperature_cluster->SetMeasuredValue(measured_value);
-      if (err != CHIP_NO_ERROR) {
-        ESP_LOGE(
-            TAG,
-            "Failed to update temperature on endpoint %u: %" CHIP_ERROR_FORMAT,
-            eid, err.Format());
-      }
-    });
+    publish_measurement<TemperatureMeasurementCluster,
+                        TemperatureMeasurement::Id>(
+        eid, temperature_sensor_value_to_matter(value), "temperature");
   }
   if (this->has_server_cluster(RelativeHumidityMeasurement::Id)) {
-    auto measured_value = humidity_sensor_value_to_matter(value);
-    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, measured_value]() {
-      auto *server =
-          esp_matter::data_model::provider::get_instance().registry().Get(
-              {eid, RelativeHumidityMeasurement::Id});
-      if (server == nullptr) {
-        ESP_LOGE(TAG, "Humidity cluster missing on endpoint %u", eid);
-        return;
-      }
-
-      auto *humidity_cluster = static_cast<
-          chip::app::Clusters::RelativeHumidityMeasurementCluster *>(server);
-      CHIP_ERROR err = humidity_cluster->SetMeasuredValue(measured_value);
-      if (err != CHIP_NO_ERROR) {
-        ESP_LOGE(
-            TAG,
-            "Failed to update humidity on endpoint %u: %" CHIP_ERROR_FORMAT,
-            eid, err.Format());
-      }
-    });
+    publish_measurement<RelativeHumidityMeasurementCluster,
+                        RelativeHumidityMeasurement::Id>(
+        eid, humidity_sensor_value_to_matter(value), "humidity");
   }
   if (this->has_server_cluster(IlluminanceMeasurement::Id)) {
-    auto measured_value = illuminance_sensor_value_to_matter(value);
-    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, measured_value]() {
-      auto *server =
-          esp_matter::data_model::provider::get_instance().registry().Get(
-              {eid, IlluminanceMeasurement::Id});
-      if (server == nullptr) {
-        ESP_LOGE(TAG, "Illuminance cluster missing on endpoint %u", eid);
-        return;
-      }
-
-      auto *illuminance_cluster =
-          static_cast<chip::app::Clusters::IlluminanceMeasurementCluster *>(
-              server);
-      CHIP_ERROR err = illuminance_cluster->SetMeasuredValue(measured_value);
-      if (err != CHIP_NO_ERROR) {
-        ESP_LOGE(
-            TAG,
-            "Failed to update illuminance on endpoint %u: %" CHIP_ERROR_FORMAT,
-            eid, err.Format());
-      }
-    });
+    publish_measurement<IlluminanceMeasurementCluster,
+                        IlluminanceMeasurement::Id>(
+        eid, illuminance_sensor_value_to_matter(value), "illuminance");
+  }
+  if (this->has_server_cluster(PressureMeasurement::Id)) {
+    publish_measurement<PressureMeasurementCluster, PressureMeasurement::Id>(
+        eid, pressure_sensor_value_to_matter(value), "pressure");
+  }
+  if (this->has_server_cluster(FlowMeasurement::Id)) {
+    publish_measurement<FlowMeasurementCluster, FlowMeasurement::Id>(
+        eid, flow_sensor_value_to_matter(value), "flow");
   }
 }
 #endif // USE_SENSOR
@@ -323,30 +339,20 @@ void MatterBinarySensorMapping::register_callbacks() {
 void MatterBinarySensorMapping::push_state_to_matter(bool value) {
   using namespace chip::app::Clusters;
   uint16_t eid = this->endpoint_id();
-  bool has_occupancy = this->has_server_cluster(OccupancySensing::Id);
-  bool has_boolean_state = this->has_server_cluster(BooleanState::Id);
-  if (!has_occupancy && !has_boolean_state)
-    return;
-  chip::DeviceLayer::SystemLayer().ScheduleLambda(
-      [eid, value, has_occupancy, has_boolean_state]() {
-        if (has_occupancy) {
-          auto *server = OccupancySensing::FindClusterOnEndpoint(eid);
-          if (server == nullptr) {
-            ESP_LOGE(TAG, "Occupancy cluster missing on endpoint %u", eid);
-          } else {
-            server->SetOccupancy(value);
-          }
-        }
-
-        if (has_boolean_state) {
-          auto *server = BooleanState::FindClusterOnEndpoint(eid);
-          if (server == nullptr) {
-            ESP_LOGE(TAG, "Boolean State cluster missing on endpoint %u", eid);
-          } else {
-            server->SetStateValue(value);
-          }
-        }
-      });
+  if (this->has_server_cluster(OccupancySensing::Id)) {
+    publish_binary_state(eid, value, "occupancy",
+                         OccupancySensing::FindClusterOnEndpoint,
+                         [](OccupancySensingCluster *cluster, bool occupied) {
+                           cluster->SetOccupancy(occupied);
+                         });
+  }
+  if (this->has_server_cluster(BooleanState::Id)) {
+    publish_binary_state(eid, value, "Boolean State",
+                         BooleanState::FindClusterOnEndpoint,
+                         [](BooleanStateCluster *cluster, bool state) {
+                           cluster->SetStateValue(state);
+                         });
+  }
 }
 
 #endif // USE_BINARY_SENSOR
