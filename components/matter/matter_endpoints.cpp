@@ -47,20 +47,6 @@ void MatterComponent::register_binding(uint16_t endpoint_id) {
   this->binding_endpoint_ids_.push_back(endpoint_id);
 }
 
-#ifdef USE_LIGHT
-void MatterComponent::map_light_to_endpoint(light::LightState *light,
-                                            uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
-}
-#endif // USE_LIGHT
-
-#ifdef USE_SENSOR
-void MatterComponent::map_sensor_to_endpoint(sensor::Sensor *sensor,
-                                             uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterSensorMapping(sensor, endpoint_id));
-}
-#endif // USE_SENSOR
-
 bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
   auto *endpoint = esp_matter::endpoint::get(this->endpoint_id());
   if (endpoint == nullptr)
@@ -70,7 +56,18 @@ bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
                                 esp_matter::CLUSTER_FLAG_SERVER);
 }
 
+// -------------------------------------------------------------------- //
+//  Lights                                                              //
+// -------------------------------------------------------------------- //
+
 #ifdef USE_LIGHT
+
+// Register lights from endpoints.py
+void MatterComponent::map_light_to_endpoint(light::LightState *light,
+                                            uint16_t endpoint_id) {
+  this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
+}
+
 MatterLightMapping::MatterLightMapping(light::LightState *light,
                                        uint16_t endpoint_id)
     : MatterEndpointMappingBase(endpoint_id), light_(light) {}
@@ -140,9 +137,32 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     call.perform();
   }
 }
+
+MatterLightMapping *
+MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
+  for (auto *mapping : this->mappings_) {
+    auto *light_mapping = mapping->as_light_mapping();
+    if (light_mapping != nullptr &&
+        light_mapping->endpoint_id() == endpoint_id) {
+      return light_mapping;
+    }
+  }
+  return nullptr;
+}
 #endif // USE_LIGHT
 
+// -------------------------------------------------------------------- //
+//  Sensors                                                             //
+// -------------------------------------------------------------------- //
+
 #ifdef USE_SENSOR
+
+// Register sensors from endpoints.py
+void MatterComponent::map_sensor_to_endpoint(sensor::Sensor *sensor,
+                                             uint16_t endpoint_id) {
+  this->mappings_.push_back(new MatterSensorMapping(sensor, endpoint_id));
+}
+
 MatterSensorMapping::MatterSensorMapping(sensor::Sensor *sensor,
                                          uint16_t endpoint_id)
     : MatterEndpointMappingBase(endpoint_id), sensor_(sensor) {}
@@ -243,11 +263,12 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       }
     }
 
-    ESP_LOGV(TAG, "Endpoint created: id=%u", endpoint_id);
+    ESP_LOGV(TAG, "Created endpoint %u", endpoint_id);
   }
 
   // Add device types to endpoints
   for (auto *device_type_registration : this->device_type_registrations_) {
+    // add_clusters is defined in matter_endpoints.h
     if (!device_type_registration->add_clusters(node))
       return false;
   }
@@ -256,20 +277,6 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
 
   return true;
 }
-
-#ifdef USE_LIGHT
-MatterLightMapping *
-MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
-  for (auto *mapping : this->mappings_) {
-    auto *light_mapping = mapping->as_light_mapping();
-    if (light_mapping != nullptr &&
-        light_mapping->endpoint_id() == endpoint_id) {
-      return light_mapping;
-    }
-  }
-  return nullptr;
-}
-#endif // USE_LIGHT
 
 esp_err_t
 endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
