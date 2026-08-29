@@ -131,7 +131,7 @@ matter:
   
   endpoints:
     1:
-      id: dimmer_endpoint
+      id: dimmer_endpoint  # The id is optional. Actions can also refer to the numerical endpoint id directly.
       dimmer_switch:
     2:
       temperature_sensor:
@@ -153,10 +153,11 @@ binary_sensor:
     on_click:
       matter.on_off.on: dimmer_endpoint
     on_press:
+      # Pressing up can turn on a light
       matter.level_control.move_with_on_off:
         endpoint_id: dimmer_endpoint
-        move_mode: 0 # Move up
-        rate: 50  # ~20% per second
+        move_mode: up
+        rate: 20%/s
     on_release:
       matter.level_control.stop_with_on_off: dimmer_endpoint
   - name: "Button down"
@@ -171,12 +172,13 @@ binary_sensor:
     on_click:
       matter.on_off.off: dimmer_endpoint
     on_press:
-      matter.level_control.move_with_on_off:
+      # Pressing down dims to lowest brightness but doesn't turn off
+      matter.level_control.move:
         endpoint_id: dimmer_endpoint
-        move_mode: 1 # Move down
-        rate: 50  # ~20% per second
+        move_mode: down
+        rate: 20%/s
     on_release:
-      matter.level_control.stop_with_on_off: dimmer_endpoint
+      matter.level_control.stop: dimmer_endpoint
 
 sensor:
   - platform: internal_temperature
@@ -233,36 +235,36 @@ matter.on_off.toggle: some_id
 # Intended for motion sensors temporarily turning on a light.
 matter.on_off.on_with_timed_off:
   endpoint_id: some_id
-  on_time: 150  # How long to turn on the light in multiples of 100ms. So 150 means 15 seconds.
-  # on_off_control: 
-  # off_wait_time:  # Time before accepting another on_with_timed_off command, in multiples of 100ms.
+  on_time:  # s - How long to turn on the light.
+  # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
+  # on_off_control: 0
 ```
 
 ### LevelControl cluster
 
 LevelControl commands are used for dimming. Levels are raw Matter brightness levels, normally `0` to `254`.
 
-The following commands also have a version without `_with_on_off`. These commands don't turn on or off the light so that's usually not what you want.
+The following commands also have a version without `_with_on_off`. These commands don't turn on or off the light.
 
 ```yaml
 # Move directly to a brightness level.
 matter.level_control.move_to_level_with_on_off:
   endpoint_id: some_id
-  level: 128
-  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+  level:  # %
+  # transition_time: 0s
 
 # Move continuously up or down.
 matter.level_control.move_with_on_off:
   endpoint_id: some_id
-  move_mode: 0  # 0=up, 1=down.
-  # rate:  # Level units per second.
+  move_mode:  # either "up" or "down"
+  rate: # %/s
 
 # Step once by a fixed amount.
 matter.level_control.step_with_on_off:
   endpoint_id: some_id
-  step_mode: 0  # 0=up, 1=down.
-  step_size: 25
-  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+  step_mode:  # either "up" or "down"
+  step_size:  # %
+  # transition_time: 0s
 
 # Stop a previous move command.
 matter.level_control.stop_with_on_off: some_id

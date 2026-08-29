@@ -49,8 +49,8 @@ binary_sensor:
     on_press:
       matter.level_control.move_with_on_off:
         endpoint_id: dimmer_endpoint
-        move_mode: 0 # up
-        rate: 50
+        move_mode: up
+        rate: 20 %/s
     on_release:
       matter.level_control.stop_with_on_off: dimmer_endpoint
   - name: "Button down"
@@ -67,7 +67,7 @@ binary_sensor:
     on_press:
       matter.level_control.move_with_on_off:
         endpoint_id: dimmer_endpoint
-        move_mode: 1 # down
-        rate: 50
+        move_mode: down
+        rate: 20 %/s
     on_release:
       matter.level_control.stop_with_on_off: dimmer_endpoint
