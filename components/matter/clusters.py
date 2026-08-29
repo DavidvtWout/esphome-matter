@@ -82,6 +82,23 @@ def _percentage_per_second(multiplier=254):
     return _validate
 
 
+def _enum(mapping: dict[str, int]):
+    def _validate(value: int | str):
+        if isinstance(value, int):
+            return value
+        if not isinstance(value, str):
+            raise cv.Invalid("Expected an enum name or integer")
+
+        try:
+            return mapping[value.lower()]
+        except KeyError as err:
+            raise cv.Invalid(
+                f"Unknown enum name '{value}'; expected one of: {', '.join(mapping)}"
+            ) from err
+
+    return _validate
+
+
 MATTER_COMMANDS: dict[int | str, dict] = {
     CLUSTER_IDENTIFY: {
         "id": 0x0003,
@@ -93,7 +110,20 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_TRIGGER_EFFECT: {
                 "id": 0x40,
                 "fields": [
-                    Field("U8", FIELD_EFFECT_IDENTIFIER),
+                    Field(
+                        "U8",
+                        FIELD_EFFECT_IDENTIFIER,
+                        unit=_enum(
+                            {
+                                "blink": 0x00,
+                                "breathe": 0x01,
+                                "okay": 0x02,
+                                "channel_change": 0x0B,
+                                "finish_effect": 0xFE,
+                                "stop_effect": 0xFF,
+                            }
+                        ),
+                    ),
                     Field("U8", FIELD_EFFECT_VARIANT, 0),
                 ],
             },
@@ -108,7 +138,11 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_OFF_WITH_EFFECT: {
                 "id": 0x40,
                 "fields": [
-                    Field("U8", FIELD_EFFECT_IDENTIFIER),
+                    Field(
+                        "U8",
+                        FIELD_EFFECT_IDENTIFIER,
+                        unit=_enum({"delayed_all_off": 0x00, "dying_light": 0x01}),
+                    ),
                     Field("U8", FIELD_EFFECT_VARIANT, 0),
                 ],
             },
@@ -140,7 +174,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE: {
                 "id": 0x01,
                 "fields": [
-                    Field("U8", FIELD_MOVE_MODE),  # TODO: support up/down aliases
+                    Field(
+                        "U8", FIELD_MOVE_MODE, unit=_enum({"up": 0x00, "down": 0x01})
+                    ),
                     Field("U8", FIELD_RATE, unit=_percentage_per_second()),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
@@ -149,7 +185,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_STEP: {
                 "id": 0x02,
                 "fields": [
-                    Field("U8", FIELD_STEP_MODE),
+                    Field(
+                        "U8", FIELD_STEP_MODE, unit=_enum({"up": 0x00, "down": 0x01})
+                    ),
                     Field("U8", FIELD_STEP_SIZE, unit=_percentage()),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
@@ -179,7 +217,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE_WITH_ON_OFF: {
                 "id": 0x05,
                 "fields": [
-                    Field("U8", FIELD_MOVE_MODE),
+                    Field(
+                        "U8", FIELD_MOVE_MODE, unit=_enum({"up": 0x00, "down": 0x01})
+                    ),
                     Field("U8", FIELD_RATE, unit=_percentage_per_second()),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
@@ -188,7 +228,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_STEP_WITH_ON_OFF: {
                 "id": 0x06,
                 "fields": [
-                    Field("U8", FIELD_STEP_MODE),
+                    Field(
+                        "U8", FIELD_STEP_MODE, unit=_enum({"up": 0x00, "down": 0x01})
+                    ),
                     Field("U8", FIELD_STEP_SIZE, unit=_percentage()),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
@@ -214,7 +256,18 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x00,
                 "fields": [
                     Field("U8", FIELD_HUE),
-                    Field("U8", FIELD_DIRECTION),
+                    Field(
+                        "U8",
+                        FIELD_DIRECTION,
+                        unit=_enum(
+                            {
+                                "shortest": 0x00,
+                                "longest": 0x01,
+                                "up": 0x02,
+                                "down": 0x03,
+                            }
+                        ),
+                    ),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
                     ),
@@ -225,7 +278,11 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE_HUE: {
                 "id": 0x01,
                 "fields": [
-                    Field("U8", FIELD_MOVE_MODE),
+                    Field(
+                        "U8",
+                        FIELD_MOVE_MODE,
+                        unit=_enum({"stop": 0x00, "up": 0x01, "down": 0x03}),
+                    ),
                     Field("U8", FIELD_RATE, unit=_percentage_per_second()),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
@@ -234,7 +291,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_STEP_HUE: {
                 "id": 0x02,
                 "fields": [
-                    Field("U8", FIELD_STEP_MODE),
+                    Field(
+                        "U8", FIELD_STEP_MODE, unit=_enum({"up": 0x01, "down": 0x03})
+                    ),
                     Field("U8", FIELD_STEP_SIZE),
                     Field("U8", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
@@ -255,7 +314,11 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE_SATURATION: {
                 "id": 0x04,
                 "fields": [
-                    Field("U8", FIELD_MOVE_MODE),
+                    Field(
+                        "U8",
+                        FIELD_MOVE_MODE,
+                        unit=_enum({"stop": 0x00, "up": 0x01, "down": 0x03}),
+                    ),
                     Field("U8", FIELD_RATE, unit=_percentage_per_second()),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
                     Field("U8", FIELD_OPTIONS_OVERRIDE, 0),
@@ -264,7 +327,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_STEP_SATURATION: {
                 "id": 0x05,
                 "fields": [
-                    Field("U8", FIELD_STEP_MODE),
+                    Field(
+                        "U8", FIELD_STEP_MODE, unit=_enum({"up": 0x01, "down": 0x03})
+                    ),
                     Field("U8", FIELD_STEP_SIZE, unit=_percentage()),
                     Field("U8", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
@@ -335,8 +400,22 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x44,
                 "fields": [
                     Field("U8", FIELD_UPDATE_FLAGS),
-                    Field("U8", FIELD_ACTION),
-                    Field("U8", FIELD_DIRECTION),
+                    Field(
+                        "U8",
+                        FIELD_ACTION,
+                        unit=_enum(
+                            {
+                                "deactivate": 0x00,
+                                "activate_from_color_loop_start_enhanced_hue": 0x01,
+                                "activate_from_enhanced_current_hue": 0x02,
+                            }
+                        ),
+                    ),
+                    Field(
+                        "U8",
+                        FIELD_DIRECTION,
+                        unit=_enum({"decrement": 0x00, "increment": 0x01}),
+                    ),
                     Field("U16", FIELD_TIME, unit=_seconds()),
                     Field("U16", FIELD_START_HUE),
                     Field("U8", FIELD_OPTIONS_MASK, 0),
@@ -353,7 +432,11 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_MOVE_COLOR_TEMPERATURE: {
                 "id": 0x4B,
                 "fields": [
-                    Field("U8", FIELD_MOVE_MODE),
+                    Field(
+                        "U8",
+                        FIELD_MOVE_MODE,
+                        unit=_enum({"stop": 0x00, "up": 0x01, "down": 0x03}),
+                    ),
                     Field("U16", FIELD_RATE),
                     Field("U16", FIELD_COLOR_TEMPERATURE_MINIMUM_MIREDS),
                     Field("U16", FIELD_COLOR_TEMPERATURE_MAXIMUM_MIREDS),
@@ -364,7 +447,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             COMMAND_STEP_COLOR_TEMPERATURE: {
                 "id": 0x4C,
                 "fields": [
-                    Field("U8", FIELD_STEP_MODE),
+                    Field(
+                        "U8", FIELD_STEP_MODE, unit=_enum({"up": 0x01, "down": 0x03})
+                    ),
                     Field("U16", FIELD_STEP_SIZE),
                     Field(
                         "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
