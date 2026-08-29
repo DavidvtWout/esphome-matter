@@ -11,6 +11,8 @@
 #include <app/clusters/occupancy-sensor-server/CodegenIntegration.h>
 #endif // USE_BINARY_SENSOR
 #ifdef USE_SENSOR
+#include <app/clusters/illuminance-measurement-server/IlluminanceMeasurementCluster.h>
+#include <app/clusters/relative-humidity-measurement-server/RelativeHumidityMeasurementCluster.h>
 #include <app/clusters/temperature-measurement-server/TemperatureMeasurementCluster.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #endif // USE_SENSOR
@@ -31,6 +33,44 @@ struct EspMatterNodeHeader {
   void *endpoint_list;
   uint16_t min_unused_endpoint_id;
 };
+
+#ifdef USE_SENSOR
+chip::app::DataModel::Nullable<int16_t>
+temperature_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<int16_t> measured_value;
+  if (!std::isnan(value) && value >= -273.15f && value <= 327.67f) {
+    measured_value.SetNonNull(
+        static_cast<int16_t>(std::lroundf(value * 100.0f)));
+  }
+  return measured_value;
+}
+
+chip::app::DataModel::Nullable<uint16_t>
+humidity_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<uint16_t> measured_value;
+  if (!std::isnan(value) && value >= 0.0f && value <= 100.0f) {
+    measured_value.SetNonNull(
+        static_cast<uint16_t>(std::lroundf(value * 100.0f)));
+  }
+  return measured_value;
+}
+
+chip::app::DataModel::Nullable<uint16_t>
+illuminance_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<uint16_t> measured_value;
+  if (std::isnan(value) || value < 0.0f)
+    return measured_value;
+  if (value == 0.0f) {
+    measured_value.SetNonNull(0);
+    return measured_value;
+  }
+
+  long encoded = std::lroundf(10000.0f * std::log10(value) + 1.0f);
+  encoded = std::clamp(encoded, 0L, 65534L);
+  measured_value.SetNonNull(static_cast<uint16_t>(encoded));
+  return measured_value;
+}
+#endif // USE_SENSOR
 
 } // namespace
 
@@ -184,13 +224,8 @@ void MatterSensorMapping::push_state_to_matter(float value) {
   using namespace chip::app::Clusters;
   uint16_t eid = this->endpoint_id();
   if (this->has_server_cluster(TemperatureMeasurement::Id)) {
-    bool is_null = std::isnan(value) || value < -273.15f || value > 327.67f;
-    int16_t raw = is_null ? 0 : static_cast<int16_t>(lroundf(value * 100.0f));
-    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, raw, is_null]() {
-      chip::app::DataModel::Nullable<int16_t> measured_value;
-      if (!is_null)
-        measured_value.SetNonNull(raw);
-
+    auto measured_value = temperature_sensor_value_to_matter(value);
+    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, measured_value]() {
       auto *server =
           esp_matter::data_model::provider::get_instance().registry().Get(
               {eid, TemperatureMeasurement::Id});
@@ -207,6 +242,51 @@ void MatterSensorMapping::push_state_to_matter(float value) {
         ESP_LOGE(
             TAG,
             "Failed to update temperature on endpoint %u: %" CHIP_ERROR_FORMAT,
+            eid, err.Format());
+      }
+    });
+  }
+  if (this->has_server_cluster(RelativeHumidityMeasurement::Id)) {
+    auto measured_value = humidity_sensor_value_to_matter(value);
+    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, measured_value]() {
+      auto *server =
+          esp_matter::data_model::provider::get_instance().registry().Get(
+              {eid, RelativeHumidityMeasurement::Id});
+      if (server == nullptr) {
+        ESP_LOGE(TAG, "Humidity cluster missing on endpoint %u", eid);
+        return;
+      }
+
+      auto *humidity_cluster = static_cast<
+          chip::app::Clusters::RelativeHumidityMeasurementCluster *>(server);
+      CHIP_ERROR err = humidity_cluster->SetMeasuredValue(measured_value);
+      if (err != CHIP_NO_ERROR) {
+        ESP_LOGE(
+            TAG,
+            "Failed to update humidity on endpoint %u: %" CHIP_ERROR_FORMAT,
+            eid, err.Format());
+      }
+    });
+  }
+  if (this->has_server_cluster(IlluminanceMeasurement::Id)) {
+    auto measured_value = illuminance_sensor_value_to_matter(value);
+    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, measured_value]() {
+      auto *server =
+          esp_matter::data_model::provider::get_instance().registry().Get(
+              {eid, IlluminanceMeasurement::Id});
+      if (server == nullptr) {
+        ESP_LOGE(TAG, "Illuminance cluster missing on endpoint %u", eid);
+        return;
+      }
+
+      auto *illuminance_cluster =
+          static_cast<chip::app::Clusters::IlluminanceMeasurementCluster *>(
+              server);
+      CHIP_ERROR err = illuminance_cluster->SetMeasuredValue(measured_value);
+      if (err != CHIP_NO_ERROR) {
+        ESP_LOGE(
+            TAG,
+            "Failed to update illuminance on endpoint %u: %" CHIP_ERROR_FORMAT,
             eid, err.Format());
       }
     });
