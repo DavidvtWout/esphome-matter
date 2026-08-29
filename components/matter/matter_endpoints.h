@@ -1,5 +1,8 @@
 #pragma once
+
 #include "esphome/core/defines.h"
+#ifdef USE_MATTER
+#include "esphome/core/log.h"
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
 #endif
@@ -7,65 +10,110 @@
 #include "esphome/components/light/light_state.h"
 #endif
 
-#ifdef USE_MATTER
-
 #include <esp_matter.h>
+#include <esp_matter_cluster.h>
 
 #include <cstdint>
 
 namespace esphome::matter {
 
-// Referenceable handle for one configured endpoint. The endpoint_id is filled
-// in during endpoint creation; actions resolve it at play() time.
-class MatterEndpointRef {
-public:
-  uint16_t endpoint_id{0};
-};
-
-// Client endpoints carry no entity references: behaviour is wired in YAML
-// automations via the matter.* actions, targeting the endpoint's ref id.
-struct MatterOnOffSwitch {
-  MatterEndpointRef *ref;
-  uint16_t endpoint_id;
-};
-
-struct MatterDimmerSwitch {
-  MatterEndpointRef *ref;
-  uint16_t endpoint_id;
-};
-
-#ifdef USE_SENSOR
-struct MatterTemperatureSensor {
-  sensor::Sensor *sensor;
-  MatterEndpointRef *ref;
-  uint16_t endpoint_id;
-};
+#ifdef USE_LIGHT
+class MatterLightMapping;
 #endif
 
-#ifdef USE_LIGHT
-// Bidirectional bridge between an ESPHome light and a Matter light endpoint
-// (on_off_light or dimmable_light server clusters). Heap-allocated so the
-// listener registration pointer stays stable.
-class MatterLight : public light::LightRemoteValuesListener {
+class MatterDeviceTypeRegistrationBase {
 public:
-  MatterLight(light::LightState *light, bool dimmable, MatterEndpointRef *ref)
-      : light(light), dimmable(dimmable), ref(ref) {}
+  MatterDeviceTypeRegistrationBase(uint16_t endpoint_id,
+                                   const char *device_type)
+      : endpoint_id_(endpoint_id), device_type_(device_type) {}
+  virtual ~MatterDeviceTypeRegistrationBase() = default;
 
-  // ESPHome light changed (main loop): mirror the state to the Matter
-  // attributes.
-  void on_light_remote_values_update() override {
-    this->push_state_to_matter();
+  virtual bool add_clusters(esp_matter::node_t *node) = 0;
+
+  uint16_t endpoint_id() const { return this->endpoint_id_; }
+
+protected:
+  uint16_t endpoint_id_;
+  const char *device_type_;
+};
+
+template <typename ConfigT,
+          esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
+class MatterDeviceTypeRegistration : public MatterDeviceTypeRegistrationBase {
+public:
+  MatterDeviceTypeRegistration(uint16_t endpoint_id, const char *device_type)
+      : MatterDeviceTypeRegistrationBase(endpoint_id, device_type) {}
+
+  bool add_clusters(esp_matter::node_t *node) override {
+    ConfigT config;
+    esp_matter::endpoint_t *endpoint =
+        esp_matter::endpoint::get(node, this->endpoint_id_);
+    if (endpoint == nullptr) {
+      ESP_LOGE("matter", "Cannot add %s device type for missing endpoint %u",
+               this->device_type_, this->endpoint_id_);
+      return false;
+    }
+
+    if (AddFn(endpoint, &config) != ESP_OK) {
+      ESP_LOGE("matter", "Failed to add %s device type to endpoint %u",
+               this->device_type_, this->endpoint_id_);
+      return false;
+    }
+
+    ESP_LOGD("matter", "Added device type %s to endpoint %u",
+             this->device_type_, this->endpoint_id_);
+    return true;
   }
+};
+
+class MatterEndpointMappingBase {
+public:
+  explicit MatterEndpointMappingBase(uint16_t endpoint_id)
+      : endpoint_id_(endpoint_id) {}
+  virtual ~MatterEndpointMappingBase() = default;
+
+  virtual void register_callbacks() {}
+#ifdef USE_LIGHT
+  virtual MatterLightMapping *as_light_mapping() { return nullptr; }
+#endif
+
+  uint16_t endpoint_id() const { return this->endpoint_id_; }
+
+protected:
+  bool has_server_cluster(uint32_t cluster_id) const;
+
+  uint16_t endpoint_id_;
+};
+
+#ifdef USE_LIGHT
+class MatterLightMapping : public MatterEndpointMappingBase,
+                           public light::LightRemoteValuesListener {
+public:
+  MatterLightMapping(light::LightState *light, uint16_t endpoint_id);
+
+  void on_light_remote_values_update() override;
+  void register_callbacks() override;
+  MatterLightMapping *as_light_mapping() override;
+
   void push_state_to_matter();
-  // A Matter attribute changed (main loop, deferred from Matter thread): apply
-  // to the light.
   void apply_matter_update(uint32_t cluster_id, uint32_t attribute_id,
                            esp_matter_attr_val_t val);
 
-  light::LightState *light;
-  bool dimmable;
-  MatterEndpointRef *ref;
-  uint16_t endpoint_id{0};
+protected:
+  light::LightState *light_;
+};
+#endif
+
+#ifdef USE_SENSOR
+class MatterSensorMapping : public MatterEndpointMappingBase {
+public:
+  MatterSensorMapping(sensor::Sensor *sensor, uint16_t endpoint_id);
+
+  void register_callbacks() override;
+  void push_state_to_matter(float value);
+
+protected:
+  sensor::Sensor *sensor_;
 };
 #endif
 

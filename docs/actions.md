@@ -2,15 +2,19 @@ Matter devices are controlled through clusters. A cluster groups related behavio
 
 In esphome-matter, these actions work like a Matter switch or remote control. You first bind one of the ESPHome Matter endpoints to another Matter device, such as a light, in your Matter controller. After that, an ESPHome automation can call actions like `matter.on_off.toggle` or `matter.level_control.move_with_on_off`, and the command is sent to the device that was bound to that endpoint.
 
-Only some device types include the Binding cluster. In esphome-matter these are `on_off_light_switch`, `dimmer_switch`, and `color_dimmer_switch`. The `generic_switch` device type does not support binding, so it cannot send these bound commands.
+Bound actions require the endpoint to include the Binding cluster. In
+esphome-matter, endpoints with `on_off_light_switch` or `dimmer_switch` get it
+by default. You can override that per endpoint with `enable_binding: false`, or
+add it to another endpoint with `enable_binding: true`.
 
 First define an endpoint that supports binding and give it an `id`:
 
 ```yaml
 matter:
   endpoints:
-    - dimmer_switch:
+    1:
       id: dimmer_endpoint
+      dimmer_switch:
 
 binary_sensor:
   - name: "Some button"

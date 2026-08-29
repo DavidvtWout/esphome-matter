@@ -1,12 +1,13 @@
 #pragma once
+
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
-
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
 
 #include "matter_endpoints.h"
 
+#include <functional>
 #include <vector>
 
 #include <esp_matter.h>
@@ -26,31 +27,25 @@ public:
   }
 
   void factory_reset();
-  void add_on_off_switch(MatterEndpointRef *ref) {
-    this->on_off_switches_.push_back({ref, 0});
+
+  // Endpoints
+  void register_endpoint(uint16_t endpoint_id);
+  void register_binding(uint16_t endpoint_id);
+  template <typename ConfigT,
+            esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
+  void register_device_type(uint16_t endpoint_id, const char *device_type) {
+    this->device_type_registrations_.push_back(
+        new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id,
+                                                         device_type));
   }
-  void add_dimmer_switch(MatterEndpointRef *ref) {
-    this->dimmer_switches_.push_back({ref, 0});
-  }
+#ifdef USE_LIGHT
+  void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
+#endif
 #ifdef USE_SENSOR
-  void add_temperature_sensor(sensor::Sensor *sensor, MatterEndpointRef *ref) {
-    this->temperature_sensors_.push_back({sensor, ref, 0});
-  }
+  void map_sensor_to_endpoint(sensor::Sensor *sensor, uint16_t endpoint_id);
 #endif
 #ifdef USE_LIGHT
-  void add_on_off_light(light::LightState *light, MatterEndpointRef *ref) {
-    this->lights_.push_back(new MatterLight(light, false, ref));
-  }
-  void add_dimmable_light(light::LightState *light, MatterEndpointRef *ref) {
-    this->lights_.push_back(new MatterLight(light, true, ref));
-  }
-  MatterLight *get_light_by_endpoint(uint16_t endpoint_id) {
-    for (auto *ml : this->lights_) {
-      if (ml->endpoint_id == endpoint_id)
-        return ml;
-    }
-    return nullptr;
-  }
+  MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
 #endif
   // Public wrapper around the protected Component scheduler; used by the
   // Matter-thread callbacks to hop onto the main loop (defer is thread-safe).
@@ -65,14 +60,11 @@ private:
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
-  std::vector<MatterOnOffSwitch> on_off_switches_;
-  std::vector<MatterDimmerSwitch> dimmer_switches_;
-#ifdef USE_SENSOR
-  std::vector<MatterTemperatureSensor> temperature_sensors_;
-#endif
-#ifdef USE_LIGHT
-  std::vector<MatterLight *> lights_;
-#endif
+
+  std::vector<uint16_t> endpoint_ids_;
+  std::vector<uint16_t> binding_endpoint_ids_;
+  std::vector<MatterDeviceTypeRegistrationBase *> device_type_registrations_;
+  std::vector<MatterEndpointMappingBase *> mappings_;
 };
 
 extern MatterComponent *
