@@ -85,7 +85,7 @@ async def matter_send_command_to_code(
 
 
 # TODO: matter._send_command_to_node (send command to a single node without using the binding cluster)
-# TODO: matter._send_command_to_nodes (send commands to multiple node without using the binding cluster)
+# TODO: matter._send_command_to_nodes (send command to multiple node without using the binding cluster)
 
 
 def register_bound_command_actions():
@@ -221,7 +221,7 @@ def _command_schema(cluster_name: str, command_name: str):
     schema = {
         # TODO: validate endpoint id to exist
         cv.Required(CONF_ENDPOINT_ID): cv.Any(
-            cv.use_id(MatterEndpointRef), cv.uint16_t
+            cv.uint16_t, cv.use_id(MatterEndpointRef)
         ),
     }
 
@@ -230,6 +230,8 @@ def _command_schema(cluster_name: str, command_name: str):
     for field in command.get("fields", []):
         key = field["key"]
         validator = _field_validator(field["type"])
+        if field["unit"] is not None:
+            validator = cv.All(field["unit"], validator)
         if field["default"] is None:
             schema[cv.Required(key)] = validator
             has_required = True

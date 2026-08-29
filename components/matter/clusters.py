@@ -1,8 +1,25 @@
+import esphome.config_validation as cv
+
 from .const import *
 
 
-def _field(field_type: str, key: str, default=None):
-    return {"type": field_type, "key": key, "default": default}
+def _seconds(multiplier=1):
+    def _validate(value: int | str):
+        if isinstance(value, int):
+            return value
+
+        period_ms = cv.positive_time_period_milliseconds(value).total_milliseconds
+        scaled = period_ms * multiplier
+        if scaled % 1000 != 0:
+            raise cv.Invalid(f"Duration must be a multiple of {1000 / multiplier:g}ms")
+
+        return scaled // 1000
+
+    return _validate
+
+
+def _field(field_type: str, key: str, default=None, unit=None):
+    return {"type": field_type, "key": key, "default": default, "unit": unit}
 
 
 MATTER_COMMANDS: dict[int | str, dict] = {
@@ -11,7 +28,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
         "commands": {
             COMMAND_IDENTIFY: {
                 "id": 0x00,
-                "fields": [_field("U16", FIELD_IDENTIFY_TIME)],
+                "fields": [_field("U16", FIELD_IDENTIFY_TIME, unit=_seconds())],
             },
             COMMAND_TRIGGER_EFFECT: {
                 "id": 0x40,
@@ -40,12 +57,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x42,
                 "fields": [
                     _field("U8", FIELD_ON_OFF_CONTROL, 0),
-                    _field(
-                        "U16", FIELD_ON_TIME
-                    ),  # TODO: support s (multiply seconds by 10)
-                    _field(
-                        "U16", FIELD_OFF_WAIT_TIME, 0
-                    ),  # TODO: support s (multiply seconds by 10)
+                    _field("U16", FIELD_ON_TIME, unit=_seconds(multiplier=10)),
+                    _field("U16", FIELD_OFF_WAIT_TIME, 0, unit=_seconds(multiplier=10)),
                 ],
             },
         },
@@ -57,7 +70,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x00,
                 "fields": [
                     _field("U8", FIELD_LEVEL),  # TODO: support %
-                    _field("U16", FIELD_TRANSITION_TIME, 0),  # TODO: support s
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -76,7 +91,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_STEP_MODE),
                     _field("U8", FIELD_STEP_SIZE),  # TODO: support %
-                    _field("U16", FIELD_TRANSITION_TIME, 0),  # TODO: support s
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -92,7 +109,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x04,
                 "fields": [
                     _field("U8", FIELD_LEVEL),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -111,7 +130,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_STEP_MODE),
                     _field("U8", FIELD_STEP_SIZE),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -134,7 +155,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_HUE),
                     _field("U8", FIELD_DIRECTION),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -153,7 +176,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_STEP_MODE),
                     _field("U8", FIELD_STEP_SIZE),
-                    _field("U8", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U8", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -162,7 +187,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x03,
                 "fields": [
                     _field("U8", FIELD_SATURATION),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -181,7 +208,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_STEP_MODE),
                     _field("U8", FIELD_STEP_SIZE),
-                    _field("U8", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U8", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -191,7 +220,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_HUE),
                     _field("U8", FIELD_SATURATION),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -201,7 +232,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U16", FIELD_COLOR_X),
                     _field("U16", FIELD_COLOR_Y),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -220,7 +253,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("I16", FIELD_STEP_X),
                     _field("I16", FIELD_STEP_Y),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -229,7 +264,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "id": 0x0A,
                 "fields": [
                     _field("U16", FIELD_COLOR_TEMPERATURE_MIREDS),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
                 ],
@@ -244,7 +281,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                     _field("U8", FIELD_UPDATE_FLAGS),
                     _field("U8", FIELD_ACTION),
                     _field("U8", FIELD_DIRECTION),
-                    _field("U16", FIELD_TIME),
+                    _field("U16", FIELD_TIME, unit=_seconds()),
                     _field("U16", FIELD_START_HUE),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
                     _field("U8", FIELD_OPTIONS_OVERRIDE, 0),
@@ -273,7 +310,9 @@ MATTER_COMMANDS: dict[int | str, dict] = {
                 "fields": [
                     _field("U8", FIELD_STEP_MODE),
                     _field("U16", FIELD_STEP_SIZE),
-                    _field("U16", FIELD_TRANSITION_TIME, 0),
+                    _field(
+                        "U16", FIELD_TRANSITION_TIME, 0, unit=_seconds(multiplier=10)
+                    ),
                     _field("U16", FIELD_COLOR_TEMPERATURE_MINIMUM_MIREDS),
                     _field("U16", FIELD_COLOR_TEMPERATURE_MAXIMUM_MIREDS),
                     _field("U8", FIELD_OPTIONS_MASK, 0),
