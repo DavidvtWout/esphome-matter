@@ -79,9 +79,9 @@ After flashing, the device prints a setup code (`SetupQRCode`) to the logs on ev
 [C][matter]:   Fabrics: none
 ```
 
-Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device.
+Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device. Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
 
-Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
+Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers should have the option to share the device. This generates a temporary commissioning code and re-opens the commissioning window. If you loose access to the Matter controller you can do a Matter factory reset (see [Example config](#example-config)).
 
 
 ### Ecosystem specific settings
@@ -202,6 +202,14 @@ light:
     # issue a command at nearly the same time, they enter a feedback loop and the light
     # toggles on/off indefinitely.
     internal: true
+
+# A Matter factory reset wipes all fabrics and re-opens the commissioning window.
+button:
+  - platform: template
+    name: "Matter Factory Reset"
+    on_press:
+      - matter.factory_reset:
+    disabled_by_default: True
 ```
 
 More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
