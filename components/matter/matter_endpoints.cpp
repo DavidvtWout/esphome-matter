@@ -167,12 +167,6 @@ bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
 
 #ifdef USE_LIGHT
 
-// Register lights from endpoints.py
-void MatterComponent::map_light_to_endpoint(light::LightState *light,
-                                            uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
-}
-
 MatterLightMapping::MatterLightMapping(light::LightState *light,
                                        uint16_t endpoint_id)
     : MatterEndpointMappingBase(endpoint_id), light_(light) {}
@@ -262,12 +256,6 @@ MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
 
 #ifdef USE_SENSOR
 
-// Register sensors from endpoints.py
-void MatterComponent::map_sensor_to_endpoint(sensor::Sensor *sensor,
-                                             uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterSensorMapping(sensor, endpoint_id));
-}
-
 MatterSensorMapping::MatterSensorMapping(sensor::Sensor *sensor,
                                          uint16_t endpoint_id)
     : MatterEndpointMappingBase(endpoint_id), sensor_(sensor) {}
@@ -315,13 +303,6 @@ void MatterSensorMapping::push_state_to_matter(float value) {
 // -------------------------------------------------------------------- //
 
 #ifdef USE_BINARY_SENSOR
-
-// Register binary sensors from endpoints.py
-void MatterComponent::map_binary_sensor_to_endpoint(
-    binary_sensor::BinarySensor *binary_sensor, uint16_t endpoint_id) {
-  this->mappings_.push_back(
-      new MatterBinarySensorMapping(binary_sensor, endpoint_id));
-}
 
 MatterBinarySensorMapping::MatterBinarySensorMapping(
     binary_sensor::BinarySensor *binary_sensor, uint16_t endpoint_id)
