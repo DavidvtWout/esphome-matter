@@ -3,12 +3,15 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 #include "esphome/core/log.h"
+#ifdef USE_BINARY_SENSOR
+#include "esphome/components/binary_sensor/binary_sensor.h"
+#endif // USE_BINARY_SENSOR
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
-#endif
+#endif // USE_SENSOR
 #ifdef USE_LIGHT
 #include "esphome/components/light/light_state.h"
-#endif
+#endif // USE_LIGHT
 
 #include <esp_matter.h>
 #include <esp_matter_cluster.h>
@@ -19,7 +22,7 @@ namespace esphome::matter {
 
 #ifdef USE_LIGHT
 class MatterLightMapping;
-#endif
+#endif // USE_LIGHT
 
 class MatterDeviceTypeRegistrationBase {
 public:
@@ -75,7 +78,7 @@ public:
   virtual void register_callbacks() {}
 #ifdef USE_LIGHT
   virtual MatterLightMapping *as_light_mapping() { return nullptr; }
-#endif
+#endif // USE_LIGHT
 
   uint16_t endpoint_id() const { return this->endpoint_id_; }
 
@@ -102,7 +105,7 @@ public:
 protected:
   light::LightState *light_;
 };
-#endif
+#endif // USE_LIGHT
 
 #ifdef USE_SENSOR
 class MatterSensorMapping : public MatterEndpointMappingBase {
@@ -115,7 +118,21 @@ public:
 protected:
   sensor::Sensor *sensor_;
 };
-#endif
+#endif // USE_SENSOR
+
+#ifdef USE_BINARY_SENSOR
+class MatterBinarySensorMapping : public MatterEndpointMappingBase {
+public:
+  MatterBinarySensorMapping(binary_sensor::BinarySensor *binary_sensor,
+                            uint16_t endpoint_id);
+
+  void register_callbacks() override;
+  void push_state_to_matter(bool value);
+
+protected:
+  binary_sensor::BinarySensor *binary_sensor_;
+};
+#endif // USE_BINARY_SENSOR
 
 // Common esp_matter attribute update callback, passed to node::create().
 // Routes server-cluster changes (e.g. light commands) to the ESPHome entities.

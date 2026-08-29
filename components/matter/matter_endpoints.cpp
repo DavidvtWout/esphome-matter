@@ -6,7 +6,15 @@
 #include "matter_component.h"
 
 #include <platform/CHIPDeviceLayer.h>
+#ifdef USE_BINARY_SENSOR
+#include <app/clusters/boolean-state-server/CodegenIntegration.h>
+#include <app/clusters/occupancy-sensor-server/CodegenIntegration.h>
+#endif // USE_BINARY_SENSOR
 #ifdef USE_SENSOR
+#include <app/clusters/flow-measurement-server/FlowMeasurementCluster.h>
+#include <app/clusters/illuminance-measurement-server/IlluminanceMeasurementCluster.h>
+#include <app/clusters/pressure-measurement-server/PressureMeasurementCluster.h>
+#include <app/clusters/relative-humidity-measurement-server/RelativeHumidityMeasurementCluster.h>
 #include <app/clusters/temperature-measurement-server/TemperatureMeasurementCluster.h>
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #endif // USE_SENSOR
@@ -28,6 +36,103 @@ struct EspMatterNodeHeader {
   uint16_t min_unused_endpoint_id;
 };
 
+#ifdef USE_SENSOR
+chip::app::DataModel::Nullable<int16_t>
+temperature_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<int16_t> measured_value;
+  if (!std::isnan(value) && value >= -273.15f && value <= 327.67f) {
+    measured_value.SetNonNull(
+        static_cast<int16_t>(std::lroundf(value * 100.0f)));
+  }
+  return measured_value;
+}
+
+chip::app::DataModel::Nullable<uint16_t>
+humidity_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<uint16_t> measured_value;
+  if (!std::isnan(value) && value >= 0.0f && value <= 100.0f) {
+    measured_value.SetNonNull(
+        static_cast<uint16_t>(std::lroundf(value * 100.0f)));
+  }
+  return measured_value;
+}
+
+chip::app::DataModel::Nullable<uint16_t>
+illuminance_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<uint16_t> measured_value;
+  if (std::isnan(value) || value < 0.0f)
+    return measured_value;
+  if (value == 0.0f) {
+    measured_value.SetNonNull(0);
+    return measured_value;
+  }
+
+  long encoded = std::lroundf(10000.0f * std::log10(value) + 1.0f);
+  encoded = std::clamp(encoded, 0L, 65534L);
+  measured_value.SetNonNull(static_cast<uint16_t>(encoded));
+  return measured_value;
+}
+
+chip::app::DataModel::Nullable<int16_t>
+pressure_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<int16_t> measured_value;
+  if (!std::isnan(value) && value >= -327670.0f && value <= 327670.0f) {
+    measured_value.SetNonNull(
+        static_cast<int16_t>(std::lroundf(value / 10.0f)));
+  }
+  return measured_value;
+}
+
+chip::app::DataModel::Nullable<uint16_t>
+flow_sensor_value_to_matter(float value) {
+  chip::app::DataModel::Nullable<uint16_t> measured_value;
+  if (!std::isnan(value) && value >= 0.0f && value <= 6553.4f) {
+    measured_value.SetNonNull(
+        static_cast<uint16_t>(std::lroundf(value * 10.0f)));
+  }
+  return measured_value;
+}
+
+template <typename ClusterT, chip::ClusterId ClusterId, typename ValueT>
+void publish_measurement(uint16_t endpoint_id,
+                         chip::app::DataModel::Nullable<ValueT> measured_value,
+                         const char *name) {
+  chip::DeviceLayer::SystemLayer().ScheduleLambda([endpoint_id, measured_value,
+                                                   name]() {
+    auto *server =
+        esp_matter::data_model::provider::get_instance().registry().Get(
+            {endpoint_id, ClusterId});
+    if (server == nullptr) {
+      ESP_LOGE(TAG, "%s cluster missing on endpoint %u", name, endpoint_id);
+      return;
+    }
+
+    auto *cluster = static_cast<ClusterT *>(server);
+    CHIP_ERROR err = cluster->SetMeasuredValue(measured_value);
+    if (err != CHIP_NO_ERROR) {
+      ESP_LOGE(TAG, "Failed to update %s on endpoint %u: %" CHIP_ERROR_FORMAT,
+               name, endpoint_id, err.Format());
+    }
+  });
+}
+#endif // USE_SENSOR
+
+#ifdef USE_BINARY_SENSOR
+template <typename FindCluster, typename SetValue>
+void publish_binary_state(uint16_t endpoint_id, bool value, const char *name,
+                          FindCluster find_cluster, SetValue set_value) {
+  chip::DeviceLayer::SystemLayer().ScheduleLambda(
+      [endpoint_id, value, name, find_cluster, set_value]() {
+        auto *cluster = find_cluster(endpoint_id);
+        if (cluster == nullptr) {
+          ESP_LOGE(TAG, "%s cluster missing on endpoint %u", name, endpoint_id);
+          return;
+        }
+        set_value(cluster, value);
+      });
+}
+#endif // USE_BINARY_SENSOR
+
 } // namespace
 
 void MatterComponent::register_endpoint(uint16_t endpoint_id) {
@@ -47,20 +152,6 @@ void MatterComponent::register_binding(uint16_t endpoint_id) {
   this->binding_endpoint_ids_.push_back(endpoint_id);
 }
 
-#ifdef USE_LIGHT
-void MatterComponent::map_light_to_endpoint(light::LightState *light,
-                                            uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
-}
-#endif // USE_LIGHT
-
-#ifdef USE_SENSOR
-void MatterComponent::map_sensor_to_endpoint(sensor::Sensor *sensor,
-                                             uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterSensorMapping(sensor, endpoint_id));
-}
-#endif // USE_SENSOR
-
 bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
   auto *endpoint = esp_matter::endpoint::get(this->endpoint_id());
   if (endpoint == nullptr)
@@ -70,7 +161,12 @@ bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
                                 esp_matter::CLUSTER_FLAG_SERVER);
 }
 
+// -------------------------------------------------------------------- //
+//  Lights                                                              //
+// -------------------------------------------------------------------- //
+
 #ifdef USE_LIGHT
+
 MatterLightMapping::MatterLightMapping(light::LightState *light,
                                        uint16_t endpoint_id)
     : MatterEndpointMappingBase(endpoint_id), light_(light) {}
@@ -140,9 +236,26 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     call.perform();
   }
 }
+
+MatterLightMapping *
+MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
+  for (auto *mapping : this->mappings_) {
+    auto *light_mapping = mapping->as_light_mapping();
+    if (light_mapping != nullptr &&
+        light_mapping->endpoint_id() == endpoint_id) {
+      return light_mapping;
+    }
+  }
+  return nullptr;
+}
 #endif // USE_LIGHT
 
+// -------------------------------------------------------------------- //
+//  Sensors                                                             //
+// -------------------------------------------------------------------- //
+
 #ifdef USE_SENSOR
+
 MatterSensorMapping::MatterSensorMapping(sensor::Sensor *sensor,
                                          uint16_t endpoint_id)
     : MatterEndpointMappingBase(endpoint_id), sensor_(sensor) {}
@@ -160,35 +273,70 @@ void MatterSensorMapping::push_state_to_matter(float value) {
   using namespace chip::app::Clusters;
   uint16_t eid = this->endpoint_id();
   if (this->has_server_cluster(TemperatureMeasurement::Id)) {
-    bool is_null = std::isnan(value) || value < -273.15f || value > 327.67f;
-    int16_t raw = is_null ? 0 : static_cast<int16_t>(lroundf(value * 100.0f));
-    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, raw, is_null]() {
-      chip::app::DataModel::Nullable<int16_t> measured_value;
-      if (!is_null)
-        measured_value.SetNonNull(raw);
-
-      auto *server =
-          esp_matter::data_model::provider::get_instance().registry().Get(
-              {eid, TemperatureMeasurement::Id});
-      if (server == nullptr) {
-        ESP_LOGE(TAG, "Temperature cluster missing on endpoint %u", eid);
-        return;
-      }
-
-      auto *temperature_cluster =
-          static_cast<chip::app::Clusters::TemperatureMeasurementCluster *>(
-              server);
-      CHIP_ERROR err = temperature_cluster->SetMeasuredValue(measured_value);
-      if (err != CHIP_NO_ERROR) {
-        ESP_LOGE(
-            TAG,
-            "Failed to update temperature on endpoint %u: %" CHIP_ERROR_FORMAT,
-            eid, err.Format());
-      }
-    });
+    publish_measurement<TemperatureMeasurementCluster,
+                        TemperatureMeasurement::Id>(
+        eid, temperature_sensor_value_to_matter(value), "temperature");
+  }
+  if (this->has_server_cluster(RelativeHumidityMeasurement::Id)) {
+    publish_measurement<RelativeHumidityMeasurementCluster,
+                        RelativeHumidityMeasurement::Id>(
+        eid, humidity_sensor_value_to_matter(value), "humidity");
+  }
+  if (this->has_server_cluster(IlluminanceMeasurement::Id)) {
+    publish_measurement<IlluminanceMeasurementCluster,
+                        IlluminanceMeasurement::Id>(
+        eid, illuminance_sensor_value_to_matter(value), "illuminance");
+  }
+  if (this->has_server_cluster(PressureMeasurement::Id)) {
+    publish_measurement<PressureMeasurementCluster, PressureMeasurement::Id>(
+        eid, pressure_sensor_value_to_matter(value), "pressure");
+  }
+  if (this->has_server_cluster(FlowMeasurement::Id)) {
+    publish_measurement<FlowMeasurementCluster, FlowMeasurement::Id>(
+        eid, flow_sensor_value_to_matter(value), "flow");
   }
 }
 #endif // USE_SENSOR
+
+// -------------------------------------------------------------------- //
+//  Binary sensors                                                      //
+// -------------------------------------------------------------------- //
+
+#ifdef USE_BINARY_SENSOR
+
+MatterBinarySensorMapping::MatterBinarySensorMapping(
+    binary_sensor::BinarySensor *binary_sensor, uint16_t endpoint_id)
+    : MatterEndpointMappingBase(endpoint_id), binary_sensor_(binary_sensor) {}
+
+void MatterBinarySensorMapping::register_callbacks() {
+  if (this->binary_sensor_ == nullptr)
+    return;
+  this->binary_sensor_->add_on_state_callback(
+      [this](bool value) { this->push_state_to_matter(value); });
+  if (this->binary_sensor_->has_state())
+    this->push_state_to_matter(this->binary_sensor_->state);
+}
+
+void MatterBinarySensorMapping::push_state_to_matter(bool value) {
+  using namespace chip::app::Clusters;
+  uint16_t eid = this->endpoint_id();
+  if (this->has_server_cluster(OccupancySensing::Id)) {
+    publish_binary_state(eid, value, "occupancy",
+                         OccupancySensing::FindClusterOnEndpoint,
+                         [](OccupancySensingCluster *cluster, bool occupied) {
+                           cluster->SetOccupancy(occupied);
+                         });
+  }
+  if (this->has_server_cluster(BooleanState::Id)) {
+    publish_binary_state(eid, value, "Boolean State",
+                         BooleanState::FindClusterOnEndpoint,
+                         [](BooleanStateCluster *cluster, bool state) {
+                           cluster->SetStateValue(state);
+                         });
+  }
+}
+
+#endif // USE_BINARY_SENSOR
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   if (!this->endpoint_ids_.empty()) {
@@ -243,11 +391,12 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       }
     }
 
-    ESP_LOGV(TAG, "Endpoint created: id=%u", endpoint_id);
+    ESP_LOGV(TAG, "Created endpoint %u", endpoint_id);
   }
 
   // Add device types to endpoints
   for (auto *device_type_registration : this->device_type_registrations_) {
+    // add_clusters is defined in matter_endpoints.h
     if (!device_type_registration->add_clusters(node))
       return false;
   }
@@ -256,20 +405,6 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
 
   return true;
 }
-
-#ifdef USE_LIGHT
-MatterLightMapping *
-MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
-  for (auto *mapping : this->mappings_) {
-    auto *light_mapping = mapping->as_light_mapping();
-    if (light_mapping != nullptr &&
-        light_mapping->endpoint_id() == endpoint_id) {
-      return light_mapping;
-    }
-  }
-  return nullptr;
-}
-#endif // USE_LIGHT
 
 esp_err_t
 endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,

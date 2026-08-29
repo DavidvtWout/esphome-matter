@@ -38,12 +38,10 @@ public:
         new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id,
                                                          device_type));
   }
-#ifdef USE_LIGHT
-  void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
-#endif
-#ifdef USE_SENSOR
-  void map_sensor_to_endpoint(sensor::Sensor *sensor, uint16_t endpoint_id);
-#endif
+  template <typename MappingT, typename EntityT>
+  void map_entity_to_endpoint(EntityT *entity, uint16_t endpoint_id) {
+    this->mappings_.push_back(new MappingT(entity, endpoint_id));
+  }
 #ifdef USE_LIGHT
   MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
 #endif

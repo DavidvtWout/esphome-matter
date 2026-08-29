@@ -76,8 +76,9 @@ void register_client_request_callbacks() {
                                            client_group_invoke_cb, nullptr);
 }
 
-void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
-                         chip::CommandId command, const char *command_data) {
+esp_err_t send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
+                              chip::CommandId command,
+                              const char *command_data) {
   auto &binding_table = chip::app::Clusters::Binding::Table::GetInstance();
   std::string node_ids;
   for (const auto &entry : binding_table) {
@@ -95,7 +96,7 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
   if (node_ids.empty()) {
     ESP_LOGW(TAG, "No bound nodes for endpoint=%u cluster=%lu", endpoint_id,
              static_cast<uint32_t>(cluster));
-    return;
+    return ESP_ERR_NOT_FOUND;
   }
   ESP_LOGD(
       TAG,
@@ -115,6 +116,32 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
   if (err != ESP_OK) {
     ESP_LOGW(TAG, "cluster_update failed: %s", esp_err_to_name(err));
   }
+  return err;
+}
+
+esp_err_t set_attribute(uint16_t endpoint_id, chip::ClusterId cluster,
+                        chip::AttributeId attribute,
+                        esp_matter_attr_val_t value) {
+  esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
+  if (esp_matter::attribute::get(endpoint_id, cluster, attribute) == nullptr) {
+    ESP_LOGW(TAG,
+             "Cannot set missing attribute: endpoint=%u cluster=%lu "
+             "attribute=%lu",
+             endpoint_id, static_cast<uint32_t>(cluster),
+             static_cast<uint32_t>(attribute));
+    return ESP_ERR_NOT_FOUND;
+  }
+
+  esp_err_t err =
+      esp_matter::attribute::update(endpoint_id, cluster, attribute, &value);
+  if (err != ESP_OK) {
+    ESP_LOGW(TAG,
+             "Failed to set attribute: endpoint=%u cluster=%lu attribute=%lu: "
+             "%s",
+             endpoint_id, static_cast<uint32_t>(cluster),
+             static_cast<uint32_t>(attribute), esp_err_to_name(err));
+  }
+  return err;
 }
 
 } // namespace esphome::matter

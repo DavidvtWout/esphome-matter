@@ -1,6 +1,5 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.const import CONF_LIGHT_ID, CONF_SENSOR_ID
 from esphome.types import ConfigType
 
 from .const import *
@@ -45,9 +44,19 @@ async def configure_endpoints(var, config: ConfigType):
                 cg.RawExpression(f"esp_matter::endpoint::{device_type}::add"),
             )
             cg.add(register_device_type(endpoint_id, device_type))
-            if CONF_SENSOR_ID in device_config:
-                sensor_ = await cg.get_variable(device_config[CONF_SENSOR_ID])
-                cg.add(var.map_sensor_to_endpoint(sensor_, endpoint_id))
-            elif CONF_LIGHT_ID in device_config:
-                light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
-                cg.add(var.map_light_to_endpoint(light_, endpoint_id))
+
+            # Map entities to Matter endpoints. The device type schema must make sure that
+            # only one <entity>_id is allowed for a device type.
+            entity_ids = [
+                value
+                for key, value in device_config.items()
+                if str(key).endswith("_id")
+            ]
+            if len(entity_ids) > 1:
+                raise cv.Invalid("A Matter device type can reference only one entity")
+            if entity_ids:
+                entity = await cg.get_variable(entity_ids[0])
+                map_entity_to_endpoint = var.map_entity_to_endpoint.template(
+                    DEVICE_TYPES[device_type]["mapping"]
+                )
+                cg.add(map_entity_to_endpoint(entity, endpoint_id))
