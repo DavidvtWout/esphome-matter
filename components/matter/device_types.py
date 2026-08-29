@@ -57,8 +57,33 @@ DEVICE_TYPES = {
         "schema": EMPTY_SCHEMA,
         CONF_ENABLE_BINDING: True,
     },
+    CONF_COLOR_DIMMER_SWITCH: {
+        "schema": EMPTY_SCHEMA,
+        CONF_ENABLE_BINDING: True,
+    },
+    CONF_GENERIC_SWITCH: {
+        "schema": EMPTY_SCHEMA,
+    },
     # Sensors
     CONF_TEMPERATURE_SENSOR: {
+        "schema": SENSOR_SCHEMA,
+    },
+    CONF_HUMIDITY_SENSOR: {
+        "schema": SENSOR_SCHEMA,
+    },
+    CONF_OCCUPANCY_SENSOR: {
+        "schema": SENSOR_SCHEMA,
+    },
+    CONF_CONTACT_SENSOR: {
+        "schema": SENSOR_SCHEMA,
+    },
+    CONF_LIGHT_SENSOR: {
+        "schema": SENSOR_SCHEMA,
+    },
+    CONF_PRESSURE_SENSOR: {
+        "schema": SENSOR_SCHEMA,
+    },
+    CONF_FLOW_SENSOR: {
         "schema": SENSOR_SCHEMA,
     },
 }
