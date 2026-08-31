@@ -99,6 +99,20 @@ def _enum(mapping: dict[str, int]):
     return _validate
 
 
+# Commands marked "absolute" fully determine the state of the (single) axis their
+# cluster controls, so a newer one makes an older one that has not been sent yet
+# redundant. The outbound command queue uses this to drop superseded commands
+# instead of sending both (see matter_actions.cpp). Relative commands (Toggle,
+# Move, Step, ...) must never be dropped: their effect depends on the state they
+# are applied to, so losing or reordering one desynchronises the device.
+#
+# Only OnOff and LevelControl are marked. ColorControl is deliberately left
+# relative even for its MoveTo* commands: hue, saturation, xy and colour
+# temperature are orthogonal axes, so a newer MoveToHue does not supersede a
+# pending MoveToColorTemperature.
+_ABSOLUTE = {"absolute": True}
+
+
 MATTER_COMMANDS: dict[int | str, dict] = {
     CLUSTER_IDENTIFY: {
         "id": 0x0003,
@@ -132,8 +146,8 @@ MATTER_COMMANDS: dict[int | str, dict] = {
     CLUSTER_ON_OFF: {
         "id": 0x0006,
         "commands": {
-            COMMAND_OFF: {"id": 0x00},
-            COMMAND_ON: {"id": 0x01},
+            COMMAND_OFF: {"id": 0x00, **_ABSOLUTE},
+            COMMAND_ON: {"id": 0x01, **_ABSOLUTE},
             COMMAND_TOGGLE: {"id": 0x02},
             COMMAND_OFF_WITH_EFFECT: {
                 "id": 0x40,
@@ -162,6 +176,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
         "commands": {
             COMMAND_MOVE_TO_LEVEL: {
                 "id": 0x00,
+                **_ABSOLUTE,
                 "fields": [
                     Field("U8", FIELD_LEVEL, unit=_percentage()),
                     Field(
@@ -205,6 +220,7 @@ MATTER_COMMANDS: dict[int | str, dict] = {
             },
             COMMAND_MOVE_TO_LEVEL_WITH_ON_OFF: {
                 "id": 0x04,
+                **_ABSOLUTE,
                 "fields": [
                     Field("U8", FIELD_LEVEL, unit=_percentage()),
                     Field(

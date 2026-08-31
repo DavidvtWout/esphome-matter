@@ -51,6 +51,7 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
             cv.Required(CONF_CLUSTER_ID): cv.hex_uint32_t,
             cv.Required(CONF_COMMAND_ID): cv.hex_uint32_t,
             cv.Required(CONF_DATA): str,
+            cv.Optional(CONF_ABSOLUTE, default=False): cv.boolean,
         }
     ),
     synchronous=True,
@@ -67,6 +68,11 @@ async def matter_send_command_to_code(
         cluster_id: 8 # LevelControl
         command_id: 0 # MoveToLevel
         data: '{"0:U8":0,"1:U16":50,"2:U8":0,"3:U8":0}'
+        absolute: true  # optional, see clusters.py
+
+    Set absolute: true only if the command fully determines the state it writes, so that a
+    newer one may supersede an older one that is still queued. Commands whose effect depends
+    on the current state (Toggle, Move, Step, ...) must be left absolute: false.
 
     Don't forget to also enable the cluster if it isn't enabled by default:
 
@@ -81,6 +87,7 @@ async def matter_send_command_to_code(
     cg.add(var.set_cluster_id(config[CONF_CLUSTER_ID]))
     cg.add(var.set_command_id(config[CONF_COMMAND_ID]))
     cg.add(var.set_data(config[CONF_DATA]))
+    cg.add(var.set_absolute(config[CONF_ABSOLUTE]))
     return var
 
 
@@ -146,6 +153,8 @@ async def _new_send_command_action(
     cg.add(var.set_cluster_id(cluster_id))
     cg.add(var.set_command_id(command_id))
     cg.add(var.set_data(_build_data(config, cluster_name, command_name)))
+    command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
+    cg.add(var.set_absolute(command.get(CONF_ABSOLUTE, False)))
     return var
 
 

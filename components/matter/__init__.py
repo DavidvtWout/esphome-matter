@@ -92,6 +92,15 @@ CONFIG_SCHEMA = cv.All(
             ): _validate_basic_information_name,
             cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
             cv.Optional(CONF_PASSCODE): _validate_passcode,
+            cv.Optional(
+                CONF_UNICAST_DELAY, default="0ms"
+            ): cv.positive_time_period_milliseconds,
+            cv.Optional(
+                CONF_MIN_COMMAND_INTERVAL, default="0ms"
+            ): cv.positive_time_period_milliseconds,
+            cv.Optional(CONF_MAX_PENDING_COMMANDS, default=8): cv.int_range(
+                min=1, max=64
+            ),
             cv.Optional(CONF_ENDPOINTS, default={}): cv.Schema(
                 {
                     cv.int_range(min=0, max=65534): ENDPOINT_SCHEMA,
@@ -171,6 +180,10 @@ async def to_code(config: ConfigType):
     except ImportError:
         # TODO: remove when esphome-matter requires ESPHome >=2026.9.0
         add_idf_sdkconfig_option("CONFIG_MBEDTLS_CERTIFICATE_BUNDLE", True)
+
+    cg.add(var.set_unicast_delay(config[CONF_UNICAST_DELAY]))
+    cg.add(var.set_min_command_interval(config[CONF_MIN_COMMAND_INTERVAL]))
+    cg.add(var.set_max_pending_commands(config[CONF_MAX_PENDING_COMMANDS]))
 
     if CONF_DISCRIMINATOR in config:
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])

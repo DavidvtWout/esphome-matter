@@ -2,6 +2,9 @@ CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
 CONF_MATTER = "matter"
 CONF_ENDPOINTS = "endpoints"
+CONF_UNICAST_DELAY = "unicast_delay"
+CONF_MIN_COMMAND_INTERVAL = "min_command_interval"
+CONF_MAX_PENDING_COMMANDS = "max_pending_commands"
 CONF_VENDOR_NAME = "vendor_name"
 CONF_PRODUCT_NAME = "product_name"
 
@@ -27,6 +30,7 @@ CONF_COMMAND_ID = "command_id"
 CONF_ENDPOINT_ID = "endpoint_id"
 CONF_COMMANDS = "commands"
 CONF_DATA = "data"
+CONF_ABSOLUTE = "absolute"
 
 # Clusters
 CLUSTER_IDENTIFY = "Identify"
