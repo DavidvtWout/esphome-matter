@@ -44,11 +44,6 @@ const char *protocol_to_string(chip::Dnssd::DnssdServiceProtocol protocol) {
   }
 }
 
-const char *protocol_to_srp_suffix(chip::Dnssd::DnssdServiceProtocol protocol) {
-  const char *protocol_string = protocol_to_string(protocol);
-  return protocol_string[0] == '?' ? nullptr : protocol_string;
-}
-
 struct MatterResolveContext {
   chip::Dnssd::DnssdResolveCallback callback;
   void *context;
@@ -104,6 +99,11 @@ void resolve_callback(void *context, chip::Dnssd::DnssdService *service,
 }
 
 #ifdef USE_OPENTHREAD
+const char *protocol_to_srp_suffix(chip::Dnssd::DnssdServiceProtocol protocol) {
+  const char *protocol_string = protocol_to_string(protocol);
+  return protocol_string[0] == '?' ? nullptr : protocol_string;
+}
+
 CHIP_ERROR map_ot_error(otError error) {
   switch (error) {
   case OT_ERROR_NONE:

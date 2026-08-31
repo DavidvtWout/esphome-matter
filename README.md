@@ -4,7 +4,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/DavidvtWout/esphome-matter)
 ![GitHub watchers](https://img.shields.io/github/watchers/DavidvtWout/esphome-matter)
 
-ESPHome external component adding Matter 1.5 support via Espressif's [esp-matter 1.5.1](https://components.espressif.com/components/espressif/esp_matter/versions/1.5.1).
+ESPHome external component adding Matter 1.6 support.
 
 > This project is still in early-development so don't expect a perfectly working setup. Both
 > matter-over-wifi and matter-over-thread are now working. It's possible to commission a
@@ -79,9 +79,9 @@ After flashing, the device prints a setup code (`SetupQRCode`) to the logs on ev
 [C][matter]:   Fabrics: none
 ```
 
-Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device.
+Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device. Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
 
-Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
+Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers should have the option to share the device. This generates a temporary commissioning code and re-opens the commissioning window. If you loose access to the Matter controller you can do a Matter factory reset (see [Example config](#example-config)).
 
 
 ### Ecosystem specific settings
@@ -129,15 +129,15 @@ matter:
   # vendor_name: defaults to ESPHome
   # product_name: defaults to esphome.name
   
-  # Endpoint order is significant: each entry is assigned an endpoint ID based on its position
-  # in the list. Once a device has been commissioned, existing entries should not be removed
-  # or reordered or the Matter fabric may lose track of previously bound endpoints.
   endpoints:
-    - dimmer_switch:
-      id: dimmer_endpoint
-    - temperature_sensor:
+    1:
+      id: dimmer_endpoint  # The id is optional. Actions can also refer to the numerical endpoint id directly.
+      dimmer_switch:
+    2:
+      temperature_sensor:
         sensor_id: internal_temp
-    - on_off_light:
+    3:
+      on_off_light:
         light_id: user_led
 
 # The two buttons are configured to be triggered when the GPIO pin is pulled down to GND.
@@ -153,10 +153,11 @@ binary_sensor:
     on_click:
       matter.on_off.on: dimmer_endpoint
     on_press:
+      # Pressing up can turn on a light
       matter.level_control.move_with_on_off:
         endpoint_id: dimmer_endpoint
-        move_mode: 0 # Move up
-        rate: 50  # ~20% per second
+        move_mode: up
+        rate: 20%/s
     on_release:
       matter.level_control.stop_with_on_off: dimmer_endpoint
   - name: "Button down"
@@ -171,12 +172,13 @@ binary_sensor:
     on_click:
       matter.on_off.off: dimmer_endpoint
     on_press:
-      matter.level_control.move_with_on_off:
+      # Pressing down dims to lowest brightness but doesn't turn off
+      matter.level_control.move:
         endpoint_id: dimmer_endpoint
-        move_mode: 1 # Move down
-        rate: 50  # ~20% per second
+        move_mode: down
+        rate: 20%/s
     on_release:
-      matter.level_control.stop_with_on_off: dimmer_endpoint
+      matter.level_control.stop: dimmer_endpoint
 
 sensor:
   - platform: internal_temperature
@@ -202,7 +204,18 @@ light:
     # issue a command at nearly the same time, they enter a feedback loop and the light
     # toggles on/off indefinitely.
     internal: true
+
+# A Matter factory reset wipes all fabrics and re-opens the commissioning window.
+button:
+  - platform: template
+    name: "Matter Factory Reset"
+    on_press:
+      - matter.factory_reset:
+    disabled_by_default: True
 ```
+
+More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
+
 
 # Actions
 
@@ -222,36 +235,36 @@ matter.on_off.toggle: some_id
 # Intended for motion sensors temporarily turning on a light.
 matter.on_off.on_with_timed_off:
   endpoint_id: some_id
-  on_time: 150  # How long to turn on the light in multiples of 100ms. So 150 means 15 seconds.
-  # on_off_control: 
-  # off_wait_time:  # Time before accepting another on_with_timed_off command, in multiples of 100ms.
+  on_time:  # s - How long to turn on the light.
+  # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
+  # on_off_control: 0
 ```
 
 ### LevelControl cluster
 
 LevelControl commands are used for dimming. Levels are raw Matter brightness levels, normally `0` to `254`.
 
-The following commands also have a version without `_with_on_off`. These commands don't turn on or off the light so that's usually not what you want.
+The following commands also have a version without `_with_on_off`. These commands don't turn on or off the light.
 
 ```yaml
 # Move directly to a brightness level.
 matter.level_control.move_to_level_with_on_off:
   endpoint_id: some_id
-  level: 128
-  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+  level:  # %
+  # transition_time: 0s
 
 # Move continuously up or down.
 matter.level_control.move_with_on_off:
   endpoint_id: some_id
-  move_mode: 0  # 0=up, 1=down.
-  # rate:  # Level units per second.
+  move_mode:  # either "up" or "down"
+  rate: # %/s
 
 # Step once by a fixed amount.
 matter.level_control.step_with_on_off:
   endpoint_id: some_id
-  step_mode: 0  # 0=up, 1=down.
-  step_size: 25
-  # transition_time:  # In multiples of 100ms. So 10 means 1 second.
+  step_mode:  # either "up" or "down"
+  step_size:  # %
+  # transition_time: 0s
 
 # Stop a previous move command.
 matter.level_control.stop_with_on_off: some_id
@@ -259,9 +272,8 @@ matter.level_control.stop_with_on_off: some_id
 
 # Current Limitations
 
-- Only one device type is supported per endpoint.
-- Matter-over-Ethernet has not been verified.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
+
 
 # See Also
 

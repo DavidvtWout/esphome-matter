@@ -1,10 +1,8 @@
 #pragma once
+
 #include "esphome/core/defines.h"
-
 #ifdef USE_MATTER
-
 #include "esphome/core/automation.h"
-#include "matter_endpoints.h"
 
 #include <esp_matter.h>
 
@@ -46,9 +44,6 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
 
 template <typename... Ts> class MatterSendCommandAction : public Action<Ts...> {
 public:
-  void set_endpoint_ref(MatterEndpointRef *endpoint_ref) {
-    this->endpoint_ref_ = endpoint_ref;
-  }
   void set_endpoint_id(uint16_t endpoint_id) {
     this->endpoint_id_ = endpoint_id;
   }
@@ -58,17 +53,13 @@ public:
   void set_absolute(bool absolute) { this->absolute_ = absolute; }
 
   void play(Ts... x) override {
-    uint16_t endpoint_id = this->endpoint_ref_ != nullptr
-                               ? this->endpoint_ref_->endpoint_id
-                               : this->endpoint_id_;
     // data_ is never reassigned after codegen, so the pointer stays valid for
     // as long as the queued command needs it.
-    send_client_command(endpoint_id, this->cluster_id_, this->command_id_,
-                        this->data_.c_str(), this->absolute_);
+    send_client_command(this->endpoint_id_, this->cluster_id_,
+                        this->command_id_, this->data_.c_str(), this->absolute_);
   }
 
 protected:
-  MatterEndpointRef *endpoint_ref_{nullptr};
   uint16_t endpoint_id_{0};
   uint32_t cluster_id_{0};
   uint32_t command_id_{0};
