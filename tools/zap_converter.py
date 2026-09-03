@@ -28,6 +28,7 @@ def format_counter(data: dict[str, int]) -> str:
     )
 
 
+# Also used for bitmaps
 @dataclass
 class Enum:
     name: str  # CamelCase
@@ -68,6 +69,14 @@ class CommandArg:
     # array
     # minLength
     # apiMaturity
+
+
+@dataclass
+class Struct:
+    name: str  # CamelCase
+    fabric_scoped = bool = False
+    cluster_code: int | None = None
+    items: list[CommandArg] = field(default_factory=list)
 
 
 @dataclass
@@ -154,6 +163,23 @@ def parse_device_type_elem(elem) -> DeviceType:
     return device_type
 
 
+def parse_command_arg_elem(elem) -> CommandArg:
+    for key in elem.attrib:
+        command_arg_attrs[key] += 1
+    id_ = int(v, 0) if (v := elem.get("id")) else None
+    if id_ is None:
+        id_ = int(v, 0) if (v := elem.get("field_id")) else None
+    return CommandArg(
+        id=id_,
+        name=elem.get("name"),
+        type=elem.get("type"),
+        min=int(v, 0) if (v := elem.get("min")) else None,
+        max=int(v, 0) if (v := elem.get("max")) else None,
+        optional=elem.get("optional") == "true",
+        default=elem.get("default"),
+    )
+
+
 def parse_cluster_elem(elem) -> Cluster:
     cluster = Cluster(
         id=int(elem.findtext("code"), 0), name=camel_case(elem.findtext("name"))
@@ -194,22 +220,7 @@ def parse_cluster_elem(elem) -> Cluster:
 
         args = []
         for arg_elem in command_elem.findall("./arg"):
-            for key in arg_elem.attrib:
-                command_arg_attrs[key] += 1
-            id_ = int(v, 0) if (v := arg_elem.get("id")) else None
-            if id_ is None:
-                id_ = int(v, 0) if (v := arg_elem.get("field_id")) else None
-            args.append(
-                CommandArg(
-                    id=id_,
-                    name=arg_elem.get("name"),
-                    type=arg_elem.get("type"),
-                    min=int(v, 0) if (v := arg_elem.get("min")) else None,
-                    max=int(v, 0) if (v := arg_elem.get("max")) else None,
-                    optional=arg_elem.get("optional") == "true",
-                    default=arg_elem.get("default"),
-                )
-            )
+            args.append(parse_command_arg_elem(arg_elem))
 
         commands.append(
             Command(
@@ -240,10 +251,34 @@ def parse_enum_elem(elem) -> Enum:
     return enum
 
 
-def parse_data_model(data_model_dir: Path) -> tuple[list[DeviceType], list, list]:
+def parse_bitmap_elem(elem) -> Enum:
+    bitmap = Enum(name=elem.get("name"), type=elem.get("type"))
+    cluster_elem = elem.find("./cluster")
+    if cluster_elem is not None:
+        bitmap.cluster_code = int(cluster_elem.get("code"), 0)
+    for field_item in elem.findall("./field"):
+        bitmap.items[field_item.get("name")] = int(field_item.get("mask"), 0)
+    return bitmap
+
+
+def parse_struct_elem(elem) -> Struct:
+    struct = Struct(name=elem.get("name"))
+    cluster_elem = elem.find("./cluster")
+    if cluster_elem is not None:
+        struct.cluster_code = int(cluster_elem.get("code"), 0)
+    for item_elem in elem.findall("./item"):
+        struct.items.append(parse_command_arg_elem(item_elem))
+    return struct
+
+
+def parse_data_model(
+    data_model_dir: Path,
+) -> tuple[list[DeviceType], list, list, list, list]:
     device_types = []
     clusters = []
     enums = []
+    bitmaps = []
+    structs = []
 
     for xml_file in data_model_dir.glob("*.xml"):
         root = ElementTree.parse(xml_file).getroot()
@@ -254,21 +289,28 @@ def parse_data_model(data_model_dir: Path) -> tuple[list[DeviceType], list, list
         for elem in root.findall("./cluster"):
             clusters.append(parse_cluster_elem(elem))
 
-        # Also includes the global enums
+        # Also includes the global enums.
         for elem in root.findall("./enum"):
             enums.append(parse_enum_elem(elem))
-
-        # TODO: bitmaps
+        for elem in root.findall("./bitmap"):
+            bitmaps.append(parse_bitmap_elem(elem))
+        for elem in root.findall("./struct"):
+            structs.append(parse_struct_elem(elem))
 
     print("attribute attrs:   ", format_counter(attribute_attrs))
     # print("attribute types:   ", format_counter(attribute_types))
     print("command attrs:     ", format_counter(command_attrs))
     print("command arg attrs: ", format_counter(command_arg_attrs))
 
-    return device_types, clusters, enums
+    return device_types, clusters, enums, bitmaps, structs
 
 
-def post_process_commands(clusters: list[Cluster], enums: list[Enum]) -> dict:
+def post_process_commands(
+    clusters: list[Cluster],
+    enums: list[Enum],
+    bitmaps: list[Enum],
+    structs: list[Struct],
+) -> dict:
     global_enums = {}
     cluster_enums = defaultdict(dict)
     for enum in enums:
@@ -277,6 +319,59 @@ def post_process_commands(clusters: list[Cluster], enums: list[Enum]) -> dict:
         else:
             global_enums[enum.name] = enum
 
+    cluster_bitmaps = defaultdict(dict)
+    for bitmap in bitmaps:
+        if bitmap.cluster_code is not None:
+            cluster_bitmaps[bitmap.cluster_code][bitmap.name] = bitmap
+        # No need to parse global bitmaps
+
+    global_structs = {}
+    cluster_structs = defaultdict(dict)
+    for struct in structs:
+        if struct.cluster_code is not None:
+            cluster_structs[struct.cluster_code][struct.name] = struct
+        else:
+            global_structs[struct.name] = struct
+
+    def resolve_arg(arg: CommandArg):
+        arg_type = arg.type
+
+        enum = cluster_enums.get(cluster.id, {}).get(arg_type)
+        enum_values = None
+        if not enum:
+            enum = global_enums.get(arg_type)
+        if enum:
+            arg_type = enum.type
+            enum_values = enum.items
+
+        bitmap_masks = None
+        if (bitmap := cluster_bitmaps.get(cluster.id, {}).get(arg_type)) is not None:
+            arg_type = bitmap.type
+            bitmap_masks = bitmap.items
+
+        struct = cluster_structs.get(cluster.id, {}).get(arg_type)
+        struct_values = None
+        if not struct:
+            struct = global_structs.get(arg_type)
+        if struct:
+            arg_type = "struct"
+            struct_values = [resolve_arg(a) for a in struct.items]
+
+        return filter_none(
+            {
+                "id": arg.id,
+                "name": arg.name,
+                "type": arg_type.lower(),
+                "min": arg.min,
+                "max": arg.max,
+                "default": arg.default,
+                "optional": True if arg.optional else None,
+                "enum_values": enum_values,
+                "bitmap_masks": bitmap_masks,
+                "struct": struct_values,
+            }
+        )
+
     commands = {}
     for cluster in sorted(clusters, key=lambda c: c.id):
         if cluster.commands:
@@ -284,34 +379,13 @@ def post_process_commands(clusters: list[Cluster], enums: list[Enum]) -> dict:
         for command in sorted(cluster.commands, key=lambda c: c.code):
             args = []
             for arg in command.args:
-                arg_type = arg.type
-                enum = cluster_enums.get(cluster.id, {}).get(arg_type)
-                enum_values = None
-                if not enum:
-                    enum = global_enums.get(arg_type)
-                if enum:
-                    arg_type = enum.type
-                    enum_values = enum.items
-                args.append(
-                    filter_none(
-                        {
-                            "id": arg.id,
-                            "name": arg.name,
-                            "type": arg_type,
-                            "min": arg.min,
-                            "max": arg.max,
-                            "default": arg.default,
-                            "optional": arg.optional,
-                            "enum_values": enum_values,
-                        }
-                    )
-                )
+                args.append(resolve_arg(arg))
 
             commands[cluster.name][command.name] = filter_none(
                 {
                     "id": command.code,
-                    "client": command.source == "client",
-                    "server": command.source == "server",
+                    "client": True if command.source == "client" else None,
+                    "server": True if command.source == "server" else None,
                     "args": args,
                 }
             )
@@ -351,17 +425,19 @@ def post_process_device_types(
                 )
 
             device_clusters.append(
-                {
-                    "id": cluster.id,
-                    "name": cluster_config.name,
-                    "revision": cluster.revision,
-                    "client": cluster_config.client,
-                    "server": cluster_config.server,
-                    "attributes": attributes,
-                    "commands": [
-                        c.name for c in cluster.commands
-                    ],  # TODO: process required
-                }
+                filter_none(
+                    {
+                        "id": cluster.id,
+                        "name": cluster_config.name,
+                        "revision": cluster.revision,
+                        "client": True if cluster_config.client else None,
+                        "server": True if cluster_config.server else None,
+                        "attributes": attributes,
+                        "commands": [
+                            c.name for c in cluster.commands
+                        ],  # TODO: process required
+                    }
+                )
             )
         device_clusters.sort(key=lambda c: c["id"])
         device_type["clusters"] = device_clusters
@@ -399,9 +475,11 @@ def fixup(device_types):
 
 def main():
     args = parse_args()
-    raw_device_types, raw_clusters, enums = parse_data_model(args.data_model_path)
+    raw_device_types, raw_clusters, enums, bitmaps, structs = parse_data_model(
+        args.data_model_path
+    )
 
-    commands = post_process_commands(raw_clusters, enums)
+    commands = post_process_commands(raw_clusters, enums, bitmaps, structs)
     device_types = post_process_device_types(raw_device_types, raw_clusters)
     fixup(device_types)
 
@@ -410,6 +488,13 @@ def main():
 
     with open(args.output_path / "commands.json", "w") as file:
         json.dump(commands, file, indent=2)
+
+    arg_types = defaultdict(int)
+    for cl in commands.values():
+        for c in cl.values():
+            for arg in c["args"]:
+                arg_types[arg["type"]] += 1
+    print("command arg types: ", format_counter(arg_types))
 
 
 if __name__ == "__main__":
