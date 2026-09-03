@@ -8,6 +8,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -29,6 +31,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -67,6 +71,8 @@
         "id": 257,
         "name": "DoorLock",
         "revision": 10,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -335,6 +341,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -373,6 +381,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -386,6 +396,8 @@
         "id": 257,
         "name": "DoorLock",
         "revision": 10,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -654,6 +666,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -692,6 +706,8 @@
         "id": 37,
         "name": "Actions",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -728,6 +744,8 @@
         "id": 1873,
         "name": "CommissionerControl",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -752,6 +770,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -773,6 +793,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -811,6 +833,8 @@
         "id": 59,
         "name": "Switch",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -834,6 +858,8 @@
         "id": 64,
         "name": "FixedLabel",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -847,6 +873,8 @@
         "id": 65,
         "name": "UserLabel",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -867,6 +895,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -905,6 +935,8 @@
         "id": 47,
         "name": "PowerSource",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1080,6 +1112,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1118,6 +1152,8 @@
         "id": 41,
         "name": "OTASoftwareUpdateProvider",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [],
         "commands": [
           "QueryImage",
@@ -1131,6 +1167,8 @@
         "id": 42,
         "name": "OTASoftwareUpdateRequestor",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1168,6 +1206,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1206,6 +1246,8 @@
         "id": 46,
         "name": "PowerSourceConfiguration",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -1219,6 +1261,8 @@
         "id": 47,
         "name": "PowerSource",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -1387,6 +1431,8 @@
         "id": 57,
         "name": "BridgedDeviceBasicInformation",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -1492,6 +1538,8 @@
         "id": 60,
         "name": "AdministratorCommissioning",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -1526,6 +1574,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1564,6 +1614,8 @@
         "id": 41,
         "name": "OTASoftwareUpdateProvider",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": [
           "QueryImage",
@@ -1577,6 +1629,8 @@
         "id": 42,
         "name": "OTASoftwareUpdateRequestor",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -1614,6 +1668,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1635,6 +1691,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1673,6 +1731,8 @@
         "id": 69,
         "name": "BooleanState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1693,6 +1753,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1731,6 +1793,8 @@
         "id": 31,
         "name": "AccessControl",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1782,6 +1846,8 @@
         "id": 40,
         "name": "BasicInformation",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1915,6 +1981,8 @@
         "id": 43,
         "name": "LocalizationConfiguration",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -1933,6 +2001,8 @@
         "id": 44,
         "name": "TimeFormatLocalization",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -1956,6 +2026,8 @@
         "id": 45,
         "name": "UnitLocalization",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -1974,6 +2046,8 @@
         "id": 46,
         "name": "PowerSourceConfiguration",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -1987,6 +2061,8 @@
         "id": 48,
         "name": "GeneralCommissioning",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -2069,6 +2145,8 @@
         "id": 49,
         "name": "NetworkCommissioning",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -2142,6 +2220,8 @@
         "id": 50,
         "name": "DiagnosticLogs",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [],
         "commands": [
           "RetrieveLogsRequest",
@@ -2152,6 +2232,8 @@
         "id": 51,
         "name": "GeneralDiagnostics",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -2216,6 +2298,8 @@
         "id": 52,
         "name": "SoftwareDiagnostics",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -2246,6 +2330,8 @@
         "id": 53,
         "name": "ThreadNetworkDiagnostics",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -2581,6 +2667,8 @@
         "id": 54,
         "name": "WiFiNetworkDiagnostics",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -2656,6 +2744,8 @@
         "id": 55,
         "name": "EthernetNetworkDiagnostics",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -2711,6 +2801,8 @@
         "id": 56,
         "name": "TimeSynchronization",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -2791,6 +2883,8 @@
         "id": 60,
         "name": "AdministratorCommissioning",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -2818,6 +2912,8 @@
         "id": 62,
         "name": "OperationalCredentials",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -2872,6 +2968,8 @@
         "id": 63,
         "name": "GroupKeyManagement",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -2912,6 +3010,8 @@
         "id": 70,
         "name": "ICDManagement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -2983,6 +3083,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3004,6 +3106,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3049,6 +3153,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3070,6 +3176,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3115,6 +3223,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3153,6 +3263,8 @@
         "id": 49,
         "name": "NetworkCommissioning",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3226,6 +3338,8 @@
         "id": 53,
         "name": "ThreadNetworkDiagnostics",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -3561,6 +3675,8 @@
         "id": 54,
         "name": "WiFiNetworkDiagnostics",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -3636,6 +3752,8 @@
         "id": 55,
         "name": "EthernetNetworkDiagnostics",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -3698,6 +3816,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3738,6 +3858,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3826,6 +3948,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3871,6 +3995,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3911,6 +4037,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3949,6 +4077,8 @@
         "id": 1284,
         "name": "Channel",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -3981,6 +4111,8 @@
         "id": 1285,
         "name": "TargetNavigator",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4002,6 +4134,8 @@
         "id": 1286,
         "name": "MediaPlayback",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4081,6 +4215,8 @@
         "id": 1287,
         "name": "MediaInput",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4104,6 +4240,8 @@
         "id": 1288,
         "name": "LowPower",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": [
           "Sleep"
@@ -4113,6 +4251,8 @@
         "id": 1289,
         "name": "KeypadInput",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": [
           "SendKey",
@@ -4123,6 +4263,8 @@
         "id": 1290,
         "name": "ContentLauncher",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4145,6 +4287,8 @@
         "id": 1291,
         "name": "AudioOutput",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4166,6 +4310,8 @@
         "id": 1292,
         "name": "ApplicationLauncher",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4189,6 +4335,8 @@
         "id": 1294,
         "name": "AccountLogin",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": [
           "GetSetupPIN",
@@ -4208,6 +4356,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4246,6 +4396,8 @@
         "id": 1284,
         "name": "Channel",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4278,6 +4430,8 @@
         "id": 1285,
         "name": "TargetNavigator",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4299,6 +4453,8 @@
         "id": 1286,
         "name": "MediaPlayback",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4378,6 +4534,8 @@
         "id": 1289,
         "name": "KeypadInput",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": [
           "SendKey",
@@ -4388,6 +4546,8 @@
         "id": 1290,
         "name": "ContentLauncher",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4410,6 +4570,8 @@
         "id": 1292,
         "name": "ApplicationLauncher",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4433,6 +4595,8 @@
         "id": 1293,
         "name": "ApplicationBasic",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4481,6 +4645,8 @@
         "id": 1294,
         "name": "AccountLogin",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": [
           "GetSetupPIN",
@@ -4493,6 +4659,8 @@
         "id": 1296,
         "name": "ContentAppObserver",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [],
         "commands": [
           "ContentAppMessage",
@@ -4510,6 +4678,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4548,6 +4718,8 @@
         "id": 80,
         "name": "ModeSelect",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4595,6 +4767,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4635,6 +4809,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4673,6 +4849,8 @@
         "id": 1284,
         "name": "Channel",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4705,6 +4883,8 @@
         "id": 1285,
         "name": "TargetNavigator",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4726,6 +4906,8 @@
         "id": 1286,
         "name": "MediaPlayback",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4805,6 +4987,8 @@
         "id": 1287,
         "name": "MediaInput",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4828,6 +5012,8 @@
         "id": 1288,
         "name": "LowPower",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": [
           "Sleep"
@@ -4837,6 +5023,8 @@
         "id": 1289,
         "name": "KeypadInput",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": [
           "SendKey",
@@ -4847,6 +5035,8 @@
         "id": 1291,
         "name": "AudioOutput",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -4875,6 +5065,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -4915,6 +5107,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5003,6 +5197,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5041,6 +5237,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5054,6 +5252,8 @@
         "id": 1284,
         "name": "Channel",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5086,6 +5286,8 @@
         "id": 1285,
         "name": "TargetNavigator",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5107,6 +5309,8 @@
         "id": 1286,
         "name": "MediaPlayback",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5186,6 +5390,8 @@
         "id": 1287,
         "name": "MediaInput",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5209,6 +5415,8 @@
         "id": 1288,
         "name": "LowPower",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [],
         "commands": [
           "Sleep"
@@ -5218,6 +5426,8 @@
         "id": 1289,
         "name": "KeypadInput",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [],
         "commands": [
           "SendKey",
@@ -5228,6 +5438,8 @@
         "id": 1290,
         "name": "ContentLauncher",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5250,6 +5462,8 @@
         "id": 1291,
         "name": "AudioOutput",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5271,6 +5485,8 @@
         "id": 1292,
         "name": "ApplicationLauncher",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5294,6 +5510,8 @@
         "id": 1293,
         "name": "ApplicationBasic",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5342,6 +5560,8 @@
         "id": 1294,
         "name": "AccountLogin",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [],
         "commands": [
           "GetSetupPIN",
@@ -5361,6 +5581,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5401,6 +5623,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5489,6 +5713,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5527,6 +5753,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5540,6 +5768,8 @@
         "id": 1284,
         "name": "Channel",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5572,6 +5802,8 @@
         "id": 1285,
         "name": "TargetNavigator",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5593,6 +5825,8 @@
         "id": 1286,
         "name": "MediaPlayback",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5672,6 +5906,8 @@
         "id": 1287,
         "name": "MediaInput",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5695,6 +5931,8 @@
         "id": 1288,
         "name": "LowPower",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [],
         "commands": [
           "Sleep"
@@ -5704,6 +5942,8 @@
         "id": 1289,
         "name": "KeypadInput",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [],
         "commands": [
           "SendKey",
@@ -5714,6 +5954,8 @@
         "id": 1290,
         "name": "ContentLauncher",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5736,6 +5978,8 @@
         "id": 1291,
         "name": "AudioOutput",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5757,6 +6001,8 @@
         "id": 1292,
         "name": "ApplicationLauncher",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -5780,6 +6026,8 @@
         "id": 1294,
         "name": "AccountLogin",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [],
         "commands": [
           "GetSetupPIN",
@@ -5799,6 +6047,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5820,6 +6070,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5844,6 +6096,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5882,6 +6136,8 @@
         "id": 514,
         "name": "FanControl",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5959,6 +6215,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -5980,6 +6238,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6018,6 +6278,8 @@
         "id": 91,
         "name": "AirQuality",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6031,6 +6293,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6059,6 +6323,8 @@
         "id": 1029,
         "name": "RelativeHumidityMeasurement",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6087,6 +6353,8 @@
         "id": 1036,
         "name": "CarbonMonoxideConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6150,6 +6418,8 @@
         "id": 1037,
         "name": "CarbonDioxideConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6213,6 +6483,8 @@
         "id": 1043,
         "name": "NitrogenDioxideConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6276,6 +6548,8 @@
         "id": 1045,
         "name": "OzoneConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6339,6 +6613,8 @@
         "id": 1066,
         "name": "PM2.5ConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6402,6 +6678,8 @@
         "id": 1067,
         "name": "FormaldehydeConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6465,6 +6743,8 @@
         "id": 1068,
         "name": "PM1ConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6528,6 +6808,8 @@
         "id": 1069,
         "name": "PM10ConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6591,6 +6873,8 @@
         "id": 1070,
         "name": "TotalVolatileOrganicCompoundsConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6654,6 +6938,8 @@
         "id": 1071,
         "name": "RadonConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6724,6 +7010,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6745,6 +7033,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -6769,6 +7059,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6807,6 +7099,8 @@
         "id": 113,
         "name": "HEPAFilterMonitoring",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6847,6 +7141,8 @@
         "id": 114,
         "name": "ActivatedCarbonFilterMonitoring",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6887,6 +7183,8 @@
         "id": 514,
         "name": "FanControl",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6964,6 +7262,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -6985,6 +7285,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7023,6 +7325,8 @@
         "id": 69,
         "name": "BooleanState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7036,6 +7340,8 @@
         "id": 128,
         "name": "BooleanStateConfiguration",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7094,6 +7400,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7115,6 +7423,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7153,6 +7463,8 @@
         "id": 129,
         "name": "ValveConfigurationandControl",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7226,6 +7538,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7247,6 +7561,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7285,6 +7601,8 @@
         "id": 69,
         "name": "BooleanState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7298,6 +7616,8 @@
         "id": 128,
         "name": "BooleanStateConfiguration",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7356,6 +7676,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7377,6 +7699,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7415,6 +7739,8 @@
         "id": 69,
         "name": "BooleanState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7428,6 +7754,8 @@
         "id": 128,
         "name": "BooleanStateConfiguration",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7486,6 +7814,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7507,6 +7837,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7545,6 +7877,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7573,6 +7907,8 @@
         "id": 1072,
         "name": "SoilMeasurement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7598,6 +7934,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7619,6 +7957,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7657,6 +7997,8 @@
         "id": 82,
         "name": "RefrigeratorAndTemperatureControlledCabinetMode",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7678,6 +8020,8 @@
         "id": 87,
         "name": "RefrigeratorAlarm",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7708,6 +8052,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7746,6 +8092,8 @@
         "id": 72,
         "name": "OvenCavityOperationalState",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7788,6 +8136,8 @@
         "id": 73,
         "name": "OvenMode",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7809,6 +8159,8 @@
         "id": 82,
         "name": "RefrigeratorAndTemperatureControlledCabinetMode",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7830,6 +8182,8 @@
         "id": 86,
         "name": "TemperatureControl",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7870,6 +8224,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7905,6 +8261,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7926,6 +8284,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -7950,6 +8310,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -7990,6 +8352,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -8028,6 +8392,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -8062,6 +8428,8 @@
         "id": 513,
         "name": "Thermostat",
         "revision": 11,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -8403,6 +8771,8 @@
         "id": 514,
         "name": "FanControl",
         "revision": 5,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8473,6 +8843,8 @@
         "id": 516,
         "name": "ThermostatUserInterfaceConfiguration",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8496,6 +8868,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8524,6 +8898,8 @@
         "id": 1029,
         "name": "RelativeHumidityMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8559,6 +8935,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8580,6 +8958,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8620,6 +9000,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -8658,6 +9040,8 @@
         "id": 81,
         "name": "LaundryWasherMode",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8679,6 +9063,8 @@
         "id": 83,
         "name": "LaundryWasherControls",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8707,6 +9093,8 @@
         "id": 86,
         "name": "TemperatureControl",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8747,6 +9135,8 @@
         "id": 96,
         "name": "OperationalState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -8798,6 +9188,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -8819,6 +9211,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -8857,6 +9251,8 @@
         "id": 84,
         "name": "RVCRunMode",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -8878,6 +9274,8 @@
         "id": 85,
         "name": "RVCCleanMode",
         "revision": 5,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8899,6 +9297,8 @@
         "id": 97,
         "name": "RVCOperationalState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -8942,6 +9342,8 @@
         "id": 336,
         "name": "ServiceArea",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -8992,6 +9394,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9013,6 +9417,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9053,6 +9459,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9091,6 +9499,8 @@
         "id": 86,
         "name": "TemperatureControl",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9131,6 +9541,8 @@
         "id": 89,
         "name": "DishwasherMode",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9152,6 +9564,8 @@
         "id": 93,
         "name": "DishwasherAlarm",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9183,6 +9597,8 @@
         "id": 96,
         "name": "OperationalState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9234,6 +9650,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9255,6 +9673,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9279,6 +9699,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9317,6 +9739,8 @@
         "id": 92,
         "name": "SmokeCOAlarm",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9397,6 +9821,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9425,6 +9851,8 @@
         "id": 1029,
         "name": "RelativeHumidityMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9453,6 +9881,8 @@
         "id": 1036,
         "name": "CarbonMonoxideConcentrationMeasurement",
         "revision": 5,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9523,6 +9953,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9563,6 +9995,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9601,6 +10035,8 @@
         "id": 86,
         "name": "TemperatureControl",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9641,6 +10077,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9676,6 +10114,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9697,6 +10137,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9737,6 +10179,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9782,6 +10226,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -9803,6 +10249,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9841,6 +10289,8 @@
         "id": 94,
         "name": "MicrowaveOvenMode",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9859,6 +10309,8 @@
         "id": 95,
         "name": "MicrowaveOvenControl",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9915,6 +10367,8 @@
         "id": 96,
         "name": "OperationalState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -9959,6 +10413,8 @@
         "id": 514,
         "name": "FanControl",
         "revision": 5,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10036,6 +10492,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10057,6 +10515,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -10095,6 +10555,8 @@
         "id": 113,
         "name": "HEPAFilterMonitoring",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10135,6 +10597,8 @@
         "id": 114,
         "name": "ActivatedCarbonFilterMonitoring",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10175,6 +10639,8 @@
         "id": 514,
         "name": "FanControl",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -10252,6 +10718,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10273,6 +10741,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -10318,6 +10788,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10339,6 +10811,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10379,6 +10853,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -10417,6 +10893,8 @@
         "id": 74,
         "name": "LaundryDryerControls",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10435,6 +10913,8 @@
         "id": 81,
         "name": "LaundryWasherMode",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10456,6 +10936,8 @@
         "id": 86,
         "name": "TemperatureControl",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10496,6 +10978,8 @@
         "id": 96,
         "name": "OperationalState",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -10547,6 +11031,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10568,6 +11054,8 @@
         "id": 121,
         "name": "WaterTankLevelMonitoring",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10608,6 +11096,8 @@
         "id": 514,
         "name": "FanControl",
         "revision": 5,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10678,6 +11168,8 @@
         "id": 517,
         "name": "Humidistat",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -10743,6 +11235,8 @@
         "id": 1029,
         "name": "RelativeHumidityMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -10778,6 +11272,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -10816,6 +11312,8 @@
         "id": 53,
         "name": "ThreadNetworkDiagnostics",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11151,6 +11649,8 @@
         "id": 1105,
         "name": "WiFiNetworkManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11172,6 +11672,8 @@
         "id": 1106,
         "name": "ThreadBorderRouterManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11216,6 +11718,8 @@
         "id": 1107,
         "name": "ThreadNetworkDirectory",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11251,6 +11755,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11289,6 +11795,8 @@
         "id": 53,
         "name": "ThreadNetworkDiagnostics",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11624,6 +12132,8 @@
         "id": 1106,
         "name": "ThreadBorderRouterManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11675,6 +12185,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11696,6 +12208,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11720,6 +12234,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11760,6 +12276,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -11848,6 +12366,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -11886,6 +12406,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -11920,6 +12442,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12010,6 +12534,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12031,6 +12557,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12055,6 +12583,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12095,6 +12625,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12183,6 +12715,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12221,6 +12755,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12234,6 +12770,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -12268,6 +12806,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12358,6 +12898,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12379,6 +12921,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12403,6 +12947,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12443,6 +12989,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12481,6 +13029,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12494,6 +13044,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -12535,6 +13087,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12556,6 +13110,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12580,6 +13136,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12620,6 +13178,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12708,6 +13268,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12746,6 +13308,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12759,6 +13323,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -12800,6 +13366,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -12821,6 +13389,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12845,6 +13415,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12885,6 +13457,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -12973,6 +13547,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13011,6 +13587,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13024,6 +13602,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -13058,6 +13638,8 @@
         "id": 768,
         "name": "ColorControl",
         "revision": 9,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -13353,6 +13935,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13374,6 +13958,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13412,6 +13998,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -13425,6 +14013,8 @@
         "id": 1024,
         "name": "IlluminanceMeasurement",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13465,6 +14055,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13486,6 +14078,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13524,6 +14118,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -13537,6 +14133,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13627,6 +14225,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13648,6 +14248,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13672,6 +14274,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13712,6 +14316,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -13800,6 +14406,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13838,6 +14446,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -13879,6 +14489,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13900,6 +14512,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13924,6 +14538,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -13964,6 +14580,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14052,6 +14670,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14090,6 +14710,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -14131,6 +14753,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14152,6 +14776,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14176,6 +14802,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14216,6 +14844,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14304,6 +14934,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14342,6 +14974,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -14376,6 +15010,8 @@
         "id": 768,
         "name": "ColorControl",
         "revision": 9,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14671,6 +15307,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14692,6 +15330,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14716,6 +15356,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14756,6 +15398,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14844,6 +15488,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -14882,6 +15528,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -14916,6 +15564,8 @@
         "id": 768,
         "name": "ColorControl",
         "revision": 9,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15211,6 +15861,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15232,6 +15884,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15256,6 +15910,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15296,6 +15952,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -15384,6 +16042,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -15418,6 +16078,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -15508,6 +16170,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15529,6 +16193,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15553,6 +16219,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15593,6 +16261,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15681,6 +16351,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -15715,6 +16387,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -15805,6 +16479,8 @@
         "id": 1874,
         "name": "JointFabricDatastore",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15904,6 +16580,8 @@
         "id": 1875,
         "name": "JointFabricAdministrator",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -15934,6 +16612,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -15955,6 +16635,8 @@
         "id": 1361,
         "name": "CameraAVStreamManagement",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -16188,6 +16870,8 @@
         "id": 1362,
         "name": "CameraAVSettingsUserLevelManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -16254,6 +16938,8 @@
         "id": 1363,
         "name": "WebRTCTransportProvider",
         "revision": 2,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -16275,6 +16961,8 @@
         "id": 1364,
         "name": "WebRTCTransportRequestor",
         "revision": 2,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -16300,6 +16988,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -16321,6 +17011,8 @@
         "id": 59,
         "name": "Switch",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -16344,6 +17036,8 @@
         "id": 1361,
         "name": "CameraAVStreamManagement",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -16577,6 +17271,8 @@
         "id": 1363,
         "name": "WebRTCTransportProvider",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -16598,6 +17294,8 @@
         "id": 1364,
         "name": "WebRTCTransportRequestor",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -16616,6 +17314,8 @@
         "id": 1365,
         "name": "PushAVStreamTransport",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -16643,6 +17343,8 @@
         "id": 1366,
         "name": "Chime",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -16675,6 +17377,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -16696,6 +17400,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -16779,6 +17485,8 @@
         "id": 1360,
         "name": "ZoneManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -16829,6 +17537,8 @@
         "id": 1361,
         "name": "CameraAVStreamManagement",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -17062,6 +17772,8 @@
         "id": 1362,
         "name": "CameraAVSettingsUserLevelManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17128,6 +17840,8 @@
         "id": 1363,
         "name": "WebRTCTransportProvider",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -17149,6 +17863,8 @@
         "id": 1364,
         "name": "WebRTCTransportRequestor",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17167,6 +17883,8 @@
         "id": 1365,
         "name": "PushAVStreamTransport",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17213,6 +17931,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17234,6 +17954,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17317,6 +18039,8 @@
         "id": 1360,
         "name": "ZoneManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17367,6 +18091,8 @@
         "id": 1361,
         "name": "CameraAVStreamManagement",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -17600,6 +18326,8 @@
         "id": 1362,
         "name": "CameraAVSettingsUserLevelManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17673,6 +18401,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17694,6 +18424,8 @@
         "id": 1366,
         "name": "Chime",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -17726,6 +18458,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17747,6 +18481,8 @@
         "id": 47,
         "name": "PowerSource",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17915,6 +18651,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -17998,6 +18736,8 @@
         "id": 1360,
         "name": "ZoneManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -18048,6 +18788,8 @@
         "id": 1361,
         "name": "CameraAVStreamManagement",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -18281,6 +19023,8 @@
         "id": 1362,
         "name": "CameraAVSettingsUserLevelManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -18347,6 +19091,8 @@
         "id": 1363,
         "name": "WebRTCTransportProvider",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -18368,6 +19114,8 @@
         "id": 1364,
         "name": "WebRTCTransportRequestor",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18386,6 +19134,8 @@
         "id": 1365,
         "name": "PushAVStreamTransport",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -18413,6 +19163,8 @@
         "id": 2049,
         "name": "TLSCertificateManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -18457,6 +19209,8 @@
         "id": 2050,
         "name": "TLSClientManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -18488,6 +19242,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18509,6 +19265,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18522,6 +19280,8 @@
         "id": 59,
         "name": "Switch",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18545,6 +19305,8 @@
         "id": 1366,
         "name": "Chime",
         "revision": 2,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -18577,6 +19339,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18598,6 +19362,8 @@
         "id": 128,
         "name": "BooleanStateConfiguration",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18649,6 +19415,8 @@
         "id": 336,
         "name": "ServiceArea",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18692,6 +19460,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18775,6 +19545,8 @@
         "id": 1073,
         "name": "AmbientContextSensing",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18855,6 +19627,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18876,6 +19650,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18914,6 +19690,8 @@
         "id": 1075,
         "name": "ProximityRanging",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18968,6 +19746,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -18989,6 +19769,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19013,6 +19795,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19051,6 +19835,8 @@
         "id": 258,
         "name": "WindowCovering",
         "revision": 8,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19184,6 +19970,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19205,6 +19993,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19229,6 +20019,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19267,6 +20059,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19280,6 +20074,8 @@
         "id": 258,
         "name": "WindowCovering",
         "revision": 8,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19413,6 +20209,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19434,6 +20232,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19472,6 +20272,8 @@
         "id": 260,
         "name": "ClosureControl",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19521,6 +20323,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19559,6 +20363,8 @@
         "id": 261,
         "name": "ClosureDimension",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19637,6 +20443,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19658,6 +20466,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19671,6 +20481,8 @@
         "id": 260,
         "name": "ClosureControl",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19713,6 +20525,8 @@
         "id": 261,
         "name": "ClosureDimension",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19791,6 +20605,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19812,6 +20628,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19836,6 +20654,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -19874,6 +20694,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -19887,6 +20709,8 @@
         "id": 513,
         "name": "Thermostat",
         "revision": 11,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -20228,6 +21052,8 @@
         "id": 514,
         "name": "FanControl",
         "revision": 5,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20298,6 +21124,8 @@
         "id": 516,
         "name": "ThermostatUserInterfaceConfiguration",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20321,6 +21149,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20349,6 +21179,8 @@
         "id": 1029,
         "name": "RelativeHumidityMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20377,6 +21209,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20467,6 +21301,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -20488,6 +21324,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -20526,6 +21364,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -20561,6 +21401,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -20582,6 +21424,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20606,6 +21450,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -20646,6 +21492,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20734,6 +21582,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -20772,6 +21622,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20785,6 +21637,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -20819,6 +21673,8 @@
         "id": 512,
         "name": "PumpConfigurationandControl",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -20942,6 +21798,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -20970,6 +21828,8 @@
         "id": 1027,
         "name": "PressureMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21023,6 +21883,8 @@
         "id": 1028,
         "name": "FlowMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21051,6 +21913,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21141,6 +22005,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21162,6 +22028,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21186,6 +22054,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21226,6 +22096,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21314,6 +22186,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21352,6 +22226,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21365,6 +22241,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -21399,6 +22277,8 @@
         "id": 512,
         "name": "PumpConfigurationandControl",
         "revision": 4,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21522,6 +22402,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21550,6 +22432,8 @@
         "id": 1027,
         "name": "PressureMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21603,6 +22487,8 @@
         "id": 1028,
         "name": "FlowMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -21638,6 +22524,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21659,6 +22547,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21697,6 +22587,8 @@
         "id": 1027,
         "name": "PressureMeasurement",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21757,6 +22649,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21778,6 +22672,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21816,6 +22712,8 @@
         "id": 1028,
         "name": "FlowMeasurement",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21851,6 +22749,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21872,6 +22772,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21910,6 +22812,8 @@
         "id": 1029,
         "name": "RelativeHumidityMeasurement",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21945,6 +22849,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -21966,6 +22872,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -22004,6 +22912,8 @@
         "id": 513,
         "name": "Thermostat",
         "revision": 11,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -22352,6 +23262,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -22373,6 +23285,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -22397,6 +23311,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -22435,6 +23351,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -22448,6 +23366,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -22482,6 +23402,8 @@
         "id": 513,
         "name": "Thermostat",
         "revision": 11,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -22830,6 +23752,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -22851,6 +23775,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -22889,6 +23815,8 @@
         "id": 153,
         "name": "EnergyEVSE",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23021,6 +23949,8 @@
         "id": 157,
         "name": "EnergyEVSEMode",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23042,6 +23972,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -23077,6 +24009,8 @@
         "id": 152,
         "name": "DeviceEnergyManagement",
         "revision": 5,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23141,6 +24075,8 @@
         "id": 159,
         "name": "DeviceEnergyManagementMode",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23169,6 +24105,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23190,6 +24128,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23228,6 +24168,8 @@
         "id": 148,
         "name": "WaterHeaterManagement",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23269,6 +24211,8 @@
         "id": 158,
         "name": "WaterHeaterMode",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23290,6 +24234,8 @@
         "id": 513,
         "name": "Thermostat",
         "revision": 11,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23638,6 +24584,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23676,6 +24624,8 @@
         "id": 144,
         "name": "ElectricalPowerMeasurement",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23779,6 +24729,8 @@
         "id": 145,
         "name": "ElectricalEnergyMeasurement",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23817,6 +24769,8 @@
         "id": 156,
         "name": "PowerTopology",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23847,6 +24801,8 @@
         "id": 2822,
         "name": "MeterIdentification",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23887,6 +24843,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23908,6 +24866,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23953,6 +24913,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -23991,6 +24953,8 @@
         "id": 149,
         "name": "CommodityPrice",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24024,6 +24988,8 @@
         "id": 1792,
         "name": "CommodityTariff",
         "revision": 2,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24139,6 +25105,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24177,6 +25145,8 @@
         "id": 144,
         "name": "ElectricalPowerMeasurement",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24280,6 +25250,8 @@
         "id": 145,
         "name": "ElectricalEnergyMeasurement",
         "revision": 2,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24318,6 +25290,8 @@
         "id": 2823,
         "name": "CommodityMetering",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24353,6 +25327,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24374,6 +25350,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24414,6 +25392,8 @@
         "id": 65,
         "name": "UserLabel",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24427,6 +25407,8 @@
         "id": 156,
         "name": "PowerTopology",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24450,6 +25432,8 @@
         "id": 162,
         "name": "ElectricalDistribution",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24483,6 +25467,8 @@
         "id": 163,
         "name": "ElectricalProtectionAlarm",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24550,6 +25536,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24571,6 +25559,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24611,6 +25601,8 @@
         "id": 156,
         "name": "PowerTopology",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24634,6 +25626,8 @@
         "id": 162,
         "name": "ElectricalDistribution",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24667,6 +25661,8 @@
         "id": 163,
         "name": "ElectricalProtectionAlarm",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24734,6 +25730,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24755,6 +25753,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24779,6 +25779,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24819,6 +25821,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -24907,6 +25911,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24945,6 +25951,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -24958,6 +25966,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -24992,6 +26002,8 @@
         "id": 768,
         "name": "ColorControl",
         "revision": 9,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -25280,6 +26292,8 @@
         "id": 1024,
         "name": "IlluminanceMeasurement",
         "revision": 3,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -25313,6 +26327,8 @@
         "id": 1030,
         "name": "OccupancySensing",
         "revision": 7,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -25403,6 +26419,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -25424,6 +26442,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -25448,6 +26468,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -25488,6 +26510,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -25576,6 +26600,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -25614,6 +26640,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -25627,6 +26655,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 1,
@@ -25661,6 +26691,8 @@
         "id": 768,
         "name": "ColorControl",
         "revision": 9,
+        "client": false,
+        "server": false,
         "attributes": [
           {
             "id": 0,
@@ -25956,6 +26988,8 @@
         "id": 28,
         "name": "PulseWidthModulation",
         "revision": null,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": []
       },
@@ -25963,6 +26997,8 @@
         "id": 66,
         "name": "ProxyConfiguration",
         "revision": null,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": []
       },
@@ -25970,6 +27006,8 @@
         "id": 67,
         "name": "ProxyDiscovery",
         "revision": null,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": []
       },
@@ -25977,6 +27015,8 @@
         "id": 68,
         "name": "ProxyValid",
         "revision": null,
+        "client": false,
+        "server": true,
         "attributes": [],
         "commands": []
       }
@@ -25991,6 +27031,8 @@
         "id": 3,
         "name": "Identify",
         "revision": 6,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -26012,6 +27054,8 @@
         "id": 4,
         "name": "Groups",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -26036,6 +27080,8 @@
         "id": 6,
         "name": "OnOff",
         "revision": 6,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -26076,6 +27122,8 @@
         "id": 8,
         "name": "LevelControl",
         "revision": 6,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -26164,6 +27212,8 @@
         "id": 29,
         "name": "Descriptor",
         "revision": 3,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -26202,6 +27252,8 @@
         "id": 30,
         "name": "Binding",
         "revision": 1,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -26215,6 +27267,8 @@
         "id": 98,
         "name": "ScenesManagement",
         "revision": 1,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 1,
@@ -26249,6 +27303,8 @@
         "id": 257,
         "name": "DoorLock",
         "revision": 10,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -26510,6 +27566,8 @@
         "id": 768,
         "name": "ColorControl",
         "revision": 9,
+        "client": true,
+        "server": true,
         "attributes": [
           {
             "id": 0,
@@ -26798,6 +27856,8 @@
         "id": 1026,
         "name": "TemperatureMeasurement",
         "revision": 4,
+        "client": false,
+        "server": true,
         "attributes": [
           {
             "id": 0,

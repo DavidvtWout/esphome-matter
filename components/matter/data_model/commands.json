@@ -21,15 +21,26 @@
         {
           "id": 0,
           "name": "EffectIdentifier",
-          "type": "EffectIdentifierEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Blink": 0,
+            "Breathe": 1,
+            "Okay": 2,
+            "ChannelChange": 11,
+            "FinishEffect": 254,
+            "StopEffect": 255
+          }
         },
         {
           "id": 1,
           "name": "EffectVariant",
-          "type": "EffectVariantEnum",
+          "type": "enum8",
           "max": 0,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Default": 0
+          }
         }
       ]
     }
@@ -219,9 +230,13 @@
         {
           "id": 0,
           "name": "EffectIdentifier",
-          "type": "EffectIdentifierEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "DelayedAllOff": 0,
+            "DyingLight": 1
+          }
         },
         {
           "id": 1,
@@ -309,9 +324,13 @@
         {
           "id": 0,
           "name": "MoveMode",
-          "type": "MoveModeEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Up": 0,
+            "Down": 1
+          }
         },
         {
           "id": 1,
@@ -343,9 +362,13 @@
         {
           "id": 0,
           "name": "StepMode",
-          "type": "StepModeEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Up": 0,
+            "Down": 1
+          }
         },
         {
           "id": 1,
@@ -438,9 +461,13 @@
         {
           "id": 0,
           "name": "MoveMode",
-          "type": "MoveModeEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Up": 0,
+            "Down": 1
+          }
         },
         {
           "id": 1,
@@ -472,9 +499,13 @@
         {
           "id": 0,
           "name": "StepMode",
-          "type": "StepModeEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Up": 0,
+            "Down": 1
+          }
         },
         {
           "id": 1,
@@ -850,8 +881,14 @@
         },
         {
           "name": "ProtocolsSupported",
-          "type": "DownloadProtocolEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "BDXSynchronous": 0,
+            "BDXAsynchronous": 1,
+            "HTTPS": 2,
+            "VendorSpecific": 3
+          }
         },
         {
           "name": "HardwareVersion",
@@ -883,9 +920,15 @@
       "args": [
         {
           "name": "Status",
-          "type": "StatusEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "UpdateAvailable": 0,
+            "Busy": 1,
+            "NotAvailable": 2,
+            "DownloadProtocolNotSupported": 3
+          }
         },
         {
           "name": "DelayedActionTime",
@@ -950,9 +993,14 @@
       "args": [
         {
           "name": "Action",
-          "type": "ApplyUpdateActionEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Proceed": 0,
+            "AwaitNextAction": 1,
+            "Discontinue": 2
+          }
         },
         {
           "name": "DelayedActionTime",
@@ -997,9 +1045,14 @@
         },
         {
           "name": "AnnouncementReason",
-          "type": "AnnouncementReasonEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "SimpleAnnouncement": 0,
+            "UpdateAvailable": 1,
+            "UrgentUpdateAvailable": 2
+          }
         },
         {
           "name": "MetadataForNode",
@@ -1043,11 +1096,21 @@
         {
           "id": 0,
           "name": "ErrorCode",
-          "type": "CommissioningErrorEnum",
+          "type": "enum8",
           "min": 0,
           "max": 7,
           "default": "0x00",
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OK": 0,
+            "ValueOutsideRange": 1,
+            "InvalidAuthentication": 2,
+            "NoFailSafe": 3,
+            "BusyWithOtherAdmin": 4,
+            "RequiredTCNotAccepted": 5,
+            "TCAcknowledgementsNotReceived": 6,
+            "TCMinVersionNotMet": 7
+          }
         },
         {
           "id": 1,
@@ -1065,10 +1128,15 @@
         {
           "id": 0,
           "name": "NewRegulatoryConfig",
-          "type": "RegulatoryLocationTypeEnum",
+          "type": "enum8",
           "min": 0,
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Indoor": 0,
+            "Outdoor": 1,
+            "IndoorOutdoor": 2
+          }
         },
         {
           "id": 1,
@@ -1092,11 +1160,21 @@
         {
           "id": 0,
           "name": "ErrorCode",
-          "type": "CommissioningErrorEnum",
+          "type": "enum8",
           "min": 0,
           "max": 7,
           "default": "0x00",
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OK": 0,
+            "ValueOutsideRange": 1,
+            "InvalidAuthentication": 2,
+            "NoFailSafe": 3,
+            "BusyWithOtherAdmin": 4,
+            "RequiredTCNotAccepted": 5,
+            "TCAcknowledgementsNotReceived": 6,
+            "TCMinVersionNotMet": 7
+          }
         },
         {
           "id": 1,
@@ -1120,11 +1198,21 @@
         {
           "id": 0,
           "name": "ErrorCode",
-          "type": "CommissioningErrorEnum",
+          "type": "enum8",
           "min": 0,
           "max": 7,
           "default": "0x00",
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OK": 0,
+            "ValueOutsideRange": 1,
+            "InvalidAuthentication": 2,
+            "NoFailSafe": 3,
+            "BusyWithOtherAdmin": 4,
+            "RequiredTCNotAccepted": 5,
+            "TCAcknowledgementsNotReceived": 6,
+            "TCMinVersionNotMet": 7
+          }
         },
         {
           "id": 1,
@@ -1161,11 +1249,21 @@
         {
           "id": 0,
           "name": "ErrorCode",
-          "type": "CommissioningErrorEnum",
+          "type": "enum8",
           "min": 0,
           "max": 7,
           "default": "0x00",
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OK": 0,
+            "ValueOutsideRange": 1,
+            "InvalidAuthentication": 2,
+            "NoFailSafe": 3,
+            "BusyWithOtherAdmin": 4,
+            "RequiredTCNotAccepted": 5,
+            "TCAcknowledgementsNotReceived": 6,
+            "TCMinVersionNotMet": 7
+          }
         }
       ]
     }
@@ -1195,9 +1293,24 @@
       "args": [
         {
           "name": "NetworkingStatus",
-          "type": "NetworkCommissioningStatusEnum",
+          "type": "enum8",
           "max": 12,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "OutOfRange": 1,
+            "BoundsExceeded": 2,
+            "NetworkIDNotFound": 3,
+            "DuplicateNetworkID": 4,
+            "NetworkNotFound": 5,
+            "RegulatoryError": 6,
+            "AuthFailure": 7,
+            "UnsupportedSecurity": 8,
+            "OtherConnectionFailure": 9,
+            "IPV6Failed": 10,
+            "IPBindFailed": 11,
+            "UnknownError": 12
+          }
         },
         {
           "name": "DebugText",
@@ -1279,9 +1392,24 @@
       "args": [
         {
           "name": "NetworkingStatus",
-          "type": "NetworkCommissioningStatusEnum",
+          "type": "enum8",
           "max": 12,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "OutOfRange": 1,
+            "BoundsExceeded": 2,
+            "NetworkIDNotFound": 3,
+            "DuplicateNetworkID": 4,
+            "NetworkNotFound": 5,
+            "RegulatoryError": 6,
+            "AuthFailure": 7,
+            "UnsupportedSecurity": 8,
+            "OtherConnectionFailure": 9,
+            "IPV6Failed": 10,
+            "IPBindFailed": 11,
+            "UnknownError": 12
+          }
         },
         {
           "name": "DebugText",
@@ -1320,9 +1448,24 @@
       "args": [
         {
           "name": "NetworkingStatus",
-          "type": "NetworkCommissioningStatusEnum",
+          "type": "enum8",
           "max": 12,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "OutOfRange": 1,
+            "BoundsExceeded": 2,
+            "NetworkIDNotFound": 3,
+            "DuplicateNetworkID": 4,
+            "NetworkNotFound": 5,
+            "RegulatoryError": 6,
+            "AuthFailure": 7,
+            "UnsupportedSecurity": 8,
+            "OtherConnectionFailure": 9,
+            "IPV6Failed": 10,
+            "IPBindFailed": 11,
+            "UnknownError": 12
+          }
         },
         {
           "name": "DebugText",
@@ -1368,18 +1511,27 @@
         {
           "id": 0,
           "name": "Intent",
-          "type": "IntentEnum",
+          "type": "enum8",
           "min": 0,
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "EndUserSupport": 0,
+            "NetworkDiag": 1,
+            "CrashLogs": 2
+          }
         },
         {
           "id": 1,
           "name": "RequestedProtocol",
-          "type": "TransferProtocolEnum",
+          "type": "enum8",
           "min": 0,
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "ResponsePayload": 0,
+            "BDX": 1
+          }
         },
         {
           "id": 2,
@@ -1397,10 +1549,17 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "StatusEnum",
+          "type": "enum8",
           "min": 0,
           "max": 4,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "Exhausted": 1,
+            "NoLogs": 2,
+            "Busy": 3,
+            "Denied": 4
+          }
         },
         {
           "id": 1,
@@ -1548,18 +1707,44 @@
         {
           "id": 1,
           "name": "Granularity",
-          "type": "GranularityEnum",
+          "type": "enum8",
           "max": 4,
           "default": "0x00",
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "NoTimeGranularity": 0,
+            "MinutesGranularity": 1,
+            "SecondsGranularity": 2,
+            "MillisecondsGranularity": 3,
+            "MicrosecondsGranularity": 4
+          }
         },
         {
           "id": 2,
           "name": "TimeSource",
-          "type": "TimeSourceEnum",
+          "type": "enum8",
           "max": 16,
           "default": "0x00",
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "None": 0,
+            "Unknown": 1,
+            "Admin": 2,
+            "NodeTimeCluster": 3,
+            "NonMatterSNTP": 4,
+            "NonMatterNTP": 5,
+            "MatterSNTP": 6,
+            "MatterNTP": 7,
+            "MixedNTP": 8,
+            "NonMatterSNTPNTS": 9,
+            "NonMatterNTPNTS": 10,
+            "MatterSNTPNTS": 11,
+            "MatterNTPNTS": 12,
+            "MixedNTPNTS": 13,
+            "CloudSource": 14,
+            "PTP": 15,
+            "GNSS": 16
+          }
         }
       ]
     },
@@ -1749,9 +1934,13 @@
       "args": [
         {
           "name": "CertificateType",
-          "type": "CertificateChainTypeEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "DACCertificate": 1,
+            "PAICertificate": 2
+          }
         }
       ]
     },
@@ -1858,9 +2047,21 @@
       "args": [
         {
           "name": "StatusCode",
-          "type": "NodeOperationalCertStatusEnum",
+          "type": "enum8",
           "max": 11,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OK": 0,
+            "InvalidPublicKey": 1,
+            "InvalidNodeOpId": 2,
+            "InvalidNOC": 3,
+            "MissingCsr": 4,
+            "TableFull": 5,
+            "InvalidAdminSubject": 6,
+            "FabricConflict": 9,
+            "LabelConflict": 10,
+            "InvalidFabricIndex": 11
+          }
         },
         {
           "name": "FabricIndex",
@@ -2082,9 +2283,13 @@
         {
           "id": 4,
           "name": "ClientType",
-          "type": "ClientTypeEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Permanent": 0,
+            "Ephemeral": 1
+          }
         }
       ]
     },
@@ -3002,9 +3207,13 @@
         },
         {
           "name": "McastAddrPolicy",
-          "type": "MulticastAddrPolicyEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "IanaAddr": 0,
+            "PerGroup": 1
+          }
         }
       ]
     },
@@ -3090,9 +3299,14 @@
       "args": [
         {
           "name": "TestOperation",
-          "type": "GroupcastTestingEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "DisableTesting": 0,
+            "EnableListenerTesting": 1,
+            "EnableSenderTesting": 2
+          }
         },
         {
           "name": "DurationSeconds",
@@ -3277,9 +3491,15 @@
         },
         {
           "name": "Priority",
-          "type": "MessagePriorityEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Low": 0,
+            "Medium": 1,
+            "High": 2,
+            "Critical": 3
+          }
         },
         {
           "name": "MessageControl",
@@ -3340,9 +3560,13 @@
         },
         {
           "name": "Cause",
-          "type": "AdjustmentCauseEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "LocalOptimization": 0,
+            "GridOptimization": 1
+          }
         }
       ]
     },
@@ -3364,9 +3588,13 @@
         },
         {
           "name": "Cause",
-          "type": "AdjustmentCauseEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "LocalOptimization": 0,
+            "GridOptimization": 1
+          }
         }
       ]
     },
@@ -3382,9 +3610,13 @@
         },
         {
           "name": "Cause",
-          "type": "AdjustmentCauseEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "LocalOptimization": 0,
+            "GridOptimization": 1
+          }
         }
       ]
     },
@@ -3411,9 +3643,13 @@
         },
         {
           "name": "Cause",
-          "type": "AdjustmentCauseEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "LocalOptimization": 0,
+            "GridOptimization": 1
+          }
         }
       ]
     },
@@ -3429,9 +3665,13 @@
         },
         {
           "name": "Cause",
-          "type": "AdjustmentCauseEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "LocalOptimization": 0,
+            "GridOptimization": 1
+          }
         }
       ]
     },
@@ -3470,9 +3710,13 @@
         },
         {
           "name": "Cause",
-          "type": "AdjustmentCauseEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "LocalOptimization": 0,
+            "GridOptimization": 1
+          }
         }
       ]
     },
@@ -3944,8 +4188,17 @@
         },
         {
           "name": "Status",
-          "type": "DlStatus",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "Failure": 1,
+            "Duplicate": 2,
+            "Occupied": 3,
+            "InvalidField": 133,
+            "ResourceExhausted": 137,
+            "NotFound": 139
+          }
         },
         {
           "name": "DaysMask",
@@ -4069,8 +4322,17 @@
         },
         {
           "name": "Status",
-          "type": "DlStatus",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "Failure": 1,
+            "Duplicate": 2,
+            "Occupied": 3,
+            "InvalidField": 133,
+            "ResourceExhausted": 137,
+            "NotFound": 139
+          }
         },
         {
           "name": "LocalStartTime",
@@ -4128,9 +4390,16 @@
         },
         {
           "name": "OperatingMode",
-          "type": "OperatingModeEnum",
+          "type": "enum8",
           "max": 4,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Normal": 0,
+            "Vacation": 1,
+            "Privacy": 2,
+            "NoRemoteLockUnlock": 3,
+            "Passage": 4
+          }
         }
       ]
     },
@@ -4162,8 +4431,17 @@
         },
         {
           "name": "Status",
-          "type": "DlStatus",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "Failure": 1,
+            "Duplicate": 2,
+            "Occupied": 3,
+            "InvalidField": 133,
+            "ResourceExhausted": 137,
+            "NotFound": 139
+          }
         },
         {
           "name": "LocalStartTime",
@@ -4177,9 +4455,16 @@
         },
         {
           "name": "OperatingMode",
-          "type": "OperatingModeEnum",
+          "type": "enum8",
           "max": 4,
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "Normal": 0,
+            "Vacation": 1,
+            "Privacy": 2,
+            "NoRemoteLockUnlock": 3,
+            "Passage": 4
+          }
         }
       ]
     },
@@ -4204,9 +4489,14 @@
       "args": [
         {
           "name": "OperationType",
-          "type": "DataOperationTypeEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Add": 0,
+            "Clear": 1,
+            "Modify": 2
+          }
         },
         {
           "name": "UserIndex",
@@ -4226,22 +4516,44 @@
         },
         {
           "name": "UserStatus",
-          "type": "UserStatusEnum",
+          "type": "enum8",
           "min": 1,
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Available": 0,
+            "OccupiedEnabled": 1,
+            "OccupiedDisabled": 3
+          }
         },
         {
           "name": "UserType",
-          "type": "UserTypeEnum",
+          "type": "enum8",
           "max": 9,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "UnrestrictedUser": 0,
+            "YearDayScheduleUser": 1,
+            "WeekDayScheduleUser": 2,
+            "ProgrammingUser": 3,
+            "NonAccessUser": 4,
+            "ForcedUser": 5,
+            "DisposableUser": 6,
+            "ExpiringUser": 7,
+            "ScheduleRestrictedUser": 8,
+            "RemoteOnlyUser": 9
+          }
         },
         {
           "name": "CredentialRule",
-          "type": "CredentialRuleEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Single": 0,
+            "Dual": 1,
+            "Tri": 2
+          }
         }
       ]
     },
@@ -4281,21 +4593,43 @@
         },
         {
           "name": "UserStatus",
-          "type": "UserStatusEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Available": 0,
+            "OccupiedEnabled": 1,
+            "OccupiedDisabled": 3
+          }
         },
         {
           "name": "UserType",
-          "type": "UserTypeEnum",
+          "type": "enum8",
           "max": 9,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "UnrestrictedUser": 0,
+            "YearDayScheduleUser": 1,
+            "WeekDayScheduleUser": 2,
+            "ProgrammingUser": 3,
+            "NonAccessUser": 4,
+            "ForcedUser": 5,
+            "DisposableUser": 6,
+            "ExpiringUser": 7,
+            "ScheduleRestrictedUser": 8,
+            "RemoteOnlyUser": 9
+          }
         },
         {
           "name": "CredentialRule",
-          "type": "CredentialRuleEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Single": 0,
+            "Dual": 1,
+            "Tri": 2
+          }
         },
         {
           "name": "Credentials",
@@ -4341,9 +4675,14 @@
       "args": [
         {
           "name": "OperationType",
-          "type": "DataOperationTypeEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Add": 0,
+            "Clear": 1,
+            "Modify": 2
+          }
         },
         {
           "name": "Credential",
@@ -4364,16 +4703,33 @@
         },
         {
           "name": "UserStatus",
-          "type": "UserStatusEnum",
+          "type": "enum8",
           "min": 1,
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Available": 0,
+            "OccupiedEnabled": 1,
+            "OccupiedDisabled": 3
+          }
         },
         {
           "name": "UserType",
-          "type": "UserTypeEnum",
+          "type": "enum8",
           "max": 9,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "UnrestrictedUser": 0,
+            "YearDayScheduleUser": 1,
+            "WeekDayScheduleUser": 2,
+            "ProgrammingUser": 3,
+            "NonAccessUser": 4,
+            "ForcedUser": 5,
+            "DisposableUser": 6,
+            "ExpiringUser": 7,
+            "ScheduleRestrictedUser": 8,
+            "RemoteOnlyUser": 9
+          }
         }
       ]
     },
@@ -4384,8 +4740,17 @@
       "args": [
         {
           "name": "Status",
-          "type": "DlStatus",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "Failure": 1,
+            "Duplicate": 2,
+            "Occupied": 3,
+            "InvalidField": 133,
+            "ResourceExhausted": 137,
+            "NotFound": 139
+          }
         },
         {
           "name": "UserIndex",
@@ -4593,9 +4958,16 @@
         {
           "id": 0,
           "name": "Position",
-          "type": "TargetPositionEnum",
+          "type": "enum8",
           "max": 4,
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "MoveToFullyClosed": 0,
+            "MoveToFullyOpen": 1,
+            "MoveToPedestrianPosition": 2,
+            "MoveToVentilationPosition": 3,
+            "MoveToSignaturePosition": 4
+          }
         },
         {
           "id": 1,
@@ -4606,10 +4978,16 @@
         {
           "id": 2,
           "name": "Speed",
-          "type": "ThreeLevelAutoEnum",
+          "type": "enum8",
           "max": 3,
           "default": "0x00",
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "Auto": 0,
+            "Low": 1,
+            "Medium": 2,
+            "High": 3
+          }
         }
       ]
     },
@@ -4641,10 +5019,16 @@
         {
           "id": 2,
           "name": "Speed",
-          "type": "ThreeLevelAutoEnum",
+          "type": "enum8",
           "max": 3,
           "default": "0x00",
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "Auto": 0,
+            "Low": 1,
+            "Medium": 2,
+            "High": 3
+          }
         }
       ]
     },
@@ -4656,9 +5040,13 @@
         {
           "id": 0,
           "name": "Direction",
-          "type": "StepDirectionEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Decrease": 0,
+            "Increase": 1
+          }
         },
         {
           "id": 1,
@@ -4670,10 +5058,16 @@
         {
           "id": 2,
           "name": "Speed",
-          "type": "ThreeLevelAutoEnum",
+          "type": "enum8",
           "max": 3,
           "default": "0x00",
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "Auto": 0,
+            "Low": 1,
+            "Medium": 2,
+            "High": 3
+          }
         }
       ]
     }
@@ -4700,9 +5094,15 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "SelectAreasStatus",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "UnsupportedArea": 1,
+            "InvalidInMode": 2,
+            "InvalidSet": 3
+          }
         },
         {
           "id": 1,
@@ -4733,9 +5133,15 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "SkipAreaStatus",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "InvalidAreaList": 1,
+            "InvalidInMode": 2,
+            "InvalidSkippedArea": 3
+          }
         },
         {
           "id": 1,
@@ -4754,9 +5160,14 @@
       "args": [
         {
           "name": "Mode",
-          "type": "SetpointRaiseLowerModeEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Heat": 0,
+            "Cool": 1,
+            "Both": 2
+          }
         },
         {
           "name": "Amount",
@@ -4947,8 +5358,13 @@
         {
           "id": 0,
           "name": "RequestType",
-          "type": "AtomicRequestTypeEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "BeginWrite": 0,
+            "CommitWrite": 1,
+            "RollbackWrite": 2
+          }
         },
         {
           "id": 0,
@@ -4974,11 +5390,15 @@
         {
           "id": 0,
           "name": "Direction",
-          "type": "StepDirectionEnum",
+          "type": "enum8",
           "min": 0,
           "max": 1,
           "default": "0x00",
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Increase": 0,
+            "Decrease": 1
+          }
         },
         {
           "id": 1,
@@ -5010,9 +5430,16 @@
         },
         {
           "name": "Mode",
-          "type": "ModeEnum",
+          "type": "enum8",
           "max": 4,
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "Off": 0,
+            "Humidifier": 1,
+            "Dehumidifier": 2,
+            "Auto": 3,
+            "FanOnly": 4
+          }
         },
         {
           "name": "MistType",
@@ -5052,9 +5479,15 @@
         },
         {
           "name": "Direction",
-          "type": "DirectionEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Shortest": 0,
+            "Longest": 1,
+            "Up": 2,
+            "Down": 3
+          }
         },
         {
           "name": "TransitionTime",
@@ -5083,9 +5516,14 @@
       "args": [
         {
           "name": "MoveMode",
-          "type": "MoveModeEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Stop": 0,
+            "Up": 1,
+            "Down": 3
+          }
         },
         {
           "name": "Rate",
@@ -5113,9 +5551,13 @@
       "args": [
         {
           "name": "StepMode",
-          "type": "StepModeEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Up": 1,
+            "Down": 3
+          }
         },
         {
           "name": "StepSize",
@@ -5179,9 +5621,14 @@
       "args": [
         {
           "name": "MoveMode",
-          "type": "MoveModeEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Stop": 0,
+            "Up": 1,
+            "Down": 3
+          }
         },
         {
           "name": "Rate",
@@ -5209,9 +5656,13 @@
       "args": [
         {
           "name": "StepMode",
-          "type": "StepModeEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Up": 1,
+            "Down": 3
+          }
         },
         {
           "name": "StepSize",
@@ -5418,9 +5869,15 @@
         },
         {
           "name": "Direction",
-          "type": "DirectionEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Shortest": 0,
+            "Longest": 1,
+            "Up": 2,
+            "Down": 3
+          }
         },
         {
           "name": "TransitionTime",
@@ -5449,9 +5906,14 @@
       "args": [
         {
           "name": "MoveMode",
-          "type": "MoveModeEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Stop": 0,
+            "Up": 1,
+            "Down": 3
+          }
         },
         {
           "name": "Rate",
@@ -5479,9 +5941,13 @@
       "args": [
         {
           "name": "StepMode",
-          "type": "StepModeEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Up": 1,
+            "Down": 3
+          }
         },
         {
           "name": "StepSize",
@@ -5557,15 +6023,24 @@
         },
         {
           "name": "Action",
-          "type": "ColorLoopActionEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Deactivate": 0,
+            "ActivateFromColorLoopStartEnhancedHue": 1,
+            "ActivateFromEnhancedCurrentHue": 2
+          }
         },
         {
           "name": "Direction",
-          "type": "ColorLoopDirectionEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Decrement": 0,
+            "Increment": 1
+          }
         },
         {
           "name": "Time",
@@ -5617,9 +6092,14 @@
       "args": [
         {
           "name": "MoveMode",
-          "type": "MoveModeEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Stop": 0,
+            "Up": 1,
+            "Down": 3
+          }
         },
         {
           "name": "Rate",
@@ -5659,9 +6139,13 @@
       "args": [
         {
           "name": "StepMode",
-          "type": "StepModeEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Up": 1,
+            "Down": 3
+          }
         },
         {
           "name": "StepSize",
@@ -5719,9 +6203,18 @@
         },
         {
           "name": "ColorMode",
-          "type": "EffectColorModeEnum",
+          "type": "enum8",
           "max": 6,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Level": 0,
+            "XY": 1,
+            "XYAndLevel": 2,
+            "HS": 3,
+            "HSAndLevel": 4,
+            "EHUE": 5,
+            "EHUEAndLevel": 6
+          }
         },
         {
           "name": "ColorPalette",
@@ -5745,9 +6238,15 @@
       "args": [
         {
           "name": "Technology",
-          "type": "RangingTechEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "BluetoothChannelSounding": 0,
+            "WiFiRoundTripTimeRanging": 1,
+            "WiFiNextGenerationRanging": 2,
+            "BLEBeaconRSSIRanging": 3
+          }
         },
         {
           "name": "WiFiRangingDeviceRoleConfig",
@@ -5778,9 +6277,13 @@
         },
         {
           "name": "SecurityMode",
-          "type": "RangingSecurityEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "SecureRanging": 0,
+            "OpenRanging": 1
+          }
         },
         {
           "name": "Trigger",
@@ -5801,9 +6304,16 @@
       "args": [
         {
           "name": "ResultCode",
-          "type": "ResultCodeEnum",
+          "type": "enum8",
           "max": 4,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Accepted": 0,
+            "RejectedInfeasibleRanging": 1,
+            "RejectedInfeasibleRangingTriggers": 2,
+            "BusySessionCapacityReached": 3,
+            "BusyTryAgainLater": 4
+          }
         },
         {
           "name": "SessionID",
@@ -5883,9 +6393,12 @@
         },
         {
           "name": "NetworkIdentityType",
-          "type": "IdentityTypeEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": true
+          "optional": true,
+          "enum_values": {
+            "ECDSA": 1
+          }
         },
         {
           "name": "ClientIndex",
@@ -6096,8 +6609,13 @@
       "args": [
         {
           "name": "Status",
-          "type": "StatusEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "MultipleMatches": 1,
+            "NoMatches": 2
+          }
         },
         {
           "name": "Data",
@@ -6277,9 +6795,14 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "StatusEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "TargetNotFound": 1,
+            "NotAllowed": 2
+          }
         },
         {
           "id": 1,
@@ -6382,8 +6905,16 @@
       "args": [
         {
           "name": "Status",
-          "type": "StatusEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "InvalidStateForCommand": 1,
+            "NotAllowed": 2,
+            "NotActive": 3,
+            "SpeedOutOfRange": 4,
+            "SeekOutOfRange": 5
+          }
         },
         {
           "name": "Data",
@@ -6503,9 +7034,97 @@
         {
           "id": 0,
           "name": "KeyCode",
-          "type": "CECKeyCodeEnum",
+          "type": "enum8",
           "max": 118,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Select": 0,
+            "Up": 1,
+            "Down": 2,
+            "Left": 3,
+            "Right": 4,
+            "RightUp": 5,
+            "RightDown": 6,
+            "LeftUp": 7,
+            "LeftDown": 8,
+            "RootMenu": 9,
+            "SetupMenu": 10,
+            "ContentsMenu": 11,
+            "FavoriteMenu": 12,
+            "Exit": 13,
+            "MediaTopMenu": 16,
+            "MediaContextSensitiveMenu": 17,
+            "NumberEntryMode": 29,
+            "Number11": 30,
+            "Number12": 31,
+            "Number0OrNumber10": 32,
+            "Numbers1": 33,
+            "Numbers2": 34,
+            "Numbers3": 35,
+            "Numbers4": 36,
+            "Numbers5": 37,
+            "Numbers6": 38,
+            "Numbers7": 39,
+            "Numbers8": 40,
+            "Numbers9": 41,
+            "Dot": 42,
+            "Enter": 43,
+            "Clear": 44,
+            "NextFavorite": 47,
+            "ChannelUp": 48,
+            "ChannelDown": 49,
+            "PreviousChannel": 50,
+            "SoundSelect": 51,
+            "InputSelect": 52,
+            "DisplayInformation": 53,
+            "Help": 54,
+            "PageUp": 55,
+            "PageDown": 56,
+            "Power": 64,
+            "VolumeUp": 65,
+            "VolumeDown": 66,
+            "Mute": 67,
+            "Play": 68,
+            "Stop": 69,
+            "Pause": 70,
+            "Record": 71,
+            "Rewind": 72,
+            "FastForward": 73,
+            "Eject": 74,
+            "Forward": 75,
+            "Backward": 76,
+            "StopRecord": 77,
+            "PauseRecord": 78,
+            "Reserved": 79,
+            "Angle": 80,
+            "SubPicture": 81,
+            "VideoOnDemand": 82,
+            "ElectronicProgramGuide": 83,
+            "TimerProgramming": 84,
+            "InitialConfiguration": 85,
+            "SelectBroadcastType": 86,
+            "SelectSoundPresentation": 87,
+            "PlayFunction": 96,
+            "PausePlayFunction": 97,
+            "RecordFunction": 98,
+            "PauseRecordFunction": 99,
+            "StopFunction": 100,
+            "MuteFunction": 101,
+            "RestoreVolumeFunction": 102,
+            "TuneFunction": 103,
+            "SelectMediaFunction": 104,
+            "SelectAvInputFunction": 105,
+            "SelectAudioInputFunction": 106,
+            "PowerToggleFunction": 107,
+            "PowerOffFunction": 108,
+            "PowerOnFunction": 109,
+            "F1Blue": 113,
+            "F2Red": 114,
+            "F3Green": 115,
+            "F4Yellow": 116,
+            "F5": 117,
+            "Data": 118
+          }
         }
       ]
     },
@@ -6517,9 +7136,14 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "StatusEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "UnsupportedKey": 1,
+            "InvalidKeyInCurrentState": 2
+          }
         }
       ]
     }
@@ -6586,8 +7210,15 @@
       "args": [
         {
           "name": "Status",
-          "type": "StatusEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "URLNotAvailable": 1,
+            "AuthFailed": 2,
+            "TextTrackNotAvailable": 3,
+            "AudioTrackNotAvailable": 4
+          }
         },
         {
           "name": "Data",
@@ -6685,9 +7316,17 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "StatusEnum",
+          "type": "enum8",
           "max": 5,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "AppNotAvailable": 1,
+            "SystemBusy": 2,
+            "PendingUserApproval": 3,
+            "Downloading": 4,
+            "Installing": 5
+          }
         },
         {
           "id": 1,
@@ -6994,9 +7633,13 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "StatusEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Success": 0,
+            "UnexpectedData": 1
+          }
         },
         {
           "id": 1,
@@ -7100,16 +7743,26 @@
       "args": [
         {
           "name": "StreamUsage",
-          "type": "StreamUsageEnum",
+          "type": "enum8",
           "min": 1,
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Internal": 0,
+            "Recording": 1,
+            "Analysis": 2,
+            "LiveView": 3
+          }
         },
         {
           "name": "AudioCodec",
-          "type": "AudioCodecEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OPUS": 0,
+            "AAC-LC": 1
+          }
         },
         {
           "name": "ChannelCount",
@@ -7170,16 +7823,28 @@
       "args": [
         {
           "name": "StreamUsage",
-          "type": "StreamUsageEnum",
+          "type": "enum8",
           "min": 1,
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Internal": 0,
+            "Recording": 1,
+            "Analysis": 2,
+            "LiveView": 3
+          }
         },
         {
           "name": "VideoCodec",
-          "type": "VideoCodecEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "H264": 0,
+            "HEVC": 1,
+            "VVC": 2,
+            "AV1": 3
+          }
         },
         {
           "name": "MinFrameRate",
@@ -7286,9 +7951,13 @@
       "args": [
         {
           "name": "ImageCodec",
-          "type": "ImageCodecEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "JPEG": 0,
+            "HEIC": 1
+          }
         },
         {
           "name": "MaxFrameRate",
@@ -7378,8 +8047,14 @@
       "args": [
         {
           "name": "StreamPriorities",
-          "type": "StreamUsageEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Internal": 0,
+            "Recording": 1,
+            "Analysis": 2,
+            "LiveView": 3
+          }
         }
       ]
     },
@@ -7412,9 +8087,13 @@
         },
         {
           "name": "ImageCodec",
-          "type": "ImageCodecEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "JPEG": 0,
+            "HEIC": 1
+          }
         },
         {
           "name": "Resolution",
@@ -7603,9 +8282,15 @@
         {
           "id": 0,
           "name": "StreamUsage",
-          "type": "StreamUsageEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Internal": 0,
+            "Recording": 1,
+            "Analysis": 2,
+            "LiveView": 3
+          }
         },
         {
           "id": 1,
@@ -7714,9 +8399,15 @@
         {
           "id": 2,
           "name": "StreamUsage",
-          "type": "StreamUsageEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Internal": 0,
+            "Recording": 1,
+            "Analysis": 2,
+            "LiveView": 3
+          }
         },
         {
           "id": 3,
@@ -7851,9 +8542,24 @@
         {
           "id": 1,
           "name": "Reason",
-          "type": "WebRTCEndReasonEnum",
+          "type": "enum8",
           "max": 12,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "ICEFailed": 0,
+            "ICETimeout": 1,
+            "UserHangup": 2,
+            "UserBusy": 3,
+            "Replaced": 4,
+            "NoUserMedia": 5,
+            "InviteTimeout": 6,
+            "AnsweredElsewhere": 7,
+            "OutOfResources": 8,
+            "MediaTimeout": 9,
+            "LowPower": 10,
+            "PrivacyMode": 11,
+            "UnknownReason": 12
+          }
         }
       ]
     }
@@ -7942,9 +8648,24 @@
         {
           "id": 1,
           "name": "Reason",
-          "type": "WebRTCEndReasonEnum",
+          "type": "enum8",
           "max": 12,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "ICEFailed": 0,
+            "ICETimeout": 1,
+            "UserHangup": 2,
+            "UserBusy": 3,
+            "Replaced": 4,
+            "NoUserMedia": 5,
+            "InviteTimeout": 6,
+            "AnsweredElsewhere": 7,
+            "OutOfResources": 8,
+            "MediaTimeout": 9,
+            "LowPower": 10,
+            "PrivacyMode": 11,
+            "UnknownReason": 12
+          }
         }
       ]
     }
@@ -8019,9 +8740,13 @@
         },
         {
           "name": "TransportStatus",
-          "type": "TransportStatusEnum",
+          "type": "enum8",
           "max": 1,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "Active": 0,
+            "Inactive": 1
+          }
         }
       ]
     },
@@ -8039,9 +8764,15 @@
         },
         {
           "name": "ActivationReason",
-          "type": "TriggerActivationReasonEnum",
+          "type": "enum8",
           "max": 3,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "UserInitiated": 0,
+            "Automation": 1,
+            "Emergency": 2,
+            "DoorbellPressed": 3
+          }
         },
         {
           "name": "TimeControl",
@@ -8419,9 +9150,15 @@
         },
         {
           "name": "GroupPermission",
-          "type": "DatastoreAccessControlEntryPrivilegeEnum",
+          "type": "enum8",
           "max": 5,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "View": 1,
+            "Operate": 3,
+            "Manage": 4,
+            "Administer": 5
+          }
         }
       ]
     },
@@ -8461,9 +9198,15 @@
         },
         {
           "name": "GroupPermission",
-          "type": "DatastoreAccessControlEntryPrivilegeEnum",
+          "type": "enum8",
           "max": 5,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "View": 1,
+            "Operate": 3,
+            "Manage": 4,
+            "Administer": 5
+          }
         }
       ]
     },
@@ -8757,9 +9500,17 @@
       "args": [
         {
           "name": "StatusCode",
-          "type": "ICACCSRResponseStatusCodeEnum",
+          "type": "enum8",
           "max": 5,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OK": 0,
+            "Busy": 1,
+            "PAKEParameterError": 2,
+            "WindowNotOpen": 3,
+            "VIDNotVerified": 4,
+            "InvalidAdministratorFabricIndex": 5
+          }
         },
         {
           "name": "ICACCSR",
@@ -8787,9 +9538,14 @@
       "args": [
         {
           "name": "StatusCode",
-          "type": "ICACResponseStatusEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OK": 0,
+            "InvalidPublicKey": 1,
+            "InvalidICAC": 2
+          }
         }
       ]
     },
@@ -8841,9 +9597,14 @@
       "args": [
         {
           "name": "StatusCode",
-          "type": "TransferAnchorResponseStatusEnum",
+          "type": "enum8",
           "max": 2,
-          "optional": false
+          "optional": false,
+          "enum_values": {
+            "OK": 0,
+            "TransferAnchorStatusDatastoreBusy": 1,
+            "TransferAnchorStatusNoUserConsent": 2
+          }
         }
       ]
     },
@@ -9295,8 +10056,14 @@
         },
         {
           "name": "arg3",
-          "type": "SimpleEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "arg4",
@@ -9305,8 +10072,14 @@
         },
         {
           "name": "arg5",
-          "type": "SimpleEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "arg6",
@@ -9368,8 +10141,14 @@
         },
         {
           "name": "arg2",
-          "type": "SimpleEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         }
       ]
     },
@@ -9390,8 +10169,14 @@
         },
         {
           "name": "arg3",
-          "type": "SimpleEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "arg4",
@@ -9400,8 +10185,14 @@
         },
         {
           "name": "arg5",
-          "type": "SimpleEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "arg6",
@@ -9566,8 +10357,14 @@
         },
         {
           "name": "NullableListValue",
-          "type": "SimpleEnum",
-          "optional": true
+          "type": "enum8",
+          "optional": true,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "OptionalListWasPresent",
@@ -9576,8 +10373,14 @@
         },
         {
           "name": "OptionalListValue",
-          "type": "SimpleEnum",
-          "optional": true
+          "type": "enum8",
+          "optional": true,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "NullableOptionalListWasPresent",
@@ -9591,8 +10394,14 @@
         },
         {
           "name": "NullableOptionalListValue",
-          "type": "SimpleEnum",
-          "optional": true
+          "type": "enum8",
+          "optional": true,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         }
       ]
     },
@@ -9752,8 +10561,14 @@
         },
         {
           "name": "arg2",
-          "type": "SimpleEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         }
       ]
     },
@@ -9769,8 +10584,13 @@
         },
         {
           "name": "field2",
-          "type": "TestGlobalEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "SomeValue": 0,
+            "SomeOtherValue": 1,
+            "FinalValue": 2
+          }
         }
       ]
     },
@@ -9838,18 +10658,36 @@
         },
         {
           "name": "NullableList",
-          "type": "SimpleEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "OptionalList",
-          "type": "SimpleEnum",
-          "optional": true
+          "type": "enum8",
+          "optional": true,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "NullableOptionalList",
-          "type": "SimpleEnum",
-          "optional": true
+          "type": "enum8",
+          "optional": true,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         }
       ]
     },
@@ -9895,8 +10733,14 @@
         },
         {
           "name": "arg2",
-          "type": "SimpleEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "ValueA": 1,
+            "ValueB": 2,
+            "ValueC": 3
+          }
         },
         {
           "name": "arg3",
@@ -9989,8 +10833,13 @@
         },
         {
           "name": "field2",
-          "type": "TestGlobalEnum",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "SomeValue": 0,
+            "SomeOtherValue": 1,
+            "FinalValue": 2
+          }
         }
       ]
     },
@@ -10038,8 +10887,15 @@
       "args": [
         {
           "name": "Type",
-          "type": "FaultType",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "SystemFault": 1,
+            "InetFault": 2,
+            "ChipFault": 3,
+            "CertFault": 4
+          }
         },
         {
           "name": "Id",
@@ -10070,8 +10926,15 @@
       "args": [
         {
           "name": "Type",
-          "type": "FaultType",
-          "optional": false
+          "type": "enum8",
+          "optional": false,
+          "enum_values": {
+            "Unspecified": 0,
+            "SystemFault": 1,
+            "InetFault": 2,
+            "ChipFault": 3,
+            "CertFault": 4
+          }
         },
         {
           "name": "Id",

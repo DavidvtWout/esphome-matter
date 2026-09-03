@@ -29,6 +29,14 @@ def format_counter(data: dict[str, int]) -> str:
 
 
 @dataclass
+class Enum:
+    name: str  # CamelCase
+    type: str  # e.g.: enum8
+    cluster_code: int | None = None
+    items: dict[str, int] = field(default_factory=dict)
+
+
+@dataclass
 class Attribute:
     code: int
     side: str  # clent, server, either
@@ -216,9 +224,26 @@ def parse_cluster_elem(elem) -> Cluster:
     return cluster
 
 
-def parse_data_model(data_model_dir: Path) -> tuple[list[DeviceType], list]:
+def parse_enum_elem(elem) -> Enum:
+    enum = Enum(name=elem.get("name"), type=elem.get("type"))
+    cluster_elem = elem.find("./cluster")
+    if cluster_elem is not None:
+        enum.cluster_code = int(cluster_elem.get("code"), 0)
+    for item_elem in elem.findall("./item"):
+        value_str = item_elem.get("value")
+        if "x" not in value_str:
+            # Fucking window-cover.xml not adhering to the standard...
+            value_str = value_str.lstrip("0")
+            if value_str == "":
+                value_str = "0"
+        enum.items[item_elem.get("name")] = int(value_str, 0)
+    return enum
+
+
+def parse_data_model(data_model_dir: Path) -> tuple[list[DeviceType], list, list]:
     device_types = []
     clusters = []
+    enums = []
 
     for xml_file in data_model_dir.glob("*.xml"):
         root = ElementTree.parse(xml_file).getroot()
@@ -229,35 +254,59 @@ def parse_data_model(data_model_dir: Path) -> tuple[list[DeviceType], list]:
         for elem in root.findall("./cluster"):
             clusters.append(parse_cluster_elem(elem))
 
+        # Also includes the global enums
+        for elem in root.findall("./enum"):
+            enums.append(parse_enum_elem(elem))
+
+        # TODO: bitmaps
+
     print("attribute attrs:   ", format_counter(attribute_attrs))
     # print("attribute types:   ", format_counter(attribute_types))
     print("command attrs:     ", format_counter(command_attrs))
     print("command arg attrs: ", format_counter(command_arg_attrs))
 
-    return device_types, clusters
+    return device_types, clusters, enums
 
 
-def post_process_commands(clusters: list[Cluster]) -> dict:
+def post_process_commands(clusters: list[Cluster], enums: list[Enum]) -> dict:
+    global_enums = {}
+    cluster_enums = defaultdict(dict)
+    for enum in enums:
+        if enum.cluster_code is not None:
+            cluster_enums[enum.cluster_code][enum.name] = enum
+        else:
+            global_enums[enum.name] = enum
+
     commands = {}
-
     for cluster in sorted(clusters, key=lambda c: c.id):
         if cluster.commands:
             commands[cluster.name] = {}
         for command in sorted(cluster.commands, key=lambda c: c.code):
-            args = [
-                filter_none(
-                    {
-                        "id": arg.id,
-                        "name": arg.name,
-                        "type": arg.type,
-                        "min": arg.min,
-                        "max": arg.max,
-                        "default": arg.default,
-                        "optional": arg.optional,
-                    }
+            args = []
+            for arg in command.args:
+                arg_type = arg.type
+                enum = cluster_enums.get(cluster.id, {}).get(arg_type)
+                enum_values = None
+                if not enum:
+                    enum = global_enums.get(arg_type)
+                if enum:
+                    arg_type = enum.type
+                    enum_values = enum.items
+                args.append(
+                    filter_none(
+                        {
+                            "id": arg.id,
+                            "name": arg.name,
+                            "type": arg_type,
+                            "min": arg.min,
+                            "max": arg.max,
+                            "default": arg.default,
+                            "optional": arg.optional,
+                            "enum_values": enum_values,
+                        }
+                    )
                 )
-                for arg in command.args
-            ]
+
             commands[cluster.name][command.name] = filter_none(
                 {
                     "id": command.code,
@@ -350,9 +399,9 @@ def fixup(device_types):
 
 def main():
     args = parse_args()
-    raw_device_types, raw_clusters = parse_data_model(args.data_model_path)
+    raw_device_types, raw_clusters, enums = parse_data_model(args.data_model_path)
 
-    commands = post_process_commands(raw_clusters)
+    commands = post_process_commands(raw_clusters, enums)
     device_types = post_process_device_types(raw_device_types, raw_clusters)
     fixup(device_types)
 
