@@ -35,12 +35,14 @@ class CommandArg:
         )
 
     @property
-    def conf_key(self) -> str:
-        return snake_case(self.name)
+    def data_key(self) -> str:
+        """Key for esp_matter JSON data."""
+        return f"{self.id}:{self.type}"
 
-    def validator(self):
-        # TODO
-        return cv.int_range(min=-0x80000000, max=0x7FFFFFFF)
+    @property
+    def conf_key(self) -> str:
+        """Key as used in device config YAML."""
+        return snake_case(self.name)
 
 
 @dataclass(frozen=True, slots=True)
