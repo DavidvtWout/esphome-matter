@@ -17,7 +17,7 @@ import esphome.final_validate as fv
 from esphome.types import ConfigType
 
 from .actions import register_bound_command_actions
-from .endpoints import ENDPOINT_SCHEMA, configure_endpoints
+from .endpoints import ENDPOINT_SCHEMA, register_endpoints
 from .kconfig import disable_unused_clusters
 from .types import MatterComponent
 
@@ -249,4 +249,4 @@ async def to_code(config: ConfigType):
         # TODO: stop api from restarting device in commissioning mode?
 
     disable_unused_clusters()
-    await configure_endpoints(var, config)
+    await register_endpoints(var, config)

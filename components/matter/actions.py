@@ -186,7 +186,7 @@ def _command_schema(command: Command):
             schema[cv.Required(arg.conf_key)] = validator
             has_required = True
         if arg.default is not None:
-            schema[cv.Option(arg.conf_key, default=arg.default)] = validator
+            schema[cv.Optional(arg.conf_key, default=arg.default)] = validator
         else:
             schema[cv.Optional(arg.conf_key)] = validator
 

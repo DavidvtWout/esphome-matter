@@ -21,7 +21,7 @@ class CommandArg:
     # min: int | None = None
     # max: int | None = None
     # is_nullable: bool = False
-    # enum_values: tuple[tuple[str, int], ...] = ()
+    enum_values: tuple[tuple[str, int], ...] = ()
     # converter: str | None = None
 
     @classmethod
@@ -30,8 +30,9 @@ class CommandArg:
             id=data.get("id"),
             name=data["name"],
             type=data["type"],
-            optional=data.get("optional"),
+            optional=data.get("optional", False),
             default=data.get("default"),
+            enum_values=data.get("enum_values", ()),
         )
 
     @property
@@ -108,9 +109,9 @@ class Cluster:
         return cls(
             id=data["id"],
             name=data["name"],
-            revision=data["revision"],
-            client=data["client"],
-            server=data["server"],
+            revision=data.get("revision", 1),
+            client=data.get("client"),
+            server=data.get("server"),
             attributes=tuple([Attribute.from_dict(a) for a in data["attributes"]]),
         )
 
@@ -122,7 +123,7 @@ class Cluster:
 @dataclass(frozen=True, slots=True)
 class DeviceType:
     id: int
-    name: str  # snake_case (based on typeName)
+    name: str  # snake_case
     revision: int
     clusters: tuple[Cluster, ...] = ()
 
@@ -134,6 +135,10 @@ class DeviceType:
             revision=data["revision"],
             clusters=tuple([Cluster.from_dict(c) for c in data["clusters"]]),
         )
+
+    @property
+    def namespace(self) -> str:
+        return self.name
 
     @property
     def conf_key(self) -> str:
@@ -200,6 +205,9 @@ DEVICE_TYPES_BY_NAME: dict[str, DeviceType] = {
 }
 DEVICE_TYPES_BY_ID: dict[int, DeviceType] = {
     device_type.id: device_type for device_type in DEVICE_TYPES
+}
+DEVICE_TYPES_BY_CONF_KEY: dict[str, DeviceType] = {
+    device_type.conf_key: device_type for device_type in DEVICE_TYPES
 }
 
 CLUSTER_ID_TO_NAME = {}

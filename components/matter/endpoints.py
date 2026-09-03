@@ -4,7 +4,7 @@ from esphome.const import CONF_LIGHT_ID, CONF_SENSOR_ID
 from esphome.types import ConfigType
 
 from .const import *
-from .device_types import DEVICE_TYPES
+from .data_model import DEVICE_TYPES, DEVICE_TYPES_BY_CONF_KEY
 from .types import MatterEndpointRef
 
 
@@ -12,11 +12,10 @@ ENDPOINT_SCHEMA = cv.All(
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(MatterEndpointRef),
-            cv.Optional(CONF_ENABLE_BINDING): cv.boolean,
         }
         | {
-            cv.Optional(dt_name): dt_config["schema"]
-            for dt_name, dt_config in DEVICE_TYPES.items()
+            cv.Optional(device_type.conf_key): device_type.schema()
+            for device_type in DEVICE_TYPES
         }
     ),
 )
@@ -32,19 +31,22 @@ def _endpoint_binding_enabled(endpoint_config: ConfigType) -> bool:
     )
 
 
-async def configure_endpoints(var, config: ConfigType):
+async def register_endpoints(var, config: ConfigType):
     for endpoint_id, endpoint_config in config[CONF_ENDPOINTS].items():
         cg.add(var.register_endpoint(endpoint_id))
         if _endpoint_binding_enabled(endpoint_config):
             cg.add(var.register_binding(endpoint_id))
-        for device_type, device_config in endpoint_config.items():
-            if device_type not in DEVICE_TYPES:
+        for conf_key, device_config in endpoint_config.items():
+            device_type = DEVICE_TYPES_BY_CONF_KEY.get(conf_key)
+            if device_type is None:
                 continue
             register_device_type = var.register_device_type.template(
-                cg.RawExpression(f"esp_matter::endpoint::{device_type}::config_t"),
-                cg.RawExpression(f"esp_matter::endpoint::{device_type}::add"),
+                cg.RawExpression(
+                    f"esp_matter::endpoint::{device_type.namespace}::config_t"
+                ),
+                cg.RawExpression(f"esp_matter::endpoint::{device_type.namespace}::add"),
             )
-            cg.add(register_device_type(endpoint_id, device_type))
+            cg.add(register_device_type(endpoint_id, device_type.namespace))
             if CONF_SENSOR_ID in device_config:
                 sensor_ = await cg.get_variable(device_config[CONF_SENSOR_ID])
                 cg.add(var.map_sensor_to_endpoint(sensor_, endpoint_id))
