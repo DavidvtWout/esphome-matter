@@ -1,3 +1,5 @@
+from .attributes import SENSOR_ATTRIBUTES
+from .commands import COMMAND_ARG_TYPES
 from .data_model import (
     COMMANDS,
     DEVICE_TYPES,
@@ -10,4 +12,3 @@ from .data_model import (
     Command,
     CommandArg,
 )
-from .attributes import SENSOR_ATTRIBUTES, SENSOR_ATTRIBUTES_BY_CLUSTER, SensorAttribute
