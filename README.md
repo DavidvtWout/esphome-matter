@@ -53,7 +53,7 @@ esphome-matter based devices will show up as "uncertified test devices" in the e
 - **Google Home Ecosystem (Android or Google Nest smart speakers/display) - "Google Home" app**: ❓
 - **Samsung SmartThings (Station or Hub v2 and later)**: ❓
 - **Amazon Alexa (Amazon Echo)** : ❓
-- |Platform|Gen1|Gen2|Gen3|
+|Platform|Gen1|Gen2|Gen3|
 |---|---|---|---|
 |ESP8266 Core 2.3.X|OK|OK?|OK (1)|
 |ESP8266 Core 2.4.0|OK (2)|OK? (2)|OK (1, 2)|
