@@ -55,9 +55,9 @@ esphome-matter based devices will show up as "uncertified test devices" in the e
 - **Amazon Alexa (Amazon Echo)** : ❓
   
 |Protkoll|Gen1|Gen2|Gen3|Gen4|Gen5|
-|---|---|---|---|---|---|---|
-|Wifi|OK|OK?|OK (1)|
-|Threat|❓|OK? (2)|OK (1, 2)|
+|---|---|---|---|---|---|
+|Wifi||OK?|OK (1)|
+|Threat|❓|❓|❓|❓|❓|
 
 - **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): ❓
 - **Homey Pro**: ❓
