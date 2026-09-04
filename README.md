@@ -52,12 +52,12 @@ esphome-matter based devices will show up as "uncertified test devices" in the e
 - **Apple iOS (iPhone or iPad) and tvOS 16 (Apple TV) - "Home" app by Apple**: ✅️
 - **Google Home Ecosystem (Android or Google Nest smart speakers/display) - "Google Home" app**: ❓
 - **Samsung SmartThings (Station or Hub v2 and later)**: ❓
-- **Amazon Alexa (Amazon Echo)** : ❓
+- **Amazon Alexa (Amazon Echo)** :
   
 |Echo|Gen1|Gen2|Gen3|Gen4|Gen5|
 |---|---|---|---|---|---|
 |Wifi|X|❓|✅️|✅️|✅️|
-|Threat|X|X|X|❓|❓|
+|Thread|X|X|X|❓|❓|
 
 - **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): ❓
 - **Homey Pro**: ❓
