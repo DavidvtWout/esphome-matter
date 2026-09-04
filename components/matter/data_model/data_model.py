@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from esphome import automation
 
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
-from ..util import snake_case
+from ..util import snake_case, maybe_empty
 
 DATA_MODEL_DIR = Path(__file__).resolve().parent
 
@@ -163,8 +163,8 @@ class DeviceType:
         }
 
         if len(sensor_attributes) == 1:
-            return automation.maybe_conf(next(iter(sensor_attributes)), schema)
-        return schema
+            schema = automation.maybe_conf(next(iter(sensor_attributes)), schema)
+        return maybe_empty(schema)
 
 
 def _load_commands(
