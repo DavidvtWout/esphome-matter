@@ -55,7 +55,7 @@ esphome-matter based devices will show up as "uncertified test devices" in the e
 - **Amazon Alexa (Amazon Echo)** : ❓
   
 |Platform|Gen1|Gen2|Gen3|
-|---|---|---|---|
+|---|---|---|---|---|
 |ESP8266 Core 2.3.X|OK|OK?|OK (1)|
 |ESP8266 Core 2.4.0|OK (2)|OK? (2)|OK (1, 2)|
 |ESP8266 Core 2.4.1|OK (2)|OK? (2)|OK (1, 2)|
