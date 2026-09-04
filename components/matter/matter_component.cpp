@@ -20,7 +20,7 @@
 #include <app/server/Server.h>
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#include <platform/ThreadStackManager.h>
+#include <platform/ESP32/ThreadStackManagerImpl.h>
 #endif
 #include <lib/support/Base64.h>
 #ifdef USE_OPENTHREAD
@@ -233,39 +233,51 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     ESP_LOGV(TAG_EVENT, "InternetConnectivityChange");
     break;
   case chip::DeviceLayer::DeviceEventType::kThreadStateChange: { // 0x800B
-    const auto &thread_state = event->ThreadStateChange;
-    if (thread_state.RoleChanged)
-      ESP_LOGD(TAG_EVENT, "Thread role changed");
-    if (thread_state.NetDataChanged)
-      ESP_LOGD(TAG_EVENT, "Thread network data changed");
-    if (thread_state.ChildNodesChanged)
-      ESP_LOGD(TAG_EVENT, "Thread child nodes changed");
-    if (thread_state.AddressChanged) {
 #ifdef USE_OPENTHREAD
+    const auto &thread_state = event->ThreadStateChange;
+    if (thread_state.RoleChanged) {
+      auto lock = esphome::openthread::InstanceLock::try_acquire(1000);
+      if (lock) {
+        const otDeviceRole role = otThreadGetDeviceRole(lock.get_instance());
+        ESP_LOGD(TAG_EVENT, "Thread role changed to %s",
+                 otThreadDeviceRoleToString(role));
+      } else {
+        ESP_LOGW(TAG_EVENT, "Thread role changed; unable to acquire instance");
+      }
+    }
+    if (thread_state.NetDataChanged)
+      ESP_LOGV(TAG_EVENT, "Thread network data changed");
+    if (thread_state.ChildNodesChanged)
+      ESP_LOGV(TAG_EVENT, "Thread child nodes changed");
+    if (thread_state.AddressChanged) {
       ESP_LOGD(TAG_EVENT, "Thread address(es) changed");
-      auto lock = esphome::openthread::InstanceLock::try_acquire(2000);
+      auto lock = esphome::openthread::InstanceLock::try_acquire(1000);
       if (lock) {
         otInstance *instance = lock.get_instance();
         for (const otNetifAddress *addr = otIp6GetUnicastAddresses(instance);
              addr != nullptr; addr = addr->mNext) {
           char address[OT_IP6_ADDRESS_STRING_SIZE];
           otIp6AddressToString(&addr->mAddress, address, sizeof(address));
-          ESP_LOGD(TAG_EVENT, "  address %s/%u valid=%s preferred=%s rloc=%s",
-                   address, static_cast<unsigned>(addr->mPrefixLength),
-                   YESNO(addr->mValid), YESNO(addr->mPreferred),
-                   YESNO(addr->mRloc));
+          if (addr->mValid)
+            ESP_LOGD(TAG_EVENT, "  address %s/%u rloc=%s", address,
+                     static_cast<unsigned>(addr->mPrefixLength),
+                     YESNO(addr->mRloc));
+          else
+            ESP_LOGW(TAG_EVENT, "  [INVALID] address %s/%u rloc=%s", address,
+                     static_cast<unsigned>(addr->mPrefixLength),
+                     YESNO(addr->mRloc));
         }
       } else {
         ESP_LOGW(TAG_EVENT,
                  "ThreadStateChange: address list unavailable; failed to "
                  "acquire OpenThread lock");
       }
-#endif // USE_OPENTHREAD
     }
     if (!thread_state.RoleChanged && !thread_state.AddressChanged &&
         !thread_state.NetDataChanged && !thread_state.ChildNodesChanged)
       ESP_LOGV(TAG_EVENT, "ThreadStateChange: flags=0x%08" PRIx32,
                thread_state.OpenThread.Flags);
+#endif // USE_OPENTHREAD
     break;
   }
   case chip::DeviceLayer::DeviceEventType::kDnssdInitialized: // 0x8012
@@ -315,13 +327,13 @@ void MatterComponent::setup() {
   }
 
 #ifdef USE_OPENTHREAD
-  // ESPHome owns the OpenThread task/stack. CHIP still needs its
+  // ESPHome owns the OpenThread task/stack. connectedhomeip still needs its
   // ThreadStackManager bound to that existing instance for Thread diagnostics
   // and other Thread helpers.
-  if (chip::DeviceLayer::ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
-    ESP_LOGE(
-        TAG,
-        "Failed to bind CHIP ThreadStackManager to ESPHome OpenThread stack");
+  if (chip::DeviceLayer::ThreadStackMgrImpl()._AttachToThreadStack() !=
+      CHIP_NO_ERROR) {
+    ESP_LOGE(TAG, "Failed to attach ESPHome OpenThread stack to "
+                  "connectedhomeip ThreadStackManager");
     this->mark_failed();
     return;
   }

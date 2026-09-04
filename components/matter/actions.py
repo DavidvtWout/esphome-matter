@@ -9,7 +9,7 @@ from esphome.const import (
     CONF_ID,
     CONF_VALUE,
 )
-from esphome.core import ID
+from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .clusters import MATTER_COMMANDS
@@ -46,7 +46,7 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
         {
             cv.GenerateID(): cv.declare_id(MatterSendCommandAction),
             cv.Required(CONF_ENDPOINT_ID): cv.Any(
-                cv.uint16_t, cv.use_id(MatterEndpointRef)
+                cv.use_id(MatterEndpointRef), cv.uint16_t
             ),
             cv.Required(CONF_CLUSTER_ID): cv.hex_uint32_t,
             cv.Required(CONF_COMMAND_ID): cv.hex_uint32_t,
@@ -63,7 +63,7 @@ async def matter_send_command_to_code(
     provide an esp-matter compatible string yourself.
 
       matter._send_command:
-        endpoint_id: some_endpoint
+        endpoint_id: some_endpoint (either esphome id or numerical matter endpoint id)
         cluster_id: 8 # LevelControl
         command_id: 0 # MoveToLevel
         data: '{"0:U8":0,"1:U16":50,"2:U8":0,"3:U8":0}'
@@ -73,16 +73,11 @@ async def matter_send_command_to_code(
       esp32:
         framework:
           sdkconfig_options:
-            CONFIG_SUPPORT_<>_CLUSTER=y  # For example CONFIG_SUPPORT_MICROWAVE_OVEN_CONTROL_CLUSTER
+            CONFIG_SUPPORT_<cluster_name>_CLUSTER=y  # For example CONFIG_SUPPORT_MICROWAVE_OVEN_CONTROL_CLUSTER
 
     """
     var = cg.new_Pvariable(action_id, template_arg)
-    endpoint_id = config[CONF_ENDPOINT_ID]
-    if isinstance(endpoint_id, ID):
-        endpoint_ref = await cg.get_variable(endpoint_id)
-        cg.add(var.set_endpoint_ref(endpoint_ref))
-    else:
-        cg.add(var.set_endpoint_id(endpoint_id))
+    cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
     cg.add(var.set_cluster_id(config[CONF_CLUSTER_ID]))
     cg.add(var.set_command_id(config[CONF_COMMAND_ID]))
     cg.add(var.set_data(config[CONF_DATA]))
@@ -90,7 +85,7 @@ async def matter_send_command_to_code(
 
 
 # TODO: matter._send_command_to_node (send command to a single node without using the binding cluster)
-# TODO: matter._send_command_to_nodes (send commands to multiple node without using the binding cluster)
+# TODO: matter._send_command_to_nodes (send command to multiple node without using the binding cluster)
 
 
 def register_bound_command_actions():
@@ -147,13 +142,20 @@ async def _new_send_command_action(
     cluster_id, command_id = _resolve_command_id(cluster_name, command_name)
 
     var = cg.new_Pvariable(action_id, template_arg)
-    # TODO: set endpoint_id instead of endpoint_ref
-    endpoint_ref = await cg.get_variable(config[CONF_ENDPOINT_ID])
-    cg.add(var.set_endpoint_ref(endpoint_ref))
+    cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
     cg.add(var.set_cluster_id(cluster_id))
     cg.add(var.set_command_id(command_id))
     cg.add(var.set_data(_build_data(config, cluster_name, command_name)))
     return var
+
+
+def _resolve_endpoint_id(endpoint_id: ID | int) -> int:
+    if not isinstance(endpoint_id, ID):
+        return endpoint_id
+    endpoint_ids = CORE.data.get(CONF_MATTER, {}).get(KEY_ENDPOINT_ID_MAP, {})
+    if endpoint_id in endpoint_ids:
+        return endpoint_ids[endpoint_id]
+    raise cv.Invalid(f"Unknown Matter endpoint id '{endpoint_id}'")
 
 
 def _build_data(config, cluster_name: str, command_name: str) -> str:
@@ -169,14 +171,7 @@ def _build_data(config, cluster_name: str, command_name: str) -> str:
 
     command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
     for i, field in enumerate(command.get("fields", [])):
-        field_type = field["type"]
-        field_value = config.get(field["key"], field.get("default"))
-        if field_value is None:
-            raise cv.Invalid(
-                f"matter.{_snake_case(cluster_name)}.{_snake_case(command_name)}: missing required field '{field['key']}'"
-            )
-
-        data[f"{i}:{field_type}"] = _field_validator(field_type)(field_value)
+        data[f"{i}:{field.type}"] = config[field.key]
 
     return json.dumps(data)
 
@@ -201,35 +196,19 @@ def _resolve_command_id(cluster_name: str, command_name: str) -> tuple[int, int]
     return cluster["id"], command["id"]
 
 
-def _field_validator(field_type: str):
-    try:
-        return {
-            "U8": cv.uint8_t,
-            "U16": cv.uint16_t,
-            "U32": cv.uint32_t,
-            "I8": cv.int_range(min=-128, max=127),
-            "I16": cv.int_range(min=-32768, max=32767),
-            "I32": cv.int_range(min=-2147483648, max=2147483647),
-        }[field_type]
-    except KeyError as err:
-        raise cv.Invalid(f"Unsupported Matter field type '{field_type}'") from err
-
-
 def _command_schema(cluster_name: str, command_name: str):
     schema = {
-        cv.Required(CONF_ENDPOINT_ID): cv.use_id(MatterEndpointRef),
+        # TODO: validate endpoint id to exist
+        cv.Required(CONF_ENDPOINT_ID): cv.Any(
+            cv.uint16_t, cv.use_id(MatterEndpointRef)
+        ),
     }
 
     command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
     has_required = False
     for field in command.get("fields", []):
-        key = field["key"]
-        validator = _field_validator(field["type"])
-        if field["default"] is None:
-            schema[cv.Required(key)] = validator
-            has_required = True
-        else:
-            schema[cv.Optional(key, default=field["default"])] = validator
+        schema[field.schema_key] = field.validator
+        has_required |= field.required
 
     if has_required:
         return schema
