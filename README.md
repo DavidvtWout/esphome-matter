@@ -272,11 +272,16 @@ matter.level_control.stop_with_on_off: some_id
 
 # Current Limitations
 
+- As this is based on [Espressif's SDK for Matter (esp-matter)](https://components.espressif.com/components/espressif/esp_matter/) any features/functions not supported there in upstream first can not be supported in this project.
+- Only one device type is supported per endpoint.
+- Matter-over-Ethernet has not been verified.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
-
 
 # See Also
 
-- [esp-matter](https://github.com/espressif/esp-matter)
+- [Espressif's SDK for Matter (esp-matter) GitHub repo](https://github.com/espressif/esp-matter)
+  - [Espressif's SDK for Matter (esp-matter) page on ESP Component Registry](https://components.espressif.com/components/espressif/esp_matter/)
+  - [Espressif's SDK for Matter (esp-matter) Programming Guide / Documentation](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/)
 - [connectedhomeip (espressif's fork)](https://github.com/espressif/connectedhomeip)
 - [Matter specification (CSA)](https://csa-iot.org/developer-resource/specifications-download-request/)
+- [CSA source code implementations for the Matter project](https://github.com/project-chip)
