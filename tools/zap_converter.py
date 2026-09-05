@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 from pathlib import Path
 from xml.etree import ElementTree
@@ -10,6 +11,12 @@ from typing import Any
 
 def snake_case(name: str) -> str:
     name = name.replace(" ", "_").replace("-", "_").replace("/", "_")
+    return name.lower()
+
+
+def camel_case_to_snake_case(name: str) -> str:
+    name = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
+    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
     return name.lower()
 
 
@@ -343,11 +350,19 @@ def post_process_commands(
         if enum:
             arg_type = enum.type
             enum_values = enum.items
+        if enum_values:
+            enum_values = {
+                camel_case_to_snake_case(k): v for k, v in enum_values.items()
+            }
 
         bitmap_masks = None
         if (bitmap := cluster_bitmaps.get(cluster.id, {}).get(arg_type)) is not None:
             arg_type = bitmap.type
             bitmap_masks = bitmap.items
+        if bitmap_masks:
+            bitmap_masks = {
+                camel_case_to_snake_case(k): v for k, v in bitmap_masks.items()
+            }
 
         struct = cluster_structs.get(cluster.id, {}).get(arg_type)
         struct_values = None
@@ -356,6 +371,30 @@ def post_process_commands(
         if struct:
             arg_type = "struct"
             struct_values = [resolve_arg(a) for a in struct.items]
+
+        # Translate Matter bullshit types to actual types. We can't deduce meaningful information from
+        # these types anyway because Matter is very inconsistant in naming types...
+        arg_type = {
+            "power_mw": "int64s",
+            "amperage_ma": "int64s",
+            "voltage_mv": "int64s",
+            "percent": "int8u",
+            "percent100ths": "int16u",
+            "epoch_us": "int64u",
+            "epoch_s": "int32u",
+            "posix_ms": "int64u",
+            "systime_us": "int64u",
+            "systime_ms": "int64u",
+            "elapsed_s": "int32u",
+            "temperature": "int16s",
+            "status": "int8u",
+            "group_id": "int16u",
+            "endpoint_no": "int16u",
+            "vendor_id": "int16u",
+            "fabric_idx": "int8u",
+            "attrib_id": "int32u",
+            "node_id": "int64u",
+        }.get(arg_type.lower(), arg_type)
 
         return filter_none(
             {

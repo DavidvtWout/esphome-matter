@@ -48,6 +48,30 @@ matter.level_control.step:
   transition_time: 20
 ```
 
+
+### enums
+
+Some command arguments are "enums". These are actually integers but with names mapped to specific values. One such example is the `move_mode` argument in some of the `level_control` commands. This is an integer with a value of either 0 or 1 where 0 means "up" and 1 means "down". In the commands below, the supported values are mentioned in the comment behind the argument. esphome-matter supports either the name in snake_case format or the integer value.
+
+
+### bitmasks
+
+Arguments can also be of the "bitmask" type. Just like the enum, internally this is just an integer.
+
+Take for example the `days_mask`. Each day is represented by a bit. `sunday:1`, `monday:2`, `tuesday:4`, `wednesday:8` etc... The value is the sum of all active options.
+
+```yaml
+# A single mask can be applied directly;
+days_mask: monday
+# The following command args are all equivalent;
+days_mask: [ "saterday", "sunday" ]
+days_mask:
+  - saterday
+  - sunday
+days_mask: 65
+```
+
+
 # Cluster commands
 
 ### Identify cluster

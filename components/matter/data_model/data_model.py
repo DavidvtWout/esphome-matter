@@ -2,13 +2,30 @@ from pathlib import Path
 
 import esphome.config_validation as cv
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from esphome import automation
 
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
 from ..util import snake_case, maybe_empty
 
 DATA_MODEL_DIR = Path(__file__).resolve().parent
+
+
+_INTEGER_RANGES = {
+    "int8u": (0, 0xFF),
+    "int16u": (0, 0xFFFF),
+    "int32u": (0, 0xFFFFFFFF),
+    "int64u": (0, 0xFFFFFFFFFFFFFFFF),
+    "int8s": (-0x80, 0x7F),
+    "int16s": (-0x8000, 0x7FFF),
+    "int32s": (-0x80000000, 0x7FFFFFFF),
+    "int64s": (-0x8000000000000000, 0x7FFFFFFFFFFFFFFF),
+    "enum8": (0, 0xFF),
+    "bitmap8": (0, 0xFF),
+    "bitmap16": (0, 0xFFFF),
+    "bitmap32": (0, 0xFFFFFFFF),
+    "bitmap64": (0, 0xFFFFFFFFFFFFFFFF),
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -18,21 +35,37 @@ class CommandArg:
     id: int | None = None
     optional: bool = False
     default: int | None = None
-    # min: int | None = None
-    # max: int | None = None
+    min: int | None = None
+    max: int | None = None
     # is_nullable: bool = False
-    enum_values: tuple[tuple[str, int], ...] = ()
-    # converter: str | None = None
+    # enum_values and bitmap_values keys are snake_case.
+    enum_values: dict[str, int] = field(default_factory=dict)
+    bitmap_masks: dict[str, int] = field(default_factory=dict)
+    struct_items: list[dict] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: dict):
+        # TODO: validate enum and bitmap names to be snake_case
+
+        optional = data.get("optional", False)
+        default = data.get("default")
+        bitmap_masks = data.get("bitmap_masks", {})
+        if bitmap_masks and default is None:
+            default = 0
+        if default is not None:
+            optional = True
+
         return cls(
             id=data.get("id"),
             name=data["name"],
             type=data["type"],
-            optional=data.get("optional", False),
-            default=data.get("default"),
-            enum_values=data.get("enum_values", ()),
+            optional=optional,
+            default=default,
+            min=data.get("min"),
+            max=data.get("max"),
+            enum_values=data.get("enum_values", {}),
+            bitmap_masks=bitmap_masks,
+            struct_items=data.get("struct", []),
         )
 
     @property
@@ -43,7 +76,74 @@ class CommandArg:
     @property
     def conf_key(self) -> str:
         """Key as used in device config YAML."""
-        return snake_case(self.name)
+        conf_key = snake_case(self.name)
+        if not self.optional:
+            return cv.Required(conf_key)
+        if self.default is not None:
+            return cv.Optional(conf_key, default=self.default)
+        else:
+            return cv.Optional(conf_key)
+
+    def _validate_enum(self, value):
+        if isinstance(value, int):
+            return value
+        if not isinstance(value, str):
+            raise cv.Invalid("Expected an enum name or integer")
+        enum_value = self.enum_values.get(value)
+        if enum_value is not None:
+            return enum_value
+        raise cv.Invalid(
+            f"Unknown enum name '{value}'; expected one of: {', '.join(self.enum_values)}"
+        )
+
+    def _validate_bitmap(self, value):
+        if isinstance(value, int):
+            return value
+        if isinstance(value, str):
+            try:
+                return self.bitmap_masks[value]
+            except KeyError:
+                raise cv.Invalid(
+                    f"Unknown bitmask name '{value}'; expected one of: {', '.join(self.enum_values)}"
+                )
+        if isinstance(value, list):
+            result = 0
+            for v in value:
+                try:
+                    result += self.bitmap_masks[v]
+                except KeyError:
+                    raise cv.Invalid(
+                        f"Unknown bitmask name '{v}'; expected one of: {', '.join(self.enum_values)}"
+                    )
+            return result
+        raise cv.Invalid("Expected a (list of) bitmask name(s) or integer")
+
+    @property
+    def validator(self):
+        if self.type in _INTEGER_RANGES:
+            type_min, type_max = _INTEGER_RANGES[self.type]
+            validator = cv.int_range(
+                min=max(type_min, self.min) if self.min is not None else type_min,
+                max=min(type_max, self.max) if self.max is not None else type_max,
+            )
+            if self.enum_values:
+                return cv.All(self._validate_enum, validator)
+            if self.bitmap_masks:
+                return cv.All(self._validate_bitmap, validator)
+            return validator
+        if self.type == "boolean":
+            return cv.boolean
+        if self.type in ("single", "double"):
+            return cv.float_
+        if self.type in (
+            "char_string",
+            "long_char_string",
+            "octet_string",
+            "long_octet_string",
+        ):
+            return cv.string_strict
+        return cv.valid
+        # raise cv.Invalid(f"[{self.name}] Command arg type '{self.type}' is not yet supported")
 
 
 @dataclass(frozen=True, slots=True)

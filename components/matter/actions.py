@@ -13,7 +13,7 @@ from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model import COMMANDS, CLUSTER_NAME_TO_ID, Command
+from .data_model import COMMANDS, CLUSTER_NAME_TO_ID, COMMAND_ARG_TYPES, Command
 from .types import (
     MatterComponent,
     MatterEndpointRef,
@@ -181,14 +181,17 @@ def _command_schema(command: Command):
 
     has_required = False
     for arg in command.args:
-        validator = cv.int_range(min=-0x80000000, max=0x7FFFFFFF)  # TODO
-        if not arg.optional:
-            schema[cv.Required(arg.conf_key)] = validator
-            has_required = True
-        if arg.default is not None:
-            schema[cv.Optional(arg.conf_key, default=arg.default)] = validator
+        converter = (
+            COMMAND_ARG_TYPES.get(command.cluster_name, {})
+            .get(command.name, {})
+            .get(arg.name)
+        )
+        if converter is not None:
+            schema[arg.conf_key] = cv.All(converter, arg.validator)
         else:
-            schema[cv.Optional(arg.conf_key)] = validator
+            schema[arg.conf_key] = arg.validator
+        if not arg.optional:
+            has_required = True
 
     if has_required:
         return schema

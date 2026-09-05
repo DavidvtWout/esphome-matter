@@ -20,12 +20,12 @@
           "name": "EffectIdentifier",
           "type": "enum8",
           "enum_values": {
-            "Blink": 0,
-            "Breathe": 1,
-            "Okay": 2,
-            "ChannelChange": 11,
-            "FinishEffect": 254,
-            "StopEffect": 255
+            "blink": 0,
+            "breathe": 1,
+            "okay": 2,
+            "channel_change": 11,
+            "finish_effect": 254,
+            "stop_effect": 255
           }
         },
         {
@@ -34,7 +34,7 @@
           "type": "enum8",
           "max": 0,
           "enum_values": {
-            "Default": 0
+            "default": 0
           }
         }
       ]
@@ -47,7 +47,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         },
         {
@@ -66,7 +66,7 @@
         },
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         }
       ]
@@ -77,7 +77,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         }
       ]
@@ -92,7 +92,7 @@
         },
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         },
         {
@@ -107,7 +107,7 @@
       "args": [
         {
           "name": "GroupList",
-          "type": "group_id"
+          "type": "int16u"
         }
       ]
     },
@@ -121,7 +121,7 @@
         },
         {
           "name": "GroupList",
-          "type": "group_id"
+          "type": "int16u"
         }
       ]
     },
@@ -131,7 +131,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         }
       ]
@@ -146,7 +146,7 @@
         },
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         }
       ]
@@ -162,7 +162,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         },
         {
@@ -198,8 +198,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "DelayedAllOff": 0,
-            "DyingLight": 1
+            "delayed_all_off": 0,
+            "dying_light": 1
           }
         },
         {
@@ -224,7 +224,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "AcceptOnlyWhenOn": 1
+            "accept_only_when_on": 1
           }
         },
         {
@@ -264,8 +264,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         },
         {
@@ -274,8 +274,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         }
       ]
@@ -290,8 +290,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Up": 0,
-            "Down": 1
+            "up": 0,
+            "down": 1
           }
         },
         {
@@ -305,8 +305,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         },
         {
@@ -315,8 +315,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         }
       ]
@@ -331,8 +331,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Up": 0,
-            "Down": 1
+            "up": 0,
+            "down": 1
           }
         },
         {
@@ -351,8 +351,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         },
         {
@@ -361,8 +361,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         }
       ]
@@ -377,8 +377,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         },
         {
@@ -387,8 +387,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         }
       ]
@@ -414,8 +414,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         },
         {
@@ -424,8 +424,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         }
       ]
@@ -440,8 +440,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Up": 0,
-            "Down": 1
+            "up": 0,
+            "down": 1
           }
         },
         {
@@ -455,8 +455,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         },
         {
@@ -465,8 +465,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         }
       ]
@@ -481,8 +481,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Up": 0,
-            "Down": 1
+            "up": 0,
+            "down": 1
           }
         },
         {
@@ -501,8 +501,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         },
         {
@@ -511,8 +511,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         }
       ]
@@ -527,8 +527,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         },
         {
@@ -537,8 +537,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "ExecuteIfOff": 1,
-            "CoupleColorTempToLevel": 2
+            "execute_if_off": 1,
+            "couple_color_temp_to_level": 2
           }
         }
       ]
@@ -567,7 +567,7 @@
           "struct": [
             {
               "name": "Endpoint",
-              "type": "endpoint_no"
+              "type": "int16u"
             },
             {
               "name": "Cluster",
@@ -582,10 +582,10 @@
                   "type": "enum8",
                   "max": 3,
                   "enum_values": {
-                    "AttributeAccessForbidden": 0,
-                    "AttributeWriteForbidden": 1,
-                    "CommandForbidden": 2,
-                    "EventForbidden": 3
+                    "attribute_access_forbidden": 0,
+                    "attribute_write_forbidden": 1,
+                    "command_forbidden": 2,
+                    "event_forbidden": 3
                   }
                 },
                 {
@@ -848,7 +848,7 @@
       "args": [
         {
           "name": "VendorID",
-          "type": "vendor_id"
+          "type": "int16u"
         },
         {
           "name": "ProductID",
@@ -862,10 +862,10 @@
           "name": "ProtocolsSupported",
           "type": "enum8",
           "enum_values": {
-            "BDXSynchronous": 0,
-            "BDXAsynchronous": 1,
-            "HTTPS": 2,
-            "VendorSpecific": 3
+            "bdx_synchronous": 0,
+            "bdx_asynchronous": 1,
+            "https": 2,
+            "vendor_specific": 3
           }
         },
         {
@@ -900,10 +900,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "UpdateAvailable": 0,
-            "Busy": 1,
-            "NotAvailable": 2,
-            "DownloadProtocolNotSupported": 3
+            "update_available": 0,
+            "busy": 1,
+            "not_available": 2,
+            "download_protocol_not_supported": 3
           }
         },
         {
@@ -968,9 +968,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Proceed": 0,
-            "AwaitNextAction": 1,
-            "Discontinue": 2
+            "proceed": 0,
+            "await_next_action": 1,
+            "discontinue": 2
           }
         },
         {
@@ -1001,20 +1001,20 @@
       "args": [
         {
           "name": "ProviderNodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "VendorID",
-          "type": "vendor_id"
+          "type": "int16u"
         },
         {
           "name": "AnnouncementReason",
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "SimpleAnnouncement": 0,
-            "UpdateAvailable": 1,
-            "UrgentUpdateAvailable": 2
+            "simple_announcement": 0,
+            "update_available": 1,
+            "urgent_update_available": 2
           }
         },
         {
@@ -1024,7 +1024,7 @@
         },
         {
           "name": "Endpoint",
-          "type": "endpoint_no"
+          "type": "int16u"
         }
       ]
     }
@@ -1059,14 +1059,14 @@
           "max": 7,
           "default": "0x00",
           "enum_values": {
-            "OK": 0,
-            "ValueOutsideRange": 1,
-            "InvalidAuthentication": 2,
-            "NoFailSafe": 3,
-            "BusyWithOtherAdmin": 4,
-            "RequiredTCNotAccepted": 5,
-            "TCAcknowledgementsNotReceived": 6,
-            "TCMinVersionNotMet": 7
+            "ok": 0,
+            "value_outside_range": 1,
+            "invalid_authentication": 2,
+            "no_fail_safe": 3,
+            "busy_with_other_admin": 4,
+            "required_tc_not_accepted": 5,
+            "tc_acknowledgements_not_received": 6,
+            "tc_min_version_not_met": 7
           }
         },
         {
@@ -1087,9 +1087,9 @@
           "min": 0,
           "max": 2,
           "enum_values": {
-            "Indoor": 0,
-            "Outdoor": 1,
-            "IndoorOutdoor": 2
+            "indoor": 0,
+            "outdoor": 1,
+            "indoor_outdoor": 2
           }
         },
         {
@@ -1116,14 +1116,14 @@
           "max": 7,
           "default": "0x00",
           "enum_values": {
-            "OK": 0,
-            "ValueOutsideRange": 1,
-            "InvalidAuthentication": 2,
-            "NoFailSafe": 3,
-            "BusyWithOtherAdmin": 4,
-            "RequiredTCNotAccepted": 5,
-            "TCAcknowledgementsNotReceived": 6,
-            "TCMinVersionNotMet": 7
+            "ok": 0,
+            "value_outside_range": 1,
+            "invalid_authentication": 2,
+            "no_fail_safe": 3,
+            "busy_with_other_admin": 4,
+            "required_tc_not_accepted": 5,
+            "tc_acknowledgements_not_received": 6,
+            "tc_min_version_not_met": 7
           }
         },
         {
@@ -1150,14 +1150,14 @@
           "max": 7,
           "default": "0x00",
           "enum_values": {
-            "OK": 0,
-            "ValueOutsideRange": 1,
-            "InvalidAuthentication": 2,
-            "NoFailSafe": 3,
-            "BusyWithOtherAdmin": 4,
-            "RequiredTCNotAccepted": 5,
-            "TCAcknowledgementsNotReceived": 6,
-            "TCMinVersionNotMet": 7
+            "ok": 0,
+            "value_outside_range": 1,
+            "invalid_authentication": 2,
+            "no_fail_safe": 3,
+            "busy_with_other_admin": 4,
+            "required_tc_not_accepted": 5,
+            "tc_acknowledgements_not_received": 6,
+            "tc_min_version_not_met": 7
           }
         },
         {
@@ -1195,14 +1195,14 @@
           "max": 7,
           "default": "0x00",
           "enum_values": {
-            "OK": 0,
-            "ValueOutsideRange": 1,
-            "InvalidAuthentication": 2,
-            "NoFailSafe": 3,
-            "BusyWithOtherAdmin": 4,
-            "RequiredTCNotAccepted": 5,
-            "TCAcknowledgementsNotReceived": 6,
-            "TCMinVersionNotMet": 7
+            "ok": 0,
+            "value_outside_range": 1,
+            "invalid_authentication": 2,
+            "no_fail_safe": 3,
+            "busy_with_other_admin": 4,
+            "required_tc_not_accepted": 5,
+            "tc_acknowledgements_not_received": 6,
+            "tc_min_version_not_met": 7
           }
         }
       ]
@@ -1234,19 +1234,19 @@
           "type": "enum8",
           "max": 12,
           "enum_values": {
-            "Success": 0,
-            "OutOfRange": 1,
-            "BoundsExceeded": 2,
-            "NetworkIDNotFound": 3,
-            "DuplicateNetworkID": 4,
-            "NetworkNotFound": 5,
-            "RegulatoryError": 6,
-            "AuthFailure": 7,
-            "UnsupportedSecurity": 8,
-            "OtherConnectionFailure": 9,
-            "IPV6Failed": 10,
-            "IPBindFailed": 11,
-            "UnknownError": 12
+            "success": 0,
+            "out_of_range": 1,
+            "bounds_exceeded": 2,
+            "network_id_not_found": 3,
+            "duplicate_network_id": 4,
+            "network_not_found": 5,
+            "regulatory_error": 6,
+            "auth_failure": 7,
+            "unsupported_security": 8,
+            "other_connection_failure": 9,
+            "ipv6_failed": 10,
+            "ip_bind_failed": 11,
+            "unknown_error": 12
           }
         },
         {
@@ -1264,11 +1264,11 @@
               "type": "bitmap8",
               "max": 31,
               "bitmap_masks": {
-                "Unencrypted": 1,
-                "WEP": 2,
-                "WPA-PERSONAL": 4,
-                "WPA2-PERSONAL": 8,
-                "WPA3-PERSONAL": 16
+                "unencrypted": 1,
+                "wep": 2,
+                "wpa-personal": 4,
+                "wpa2-personal": 8,
+                "wpa3-personal": 16
               }
             },
             {
@@ -1288,12 +1288,12 @@
               "type": "enum8",
               "max": 5,
               "enum_values": {
-                "2G4": 0,
-                "3G65": 1,
-                "5G": 2,
-                "6G": 3,
-                "60G": 4,
-                "1G": 5
+                "2_g4": 0,
+                "3_g65": 1,
+                "5_g": 2,
+                "6_g": 3,
+                "60_g": 4,
+                "1_g": 5
               }
             },
             {
@@ -1404,19 +1404,19 @@
           "type": "enum8",
           "max": 12,
           "enum_values": {
-            "Success": 0,
-            "OutOfRange": 1,
-            "BoundsExceeded": 2,
-            "NetworkIDNotFound": 3,
-            "DuplicateNetworkID": 4,
-            "NetworkNotFound": 5,
-            "RegulatoryError": 6,
-            "AuthFailure": 7,
-            "UnsupportedSecurity": 8,
-            "OtherConnectionFailure": 9,
-            "IPV6Failed": 10,
-            "IPBindFailed": 11,
-            "UnknownError": 12
+            "success": 0,
+            "out_of_range": 1,
+            "bounds_exceeded": 2,
+            "network_id_not_found": 3,
+            "duplicate_network_id": 4,
+            "network_not_found": 5,
+            "regulatory_error": 6,
+            "auth_failure": 7,
+            "unsupported_security": 8,
+            "other_connection_failure": 9,
+            "ipv6_failed": 10,
+            "ip_bind_failed": 11,
+            "unknown_error": 12
           }
         },
         {
@@ -1456,19 +1456,19 @@
           "type": "enum8",
           "max": 12,
           "enum_values": {
-            "Success": 0,
-            "OutOfRange": 1,
-            "BoundsExceeded": 2,
-            "NetworkIDNotFound": 3,
-            "DuplicateNetworkID": 4,
-            "NetworkNotFound": 5,
-            "RegulatoryError": 6,
-            "AuthFailure": 7,
-            "UnsupportedSecurity": 8,
-            "OtherConnectionFailure": 9,
-            "IPV6Failed": 10,
-            "IPBindFailed": 11,
-            "UnknownError": 12
+            "success": 0,
+            "out_of_range": 1,
+            "bounds_exceeded": 2,
+            "network_id_not_found": 3,
+            "duplicate_network_id": 4,
+            "network_not_found": 5,
+            "regulatory_error": 6,
+            "auth_failure": 7,
+            "unsupported_security": 8,
+            "other_connection_failure": 9,
+            "ipv6_failed": 10,
+            "ip_bind_failed": 11,
+            "unknown_error": 12
           }
         },
         {
@@ -1514,9 +1514,9 @@
           "min": 0,
           "max": 2,
           "enum_values": {
-            "EndUserSupport": 0,
-            "NetworkDiag": 1,
-            "CrashLogs": 2
+            "end_user_support": 0,
+            "network_diag": 1,
+            "crash_logs": 2
           }
         },
         {
@@ -1526,8 +1526,8 @@
           "min": 0,
           "max": 1,
           "enum_values": {
-            "ResponsePayload": 0,
-            "BDX": 1
+            "response_payload": 0,
+            "bdx": 1
           }
         },
         {
@@ -1549,11 +1549,11 @@
           "min": 0,
           "max": 4,
           "enum_values": {
-            "Success": 0,
-            "Exhausted": 1,
-            "NoLogs": 2,
-            "Busy": 3,
-            "Denied": 4
+            "success": 0,
+            "exhausted": 1,
+            "no_logs": 2,
+            "busy": 3,
+            "denied": 4
           }
         },
         {
@@ -1564,13 +1564,13 @@
         {
           "id": 2,
           "name": "UTCTimeStamp",
-          "type": "epoch_us",
+          "type": "int64u",
           "optional": true
         },
         {
           "id": 3,
           "name": "TimeSinceBoot",
-          "type": "systime_us",
+          "type": "int64u",
           "optional": true
         }
       ]
@@ -1602,11 +1602,11 @@
       "args": [
         {
           "name": "SystemTimeMs",
-          "type": "systime_ms"
+          "type": "int64u"
         },
         {
           "name": "PosixTimeMs",
-          "type": "posix_ms"
+          "type": "int64u"
         }
       ]
     },
@@ -1676,7 +1676,7 @@
         {
           "id": 0,
           "name": "UTCTime",
-          "type": "epoch_us",
+          "type": "int64u",
           "default": "0"
         },
         {
@@ -1686,11 +1686,11 @@
           "max": 4,
           "default": "0x00",
           "enum_values": {
-            "NoTimeGranularity": 0,
-            "MinutesGranularity": 1,
-            "SecondsGranularity": 2,
-            "MillisecondsGranularity": 3,
-            "MicrosecondsGranularity": 4
+            "no_time_granularity": 0,
+            "minutes_granularity": 1,
+            "seconds_granularity": 2,
+            "milliseconds_granularity": 3,
+            "microseconds_granularity": 4
           }
         },
         {
@@ -1701,23 +1701,23 @@
           "default": "0x00",
           "optional": true,
           "enum_values": {
-            "None": 0,
-            "Unknown": 1,
-            "Admin": 2,
-            "NodeTimeCluster": 3,
-            "NonMatterSNTP": 4,
-            "NonMatterNTP": 5,
-            "MatterSNTP": 6,
-            "MatterNTP": 7,
-            "MixedNTP": 8,
-            "NonMatterSNTPNTS": 9,
-            "NonMatterNTPNTS": 10,
-            "MatterSNTPNTS": 11,
-            "MatterNTPNTS": 12,
-            "MixedNTPNTS": 13,
-            "CloudSource": 14,
-            "PTP": 15,
-            "GNSS": 16
+            "none": 0,
+            "unknown": 1,
+            "admin": 2,
+            "node_time_cluster": 3,
+            "non_matter_sntp": 4,
+            "non_matter_ntp": 5,
+            "matter_sntp": 6,
+            "matter_ntp": 7,
+            "mixed_ntp": 8,
+            "non_matter_sntpnts": 9,
+            "non_matter_ntpnts": 10,
+            "matter_sntpnts": 11,
+            "matter_ntpnts": 12,
+            "mixed_ntpnts": 13,
+            "cloud_source": 14,
+            "ptp": 15,
+            "gnss": 16
           }
         }
       ]
@@ -1733,11 +1733,11 @@
           "struct": [
             {
               "name": "NodeID",
-              "type": "node_id"
+              "type": "int64u"
             },
             {
               "name": "Endpoint",
-              "type": "endpoint_no"
+              "type": "int16u"
             }
           ]
         }
@@ -1760,7 +1760,7 @@
             },
             {
               "name": "ValidAt",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "Name",
@@ -1798,11 +1798,11 @@
             },
             {
               "name": "ValidStarting",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "ValidUntil",
-              "type": "epoch_us"
+              "type": "int64u"
             }
           ]
         }
@@ -1924,8 +1924,8 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "DACCertificate": 1,
-            "PAICertificate": 2
+            "dac_certificate": 1,
+            "pai_certificate": 2
           }
         }
       ]
@@ -1993,7 +1993,7 @@
         },
         {
           "name": "AdminVendorId",
-          "type": "vendor_id"
+          "type": "int16u"
         }
       ]
     },
@@ -2021,21 +2021,21 @@
           "type": "enum8",
           "max": 11,
           "enum_values": {
-            "OK": 0,
-            "InvalidPublicKey": 1,
-            "InvalidNodeOpId": 2,
-            "InvalidNOC": 3,
-            "MissingCsr": 4,
-            "TableFull": 5,
-            "InvalidAdminSubject": 6,
-            "FabricConflict": 9,
-            "LabelConflict": 10,
-            "InvalidFabricIndex": 11
+            "ok": 0,
+            "invalid_public_key": 1,
+            "invalid_node_op_id": 2,
+            "invalid_noc": 3,
+            "missing_csr": 4,
+            "table_full": 5,
+            "invalid_admin_subject": 6,
+            "fabric_conflict": 9,
+            "label_conflict": 10,
+            "invalid_fabric_index": 11
           }
         },
         {
           "name": "FabricIndex",
-          "type": "fabric_idx",
+          "type": "int8u",
           "min": 1,
           "max": 254,
           "optional": true
@@ -2063,7 +2063,7 @@
       "args": [
         {
           "name": "FabricIndex",
-          "type": "fabric_idx",
+          "type": "int8u",
           "min": 1,
           "max": 254
         }
@@ -2085,7 +2085,7 @@
       "args": [
         {
           "name": "VendorID",
-          "type": "vendor_id",
+          "type": "int16u",
           "optional": true
         },
         {
@@ -2106,7 +2106,7 @@
       "args": [
         {
           "name": "FabricIndex",
-          "type": "fabric_idx",
+          "type": "int8u",
           "min": 1,
           "max": 254
         },
@@ -2122,7 +2122,7 @@
       "args": [
         {
           "name": "FabricIndex",
-          "type": "fabric_idx",
+          "type": "int8u",
           "min": 1,
           "max": 254
         },
@@ -2156,8 +2156,8 @@
               "type": "enum8",
               "max": 1,
               "enum_values": {
-                "TrustFirst": 0,
-                "CacheAndSync": 1
+                "trust_first": 0,
+                "cache_and_sync": 1
               }
             },
             {
@@ -2166,7 +2166,7 @@
             },
             {
               "name": "EpochStartTime0",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "EpochKey1",
@@ -2174,7 +2174,7 @@
             },
             {
               "name": "EpochStartTime1",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "EpochKey2",
@@ -2182,15 +2182,15 @@
             },
             {
               "name": "EpochStartTime2",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "GroupKeyMulticastPolicy",
               "type": "enum8",
               "max": 1,
               "enum_values": {
-                "PerGroupID": 0,
-                "AllNodes": 1
+                "per_group_id": 0,
+                "all_nodes": 1
               }
             }
           ]
@@ -2224,8 +2224,8 @@
               "type": "enum8",
               "max": 1,
               "enum_values": {
-                "TrustFirst": 0,
-                "CacheAndSync": 1
+                "trust_first": 0,
+                "cache_and_sync": 1
               }
             },
             {
@@ -2234,7 +2234,7 @@
             },
             {
               "name": "EpochStartTime0",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "EpochKey1",
@@ -2242,7 +2242,7 @@
             },
             {
               "name": "EpochStartTime1",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "EpochKey2",
@@ -2250,15 +2250,15 @@
             },
             {
               "name": "EpochStartTime2",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "GroupKeyMulticastPolicy",
               "type": "enum8",
               "max": 1,
               "enum_values": {
-                "PerGroupID": 0,
-                "AllNodes": 1
+                "per_group_id": 0,
+                "all_nodes": 1
               }
             }
           ]
@@ -2299,7 +2299,7 @@
         {
           "id": 0,
           "name": "CheckInNodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "id": 1,
@@ -2323,8 +2323,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Permanent": 0,
-            "Ephemeral": 1
+            "permanent": 0,
+            "ephemeral": 1
           }
         }
       ]
@@ -2347,7 +2347,7 @@
         {
           "id": 0,
           "name": "CheckInNodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "id": 1,
@@ -2558,7 +2558,7 @@
         {
           "id": 0,
           "name": "TargetTemperature",
-          "type": "temperature",
+          "type": "int16s",
           "optional": true
         },
         {
@@ -2617,12 +2617,12 @@
           "max": 63,
           "default": "0x00000000",
           "bitmap_masks": {
-            "InflowError": 1,
-            "DrainError": 2,
-            "DoorError": 4,
-            "TempTooLow": 8,
-            "TempTooHigh": 16,
-            "WaterLevelError": 32
+            "inflow_error": 1,
+            "drain_error": 2,
+            "door_error": 4,
+            "temp_too_low": 8,
+            "temp_too_high": 16,
+            "water_level_error": 32
           }
         }
       ]
@@ -2639,12 +2639,12 @@
           "max": 63,
           "default": "0x00000000",
           "bitmap_masks": {
-            "InflowError": 1,
-            "DrainError": 2,
-            "DoorError": 4,
-            "TempTooLow": 8,
-            "TempTooHigh": 16,
-            "WaterLevelError": 32
+            "inflow_error": 1,
+            "drain_error": 2,
+            "door_error": 4,
+            "temp_too_low": 8,
+            "temp_too_high": 16,
+            "water_level_error": 32
           }
         }
       ]
@@ -2664,7 +2664,7 @@
         {
           "id": 1,
           "name": "CookTime",
-          "type": "elapsed_s",
+          "type": "int32u",
           "min": 1,
           "max": 86400,
           "default": "30",
@@ -2701,7 +2701,7 @@
         {
           "id": 0,
           "name": "TimeToAdd",
-          "type": "elapsed_s",
+          "type": "int32u",
           "min": 1,
           "max": 86400
         }
@@ -2792,7 +2792,7 @@
         {
           "id": 0,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 1,
@@ -2826,7 +2826,7 @@
               "struct": [
                 {
                   "name": "AttributeID",
-                  "type": "attrib_id"
+                  "type": "int32u"
                 },
                 {
                   "name": "ValueUnsigned8",
@@ -2881,12 +2881,12 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "status"
+          "type": "int8u"
         },
         {
           "id": 1,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 2,
@@ -2903,7 +2903,7 @@
         {
           "id": 0,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 1,
@@ -2920,12 +2920,12 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "status"
+          "type": "int8u"
         },
         {
           "id": 1,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 2,
@@ -2962,7 +2962,7 @@
               "struct": [
                 {
                   "name": "AttributeID",
-                  "type": "attrib_id"
+                  "type": "int32u"
                 },
                 {
                   "name": "ValueUnsigned8",
@@ -3017,7 +3017,7 @@
         {
           "id": 0,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 1,
@@ -3034,12 +3034,12 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "status"
+          "type": "int8u"
         },
         {
           "id": 1,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 2,
@@ -3056,7 +3056,7 @@
         {
           "id": 0,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         }
       ]
     },
@@ -3067,12 +3067,12 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "status"
+          "type": "int8u"
         },
         {
           "id": 1,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         }
       ]
     },
@@ -3083,7 +3083,7 @@
         {
           "id": 0,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 1,
@@ -3100,12 +3100,12 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "status"
+          "type": "int8u"
         },
         {
           "id": 1,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 2,
@@ -3122,7 +3122,7 @@
         {
           "id": 0,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 1,
@@ -3146,7 +3146,7 @@
         {
           "id": 0,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         }
       ]
     },
@@ -3157,7 +3157,7 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "status"
+          "type": "int8u"
         },
         {
           "id": 1,
@@ -3167,7 +3167,7 @@
         {
           "id": 2,
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 3,
@@ -3188,13 +3188,13 @@
           "min": 0,
           "max": 1,
           "bitmap_masks": {
-            "CopyAllScenes": 1
+            "copy_all_scenes": 1
           }
         },
         {
           "id": 1,
           "name": "GroupIdentifierFrom",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 2,
@@ -3205,7 +3205,7 @@
         {
           "id": 3,
           "name": "GroupIdentifierTo",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 4,
@@ -3222,12 +3222,12 @@
         {
           "id": 0,
           "name": "Status",
-          "type": "status"
+          "type": "int8u"
         },
         {
           "id": 1,
           "name": "GroupIdentifierFrom",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "id": 2,
@@ -3245,12 +3245,12 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         },
         {
           "name": "Endpoints",
-          "type": "endpoint_no"
+          "type": "int16u"
         },
         {
           "name": "KeySetID",
@@ -3278,8 +3278,8 @@
           "max": 1,
           "optional": true,
           "enum_values": {
-            "IanaAddr": 0,
-            "PerGroup": 1
+            "iana_addr": 0,
+            "per_group": 1
           }
         }
       ]
@@ -3290,11 +3290,11 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "name": "Endpoints",
-          "type": "endpoint_no",
+          "type": "int16u",
           "optional": true
         }
       ]
@@ -3305,11 +3305,11 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "name": "Endpoints",
-          "type": "endpoint_no"
+          "type": "int16u"
         }
       ]
     },
@@ -3319,7 +3319,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id",
+          "type": "int16u",
           "min": 1
         },
         {
@@ -3340,7 +3340,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "name": "UseAuxiliaryACL",
@@ -3357,9 +3357,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "DisableTesting": 0,
-            "EnableListenerTesting": 1,
-            "EnableSenderTesting": 2
+            "disable_testing": 0,
+            "enable_listener_testing": 1,
+            "enable_sender_testing": 2
           }
         },
         {
@@ -3404,8 +3404,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "Visual": 1,
-            "Audible": 2
+            "visual": 1,
+            "audible": 2
           }
         }
       ]
@@ -3419,8 +3419,8 @@
           "type": "bitmap8",
           "max": 3,
           "bitmap_masks": {
-            "Visual": 1,
-            "Audible": 2
+            "visual": 1,
+            "audible": 2
           }
         }
       ]
@@ -3433,13 +3433,13 @@
       "args": [
         {
           "name": "OpenDuration",
-          "type": "elapsed_s",
+          "type": "int32u",
           "min": 1,
           "optional": true
         },
         {
           "name": "TargetLevel",
-          "type": "percent",
+          "type": "int8u",
           "min": 1,
           "max": 100,
           "optional": true
@@ -3464,7 +3464,7 @@
           "struct": [
             {
               "name": "Duration",
-              "type": "elapsed_s",
+              "type": "int32u",
               "min": 1
             },
             {
@@ -3481,17 +3481,17 @@
             },
             {
               "name": "TemporarySetpoint",
-              "type": "temperature",
+              "type": "int16s",
               "optional": true
             },
             {
               "name": "TargetPercentage",
-              "type": "percent",
+              "type": "int8u",
               "optional": true
             },
             {
               "name": "TargetReheat",
-              "type": "percent",
+              "type": "int8u",
               "optional": true
             }
           ]
@@ -3516,8 +3516,8 @@
           "min": 0,
           "max": 3,
           "bitmap_masks": {
-            "Description": 1,
-            "Components": 2
+            "description": 1,
+            "components": 2
           }
         }
       ]
@@ -3533,11 +3533,11 @@
           "struct": [
             {
               "name": "PeriodStart",
-              "type": "epoch_s"
+              "type": "int32u"
             },
             {
               "name": "PeriodEnd",
-              "type": "epoch_s"
+              "type": "int32u"
             },
             {
               "name": "Price",
@@ -3569,11 +3569,11 @@
                   "min": 0,
                   "max": 4,
                   "enum_values": {
-                    "Standard": 0,
-                    "Critical": 1,
-                    "Virtual": 2,
-                    "Incentive": 3,
-                    "IncentiveSignal": 4
+                    "standard": 0,
+                    "critical": 1,
+                    "virtual": 2,
+                    "incentive": 3,
+                    "incentive_signal": 4
                   }
                 },
                 {
@@ -3603,8 +3603,8 @@
           "min": 0,
           "max": 3,
           "bitmap_masks": {
-            "Description": 1,
-            "Components": 2
+            "description": 1,
+            "components": 2
           }
         }
       ]
@@ -3620,11 +3620,11 @@
           "struct": [
             {
               "name": "PeriodStart",
-              "type": "epoch_s"
+              "type": "int32u"
             },
             {
               "name": "PeriodEnd",
-              "type": "epoch_s"
+              "type": "int32u"
             },
             {
               "name": "Price",
@@ -3656,11 +3656,11 @@
                   "min": 0,
                   "max": 4,
                   "enum_values": {
-                    "Standard": 0,
-                    "Critical": 1,
-                    "Virtual": 2,
-                    "Incentive": 3,
-                    "IncentiveSignal": 4
+                    "standard": 0,
+                    "critical": 1,
+                    "virtual": 2,
+                    "incentive": 3,
+                    "incentive_signal": 4
                   }
                 },
                 {
@@ -3694,10 +3694,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Low": 0,
-            "Medium": 1,
-            "High": 2,
-            "Critical": 3
+            "low": 0,
+            "medium": 1,
+            "high": 2,
+            "critical": 3
           }
         },
         {
@@ -3705,16 +3705,16 @@
           "type": "bitmap8",
           "max": 31,
           "bitmap_masks": {
-            "ConfirmationRequired": 1,
-            "ResponseRequired": 2,
-            "ReplyMessage": 4,
-            "MessageConfirmed": 8,
-            "MessageProtected": 16
+            "confirmation_required": 1,
+            "response_required": 2,
+            "reply_message": 4,
+            "message_confirmed": 8,
+            "message_protected": 16
           }
         },
         {
           "name": "StartTime",
-          "type": "epoch_s"
+          "type": "int32u"
         },
         {
           "name": "Duration",
@@ -3762,19 +3762,19 @@
       "args": [
         {
           "name": "Power",
-          "type": "power_mw"
+          "type": "int64s"
         },
         {
           "name": "Duration",
-          "type": "elapsed_s"
+          "type": "int32u"
         },
         {
           "name": "Cause",
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "LocalOptimization": 0,
-            "GridOptimization": 1
+            "local_optimization": 0,
+            "grid_optimization": 1
           }
         }
       ]
@@ -3790,15 +3790,15 @@
       "args": [
         {
           "name": "RequestedStartTime",
-          "type": "epoch_s"
+          "type": "int32u"
         },
         {
           "name": "Cause",
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "LocalOptimization": 0,
-            "GridOptimization": 1
+            "local_optimization": 0,
+            "grid_optimization": 1
           }
         }
       ]
@@ -3809,15 +3809,15 @@
       "args": [
         {
           "name": "Duration",
-          "type": "elapsed_s"
+          "type": "int32u"
         },
         {
           "name": "Cause",
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "LocalOptimization": 0,
-            "GridOptimization": 1
+            "local_optimization": 0,
+            "grid_optimization": 1
           }
         }
       ]
@@ -3845,12 +3845,12 @@
             },
             {
               "name": "NominalPower",
-              "type": "power_mw",
+              "type": "int64s",
               "optional": true
             },
             {
               "name": "Duration",
-              "type": "elapsed_s"
+              "type": "int32u"
             }
           ]
         },
@@ -3859,8 +3859,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "LocalOptimization": 0,
-            "GridOptimization": 1
+            "local_optimization": 0,
+            "grid_optimization": 1
           }
         }
       ]
@@ -3875,16 +3875,16 @@
           "struct": [
             {
               "name": "StartTime",
-              "type": "epoch_s"
+              "type": "int32u"
             },
             {
               "name": "Duration",
-              "type": "elapsed_s",
+              "type": "int32u",
               "max": 86400
             },
             {
               "name": "NominalPower",
-              "type": "power_mw",
+              "type": "int64s",
               "optional": true
             },
             {
@@ -3906,8 +3906,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "LocalOptimization": 0,
-            "GridOptimization": 1
+            "local_optimization": 0,
+            "grid_optimization": 1
           }
         }
       ]
@@ -3923,21 +3923,21 @@
       "args": [
         {
           "name": "MinPower",
-          "type": "power_mw",
+          "type": "int64s",
           "min": 13835058055282163713,
           "max": 4611686018427387903,
           "default": "0"
         },
         {
           "name": "MaxPower",
-          "type": "power_mw",
+          "type": "int64s",
           "min": 13835058055282163713,
           "max": 4611686018427387903,
           "default": "4611686018427387904"
         },
         {
           "name": "Duration",
-          "type": "elapsed_s",
+          "type": "int32u",
           "max": 86400
         },
         {
@@ -3945,8 +3945,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "LocalOptimization": 0,
-            "GridOptimization": 1
+            "local_optimization": 0,
+            "grid_optimization": 1
           }
         }
       ]
@@ -3973,13 +3973,13 @@
               "min": 0,
               "max": 127,
               "bitmap_masks": {
-                "Sunday": 1,
-                "Monday": 2,
-                "Tuesday": 4,
-                "Wednesday": 8,
-                "Thursday": 16,
-                "Friday": 32,
-                "Saturday": 64
+                "sunday": 1,
+                "monday": 2,
+                "tuesday": 4,
+                "wednesday": 8,
+                "thursday": 16,
+                "friday": 32,
+                "saturday": 64
               }
             },
             {
@@ -3994,7 +3994,7 @@
                 },
                 {
                   "name": "TargetSoC",
-                  "type": "percent",
+                  "type": "int8u",
                   "default": "0",
                   "optional": true
                 },
@@ -4023,18 +4023,18 @@
         {
           "id": 0,
           "name": "ChargingEnabledUntil",
-          "type": "epoch_s"
+          "type": "int32u"
         },
         {
           "id": 1,
           "name": "MinimumChargeCurrent",
-          "type": "amperage_ma",
+          "type": "int64s",
           "min": 0
         },
         {
           "id": 2,
           "name": "MaximumChargeCurrent",
-          "type": "amperage_ma",
+          "type": "int64s",
           "min": 0
         }
       ]
@@ -4046,12 +4046,12 @@
         {
           "id": 0,
           "name": "DischargingEnabledUntil",
-          "type": "epoch_s"
+          "type": "int32u"
         },
         {
           "id": 1,
           "name": "MaximumDischargeCurrent",
-          "type": "amperage_ma",
+          "type": "int64s",
           "min": 0
         }
       ]
@@ -4076,13 +4076,13 @@
               "min": 0,
               "max": 127,
               "bitmap_masks": {
-                "Sunday": 1,
-                "Monday": 2,
-                "Tuesday": 4,
-                "Wednesday": 8,
-                "Thursday": 16,
-                "Friday": 32,
-                "Saturday": 64
+                "sunday": 1,
+                "monday": 2,
+                "tuesday": 4,
+                "wednesday": 8,
+                "thursday": 16,
+                "friday": 32,
+                "saturday": 64
               }
             },
             {
@@ -4097,7 +4097,7 @@
                 },
                 {
                   "name": "TargetSoC",
-                  "type": "percent",
+                  "type": "int8u",
                   "default": "0",
                   "optional": true
                 },
@@ -4225,21 +4225,21 @@
           "type": "bitmap64",
           "max": 32767,
           "bitmap_masks": {
-            "OverVoltage": 1,
-            "UnderVoltage": 2,
-            "SwappedPolarity": 1024,
-            "LossOfMeasurement": 2048,
-            "LossOfGridPower": 4096,
-            "PowerImported": 8192,
-            "PowerExported": 16384,
-            "OverFrequency": 4,
-            "UnderFrequency": 8,
-            "OverPower": 16,
-            "UnderPower": 32,
-            "OverCurrent": 64,
-            "UnderCurrent": 128,
-            "FrequencyQuality": 256,
-            "VoltageQuality": 512
+            "over_voltage": 1,
+            "under_voltage": 2,
+            "swapped_polarity": 1024,
+            "loss_of_measurement": 2048,
+            "loss_of_grid_power": 4096,
+            "power_imported": 8192,
+            "power_exported": 16384,
+            "over_frequency": 4,
+            "under_frequency": 8,
+            "over_power": 16,
+            "under_power": 32,
+            "over_current": 64,
+            "under_current": 128,
+            "frequency_quality": 256,
+            "voltage_quality": 512
           }
         }
       ]
@@ -4253,21 +4253,21 @@
           "type": "bitmap64",
           "max": 32767,
           "bitmap_masks": {
-            "OverVoltage": 1,
-            "UnderVoltage": 2,
-            "SwappedPolarity": 1024,
-            "LossOfMeasurement": 2048,
-            "LossOfGridPower": 4096,
-            "PowerImported": 8192,
-            "PowerExported": 16384,
-            "OverFrequency": 4,
-            "UnderFrequency": 8,
-            "OverPower": 16,
-            "UnderPower": 32,
-            "OverCurrent": 64,
-            "UnderCurrent": 128,
-            "FrequencyQuality": 256,
-            "VoltageQuality": 512
+            "over_voltage": 1,
+            "under_voltage": 2,
+            "swapped_polarity": 1024,
+            "loss_of_measurement": 2048,
+            "loss_of_grid_power": 4096,
+            "power_imported": 8192,
+            "power_exported": 16384,
+            "over_frequency": 4,
+            "under_frequency": 8,
+            "over_power": 16,
+            "under_power": 32,
+            "over_current": 64,
+            "under_current": 128,
+            "frequency_quality": 256,
+            "voltage_quality": 512
           }
         }
       ]
@@ -4278,7 +4278,7 @@
       "args": [
         {
           "name": "OverVoltageThreshold",
-          "type": "voltage_mv",
+          "type": "int64s",
           "min": 13835058055282163713,
           "max": 4611686018427387903,
           "default": "4611686018427387904",
@@ -4286,7 +4286,7 @@
         },
         {
           "name": "UnderVoltageThreshold",
-          "type": "voltage_mv",
+          "type": "int64s",
           "min": 13835058055282163712,
           "max": 4611686018427387902,
           "default": "0",
@@ -4308,7 +4308,7 @@
         },
         {
           "name": "OverPowerThreshold",
-          "type": "power_mw",
+          "type": "int64s",
           "min": 13835058055282163713,
           "max": 4611686018427387903,
           "default": "4611686018427387904",
@@ -4316,7 +4316,7 @@
         },
         {
           "name": "UnderPowerThreshold",
-          "type": "power_mw",
+          "type": "int64s",
           "min": 13835058055282163712,
           "max": 4611686018427387902,
           "default": "-4611686018427387904",
@@ -4324,7 +4324,7 @@
         },
         {
           "name": "OverCurrentThreshold",
-          "type": "amperage_ma",
+          "type": "int64s",
           "min": 13835058055282163713,
           "max": 4611686018427387903,
           "default": "4611686018427387904",
@@ -4332,7 +4332,7 @@
         },
         {
           "name": "UnderCurrentThreshold",
-          "type": "amperage_ma",
+          "type": "int64s",
           "min": 13835058055282163712,
           "max": 4611686018427387902,
           "default": "-4611686018427387904",
@@ -4340,7 +4340,7 @@
         },
         {
           "name": "PowerImportThreshold",
-          "type": "power_mw",
+          "type": "int64s",
           "min": 0,
           "max": 4611686018427387903,
           "default": "4611686018427387904",
@@ -4348,7 +4348,7 @@
         },
         {
           "name": "PowerExportThreshold",
-          "type": "power_mw",
+          "type": "int64s",
           "min": 13835058055282163712,
           "max": 0,
           "default": "-4611686018427387904",
@@ -4367,13 +4367,13 @@
           "type": "bitmap32",
           "max": 127,
           "bitmap_masks": {
-            "ShortCircuitFault": 1,
-            "OverLoadFault": 2,
-            "OverVoltageFault": 4,
-            "VoltageSurgeFault": 8,
-            "ResidualCurrentFault": 16,
-            "ArcFault": 32,
-            "SelfTest": 64
+            "short_circuit_fault": 1,
+            "over_load_fault": 2,
+            "over_voltage_fault": 4,
+            "voltage_surge_fault": 8,
+            "residual_current_fault": 16,
+            "arc_fault": 32,
+            "self_test": 64
           }
         }
       ]
@@ -4437,13 +4437,13 @@
           "type": "bitmap8",
           "max": 127,
           "bitmap_masks": {
-            "Sunday": 1,
-            "Monday": 2,
-            "Tuesday": 4,
-            "Wednesday": 8,
-            "Thursday": 16,
-            "Friday": 32,
-            "Saturday": 64
+            "sunday": 1,
+            "monday": 2,
+            "tuesday": 4,
+            "wednesday": 8,
+            "thursday": 16,
+            "friday": 32,
+            "saturday": 64
           }
         },
         {
@@ -4504,13 +4504,13 @@
           "name": "Status",
           "type": "enum8",
           "enum_values": {
-            "Success": 0,
-            "Failure": 1,
-            "Duplicate": 2,
-            "Occupied": 3,
-            "InvalidField": 133,
-            "ResourceExhausted": 137,
-            "NotFound": 139
+            "success": 0,
+            "failure": 1,
+            "duplicate": 2,
+            "occupied": 3,
+            "invalid_field": 133,
+            "resource_exhausted": 137,
+            "not_found": 139
           }
         },
         {
@@ -4519,13 +4519,13 @@
           "max": 127,
           "optional": true,
           "bitmap_masks": {
-            "Sunday": 1,
-            "Monday": 2,
-            "Tuesday": 4,
-            "Wednesday": 8,
-            "Thursday": 16,
-            "Friday": 32,
-            "Saturday": 64
+            "sunday": 1,
+            "monday": 2,
+            "tuesday": 4,
+            "wednesday": 8,
+            "thursday": 16,
+            "friday": 32,
+            "saturday": 64
           }
         },
         {
@@ -4588,11 +4588,11 @@
         },
         {
           "name": "LocalStartTime",
-          "type": "epoch_s"
+          "type": "int32u"
         },
         {
           "name": "LocalEndTime",
-          "type": "epoch_s"
+          "type": "int32u"
         }
       ]
     },
@@ -4632,23 +4632,23 @@
           "name": "Status",
           "type": "enum8",
           "enum_values": {
-            "Success": 0,
-            "Failure": 1,
-            "Duplicate": 2,
-            "Occupied": 3,
-            "InvalidField": 133,
-            "ResourceExhausted": 137,
-            "NotFound": 139
+            "success": 0,
+            "failure": 1,
+            "duplicate": 2,
+            "occupied": 3,
+            "invalid_field": 133,
+            "resource_exhausted": 137,
+            "not_found": 139
           }
         },
         {
           "name": "LocalStartTime",
-          "type": "epoch_s",
+          "type": "int32u",
           "optional": true
         },
         {
           "name": "LocalEndTime",
-          "type": "epoch_s",
+          "type": "int32u",
           "optional": true
         }
       ]
@@ -4682,22 +4682,22 @@
         },
         {
           "name": "LocalStartTime",
-          "type": "epoch_s"
+          "type": "int32u"
         },
         {
           "name": "LocalEndTime",
-          "type": "epoch_s"
+          "type": "int32u"
         },
         {
           "name": "OperatingMode",
           "type": "enum8",
           "max": 4,
           "enum_values": {
-            "Normal": 0,
-            "Vacation": 1,
-            "Privacy": 2,
-            "NoRemoteLockUnlock": 3,
-            "Passage": 4
+            "normal": 0,
+            "vacation": 1,
+            "privacy": 2,
+            "no_remote_lock_unlock": 3,
+            "passage": 4
           }
         }
       ]
@@ -4728,23 +4728,23 @@
           "name": "Status",
           "type": "enum8",
           "enum_values": {
-            "Success": 0,
-            "Failure": 1,
-            "Duplicate": 2,
-            "Occupied": 3,
-            "InvalidField": 133,
-            "ResourceExhausted": 137,
-            "NotFound": 139
+            "success": 0,
+            "failure": 1,
+            "duplicate": 2,
+            "occupied": 3,
+            "invalid_field": 133,
+            "resource_exhausted": 137,
+            "not_found": 139
           }
         },
         {
           "name": "LocalStartTime",
-          "type": "epoch_s",
+          "type": "int32u",
           "optional": true
         },
         {
           "name": "LocalEndTime",
-          "type": "epoch_s",
+          "type": "int32u",
           "optional": true
         },
         {
@@ -4753,11 +4753,11 @@
           "max": 4,
           "optional": true,
           "enum_values": {
-            "Normal": 0,
-            "Vacation": 1,
-            "Privacy": 2,
-            "NoRemoteLockUnlock": 3,
-            "Passage": 4
+            "normal": 0,
+            "vacation": 1,
+            "privacy": 2,
+            "no_remote_lock_unlock": 3,
+            "passage": 4
           }
         }
       ]
@@ -4783,9 +4783,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Add": 0,
-            "Clear": 1,
-            "Modify": 2
+            "add": 0,
+            "clear": 1,
+            "modify": 2
           }
         },
         {
@@ -4807,9 +4807,9 @@
           "min": 1,
           "max": 3,
           "enum_values": {
-            "Available": 0,
-            "OccupiedEnabled": 1,
-            "OccupiedDisabled": 3
+            "available": 0,
+            "occupied_enabled": 1,
+            "occupied_disabled": 3
           }
         },
         {
@@ -4817,16 +4817,16 @@
           "type": "enum8",
           "max": 9,
           "enum_values": {
-            "UnrestrictedUser": 0,
-            "YearDayScheduleUser": 1,
-            "WeekDayScheduleUser": 2,
-            "ProgrammingUser": 3,
-            "NonAccessUser": 4,
-            "ForcedUser": 5,
-            "DisposableUser": 6,
-            "ExpiringUser": 7,
-            "ScheduleRestrictedUser": 8,
-            "RemoteOnlyUser": 9
+            "unrestricted_user": 0,
+            "year_day_schedule_user": 1,
+            "week_day_schedule_user": 2,
+            "programming_user": 3,
+            "non_access_user": 4,
+            "forced_user": 5,
+            "disposable_user": 6,
+            "expiring_user": 7,
+            "schedule_restricted_user": 8,
+            "remote_only_user": 9
           }
         },
         {
@@ -4834,9 +4834,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Single": 0,
-            "Dual": 1,
-            "Tri": 2
+            "single": 0,
+            "dual": 1,
+            "tri": 2
           }
         }
       ]
@@ -4874,9 +4874,9 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Available": 0,
-            "OccupiedEnabled": 1,
-            "OccupiedDisabled": 3
+            "available": 0,
+            "occupied_enabled": 1,
+            "occupied_disabled": 3
           }
         },
         {
@@ -4884,16 +4884,16 @@
           "type": "enum8",
           "max": 9,
           "enum_values": {
-            "UnrestrictedUser": 0,
-            "YearDayScheduleUser": 1,
-            "WeekDayScheduleUser": 2,
-            "ProgrammingUser": 3,
-            "NonAccessUser": 4,
-            "ForcedUser": 5,
-            "DisposableUser": 6,
-            "ExpiringUser": 7,
-            "ScheduleRestrictedUser": 8,
-            "RemoteOnlyUser": 9
+            "unrestricted_user": 0,
+            "year_day_schedule_user": 1,
+            "week_day_schedule_user": 2,
+            "programming_user": 3,
+            "non_access_user": 4,
+            "forced_user": 5,
+            "disposable_user": 6,
+            "expiring_user": 7,
+            "schedule_restricted_user": 8,
+            "remote_only_user": 9
           }
         },
         {
@@ -4901,9 +4901,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Single": 0,
-            "Dual": 1,
-            "Tri": 2
+            "single": 0,
+            "dual": 1,
+            "tri": 2
           }
         },
         {
@@ -4915,15 +4915,15 @@
               "type": "enum8",
               "max": 8,
               "enum_values": {
-                "ProgrammingPIN": 0,
-                "PIN": 1,
-                "RFID": 2,
-                "Fingerprint": 3,
-                "FingerVein": 4,
-                "Face": 5,
-                "AliroCredentialIssuerKey": 6,
-                "AliroEvictableEndpointKey": 7,
-                "AliroNonEvictableEndpointKey": 8
+                "programming_pin": 0,
+                "pin": 1,
+                "rfid": 2,
+                "fingerprint": 3,
+                "finger_vein": 4,
+                "face": 5,
+                "aliro_credential_issuer_key": 6,
+                "aliro_evictable_endpoint_key": 7,
+                "aliro_non_evictable_endpoint_key": 8
               }
             },
             {
@@ -4934,11 +4934,11 @@
         },
         {
           "name": "CreatorFabricIndex",
-          "type": "fabric_idx"
+          "type": "int8u"
         },
         {
           "name": "LastModifiedFabricIndex",
-          "type": "fabric_idx"
+          "type": "int8u"
         },
         {
           "name": "NextUserIndex",
@@ -4968,9 +4968,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Add": 0,
-            "Clear": 1,
-            "Modify": 2
+            "add": 0,
+            "clear": 1,
+            "modify": 2
           }
         },
         {
@@ -4982,15 +4982,15 @@
               "type": "enum8",
               "max": 8,
               "enum_values": {
-                "ProgrammingPIN": 0,
-                "PIN": 1,
-                "RFID": 2,
-                "Fingerprint": 3,
-                "FingerVein": 4,
-                "Face": 5,
-                "AliroCredentialIssuerKey": 6,
-                "AliroEvictableEndpointKey": 7,
-                "AliroNonEvictableEndpointKey": 8
+                "programming_pin": 0,
+                "pin": 1,
+                "rfid": 2,
+                "fingerprint": 3,
+                "finger_vein": 4,
+                "face": 5,
+                "aliro_credential_issuer_key": 6,
+                "aliro_evictable_endpoint_key": 7,
+                "aliro_non_evictable_endpoint_key": 8
               }
             },
             {
@@ -5015,9 +5015,9 @@
           "min": 1,
           "max": 3,
           "enum_values": {
-            "Available": 0,
-            "OccupiedEnabled": 1,
-            "OccupiedDisabled": 3
+            "available": 0,
+            "occupied_enabled": 1,
+            "occupied_disabled": 3
           }
         },
         {
@@ -5025,16 +5025,16 @@
           "type": "enum8",
           "max": 9,
           "enum_values": {
-            "UnrestrictedUser": 0,
-            "YearDayScheduleUser": 1,
-            "WeekDayScheduleUser": 2,
-            "ProgrammingUser": 3,
-            "NonAccessUser": 4,
-            "ForcedUser": 5,
-            "DisposableUser": 6,
-            "ExpiringUser": 7,
-            "ScheduleRestrictedUser": 8,
-            "RemoteOnlyUser": 9
+            "unrestricted_user": 0,
+            "year_day_schedule_user": 1,
+            "week_day_schedule_user": 2,
+            "programming_user": 3,
+            "non_access_user": 4,
+            "forced_user": 5,
+            "disposable_user": 6,
+            "expiring_user": 7,
+            "schedule_restricted_user": 8,
+            "remote_only_user": 9
           }
         }
       ]
@@ -5047,13 +5047,13 @@
           "name": "Status",
           "type": "enum8",
           "enum_values": {
-            "Success": 0,
-            "Failure": 1,
-            "Duplicate": 2,
-            "Occupied": 3,
-            "InvalidField": 133,
-            "ResourceExhausted": 137,
-            "NotFound": 139
+            "success": 0,
+            "failure": 1,
+            "duplicate": 2,
+            "occupied": 3,
+            "invalid_field": 133,
+            "resource_exhausted": 137,
+            "not_found": 139
           }
         },
         {
@@ -5081,15 +5081,15 @@
               "type": "enum8",
               "max": 8,
               "enum_values": {
-                "ProgrammingPIN": 0,
-                "PIN": 1,
-                "RFID": 2,
-                "Fingerprint": 3,
-                "FingerVein": 4,
-                "Face": 5,
-                "AliroCredentialIssuerKey": 6,
-                "AliroEvictableEndpointKey": 7,
-                "AliroNonEvictableEndpointKey": 8
+                "programming_pin": 0,
+                "pin": 1,
+                "rfid": 2,
+                "fingerprint": 3,
+                "finger_vein": 4,
+                "face": 5,
+                "aliro_credential_issuer_key": 6,
+                "aliro_evictable_endpoint_key": 7,
+                "aliro_non_evictable_endpoint_key": 8
               }
             },
             {
@@ -5116,11 +5116,11 @@
         },
         {
           "name": "CreatorFabricIndex",
-          "type": "fabric_idx"
+          "type": "int8u"
         },
         {
           "name": "LastModifiedFabricIndex",
-          "type": "fabric_idx"
+          "type": "int8u"
         },
         {
           "name": "NextCredentialIndex",
@@ -5146,15 +5146,15 @@
               "type": "enum8",
               "max": 8,
               "enum_values": {
-                "ProgrammingPIN": 0,
-                "PIN": 1,
-                "RFID": 2,
-                "Fingerprint": 3,
-                "FingerVein": 4,
-                "Face": 5,
-                "AliroCredentialIssuerKey": 6,
-                "AliroEvictableEndpointKey": 7,
-                "AliroNonEvictableEndpointKey": 8
+                "programming_pin": 0,
+                "pin": 1,
+                "rfid": 2,
+                "fingerprint": 3,
+                "finger_vein": 4,
+                "face": 5,
+                "aliro_credential_issuer_key": 6,
+                "aliro_evictable_endpoint_key": 7,
+                "aliro_non_evictable_endpoint_key": 8
               }
             },
             {
@@ -5237,7 +5237,7 @@
       "args": [
         {
           "name": "LiftPercent100thsValue",
-          "type": "percent100ths"
+          "type": "int16u"
         }
       ]
     },
@@ -5257,7 +5257,7 @@
       "args": [
         {
           "name": "TiltPercent100thsValue",
-          "type": "percent100ths"
+          "type": "int16u"
         }
       ]
     }
@@ -5279,11 +5279,11 @@
           "max": 4,
           "optional": true,
           "enum_values": {
-            "MoveToFullyClosed": 0,
-            "MoveToFullyOpen": 1,
-            "MoveToPedestrianPosition": 2,
-            "MoveToVentilationPosition": 3,
-            "MoveToSignaturePosition": 4
+            "move_to_fully_closed": 0,
+            "move_to_fully_open": 1,
+            "move_to_pedestrian_position": 2,
+            "move_to_ventilation_position": 3,
+            "move_to_signature_position": 4
           }
         },
         {
@@ -5300,10 +5300,10 @@
           "default": "0x00",
           "optional": true,
           "enum_values": {
-            "Auto": 0,
-            "Low": 1,
-            "Medium": 2,
-            "High": 3
+            "auto": 0,
+            "low": 1,
+            "medium": 2,
+            "high": 3
           }
         }
       ]
@@ -5322,7 +5322,7 @@
         {
           "id": 0,
           "name": "Position",
-          "type": "percent100ths",
+          "type": "int16u",
           "optional": true
         },
         {
@@ -5339,10 +5339,10 @@
           "default": "0x00",
           "optional": true,
           "enum_values": {
-            "Auto": 0,
-            "Low": 1,
-            "Medium": 2,
-            "High": 3
+            "auto": 0,
+            "low": 1,
+            "medium": 2,
+            "high": 3
           }
         }
       ]
@@ -5357,8 +5357,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Decrease": 0,
-            "Increase": 1
+            "decrease": 0,
+            "increase": 1
           }
         },
         {
@@ -5375,10 +5375,10 @@
           "default": "0x00",
           "optional": true,
           "enum_values": {
-            "Auto": 0,
-            "Low": 1,
-            "Medium": 2,
-            "High": 3
+            "auto": 0,
+            "low": 1,
+            "medium": 2,
+            "high": 3
           }
         }
       ]
@@ -5406,10 +5406,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Success": 0,
-            "UnsupportedArea": 1,
-            "InvalidInMode": 2,
-            "InvalidSet": 3
+            "success": 0,
+            "unsupported_area": 1,
+            "invalid_in_mode": 2,
+            "invalid_set": 3
           }
         },
         {
@@ -5440,10 +5440,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Success": 0,
-            "InvalidAreaList": 1,
-            "InvalidInMode": 2,
-            "InvalidSkippedArea": 3
+            "success": 0,
+            "invalid_area_list": 1,
+            "invalid_in_mode": 2,
+            "invalid_skipped_area": 3
           }
         },
         {
@@ -5464,9 +5464,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Heat": 0,
-            "Cool": 1,
-            "Both": 2
+            "heat": 0,
+            "cool": 1,
+            "both": 2
           }
         },
         {
@@ -5487,22 +5487,22 @@
           "name": "DayOfWeekForSequence",
           "type": "bitmap8",
           "bitmap_masks": {
-            "Sunday": 1,
-            "Monday": 2,
-            "Tuesday": 4,
-            "Wednesday": 8,
-            "Thursday": 16,
-            "Friday": 32,
-            "Saturday": 64,
-            "Away": 128
+            "sunday": 1,
+            "monday": 2,
+            "tuesday": 4,
+            "wednesday": 8,
+            "thursday": 16,
+            "friday": 32,
+            "saturday": 64,
+            "away": 128
           }
         },
         {
           "name": "ModeForSequence",
           "type": "bitmap8",
           "bitmap_masks": {
-            "HeatSetpointPresent": 1,
-            "CoolSetpointPresent": 2
+            "heat_setpoint_present": 1,
+            "cool_setpoint_present": 2
           }
         },
         {
@@ -5516,12 +5516,12 @@
             },
             {
               "name": "HeatSetpoint",
-              "type": "temperature",
+              "type": "int16s",
               "min": -27315
             },
             {
               "name": "CoolSetpoint",
-              "type": "temperature",
+              "type": "int16s",
               "min": -27315
             }
           ]
@@ -5540,22 +5540,22 @@
           "name": "DayOfWeekForSequence",
           "type": "bitmap8",
           "bitmap_masks": {
-            "Sunday": 1,
-            "Monday": 2,
-            "Tuesday": 4,
-            "Wednesday": 8,
-            "Thursday": 16,
-            "Friday": 32,
-            "Saturday": 64,
-            "Away": 128
+            "sunday": 1,
+            "monday": 2,
+            "tuesday": 4,
+            "wednesday": 8,
+            "thursday": 16,
+            "friday": 32,
+            "saturday": 64,
+            "away": 128
           }
         },
         {
           "name": "ModeForSequence",
           "type": "bitmap8",
           "bitmap_masks": {
-            "HeatSetpointPresent": 1,
-            "CoolSetpointPresent": 2
+            "heat_setpoint_present": 1,
+            "cool_setpoint_present": 2
           }
         },
         {
@@ -5569,12 +5569,12 @@
             },
             {
               "name": "HeatSetpoint",
-              "type": "temperature",
+              "type": "int16s",
               "min": -27315
             },
             {
               "name": "CoolSetpoint",
-              "type": "temperature",
+              "type": "int16s",
               "min": -27315
             }
           ]
@@ -5589,22 +5589,22 @@
           "name": "DaysToReturn",
           "type": "bitmap8",
           "bitmap_masks": {
-            "Sunday": 1,
-            "Monday": 2,
-            "Tuesday": 4,
-            "Wednesday": 8,
-            "Thursday": 16,
-            "Friday": 32,
-            "Saturday": 64,
-            "Away": 128
+            "sunday": 1,
+            "monday": 2,
+            "tuesday": 4,
+            "wednesday": 8,
+            "thursday": 16,
+            "friday": 32,
+            "saturday": 64,
+            "away": 128
           }
         },
         {
           "name": "ModeToReturn",
           "type": "bitmap8",
           "bitmap_masks": {
-            "HeatSetpointPresent": 1,
-            "CoolSetpointPresent": 2
+            "heat_setpoint_present": 1,
+            "cool_setpoint_present": 2
           }
         }
       ]
@@ -5654,7 +5654,7 @@
         },
         {
           "name": "EffectiveTime",
-          "type": "epoch_s"
+          "type": "int32u"
         },
         {
           "name": "ExpirationInMinutes",
@@ -5681,7 +5681,7 @@
         {
           "id": 0,
           "name": "StatusCode",
-          "type": "status"
+          "type": "int8u"
         },
         {
           "id": 0,
@@ -5690,11 +5690,11 @@
           "struct": [
             {
               "name": "AttributeID",
-              "type": "attrib_id"
+              "type": "int32u"
             },
             {
               "name": "StatusCode",
-              "type": "status"
+              "type": "int8u"
             }
           ]
         },
@@ -5715,15 +5715,15 @@
           "name": "RequestType",
           "type": "enum8",
           "enum_values": {
-            "BeginWrite": 0,
-            "CommitWrite": 1,
-            "RollbackWrite": 2
+            "begin_write": 0,
+            "commit_write": 1,
+            "rollback_write": 2
           }
         },
         {
           "id": 0,
           "name": "AttributeRequests",
-          "type": "attrib_id"
+          "type": "int32u"
         },
         {
           "id": 0,
@@ -5747,8 +5747,8 @@
           "max": 1,
           "default": "0x00",
           "enum_values": {
-            "Increase": 0,
-            "Decrease": 1
+            "increase": 0,
+            "decrease": 1
           }
         },
         {
@@ -5775,7 +5775,7 @@
       "args": [
         {
           "name": "UserSetpoint",
-          "type": "percent",
+          "type": "int8u",
           "optional": true
         },
         {
@@ -5784,11 +5784,11 @@
           "max": 4,
           "optional": true,
           "enum_values": {
-            "Off": 0,
-            "Humidifier": 1,
-            "Dehumidifier": 2,
-            "Auto": 3,
-            "FanOnly": 4
+            "off": 0,
+            "humidifier": 1,
+            "dehumidifier": 2,
+            "auto": 3,
+            "fan_only": 4
           }
         },
         {
@@ -5797,8 +5797,8 @@
           "max": 3,
           "optional": true,
           "bitmap_masks": {
-            "MistCold": 1,
-            "MistWarm": 2
+            "mist_cold": 1,
+            "mist_warm": 2
           }
         },
         {
@@ -5834,10 +5834,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Shortest": 0,
-            "Longest": 1,
-            "Up": 2,
-            "Down": 3
+            "shortest": 0,
+            "longest": 1,
+            "up": 2,
+            "down": 3
           }
         },
         {
@@ -5850,7 +5850,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -5858,7 +5858,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -5872,9 +5872,9 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Stop": 0,
-            "Up": 1,
-            "Down": 3
+            "stop": 0,
+            "up": 1,
+            "down": 3
           }
         },
         {
@@ -5886,7 +5886,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -5894,7 +5894,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -5908,8 +5908,8 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Up": 1,
-            "Down": 3
+            "up": 1,
+            "down": 3
           }
         },
         {
@@ -5925,7 +5925,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -5933,7 +5933,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -5957,7 +5957,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -5965,7 +5965,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -5979,9 +5979,9 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Stop": 0,
-            "Up": 1,
-            "Down": 3
+            "stop": 0,
+            "up": 1,
+            "down": 3
           }
         },
         {
@@ -5993,7 +5993,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6001,7 +6001,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6015,8 +6015,8 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Up": 1,
-            "Down": 3
+            "up": 1,
+            "down": 3
           }
         },
         {
@@ -6032,7 +6032,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6040,7 +6040,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6069,7 +6069,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6077,7 +6077,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6106,7 +6106,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6114,7 +6114,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6136,7 +6136,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6144,7 +6144,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6171,7 +6171,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6179,7 +6179,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6203,7 +6203,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6211,7 +6211,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6229,10 +6229,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Shortest": 0,
-            "Longest": 1,
-            "Up": 2,
-            "Down": 3
+            "shortest": 0,
+            "longest": 1,
+            "up": 2,
+            "down": 3
           }
         },
         {
@@ -6245,7 +6245,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6253,7 +6253,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6267,9 +6267,9 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Stop": 0,
-            "Up": 1,
-            "Down": 3
+            "stop": 0,
+            "up": 1,
+            "down": 3
           }
         },
         {
@@ -6281,7 +6281,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6289,7 +6289,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6303,8 +6303,8 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Up": 1,
-            "Down": 3
+            "up": 1,
+            "down": 3
           }
         },
         {
@@ -6321,7 +6321,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6329,7 +6329,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6357,7 +6357,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6365,7 +6365,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6379,10 +6379,10 @@
           "type": "bitmap8",
           "max": 15,
           "bitmap_masks": {
-            "UpdateAction": 1,
-            "UpdateDirection": 2,
-            "UpdateTime": 4,
-            "UpdateStartHue": 8
+            "update_action": 1,
+            "update_direction": 2,
+            "update_time": 4,
+            "update_start_hue": 8
           }
         },
         {
@@ -6390,9 +6390,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Deactivate": 0,
-            "ActivateFromColorLoopStartEnhancedHue": 1,
-            "ActivateFromEnhancedCurrentHue": 2
+            "deactivate": 0,
+            "activate_from_color_loop_start_enhanced_hue": 1,
+            "activate_from_enhanced_current_hue": 2
           }
         },
         {
@@ -6400,8 +6400,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Decrement": 0,
-            "Increment": 1
+            "decrement": 0,
+            "increment": 1
           }
         },
         {
@@ -6417,7 +6417,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6425,7 +6425,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6439,7 +6439,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6447,7 +6447,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6461,9 +6461,9 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Stop": 0,
-            "Up": 1,
-            "Down": 3
+            "stop": 0,
+            "up": 1,
+            "down": 3
           }
         },
         {
@@ -6485,7 +6485,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6493,7 +6493,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6507,8 +6507,8 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Up": 1,
-            "Down": 3
+            "up": 1,
+            "down": 3
           }
         },
         {
@@ -6535,7 +6535,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         },
         {
@@ -6543,7 +6543,7 @@
           "type": "bitmap8",
           "max": 1,
           "bitmap_masks": {
-            "ExecuteIfOff": 1
+            "execute_if_off": 1
           }
         }
       ]
@@ -6567,13 +6567,13 @@
           "type": "enum8",
           "max": 6,
           "enum_values": {
-            "Level": 0,
-            "XY": 1,
-            "XYAndLevel": 2,
-            "HS": 3,
-            "HSAndLevel": 4,
-            "EHUE": 5,
-            "EHUEAndLevel": 6
+            "level": 0,
+            "xy": 1,
+            "xy_and_level": 2,
+            "hs": 3,
+            "hs_and_level": 4,
+            "ehue": 5,
+            "ehue_and_level": 6
           }
         },
         {
@@ -6626,10 +6626,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "BluetoothChannelSounding": 0,
-            "WiFiRoundTripTimeRanging": 1,
-            "WiFiNextGenerationRanging": 2,
-            "BLEBeaconRSSIRanging": 3
+            "bluetooth_channel_sounding": 0,
+            "wi_fi_round_trip_time_ranging": 1,
+            "wi_fi_next_generation_ranging": 2,
+            "ble_beacon_rssi_ranging": 3
           }
         },
         {
@@ -6642,12 +6642,12 @@
               "type": "enum8",
               "max": 5,
               "enum_values": {
-                "WiFiSubscriberRole": 0,
-                "WiFiPublisherRole": 1,
-                "BLEScanningRole": 2,
-                "BLEBeaconRole": 3,
-                "BLTInitiatorRole": 4,
-                "BLTReflectorRole": 5
+                "wi_fi_subscriber_role": 0,
+                "wi_fi_publisher_role": 1,
+                "ble_scanning_role": 2,
+                "ble_beacon_role": 3,
+                "blt_initiator_role": 4,
+                "blt_reflector_role": 5
               }
             },
             {
@@ -6671,12 +6671,12 @@
               "type": "enum8",
               "max": 5,
               "enum_values": {
-                "WiFiSubscriberRole": 0,
-                "WiFiPublisherRole": 1,
-                "BLEScanningRole": 2,
-                "BLEBeaconRole": 3,
-                "BLTInitiatorRole": 4,
-                "BLTReflectorRole": 5
+                "wi_fi_subscriber_role": 0,
+                "wi_fi_publisher_role": 1,
+                "ble_scanning_role": 2,
+                "ble_beacon_role": 3,
+                "blt_initiator_role": 4,
+                "blt_reflector_role": 5
               }
             },
             {
@@ -6695,12 +6695,12 @@
               "type": "enum8",
               "max": 5,
               "enum_values": {
-                "WiFiSubscriberRole": 0,
-                "WiFiPublisherRole": 1,
-                "BLEScanningRole": 2,
-                "BLEBeaconRole": 3,
-                "BLTInitiatorRole": 4,
-                "BLTReflectorRole": 5
+                "wi_fi_subscriber_role": 0,
+                "wi_fi_publisher_role": 1,
+                "ble_scanning_role": 2,
+                "ble_beacon_role": 3,
+                "blt_initiator_role": 4,
+                "blt_reflector_role": 5
               }
             },
             {
@@ -6713,9 +6713,9 @@
               "max": 2,
               "optional": true,
               "enum_values": {
-                "PBROnly": 0,
-                "RTTOnly": 1,
-                "Both": 2
+                "pbr_only": 0,
+                "rtt_only": 1,
+                "both": 2
               }
             },
             {
@@ -6724,10 +6724,10 @@
               "max": 3,
               "optional": true,
               "enum_values": {
-                "BLTCSSecurityLevelUnknown": 0,
-                "BLTCSSecurityLevelOne": 1,
-                "BLTCSSecurityLevelTwo": 2,
-                "BLTCSSecurityLevelThree": 3
+                "bltcs_security_level_unknown": 0,
+                "bltcs_security_level_one": 1,
+                "bltcs_security_level_two": 2,
+                "bltcs_security_level_three": 3
               }
             },
             {
@@ -6743,13 +6743,13 @@
           "max": 127,
           "optional": true,
           "bitmap_masks": {
-            "2G4": 1,
-            "3G65": 2,
-            "5G": 4,
-            "6G": 8,
-            "60G": 16,
-            "S1G": 32,
-            "45G": 64
+            "2_g4": 1,
+            "3_g65": 2,
+            "5_g": 4,
+            "6_g": 8,
+            "60_g": 16,
+            "s1_g": 32,
+            "45_g": 64
           }
         },
         {
@@ -6758,16 +6758,16 @@
           "max": 1023,
           "optional": true,
           "bitmap_masks": {
-            "1MHz": 1,
-            "2MHz": 2,
-            "4MHz": 4,
-            "8MHz": 8,
-            "16MHz": 16,
-            "20MHz": 32,
-            "40MHz": 64,
-            "80MHz": 128,
-            "160MHz": 256,
-            "320MHz": 512
+            "1_m_hz": 1,
+            "2_m_hz": 2,
+            "4_m_hz": 4,
+            "8_m_hz": 8,
+            "16_m_hz": 16,
+            "20_m_hz": 32,
+            "40_m_hz": 64,
+            "80_m_hz": 128,
+            "160_m_hz": 256,
+            "320_m_hz": 512
           }
         },
         {
@@ -6775,8 +6775,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "SecureRanging": 0,
-            "OpenRanging": 1
+            "secure_ranging": 0,
+            "open_ranging": 1
           }
         },
         {
@@ -6785,15 +6785,15 @@
           "struct": [
             {
               "name": "StartTime",
-              "type": "elapsed_s"
+              "type": "int32u"
             },
             {
               "name": "EndTime",
-              "type": "elapsed_s"
+              "type": "int32u"
             },
             {
               "name": "RangingInstanceInterval",
-              "type": "elapsed_s",
+              "type": "int32u",
               "min": 1,
               "optional": true
             }
@@ -6833,11 +6833,11 @@
           "type": "enum8",
           "max": 4,
           "enum_values": {
-            "Accepted": 0,
-            "RejectedInfeasibleRanging": 1,
-            "RejectedInfeasibleRangingTriggers": 2,
-            "BusySessionCapacityReached": 3,
-            "BusyTryAgainLater": 4
+            "accepted": 0,
+            "rejected_infeasible_ranging": 1,
+            "rejected_infeasible_ranging_triggers": 2,
+            "busy_session_capacity_reached": 3,
+            "busy_try_again_later": 4
           }
         },
         {
@@ -6913,7 +6913,7 @@
           "max": 1,
           "optional": true,
           "enum_values": {
-            "ECDSA": 1
+            "ecdsa": 1
           }
         },
         {
@@ -7098,9 +7098,9 @@
           "name": "Status",
           "type": "enum8",
           "enum_values": {
-            "Success": 0,
-            "MultipleMatches": 1,
-            "NoMatches": 2
+            "success": 0,
+            "multiple_matches": 1,
+            "no_matches": 2
           }
         },
         {
@@ -7140,12 +7140,12 @@
       "args": [
         {
           "name": "StartTime",
-          "type": "epoch_s",
+          "type": "int32u",
           "optional": true
         },
         {
           "name": "EndTime",
-          "type": "epoch_s",
+          "type": "int32u",
           "optional": true
         },
         {
@@ -7186,10 +7186,10 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "Satellite": 0,
-                "Cable": 1,
-                "Terrestrial": 2,
-                "OTT": 3
+                "satellite": 0,
+                "cable": 1,
+                "terrestrial": 2,
+                "ott": 3
               }
             }
           ]
@@ -7226,9 +7226,9 @@
           "type": "bitmap32",
           "optional": true,
           "bitmap_masks": {
-            "Scheduled": 1,
-            "RecordSeries": 2,
-            "Recorded": 4
+            "scheduled": 1,
+            "record_series": 2,
+            "recorded": 4
           }
         },
         {
@@ -7365,21 +7365,21 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "Satellite": 0,
-                    "Cable": 1,
-                    "Terrestrial": 2,
-                    "OTT": 3
+                    "satellite": 0,
+                    "cable": 1,
+                    "terrestrial": 2,
+                    "ott": 3
                   }
                 }
               ]
             },
             {
               "name": "StartTime",
-              "type": "epoch_s"
+              "type": "int32u"
             },
             {
               "name": "EndTime",
-              "type": "epoch_s"
+              "type": "int32u"
             },
             {
               "name": "Title",
@@ -7454,9 +7454,9 @@
               "type": "bitmap32",
               "optional": true,
               "bitmap_masks": {
-                "Scheduled": 1,
-                "RecordSeries": 2,
-                "Recorded": 4
+                "scheduled": 1,
+                "record_series": 2,
+                "recorded": 4
               }
             },
             {
@@ -7633,9 +7633,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Success": 0,
-            "TargetNotFound": 1,
-            "NotAllowed": 2
+            "success": 0,
+            "target_not_found": 1,
+            "not_allowed": 2
           }
         },
         {
@@ -7728,12 +7728,12 @@
           "name": "Status",
           "type": "enum8",
           "enum_values": {
-            "Success": 0,
-            "InvalidStateForCommand": 1,
-            "NotAllowed": 2,
-            "NotActive": 3,
-            "SpeedOutOfRange": 4,
-            "SeekOutOfRange": 5
+            "success": 0,
+            "invalid_state_for_command": 1,
+            "not_allowed": 2,
+            "not_active": 3,
+            "speed_out_of_range": 4,
+            "seek_out_of_range": 5
           }
         },
         {
@@ -7840,92 +7840,92 @@
           "type": "enum8",
           "max": 118,
           "enum_values": {
-            "Select": 0,
-            "Up": 1,
-            "Down": 2,
-            "Left": 3,
-            "Right": 4,
-            "RightUp": 5,
-            "RightDown": 6,
-            "LeftUp": 7,
-            "LeftDown": 8,
-            "RootMenu": 9,
-            "SetupMenu": 10,
-            "ContentsMenu": 11,
-            "FavoriteMenu": 12,
-            "Exit": 13,
-            "MediaTopMenu": 16,
-            "MediaContextSensitiveMenu": 17,
-            "NumberEntryMode": 29,
-            "Number11": 30,
-            "Number12": 31,
-            "Number0OrNumber10": 32,
-            "Numbers1": 33,
-            "Numbers2": 34,
-            "Numbers3": 35,
-            "Numbers4": 36,
-            "Numbers5": 37,
-            "Numbers6": 38,
-            "Numbers7": 39,
-            "Numbers8": 40,
-            "Numbers9": 41,
-            "Dot": 42,
-            "Enter": 43,
-            "Clear": 44,
-            "NextFavorite": 47,
-            "ChannelUp": 48,
-            "ChannelDown": 49,
-            "PreviousChannel": 50,
-            "SoundSelect": 51,
-            "InputSelect": 52,
-            "DisplayInformation": 53,
-            "Help": 54,
-            "PageUp": 55,
-            "PageDown": 56,
-            "Power": 64,
-            "VolumeUp": 65,
-            "VolumeDown": 66,
-            "Mute": 67,
-            "Play": 68,
-            "Stop": 69,
-            "Pause": 70,
-            "Record": 71,
-            "Rewind": 72,
-            "FastForward": 73,
-            "Eject": 74,
-            "Forward": 75,
-            "Backward": 76,
-            "StopRecord": 77,
-            "PauseRecord": 78,
-            "Reserved": 79,
-            "Angle": 80,
-            "SubPicture": 81,
-            "VideoOnDemand": 82,
-            "ElectronicProgramGuide": 83,
-            "TimerProgramming": 84,
-            "InitialConfiguration": 85,
-            "SelectBroadcastType": 86,
-            "SelectSoundPresentation": 87,
-            "PlayFunction": 96,
-            "PausePlayFunction": 97,
-            "RecordFunction": 98,
-            "PauseRecordFunction": 99,
-            "StopFunction": 100,
-            "MuteFunction": 101,
-            "RestoreVolumeFunction": 102,
-            "TuneFunction": 103,
-            "SelectMediaFunction": 104,
-            "SelectAvInputFunction": 105,
-            "SelectAudioInputFunction": 106,
-            "PowerToggleFunction": 107,
-            "PowerOffFunction": 108,
-            "PowerOnFunction": 109,
-            "F1Blue": 113,
-            "F2Red": 114,
-            "F3Green": 115,
-            "F4Yellow": 116,
-            "F5": 117,
-            "Data": 118
+            "select": 0,
+            "up": 1,
+            "down": 2,
+            "left": 3,
+            "right": 4,
+            "right_up": 5,
+            "right_down": 6,
+            "left_up": 7,
+            "left_down": 8,
+            "root_menu": 9,
+            "setup_menu": 10,
+            "contents_menu": 11,
+            "favorite_menu": 12,
+            "exit": 13,
+            "media_top_menu": 16,
+            "media_context_sensitive_menu": 17,
+            "number_entry_mode": 29,
+            "number11": 30,
+            "number12": 31,
+            "number0_or_number10": 32,
+            "numbers1": 33,
+            "numbers2": 34,
+            "numbers3": 35,
+            "numbers4": 36,
+            "numbers5": 37,
+            "numbers6": 38,
+            "numbers7": 39,
+            "numbers8": 40,
+            "numbers9": 41,
+            "dot": 42,
+            "enter": 43,
+            "clear": 44,
+            "next_favorite": 47,
+            "channel_up": 48,
+            "channel_down": 49,
+            "previous_channel": 50,
+            "sound_select": 51,
+            "input_select": 52,
+            "display_information": 53,
+            "help": 54,
+            "page_up": 55,
+            "page_down": 56,
+            "power": 64,
+            "volume_up": 65,
+            "volume_down": 66,
+            "mute": 67,
+            "play": 68,
+            "stop": 69,
+            "pause": 70,
+            "record": 71,
+            "rewind": 72,
+            "fast_forward": 73,
+            "eject": 74,
+            "forward": 75,
+            "backward": 76,
+            "stop_record": 77,
+            "pause_record": 78,
+            "reserved": 79,
+            "angle": 80,
+            "sub_picture": 81,
+            "video_on_demand": 82,
+            "electronic_program_guide": 83,
+            "timer_programming": 84,
+            "initial_configuration": 85,
+            "select_broadcast_type": 86,
+            "select_sound_presentation": 87,
+            "play_function": 96,
+            "pause_play_function": 97,
+            "record_function": 98,
+            "pause_record_function": 99,
+            "stop_function": 100,
+            "mute_function": 101,
+            "restore_volume_function": 102,
+            "tune_function": 103,
+            "select_media_function": 104,
+            "select_av_input_function": 105,
+            "select_audio_input_function": 106,
+            "power_toggle_function": 107,
+            "power_off_function": 108,
+            "power_on_function": 109,
+            "f1_blue": 113,
+            "f2_red": 114,
+            "f3_green": 115,
+            "f4_yellow": 116,
+            "f5": 117,
+            "data": 118
           }
         }
       ]
@@ -7940,9 +7940,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "Success": 0,
-            "UnsupportedKey": 1,
-            "InvalidKeyInCurrentState": 2
+            "success": 0,
+            "unsupported_key": 1,
+            "invalid_key_in_current_state": 2
           }
         }
       ]
@@ -7965,23 +7965,23 @@
                   "name": "Type",
                   "type": "enum8",
                   "enum_values": {
-                    "Actor": 0,
-                    "Channel": 1,
-                    "Character": 2,
-                    "Director": 3,
-                    "Event": 4,
-                    "Franchise": 5,
-                    "Genre": 6,
-                    "League": 7,
-                    "Popularity": 8,
-                    "Provider": 9,
-                    "Sport": 10,
-                    "SportsTeam": 11,
-                    "Type": 12,
-                    "Video": 13,
-                    "Season": 14,
-                    "Episode": 15,
-                    "Any": 16
+                    "actor": 0,
+                    "channel": 1,
+                    "character": 2,
+                    "director": 3,
+                    "event": 4,
+                    "franchise": 5,
+                    "genre": 6,
+                    "league": 7,
+                    "popularity": 8,
+                    "provider": 9,
+                    "sport": 10,
+                    "sports_team": 11,
+                    "type": 12,
+                    "video": 13,
+                    "season": 14,
+                    "episode": 15,
+                    "any": 16
                   }
                 },
                 {
@@ -8038,24 +8038,24 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "ForcedSubtitles": 0,
-                    "DescribesVideo": 1,
-                    "EasyToRead": 2,
-                    "FrameBased": 3,
-                    "MainProgram": 4,
-                    "OriginalContent": 5,
-                    "VoiceOverTranslation": 6,
-                    "Caption": 7,
-                    "Subtitle": 8,
-                    "Alternate": 9,
-                    "Supplementary": 10,
-                    "Commentary": 11,
-                    "DubbedTranslation": 12,
-                    "Description": 13,
-                    "Metadata": 14,
-                    "EnhancedAudioIntelligibility": 15,
-                    "Emergency": 16,
-                    "Karaoke": 17
+                    "forced_subtitles": 0,
+                    "describes_video": 1,
+                    "easy_to_read": 2,
+                    "frame_based": 3,
+                    "main_program": 4,
+                    "original_content": 5,
+                    "voice_over_translation": 6,
+                    "caption": 7,
+                    "subtitle": 8,
+                    "alternate": 9,
+                    "supplementary": 10,
+                    "commentary": 11,
+                    "dubbed_translation": 12,
+                    "description": 13,
+                    "metadata": 14,
+                    "enhanced_audio_intelligibility": 15,
+                    "emergency": 16,
+                    "karaoke": 17
                   }
                 },
                 {
@@ -8078,24 +8078,24 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "ForcedSubtitles": 0,
-                    "DescribesVideo": 1,
-                    "EasyToRead": 2,
-                    "FrameBased": 3,
-                    "MainProgram": 4,
-                    "OriginalContent": 5,
-                    "VoiceOverTranslation": 6,
-                    "Caption": 7,
-                    "Subtitle": 8,
-                    "Alternate": 9,
-                    "Supplementary": 10,
-                    "Commentary": 11,
-                    "DubbedTranslation": 12,
-                    "Description": 13,
-                    "Metadata": 14,
-                    "EnhancedAudioIntelligibility": 15,
-                    "Emergency": 16,
-                    "Karaoke": 17
+                    "forced_subtitles": 0,
+                    "describes_video": 1,
+                    "easy_to_read": 2,
+                    "frame_based": 3,
+                    "main_program": 4,
+                    "original_content": 5,
+                    "voice_over_translation": 6,
+                    "caption": 7,
+                    "subtitle": 8,
+                    "alternate": 9,
+                    "supplementary": 10,
+                    "commentary": 11,
+                    "dubbed_translation": 12,
+                    "description": 13,
+                    "metadata": 14,
+                    "enhanced_audio_intelligibility": 15,
+                    "emergency": 16,
+                    "karaoke": 17
                   }
                 },
                 {
@@ -8167,8 +8167,8 @@
                       "name": "Metric",
                       "type": "enum8",
                       "enum_values": {
-                        "Pixels": 0,
-                        "Percentage": 1
+                        "pixels": 0,
+                        "percentage": 1
                       }
                     }
                   ]
@@ -8207,8 +8207,8 @@
                       "name": "Metric",
                       "type": "enum8",
                       "enum_values": {
-                        "Pixels": 0,
-                        "Percentage": 1
+                        "pixels": 0,
+                        "percentage": 1
                       }
                     }
                   ]
@@ -8247,8 +8247,8 @@
                       "name": "Metric",
                       "type": "enum8",
                       "enum_values": {
-                        "Pixels": 0,
-                        "Percentage": 1
+                        "pixels": 0,
+                        "percentage": 1
                       }
                     }
                   ]
@@ -8287,8 +8287,8 @@
                       "name": "Metric",
                       "type": "enum8",
                       "enum_values": {
-                        "Pixels": 0,
-                        "Percentage": 1
+                        "pixels": 0,
+                        "percentage": 1
                       }
                     }
                   ]
@@ -8327,8 +8327,8 @@
                       "name": "Metric",
                       "type": "enum8",
                       "enum_values": {
-                        "Pixels": 0,
-                        "Percentage": 1
+                        "pixels": 0,
+                        "percentage": 1
                       }
                     }
                   ]
@@ -8347,11 +8347,11 @@
           "name": "Status",
           "type": "enum8",
           "enum_values": {
-            "Success": 0,
-            "URLNotAvailable": 1,
-            "AuthFailed": 2,
-            "TextTrackNotAvailable": 3,
-            "AudioTrackNotAvailable": 4
+            "success": 0,
+            "url_not_available": 1,
+            "auth_failed": 2,
+            "text_track_not_available": 3,
+            "audio_track_not_available": 4
           }
         },
         {
@@ -8474,12 +8474,12 @@
           "type": "enum8",
           "max": 5,
           "enum_values": {
-            "Success": 0,
-            "AppNotAvailable": 1,
-            "SystemBusy": 2,
-            "PendingUserApproval": 3,
-            "Downloading": 4,
-            "Installing": 5
+            "success": 0,
+            "app_not_available": 1,
+            "system_busy": 2,
+            "pending_user_approval": 3,
+            "downloading": 4,
+            "installing": 5
           }
         },
         {
@@ -8531,7 +8531,7 @@
         {
           "id": 2,
           "name": "Node",
-          "type": "node_id",
+          "type": "int64u",
           "optional": true
         }
       ]
@@ -8543,7 +8543,7 @@
         {
           "id": 0,
           "name": "Node",
-          "type": "node_id",
+          "type": "int64u",
           "optional": true
         }
       ]
@@ -8605,7 +8605,7 @@
         {
           "id": 1,
           "name": "BonusTime",
-          "type": "elapsed_s",
+          "type": "int32u",
           "default": "300"
         }
       ]
@@ -8617,7 +8617,7 @@
         {
           "id": 0,
           "name": "ScreenTime",
-          "type": "elapsed_s",
+          "type": "int32u",
           "max": 86400
         }
       ]
@@ -8755,13 +8755,13 @@
               "type": "bitmap8",
               "max": 127,
               "bitmap_masks": {
-                "Sunday": 1,
-                "Monday": 2,
-                "Tuesday": 4,
-                "Wednesday": 8,
-                "Thursday": 16,
-                "Friday": 32,
-                "Saturday": 64
+                "sunday": 1,
+                "monday": 2,
+                "tuesday": 4,
+                "wednesday": 8,
+                "thursday": 16,
+                "friday": 32,
+                "saturday": 64
               }
             },
             {
@@ -8834,8 +8834,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Success": 0,
-            "UnexpectedData": 1
+            "success": 0,
+            "unexpected_data": 1
           }
         },
         {
@@ -8871,9 +8871,9 @@
               "type": "enum8",
               "max": 2,
               "enum_values": {
-                "Motion": 0,
-                "Privacy": 1,
-                "Focus": 2
+                "motion": 0,
+                "privacy": 1,
+                "focus": 2
               }
             },
             {
@@ -8930,9 +8930,9 @@
               "type": "enum8",
               "max": 2,
               "enum_values": {
-                "Motion": 0,
-                "Privacy": 1,
-                "Focus": 2
+                "motion": 0,
+                "privacy": 1,
+                "focus": 2
               }
             },
             {
@@ -8982,23 +8982,23 @@
             },
             {
               "name": "InitialDuration",
-              "type": "elapsed_s",
+              "type": "int32u",
               "min": 1,
               "max": 65535
             },
             {
               "name": "AugmentationDuration",
-              "type": "elapsed_s",
+              "type": "int32u",
               "max": 65535
             },
             {
               "name": "MaxDuration",
-              "type": "elapsed_s",
+              "type": "int32u",
               "min": 1
             },
             {
               "name": "BlindDuration",
-              "type": "elapsed_s"
+              "type": "int32u"
             },
             {
               "name": "Sensitivity",
@@ -9033,10 +9033,10 @@
           "min": 1,
           "max": 3,
           "enum_values": {
-            "Internal": 0,
-            "Recording": 1,
-            "Analysis": 2,
-            "LiveView": 3
+            "internal": 0,
+            "recording": 1,
+            "analysis": 2,
+            "live_view": 3
           }
         },
         {
@@ -9044,8 +9044,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "OPUS": 0,
-            "AAC-LC": 1
+            "opus": 0,
+            "aac-lc": 1
           }
         },
         {
@@ -9102,10 +9102,10 @@
           "min": 1,
           "max": 3,
           "enum_values": {
-            "Internal": 0,
-            "Recording": 1,
-            "Analysis": 2,
-            "LiveView": 3
+            "internal": 0,
+            "recording": 1,
+            "analysis": 2,
+            "live_view": 3
           }
         },
         {
@@ -9113,10 +9113,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "H264": 0,
-            "HEVC": 1,
-            "VVC": 2,
-            "AV1": 3
+            "h264": 0,
+            "hevc": 1,
+            "vvc": 2,
+            "av1": 3
           }
         },
         {
@@ -9237,8 +9237,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "JPEG": 0,
-            "HEIC": 1
+            "jpeg": 0,
+            "heic": 1
           }
         },
         {
@@ -9344,10 +9344,10 @@
           "name": "StreamPriorities",
           "type": "enum8",
           "enum_values": {
-            "Internal": 0,
-            "Recording": 1,
-            "Analysis": 2,
-            "LiveView": 3
+            "internal": 0,
+            "recording": 1,
+            "analysis": 2,
+            "live_view": 3
           }
         }
       ]
@@ -9391,8 +9391,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "JPEG": 0,
-            "HEIC": 1
+            "jpeg": 0,
+            "heic": 1
           }
         },
         {
@@ -9600,16 +9600,16 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Internal": 0,
-            "Recording": 1,
-            "Analysis": 2,
-            "LiveView": 3
+            "internal": 0,
+            "recording": 1,
+            "analysis": 2,
+            "live_view": 3
           }
         },
         {
           "id": 1,
           "name": "OriginatingEndpointID",
-          "type": "endpoint_no"
+          "type": "int16u"
         },
         {
           "id": 2,
@@ -9747,16 +9747,16 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "Internal": 0,
-            "Recording": 1,
-            "Analysis": 2,
-            "LiveView": 3
+            "internal": 0,
+            "recording": 1,
+            "analysis": 2,
+            "live_view": 3
           }
         },
         {
           "id": 3,
           "name": "OriginatingEndpointID",
-          "type": "endpoint_no"
+          "type": "int16u"
         },
         {
           "id": 4,
@@ -9930,19 +9930,19 @@
           "type": "enum8",
           "max": 12,
           "enum_values": {
-            "ICEFailed": 0,
-            "ICETimeout": 1,
-            "UserHangup": 2,
-            "UserBusy": 3,
-            "Replaced": 4,
-            "NoUserMedia": 5,
-            "InviteTimeout": 6,
-            "AnsweredElsewhere": 7,
-            "OutOfResources": 8,
-            "MediaTimeout": 9,
-            "LowPower": 10,
-            "PrivacyMode": 11,
-            "UnknownReason": 12
+            "ice_failed": 0,
+            "ice_timeout": 1,
+            "user_hangup": 2,
+            "user_busy": 3,
+            "replaced": 4,
+            "no_user_media": 5,
+            "invite_timeout": 6,
+            "answered_elsewhere": 7,
+            "out_of_resources": 8,
+            "media_timeout": 9,
+            "low_power": 10,
+            "privacy_mode": 11,
+            "unknown_reason": 12
           }
         }
       ]
@@ -10061,19 +10061,19 @@
           "type": "enum8",
           "max": 12,
           "enum_values": {
-            "ICEFailed": 0,
-            "ICETimeout": 1,
-            "UserHangup": 2,
-            "UserBusy": 3,
-            "Replaced": 4,
-            "NoUserMedia": 5,
-            "InviteTimeout": 6,
-            "AnsweredElsewhere": 7,
-            "OutOfResources": 8,
-            "MediaTimeout": 9,
-            "LowPower": 10,
-            "PrivacyMode": 11,
-            "UnknownReason": 12
+            "ice_failed": 0,
+            "ice_timeout": 1,
+            "user_hangup": 2,
+            "user_busy": 3,
+            "replaced": 4,
+            "no_user_media": 5,
+            "invite_timeout": 6,
+            "answered_elsewhere": 7,
+            "out_of_resources": 8,
+            "media_timeout": 9,
+            "low_power": 10,
+            "privacy_mode": 11,
+            "unknown_reason": 12
           }
         }
       ]
@@ -10093,10 +10093,10 @@
               "type": "enum8",
               "max": 3,
               "enum_values": {
-                "Internal": 0,
-                "Recording": 1,
-                "Analysis": 2,
-                "LiveView": 3
+                "internal": 0,
+                "recording": 1,
+                "analysis": 2,
+                "live_view": 3
               }
             },
             {
@@ -10128,10 +10128,10 @@
                   "type": "enum8",
                   "max": 3,
                   "enum_values": {
-                    "Command": 0,
-                    "Motion": 1,
-                    "Continuous": 2,
-                    "AmbientContext": 3
+                    "command": 0,
+                    "motion": 1,
+                    "continuous": 2,
+                    "ambient_context": 3
                   }
                 },
                 {
@@ -10175,7 +10175,7 @@
                     },
                     {
                       "name": "MaxDuration",
-                      "type": "elapsed_s",
+                      "type": "int32u",
                       "min": 1
                     },
                     {
@@ -10196,7 +10196,7 @@
               "type": "enum8",
               "max": 0,
               "enum_values": {
-                "CMAFIngest": 0
+                "cmaf_ingest": 0
               }
             },
             {
@@ -10208,7 +10208,7 @@
                   "type": "enum8",
                   "max": 0,
                   "enum_values": {
-                    "CMAF": 0
+                    "cmaf": 0
                   }
                 },
                 {
@@ -10221,9 +10221,9 @@
                       "type": "enum8",
                       "max": 2,
                       "enum_values": {
-                        "Interface1": 0,
-                        "Interface2DASH": 1,
-                        "Interface2HLS": 2
+                        "interface1": 0,
+                        "interface2_dash": 1,
+                        "interface2_hls": 2
                       }
                     },
                     {
@@ -10258,7 +10258,7 @@
             },
             {
               "name": "ExpiryTime",
-              "type": "epoch_s",
+              "type": "int32u",
               "optional": true
             },
             {
@@ -10314,8 +10314,8 @@
               "type": "enum8",
               "max": 1,
               "enum_values": {
-                "Active": 0,
-                "Inactive": 1
+                "active": 0,
+                "inactive": 1
               }
             },
             {
@@ -10328,10 +10328,10 @@
                   "type": "enum8",
                   "max": 3,
                   "enum_values": {
-                    "Internal": 0,
-                    "Recording": 1,
-                    "Analysis": 2,
-                    "LiveView": 3
+                    "internal": 0,
+                    "recording": 1,
+                    "analysis": 2,
+                    "live_view": 3
                   }
                 },
                 {
@@ -10363,10 +10363,10 @@
                       "type": "enum8",
                       "max": 3,
                       "enum_values": {
-                        "Command": 0,
-                        "Motion": 1,
-                        "Continuous": 2,
-                        "AmbientContext": 3
+                        "command": 0,
+                        "motion": 1,
+                        "continuous": 2,
+                        "ambient_context": 3
                       }
                     },
                     {
@@ -10410,7 +10410,7 @@
                         },
                         {
                           "name": "MaxDuration",
-                          "type": "elapsed_s",
+                          "type": "int32u",
                           "min": 1
                         },
                         {
@@ -10431,7 +10431,7 @@
                   "type": "enum8",
                   "max": 0,
                   "enum_values": {
-                    "CMAFIngest": 0
+                    "cmaf_ingest": 0
                   }
                 },
                 {
@@ -10443,7 +10443,7 @@
                       "type": "enum8",
                       "max": 0,
                       "enum_values": {
-                        "CMAF": 0
+                        "cmaf": 0
                       }
                     },
                     {
@@ -10456,9 +10456,9 @@
                           "type": "enum8",
                           "max": 2,
                           "enum_values": {
-                            "Interface1": 0,
-                            "Interface2DASH": 1,
-                            "Interface2HLS": 2
+                            "interface1": 0,
+                            "interface2_dash": 1,
+                            "interface2_hls": 2
                           }
                         },
                         {
@@ -10493,7 +10493,7 @@
                 },
                 {
                   "name": "ExpiryTime",
-                  "type": "epoch_s",
+                  "type": "int32u",
                   "optional": true
                 },
                 {
@@ -10563,10 +10563,10 @@
               "type": "enum8",
               "max": 3,
               "enum_values": {
-                "Internal": 0,
-                "Recording": 1,
-                "Analysis": 2,
-                "LiveView": 3
+                "internal": 0,
+                "recording": 1,
+                "analysis": 2,
+                "live_view": 3
               }
             },
             {
@@ -10598,10 +10598,10 @@
                   "type": "enum8",
                   "max": 3,
                   "enum_values": {
-                    "Command": 0,
-                    "Motion": 1,
-                    "Continuous": 2,
-                    "AmbientContext": 3
+                    "command": 0,
+                    "motion": 1,
+                    "continuous": 2,
+                    "ambient_context": 3
                   }
                 },
                 {
@@ -10645,7 +10645,7 @@
                     },
                     {
                       "name": "MaxDuration",
-                      "type": "elapsed_s",
+                      "type": "int32u",
                       "min": 1
                     },
                     {
@@ -10666,7 +10666,7 @@
               "type": "enum8",
               "max": 0,
               "enum_values": {
-                "CMAFIngest": 0
+                "cmaf_ingest": 0
               }
             },
             {
@@ -10678,7 +10678,7 @@
                   "type": "enum8",
                   "max": 0,
                   "enum_values": {
-                    "CMAF": 0
+                    "cmaf": 0
                   }
                 },
                 {
@@ -10691,9 +10691,9 @@
                       "type": "enum8",
                       "max": 2,
                       "enum_values": {
-                        "Interface1": 0,
-                        "Interface2DASH": 1,
-                        "Interface2HLS": 2
+                        "interface1": 0,
+                        "interface2_dash": 1,
+                        "interface2_hls": 2
                       }
                     },
                     {
@@ -10728,7 +10728,7 @@
             },
             {
               "name": "ExpiryTime",
-              "type": "epoch_s",
+              "type": "int32u",
               "optional": true
             },
             {
@@ -10778,8 +10778,8 @@
           "type": "enum8",
           "max": 1,
           "enum_values": {
-            "Active": 0,
-            "Inactive": 1
+            "active": 0,
+            "inactive": 1
           }
         }
       ]
@@ -10799,10 +10799,10 @@
           "type": "enum8",
           "max": 3,
           "enum_values": {
-            "UserInitiated": 0,
-            "Automation": 1,
-            "Emergency": 2,
-            "DoorbellPressed": 3
+            "user_initiated": 0,
+            "automation": 1,
+            "emergency": 2,
+            "doorbell_pressed": 3
           }
         },
         {
@@ -10821,7 +10821,7 @@
             },
             {
               "name": "MaxDuration",
-              "type": "elapsed_s",
+              "type": "int32u",
               "min": 1
             },
             {
@@ -10866,8 +10866,8 @@
               "type": "enum8",
               "max": 1,
               "enum_values": {
-                "Active": 0,
-                "Inactive": 1
+                "active": 0,
+                "inactive": 1
               }
             },
             {
@@ -10880,10 +10880,10 @@
                   "type": "enum8",
                   "max": 3,
                   "enum_values": {
-                    "Internal": 0,
-                    "Recording": 1,
-                    "Analysis": 2,
-                    "LiveView": 3
+                    "internal": 0,
+                    "recording": 1,
+                    "analysis": 2,
+                    "live_view": 3
                   }
                 },
                 {
@@ -10915,10 +10915,10 @@
                       "type": "enum8",
                       "max": 3,
                       "enum_values": {
-                        "Command": 0,
-                        "Motion": 1,
-                        "Continuous": 2,
-                        "AmbientContext": 3
+                        "command": 0,
+                        "motion": 1,
+                        "continuous": 2,
+                        "ambient_context": 3
                       }
                     },
                     {
@@ -10962,7 +10962,7 @@
                         },
                         {
                           "name": "MaxDuration",
-                          "type": "elapsed_s",
+                          "type": "int32u",
                           "min": 1
                         },
                         {
@@ -10983,7 +10983,7 @@
                   "type": "enum8",
                   "max": 0,
                   "enum_values": {
-                    "CMAFIngest": 0
+                    "cmaf_ingest": 0
                   }
                 },
                 {
@@ -10995,7 +10995,7 @@
                       "type": "enum8",
                       "max": 0,
                       "enum_values": {
-                        "CMAF": 0
+                        "cmaf": 0
                       }
                     },
                     {
@@ -11008,9 +11008,9 @@
                           "type": "enum8",
                           "max": 2,
                           "enum_values": {
-                            "Interface1": 0,
-                            "Interface2DASH": 1,
-                            "Interface2HLS": 2
+                            "interface1": 0,
+                            "interface2_dash": 1,
+                            "interface2_hls": 2
                           }
                         },
                         {
@@ -11045,7 +11045,7 @@
                 },
                 {
                   "name": "ExpiryTime",
-                  "type": "epoch_s",
+                  "type": "int32u",
                   "optional": true
                 },
                 {
@@ -11114,7 +11114,7 @@
               "struct": [
                 {
                   "name": "MfgCode",
-                  "type": "vendor_id"
+                  "type": "int16u"
                 },
                 {
                   "name": "NamespaceID",
@@ -11154,7 +11154,7 @@
               "struct": [
                 {
                   "name": "MfgCode",
-                  "type": "vendor_id"
+                  "type": "int16u"
                 },
                 {
                   "name": "NamespaceID",
@@ -11186,7 +11186,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         }
       ]
     },
@@ -11210,12 +11210,12 @@
         },
         {
           "name": "WebRTCEndpointID",
-          "type": "endpoint_no",
+          "type": "int16u",
           "optional": true
         },
         {
           "name": "PushAVEndpointID",
-          "type": "endpoint_no",
+          "type": "int16u",
           "optional": true
         }
       ]
@@ -11282,11 +11282,11 @@
                   "type": "enum8",
                   "max": 4,
                   "enum_values": {
-                    "Standard": 0,
-                    "Critical": 1,
-                    "Virtual": 2,
-                    "Incentive": 3,
-                    "IncentiveSignal": 4
+                    "standard": 0,
+                    "critical": 1,
+                    "virtual": 2,
+                    "incentive": 3,
+                    "incentive_signal": 4
                   }
                 },
                 {
@@ -11320,9 +11320,9 @@
                   "type": "enum8",
                   "max": 2,
                   "enum_values": {
-                    "Off": 0,
-                    "On": 1,
-                    "None": 2
+                    "off": 0,
+                    "on": 1,
+                    "none": 2
                   }
                 }
               ]
@@ -11338,10 +11338,10 @@
                   "type": "enum8",
                   "max": 3,
                   "enum_values": {
-                    "Unused": 0,
-                    "Low": 1,
-                    "Medium": 2,
-                    "High": 3
+                    "unused": 0,
+                    "low": 1,
+                    "medium": 2,
+                    "high": 3
                   }
                 },
                 {
@@ -11359,7 +11359,7 @@
               "struct": [
                 {
                   "name": "PowerThreshold",
-                  "type": "power_mw",
+                  "type": "int64s",
                   "min": 13835058055282163712,
                   "max": 4611686018427387903,
                   "optional": true
@@ -11376,9 +11376,9 @@
                   "type": "enum8",
                   "max": 2,
                   "enum_values": {
-                    "Contract": 0,
-                    "Regulator": 1,
-                    "Equipment": 2
+                    "contract": 0,
+                    "regulator": 1,
+                    "equipment": 2
                   }
                 }
               ]
@@ -11451,11 +11451,11 @@
               "default": "0x00",
               "optional": true,
               "enum_values": {
-                "None": 0,
-                "Fixed": 1,
-                "Random": 2,
-                "RandomPositive": 3,
-                "RandomNegative": 4
+                "none": 0,
+                "fixed": 1,
+                "random": 2,
+                "random_positive": 3,
+                "random_negative": 4
               }
             }
           ]
@@ -11476,7 +11476,7 @@
         {
           "id": 1,
           "name": "VendorID",
-          "type": "vendor_id"
+          "type": "int16u"
         },
         {
           "id": 2,
@@ -11563,7 +11563,7 @@
               "type": "enum8",
               "max": 0,
               "enum_values": {
-                "TrustFirst": 0
+                "trust_first": 0
               }
             },
             {
@@ -11572,7 +11572,7 @@
             },
             {
               "name": "EpochStartTime0",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "EpochKey1",
@@ -11580,7 +11580,7 @@
             },
             {
               "name": "EpochStartTime1",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "EpochKey2",
@@ -11588,7 +11588,7 @@
             },
             {
               "name": "EpochStartTime2",
-              "type": "epoch_us"
+              "type": "int64u"
             }
           ]
         }
@@ -11611,7 +11611,7 @@
               "type": "enum8",
               "max": 0,
               "enum_values": {
-                "TrustFirst": 0
+                "trust_first": 0
               }
             },
             {
@@ -11620,7 +11620,7 @@
             },
             {
               "name": "EpochStartTime0",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "EpochKey1",
@@ -11628,7 +11628,7 @@
             },
             {
               "name": "EpochStartTime1",
-              "type": "epoch_us"
+              "type": "int64u"
             },
             {
               "name": "EpochKey2",
@@ -11636,7 +11636,7 @@
             },
             {
               "name": "EpochStartTime2",
-              "type": "epoch_us"
+              "type": "int64u"
             }
           ]
         }
@@ -11658,7 +11658,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "name": "FriendlyName",
@@ -11685,10 +11685,10 @@
           "type": "enum8",
           "max": 5,
           "enum_values": {
-            "View": 1,
-            "Operate": 3,
-            "Manage": 4,
-            "Administer": 5
+            "view": 1,
+            "operate": 3,
+            "manage": 4,
+            "administer": 5
           }
         }
       ]
@@ -11699,7 +11699,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         },
         {
           "name": "FriendlyName",
@@ -11726,10 +11726,10 @@
           "type": "enum8",
           "max": 5,
           "enum_values": {
-            "View": 1,
-            "Operate": 3,
-            "Manage": 4,
-            "Administer": 5
+            "view": 1,
+            "operate": 3,
+            "manage": 4,
+            "administer": 5
           }
         }
       ]
@@ -11740,7 +11740,7 @@
       "args": [
         {
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         }
       ]
     },
@@ -11750,7 +11750,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "FriendlyName",
@@ -11758,7 +11758,7 @@
         },
         {
           "name": "VendorID",
-          "type": "vendor_id"
+          "type": "int16u"
         },
         {
           "name": "ICAC",
@@ -11772,7 +11772,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "FriendlyName",
@@ -11792,7 +11792,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         }
       ]
     },
@@ -11802,7 +11802,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "FriendlyName",
@@ -11816,7 +11816,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         }
       ]
     },
@@ -11826,7 +11826,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "FriendlyName",
@@ -11840,7 +11840,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         }
       ]
     },
@@ -11850,11 +11850,11 @@
       "args": [
         {
           "name": "EndpointID",
-          "type": "endpoint_no"
+          "type": "int16u"
         },
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "FriendlyName",
@@ -11868,15 +11868,15 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "EndpointID",
-          "type": "endpoint_no"
+          "type": "int16u"
         },
         {
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         }
       ]
     },
@@ -11886,15 +11886,15 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "EndpointID",
-          "type": "endpoint_no"
+          "type": "int16u"
         },
         {
           "name": "GroupID",
-          "type": "group_id"
+          "type": "int16u"
         }
       ]
     },
@@ -11904,11 +11904,11 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "EndpointID",
-          "type": "endpoint_no"
+          "type": "int16u"
         },
         {
           "name": "Binding",
@@ -11916,18 +11916,18 @@
           "struct": [
             {
               "name": "Node",
-              "type": "node_id",
+              "type": "int64u",
               "optional": true
             },
             {
               "name": "Group",
-              "type": "group_id",
+              "type": "int16u",
               "min": 1,
               "optional": true
             },
             {
               "name": "Endpoint",
-              "type": "endpoint_no",
+              "type": "int16u",
               "optional": true
             },
             {
@@ -11949,11 +11949,11 @@
         },
         {
           "name": "EndpointID",
-          "type": "endpoint_no"
+          "type": "int16u"
         },
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         }
       ]
     },
@@ -11963,7 +11963,7 @@
       "args": [
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         },
         {
           "name": "ACLEntry",
@@ -11974,10 +11974,10 @@
               "type": "enum8",
               "max": 5,
               "enum_values": {
-                "View": 1,
-                "Operate": 3,
-                "Manage": 4,
-                "Administer": 5
+                "view": 1,
+                "operate": 3,
+                "manage": 4,
+                "administer": 5
               }
             },
             {
@@ -11985,9 +11985,9 @@
               "type": "enum8",
               "max": 3,
               "enum_values": {
-                "PASE": 1,
-                "CASE": 2,
-                "Group": 3
+                "pase": 1,
+                "case": 2,
+                "group": 3
               }
             },
             {
@@ -12004,7 +12004,7 @@
                 },
                 {
                   "name": "Endpoint",
-                  "type": "endpoint_no"
+                  "type": "int16u"
                 },
                 {
                   "name": "DeviceType",
@@ -12026,7 +12026,7 @@
         },
         {
           "name": "NodeID",
-          "type": "node_id"
+          "type": "int64u"
         }
       ]
     }
@@ -12046,12 +12046,12 @@
           "type": "enum8",
           "max": 5,
           "enum_values": {
-            "OK": 0,
-            "Busy": 1,
-            "PAKEParameterError": 2,
-            "WindowNotOpen": 3,
-            "VIDNotVerified": 4,
-            "InvalidAdministratorFabricIndex": 5
+            "ok": 0,
+            "busy": 1,
+            "pake_parameter_error": 2,
+            "window_not_open": 3,
+            "vid_not_verified": 4,
+            "invalid_administrator_fabric_index": 5
           }
         },
         {
@@ -12080,9 +12080,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "OK": 0,
-            "InvalidPublicKey": 1,
-            "InvalidICAC": 2
+            "ok": 0,
+            "invalid_public_key": 1,
+            "invalid_icac": 2
           }
         }
       ]
@@ -12130,9 +12130,9 @@
           "type": "enum8",
           "max": 2,
           "enum_values": {
-            "OK": 0,
-            "TransferAnchorStatusDatastoreBusy": 1,
-            "TransferAnchorStatusNoUserConsent": 2
+            "ok": 0,
+            "transfer_anchor_status_datastore_busy": 1,
+            "transfer_anchor_status_no_user_consent": 2
           }
         }
       ]
@@ -12148,7 +12148,7 @@
       "args": [
         {
           "name": "EndpointID",
-          "type": "endpoint_no"
+          "type": "int16u"
         }
       ]
     }
@@ -12599,10 +12599,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -12617,9 +12617,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -12635,9 +12635,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -12658,10 +12658,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -12676,9 +12676,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -12694,9 +12694,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -12731,10 +12731,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -12749,9 +12749,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -12767,9 +12767,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -12778,10 +12778,10 @@
           "name": "arg3",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -12792,10 +12792,10 @@
           "name": "arg5",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -12844,16 +12844,16 @@
       "args": [
         {
           "name": "arg1",
-          "type": "vendor_id"
+          "type": "int16u"
         },
         {
           "name": "arg2",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         }
       ]
@@ -12890,10 +12890,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -12908,9 +12908,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -12926,9 +12926,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -12949,10 +12949,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -12967,9 +12967,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -12985,9 +12985,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -13022,10 +13022,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -13040,9 +13040,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -13058,9 +13058,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -13069,10 +13069,10 @@
           "name": "arg3",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -13083,10 +13083,10 @@
           "name": "arg5",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -13140,10 +13140,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -13158,9 +13158,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -13176,9 +13176,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -13274,10 +13274,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -13292,9 +13292,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -13310,9 +13310,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -13338,10 +13338,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -13356,9 +13356,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -13374,9 +13374,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -13407,10 +13407,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -13425,9 +13425,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -13443,9 +13443,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -13459,10 +13459,10 @@
           "type": "enum8",
           "optional": true,
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -13474,10 +13474,10 @@
           "type": "enum8",
           "optional": true,
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -13494,10 +13494,10 @@
           "type": "enum8",
           "optional": true,
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         }
       ]
@@ -13534,10 +13534,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -13552,9 +13552,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -13570,9 +13570,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -13595,9 +13595,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -13636,10 +13636,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -13654,9 +13654,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -13672,9 +13672,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -13701,10 +13701,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -13719,9 +13719,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -13737,9 +13737,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -13798,10 +13798,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -13816,9 +13816,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -13834,9 +13834,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -13857,10 +13857,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -13875,9 +13875,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -13893,9 +13893,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -13958,10 +13958,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -13976,9 +13976,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -13994,9 +13994,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -14017,10 +14017,10 @@
                   "name": "c",
                   "type": "enum8",
                   "enum_values": {
-                    "Unspecified": 0,
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 3
+                    "unspecified": 0,
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 3
                   }
                 },
                 {
@@ -14035,9 +14035,9 @@
                   "name": "f",
                   "type": "bitmap8",
                   "bitmap_masks": {
-                    "ValueA": 1,
-                    "ValueB": 2,
-                    "ValueC": 4
+                    "value_a": 1,
+                    "value_b": 2,
+                    "value_c": 4
                   }
                 },
                 {
@@ -14053,9 +14053,9 @@
                   "type": "enum8",
                   "optional": true,
                   "enum_values": {
-                    "SomeValue": 0,
-                    "SomeOtherValue": 1,
-                    "FinalValue": 2
+                    "some_value": 0,
+                    "some_other_value": 1,
+                    "final_value": 2
                   }
                 }
               ]
@@ -14112,16 +14112,16 @@
       "args": [
         {
           "name": "arg1",
-          "type": "vendor_id"
+          "type": "int16u"
         },
         {
           "name": "arg2",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         }
       ]
@@ -14147,9 +14147,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -14158,9 +14158,9 @@
           "name": "field2",
           "type": "enum8",
           "enum_values": {
-            "SomeValue": 0,
-            "SomeOtherValue": 1,
-            "FinalValue": 2
+            "some_value": 0,
+            "some_other_value": 1,
+            "final_value": 2
           }
         }
       ]
@@ -14224,10 +14224,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -14242,9 +14242,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -14260,9 +14260,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -14284,10 +14284,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -14302,9 +14302,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -14320,9 +14320,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -14344,10 +14344,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -14362,9 +14362,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -14380,9 +14380,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -14391,10 +14391,10 @@
           "name": "NullableList",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -14402,10 +14402,10 @@
           "type": "enum8",
           "optional": true,
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -14413,10 +14413,10 @@
           "type": "enum8",
           "optional": true,
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         }
       ]
@@ -14441,10 +14441,10 @@
               "name": "c",
               "type": "enum8",
               "enum_values": {
-                "Unspecified": 0,
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 3
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
               }
             },
             {
@@ -14459,9 +14459,9 @@
               "name": "f",
               "type": "bitmap8",
               "bitmap_masks": {
-                "ValueA": 1,
-                "ValueB": 2,
-                "ValueC": 4
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
               }
             },
             {
@@ -14477,9 +14477,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -14514,10 +14514,10 @@
           "name": "arg2",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "ValueA": 1,
-            "ValueB": 2,
-            "ValueC": 3
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
           }
         },
         {
@@ -14607,9 +14607,9 @@
               "type": "enum8",
               "optional": true,
               "enum_values": {
-                "SomeValue": 0,
-                "SomeOtherValue": 1,
-                "FinalValue": 2
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
               }
             }
           ]
@@ -14618,9 +14618,9 @@
           "name": "field2",
           "type": "enum8",
           "enum_values": {
-            "SomeValue": 0,
-            "SomeOtherValue": 1,
-            "FinalValue": 2
+            "some_value": 0,
+            "some_other_value": 1,
+            "final_value": 2
           }
         }
       ]
@@ -14664,11 +14664,11 @@
           "name": "Type",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "SystemFault": 1,
-            "InetFault": 2,
-            "ChipFault": 3,
-            "CertFault": 4
+            "unspecified": 0,
+            "system_fault": 1,
+            "inet_fault": 2,
+            "chip_fault": 3,
+            "cert_fault": 4
           }
         },
         {
@@ -14697,11 +14697,11 @@
           "name": "Type",
           "type": "enum8",
           "enum_values": {
-            "Unspecified": 0,
-            "SystemFault": 1,
-            "InetFault": 2,
-            "ChipFault": 3,
-            "CertFault": 4
+            "unspecified": 0,
+            "system_fault": 1,
+            "inet_fault": 2,
+            "chip_fault": 3,
+            "cert_fault": 4
           }
         },
         {
