@@ -151,7 +151,6 @@ class Command:
     cluster_name: str  # CamelCase
     name: str  # CamelCase
     id: int
-    # source: str  # either client or server
     # optional: bool = False
     args: tuple[CommandArg, ...] = ()
 

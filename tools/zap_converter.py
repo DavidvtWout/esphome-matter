@@ -106,6 +106,7 @@ class Command:
 class Cluster:
     id: int
     name: str  # CamelCase
+    description: str
     revision: int | None = None
     # features: list
     attributes: list[Attribute] = field(default_factory=list)
@@ -176,10 +177,36 @@ def parse_command_arg_elem(elem) -> CommandArg:
     id_ = int(v, 0) if (v := elem.get("id")) else None
     if id_ is None:
         id_ = int(v, 0) if (v := elem.get("field_id")) else None
+
+    # Translate Matter bullshit types to actual types. We can't deduce meaningful information from
+    # these types anyway because Matter is very inconsistant in naming types...
+    arg_type = elem.get("type")
+    arg_type = {
+        "power_mw": "int64s",
+        "amperage_ma": "int64s",
+        "voltage_mv": "int64s",
+        "percent": "int8u",
+        "percent100ths": "int16u",
+        "epoch_us": "int64u",
+        "epoch_s": "int32u",
+        "posix_ms": "int64u",
+        "systime_us": "int64u",
+        "systime_ms": "int64u",
+        "elapsed_s": "int32u",
+        "temperature": "int16s",
+        "status": "int8u",
+        "group_id": "int16u",
+        "endpoint_no": "int16u",
+        "vendor_id": "int16u",
+        "fabric_idx": "int8u",
+        "attrib_id": "int32u",
+        "node_id": "int64u",
+    }.get(arg_type.lower(), arg_type)
+
     return CommandArg(
         id=id_,
         name=elem.get("name"),
-        type=elem.get("type"),
+        type=arg_type,
         min=int(v, 0) if (v := elem.get("min")) else None,
         max=int(v, 0) if (v := elem.get("max")) else None,
         optional=elem.get("optional") == "true",
@@ -189,7 +216,9 @@ def parse_command_arg_elem(elem) -> CommandArg:
 
 def parse_cluster_elem(elem) -> Cluster:
     cluster = Cluster(
-        id=int(elem.findtext("code"), 0), name=camel_case(elem.findtext("name"))
+        id=int(elem.findtext("code"), 0),
+        name=camel_case(elem.findtext("name")),
+        description=elem.findtext("description"),
     )
     if (rev_elem := elem.find('globalAttribute[@code="0xFFFD"]')) is not None:
         cluster.revision = int(rev_elem.attrib["value"])
@@ -234,6 +263,7 @@ def parse_cluster_elem(elem) -> Cluster:
                 source=command_elem.get("source"),
                 code=int(command_elem.get("code"), 0),
                 name=command_elem.get("name"),
+                description=command_elem.findtext("description").strip(),
                 args=args,
             )
         )
@@ -372,30 +402,6 @@ def post_process_commands(
             arg_type = "struct"
             struct_values = [resolve_arg(a) for a in struct.items]
 
-        # Translate Matter bullshit types to actual types. We can't deduce meaningful information from
-        # these types anyway because Matter is very inconsistant in naming types...
-        arg_type = {
-            "power_mw": "int64s",
-            "amperage_ma": "int64s",
-            "voltage_mv": "int64s",
-            "percent": "int8u",
-            "percent100ths": "int16u",
-            "epoch_us": "int64u",
-            "epoch_s": "int32u",
-            "posix_ms": "int64u",
-            "systime_us": "int64u",
-            "systime_ms": "int64u",
-            "elapsed_s": "int32u",
-            "temperature": "int16s",
-            "status": "int8u",
-            "group_id": "int16u",
-            "endpoint_no": "int16u",
-            "vendor_id": "int16u",
-            "fabric_idx": "int8u",
-            "attrib_id": "int32u",
-            "node_id": "int64u",
-        }.get(arg_type.lower(), arg_type)
-
         return filter_none(
             {
                 "id": arg.id,
@@ -416,15 +422,14 @@ def post_process_commands(
         if cluster.commands:
             commands[cluster.name] = {}
         for command in sorted(cluster.commands, key=lambda c: c.code):
+            if command.source != "client":
+                continue
             args = []
             for arg in command.args:
                 args.append(resolve_arg(arg))
-
             commands[cluster.name][command.name] = filter_none(
                 {
                     "id": command.code,
-                    "client": True if command.source == "client" else None,
-                    "server": True if command.source == "server" else None,
                     "args": args,
                 }
             )
@@ -486,6 +491,81 @@ def post_process_device_types(
     return device_types
 
 
+def fixup(device_types):
+    # TODO: doorbell revision is missing
+    ...
+
+
+def sanitize_description(description: str) -> str:
+    lines = []
+    for line in description.split("\n"):
+        line = line.strip()
+        # remove duplicate spaces
+        line = re.sub(r" +", " ", line)
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def command_arg_to_doc(arg: CommandArg, command_args: list[dict]) -> str:
+    arg_dict = None
+    for command_arg in command_args:
+        if command_arg["name"] == arg.name:
+            arg_dict = command_arg
+
+    optional = arg.optional
+    comment_str = ""
+    extra_lines = []
+
+    if "bitmap_masks" in arg_dict:
+        optional = True
+        comment_str = "bitmap: " + ", ".join(arg_dict["bitmap_masks"])
+
+    if "enum_values" in arg_dict:
+        comment_str = "enum: " + ", ".join(arg_dict["enum_values"])
+
+    optional_str = "# " if optional else ""
+    if "default" in arg_dict:
+        comment_str = f"default: {arg_dict['default']} "
+    comment_str = f"# {comment_str}" if comment_str else ""
+    return "\n".join(
+        [f"  {optional_str}{camel_case_to_snake_case(arg.name)}:  {comment_str}"]
+        + extra_lines
+    )
+
+
+def generate_documentation(
+    clusters: list[Cluster], processed_commands: list[dict]
+) -> str:
+    lines = [
+        "This file is automatically generated by tools/zap_converter.py. Don't edit it.\n\n"
+    ]
+    for cluster in sorted(clusters, key=lambda c: c.id):
+        client_commands = [c for c in cluster.commands if c.source == "client"]
+        if not client_commands:
+            continue
+        lines.append(
+            f"# {cluster.name}\n\n{sanitize_description(cluster.description)}\n\n```yaml"
+        )
+        yaml_lines = []
+        for command in sorted(client_commands, key=lambda c: c.code):
+            command_dict = processed_commands[cluster.name][command.name]
+            command_lines = []
+            if command.description:
+                command_lines.append(
+                    "# "
+                    + sanitize_description(command.description).replace("\n", "\n# ")
+                )
+            command_lines.append(
+                f"matter.{camel_case_to_snake_case(cluster.name)}.{camel_case_to_snake_case(command.name)}:"
+            )
+            for arg in command.args:
+                command_lines.append(command_arg_to_doc(arg, command_dict["args"]))
+            yaml_lines.append("\n".join(command_lines))
+        lines.append("\n\n".join(yaml_lines))
+        lines.append("```\n\n")
+    return "\n".join(lines)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Convert the Matter ZAP data model for use by esphome-matter."
@@ -504,12 +584,14 @@ def parse_args() -> argparse.Namespace:
         default=Path("../components/matter/data_model"),
         help=f"output path",
     )
+    parser.add_argument(
+        "documentation_path",
+        nargs="?",
+        type=Path,
+        default=Path("../docs"),
+        help=f"output path",
+    )
     return parser.parse_args()
-
-
-def fixup(device_types):
-    # TODO: doorbell revision is missing
-    ...
 
 
 def main():
@@ -527,6 +609,9 @@ def main():
 
     with open(args.output_path / "commands.json", "w") as file:
         json.dump(commands, file, indent=2)
+
+    with open(args.documentation_path / "commands-full.md", "w") as file:
+        file.write(generate_documentation(raw_clusters, commands))
 
     arg_types = defaultdict(int)
     for cl in commands.values():

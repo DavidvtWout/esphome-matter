@@ -2,7 +2,6 @@
   "Identify": {
     "Identify": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -13,7 +12,6 @@
     },
     "TriggerEffect": {
       "id": 64,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -43,7 +41,6 @@
   "Groups": {
     "AddGroup": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -53,72 +50,22 @@
         {
           "name": "GroupName",
           "type": "char_string"
-        }
-      ]
-    },
-    "AddGroupResponse": {
-      "id": 0,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "name": "GroupID",
-          "type": "int16u",
-          "min": 1
         }
       ]
     },
     "ViewGroup": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
           "type": "int16u",
           "min": 1
-        }
-      ]
-    },
-    "ViewGroupResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "name": "GroupID",
-          "type": "int16u",
-          "min": 1
-        },
-        {
-          "name": "GroupName",
-          "type": "char_string"
         }
       ]
     },
     "GetGroupMembership": {
       "id": 2,
-      "client": true,
       "args": [
-        {
-          "name": "GroupList",
-          "type": "int16u"
-        }
-      ]
-    },
-    "GetGroupMembershipResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "name": "Capacity",
-          "type": "int8u"
-        },
         {
           "name": "GroupList",
           "type": "int16u"
@@ -127,23 +74,7 @@
     },
     "RemoveGroup": {
       "id": 3,
-      "client": true,
       "args": [
-        {
-          "name": "GroupID",
-          "type": "int16u",
-          "min": 1
-        }
-      ]
-    },
-    "RemoveGroupResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
         {
           "name": "GroupID",
           "type": "int16u",
@@ -153,12 +84,10 @@
     },
     "RemoveAllGroups": {
       "id": 4,
-      "client": true,
       "args": []
     },
     "AddGroupIfIdentifying": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -175,22 +104,18 @@
   "OnOff": {
     "Off": {
       "id": 0,
-      "client": true,
       "args": []
     },
     "On": {
       "id": 1,
-      "client": true,
       "args": []
     },
     "Toggle": {
       "id": 2,
-      "client": true,
       "args": []
     },
     "OffWithEffect": {
       "id": 64,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -211,12 +136,10 @@
     },
     "OnWithRecallGlobalScene": {
       "id": 65,
-      "client": true,
       "args": []
     },
     "OnWithTimedOff": {
       "id": 66,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -245,7 +168,6 @@
   "LevelControl": {
     "MoveToLevel": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -282,7 +204,6 @@
     },
     "Move": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -323,7 +244,6 @@
     },
     "Step": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -369,7 +289,6 @@
     },
     "Stop": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -395,7 +314,6 @@
     },
     "MoveToLevelWithOnOff": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -432,7 +350,6 @@
     },
     "MoveWithOnOff": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -473,7 +390,6 @@
     },
     "StepWithOnOff": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -519,7 +435,6 @@
     },
     "StopWithOnOff": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -545,7 +460,6 @@
     },
     "MoveToClosestFrequency": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -558,7 +472,6 @@
   "AccessControl": {
     "ReviewFabricRestrictions": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -597,23 +510,11 @@
           ]
         }
       ]
-    },
-    "ReviewFabricRestrictionsResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Token",
-          "type": "int64u"
-        }
-      ]
     }
   },
   "Actions": {
     "InstantAction": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -630,7 +531,6 @@
     },
     "InstantActionWithTransition": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -652,7 +552,6 @@
     },
     "StartAction": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -669,7 +568,6 @@
     },
     "StartActionWithDuration": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -691,7 +589,6 @@
     },
     "StopAction": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -708,7 +605,6 @@
     },
     "PauseAction": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -725,7 +621,6 @@
     },
     "PauseActionWithDuration": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -747,7 +642,6 @@
     },
     "ResumeAction": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -764,7 +658,6 @@
     },
     "EnableAction": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -781,7 +674,6 @@
     },
     "EnableActionWithDuration": {
       "id": 9,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -803,7 +695,6 @@
     },
     "DisableAction": {
       "id": 10,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -820,7 +711,6 @@
     },
     "DisableActionWithDuration": {
       "id": 11,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -844,7 +734,6 @@
   "OTASoftwareUpdateProvider": {
     "QueryImage": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "VendorID",
@@ -891,63 +780,8 @@
         }
       ]
     },
-    "QueryImageResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8",
-          "max": 3,
-          "enum_values": {
-            "update_available": 0,
-            "busy": 1,
-            "not_available": 2,
-            "download_protocol_not_supported": 3
-          }
-        },
-        {
-          "name": "DelayedActionTime",
-          "type": "int32u",
-          "default": "0",
-          "optional": true
-        },
-        {
-          "name": "ImageURI",
-          "type": "long_char_string",
-          "optional": true
-        },
-        {
-          "name": "SoftwareVersion",
-          "type": "int32u",
-          "optional": true
-        },
-        {
-          "name": "SoftwareVersionString",
-          "type": "char_string",
-          "optional": true
-        },
-        {
-          "name": "UpdateToken",
-          "type": "octet_string",
-          "optional": true
-        },
-        {
-          "name": "UserConsentNeeded",
-          "type": "boolean",
-          "default": "0",
-          "optional": true
-        },
-        {
-          "name": "MetadataForRequestor",
-          "type": "long_octet_string",
-          "optional": true
-        }
-      ]
-    },
     "ApplyUpdateRequest": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "UpdateToken",
@@ -959,29 +793,8 @@
         }
       ]
     },
-    "ApplyUpdateResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "name": "Action",
-          "type": "enum8",
-          "max": 2,
-          "enum_values": {
-            "proceed": 0,
-            "await_next_action": 1,
-            "discontinue": 2
-          }
-        },
-        {
-          "name": "DelayedActionTime",
-          "type": "int32u"
-        }
-      ]
-    },
     "NotifyUpdateApplied": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "UpdateToken",
@@ -997,7 +810,6 @@
   "OTASoftwareUpdateRequestor": {
     "AnnounceOTAProvider": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "ProviderNodeID",
@@ -1032,7 +844,6 @@
   "GeneralCommissioning": {
     "ArmFailSafe": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1047,38 +858,8 @@
         }
       ]
     },
-    "ArmFailSafeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "ErrorCode",
-          "type": "enum8",
-          "min": 0,
-          "max": 7,
-          "default": "0x00",
-          "enum_values": {
-            "ok": 0,
-            "value_outside_range": 1,
-            "invalid_authentication": 2,
-            "no_fail_safe": 3,
-            "busy_with_other_admin": 4,
-            "required_tc_not_accepted": 5,
-            "tc_acknowledgements_not_received": 6,
-            "tc_min_version_not_met": 7
-          }
-        },
-        {
-          "id": 1,
-          "name": "DebugText",
-          "type": "char_string"
-        }
-      ]
-    },
     "SetRegulatoryConfig": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1104,72 +885,12 @@
         }
       ]
     },
-    "SetRegulatoryConfigResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "ErrorCode",
-          "type": "enum8",
-          "min": 0,
-          "max": 7,
-          "default": "0x00",
-          "enum_values": {
-            "ok": 0,
-            "value_outside_range": 1,
-            "invalid_authentication": 2,
-            "no_fail_safe": 3,
-            "busy_with_other_admin": 4,
-            "required_tc_not_accepted": 5,
-            "tc_acknowledgements_not_received": 6,
-            "tc_min_version_not_met": 7
-          }
-        },
-        {
-          "id": 1,
-          "name": "DebugText",
-          "type": "char_string"
-        }
-      ]
-    },
     "CommissioningComplete": {
       "id": 4,
-      "client": true,
       "args": []
-    },
-    "CommissioningCompleteResponse": {
-      "id": 5,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "ErrorCode",
-          "type": "enum8",
-          "min": 0,
-          "max": 7,
-          "default": "0x00",
-          "enum_values": {
-            "ok": 0,
-            "value_outside_range": 1,
-            "invalid_authentication": 2,
-            "no_fail_safe": 3,
-            "busy_with_other_admin": 4,
-            "required_tc_not_accepted": 5,
-            "tc_acknowledgements_not_received": 6,
-            "tc_min_version_not_met": 7
-          }
-        },
-        {
-          "id": 1,
-          "name": "DebugText",
-          "type": "char_string"
-        }
-      ]
     },
     "SetTCAcknowledgements": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1182,36 +903,11 @@
           "type": "bitmap16"
         }
       ]
-    },
-    "SetTCAcknowledgementsResponse": {
-      "id": 7,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "ErrorCode",
-          "type": "enum8",
-          "min": 0,
-          "max": 7,
-          "default": "0x00",
-          "enum_values": {
-            "ok": 0,
-            "value_outside_range": 1,
-            "invalid_authentication": 2,
-            "no_fail_safe": 3,
-            "busy_with_other_admin": 4,
-            "required_tc_not_accepted": 5,
-            "tc_acknowledgements_not_received": 6,
-            "tc_min_version_not_met": 7
-          }
-        }
-      ]
     }
   },
   "NetworkCommissioning": {
     "ScanNetworks": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "SSID",
@@ -1225,130 +921,8 @@
         }
       ]
     },
-    "ScanNetworksResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "NetworkingStatus",
-          "type": "enum8",
-          "max": 12,
-          "enum_values": {
-            "success": 0,
-            "out_of_range": 1,
-            "bounds_exceeded": 2,
-            "network_id_not_found": 3,
-            "duplicate_network_id": 4,
-            "network_not_found": 5,
-            "regulatory_error": 6,
-            "auth_failure": 7,
-            "unsupported_security": 8,
-            "other_connection_failure": 9,
-            "ipv6_failed": 10,
-            "ip_bind_failed": 11,
-            "unknown_error": 12
-          }
-        },
-        {
-          "name": "DebugText",
-          "type": "long_char_string",
-          "optional": true
-        },
-        {
-          "name": "WiFiScanResults",
-          "type": "struct",
-          "optional": true,
-          "struct": [
-            {
-              "name": "Security",
-              "type": "bitmap8",
-              "max": 31,
-              "bitmap_masks": {
-                "unencrypted": 1,
-                "wep": 2,
-                "wpa-personal": 4,
-                "wpa2-personal": 8,
-                "wpa3-personal": 16
-              }
-            },
-            {
-              "name": "SSID",
-              "type": "octet_string"
-            },
-            {
-              "name": "BSSID",
-              "type": "octet_string"
-            },
-            {
-              "name": "Channel",
-              "type": "int16u"
-            },
-            {
-              "name": "WiFiBand",
-              "type": "enum8",
-              "max": 5,
-              "enum_values": {
-                "2_g4": 0,
-                "3_g65": 1,
-                "5_g": 2,
-                "6_g": 3,
-                "60_g": 4,
-                "1_g": 5
-              }
-            },
-            {
-              "name": "RSSI",
-              "type": "int8s"
-            }
-          ]
-        },
-        {
-          "name": "ThreadScanResults",
-          "type": "struct",
-          "optional": true,
-          "struct": [
-            {
-              "name": "PanId",
-              "type": "int16u",
-              "max": 65534
-            },
-            {
-              "name": "ExtendedPanId",
-              "type": "int64u"
-            },
-            {
-              "name": "NetworkName",
-              "type": "char_string"
-            },
-            {
-              "name": "Channel",
-              "type": "int16u"
-            },
-            {
-              "name": "Version",
-              "type": "int8u"
-            },
-            {
-              "name": "ExtendedAddress",
-              "type": "octet_string",
-              "min": 6,
-              "max": 8
-            },
-            {
-              "name": "RSSI",
-              "type": "int8s"
-            },
-            {
-              "name": "LQI",
-              "type": "int8u"
-            }
-          ]
-        }
-      ]
-    },
     "AddOrUpdateWiFiNetwork": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "SSID",
@@ -1367,7 +941,6 @@
     },
     "AddOrUpdateThreadNetwork": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "OperationalDataset",
@@ -1382,7 +955,6 @@
     },
     "RemoveNetwork": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "NetworkID",
@@ -1391,50 +963,12 @@
         {
           "name": "Breadcrumb",
           "type": "int64u",
-          "optional": true
-        }
-      ]
-    },
-    "NetworkConfigResponse": {
-      "id": 5,
-      "server": true,
-      "args": [
-        {
-          "name": "NetworkingStatus",
-          "type": "enum8",
-          "max": 12,
-          "enum_values": {
-            "success": 0,
-            "out_of_range": 1,
-            "bounds_exceeded": 2,
-            "network_id_not_found": 3,
-            "duplicate_network_id": 4,
-            "network_not_found": 5,
-            "regulatory_error": 6,
-            "auth_failure": 7,
-            "unsupported_security": 8,
-            "other_connection_failure": 9,
-            "ipv6_failed": 10,
-            "ip_bind_failed": 11,
-            "unknown_error": 12
-          }
-        },
-        {
-          "name": "DebugText",
-          "type": "long_char_string",
-          "optional": true
-        },
-        {
-          "name": "NetworkIndex",
-          "type": "int8u",
-          "max": 254,
           "optional": true
         }
       ]
     },
     "ConnectNetwork": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "NetworkID",
@@ -1447,44 +981,8 @@
         }
       ]
     },
-    "ConnectNetworkResponse": {
-      "id": 7,
-      "server": true,
-      "args": [
-        {
-          "name": "NetworkingStatus",
-          "type": "enum8",
-          "max": 12,
-          "enum_values": {
-            "success": 0,
-            "out_of_range": 1,
-            "bounds_exceeded": 2,
-            "network_id_not_found": 3,
-            "duplicate_network_id": 4,
-            "network_not_found": 5,
-            "regulatory_error": 6,
-            "auth_failure": 7,
-            "unsupported_security": 8,
-            "other_connection_failure": 9,
-            "ipv6_failed": 10,
-            "ip_bind_failed": 11,
-            "unknown_error": 12
-          }
-        },
-        {
-          "name": "DebugText",
-          "type": "char_string",
-          "optional": true
-        },
-        {
-          "name": "ErrorValue",
-          "type": "int32s"
-        }
-      ]
-    },
     "ReorderNetwork": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "NetworkID",
@@ -1505,7 +1003,6 @@
   "DiagnosticLogs": {
     "RetrieveLogsRequest": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1537,49 +1034,11 @@
           "optional": true
         }
       ]
-    },
-    "RetrieveLogsResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8",
-          "min": 0,
-          "max": 4,
-          "enum_values": {
-            "success": 0,
-            "exhausted": 1,
-            "no_logs": 2,
-            "busy": 3,
-            "denied": 4
-          }
-        },
-        {
-          "id": 1,
-          "name": "LogContent",
-          "type": "long_octet_string"
-        },
-        {
-          "id": 2,
-          "name": "UTCTimeStamp",
-          "type": "int64u",
-          "optional": true
-        },
-        {
-          "id": 3,
-          "name": "TimeSinceBoot",
-          "type": "int64u",
-          "optional": true
-        }
-      ]
     }
   },
   "GeneralDiagnostics": {
     "TestEventTrigger": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "EnableKey",
@@ -1593,26 +1052,10 @@
     },
     "TimeSnapshot": {
       "id": 1,
-      "client": true,
       "args": []
-    },
-    "TimeSnapshotResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "name": "SystemTimeMs",
-          "type": "int64u"
-        },
-        {
-          "name": "PosixTimeMs",
-          "type": "int64u"
-        }
-      ]
     },
     "PayloadTestRequest": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "EnableKey",
@@ -1628,50 +1071,35 @@
           "max": 2048
         }
       ]
-    },
-    "PayloadTestResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "name": "Payload",
-          "type": "long_octet_string"
-        }
-      ]
     }
   },
   "SoftwareDiagnostics": {
     "ResetWatermarks": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "ThreadNetworkDiagnostics": {
     "ResetCounts": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "WiFiNetworkDiagnostics": {
     "ResetCounts": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "EthernetNetworkDiagnostics": {
     "ResetCounts": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "TimeSynchronization": {
     "SetUTCTime": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1724,7 +1152,6 @@
     },
     "SetTrustedTimeSource": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1745,7 +1172,6 @@
     },
     "SetTimeZone": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1771,21 +1197,8 @@
         }
       ]
     },
-    "SetTimeZoneResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "DSTOffsetRequired",
-          "type": "boolean",
-          "default": "1"
-        }
-      ]
-    },
     "SetDSTOffset": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1810,7 +1223,6 @@
     },
     "SetDefaultNTP": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1823,7 +1235,6 @@
   "BridgedDeviceBasicInformation": {
     "KeepActive": {
       "id": 128,
-      "client": true,
       "args": [
         {
           "name": "StayActiveDuration",
@@ -1841,7 +1252,6 @@
   "AdministratorCommissioning": {
     "OpenCommissioningWindow": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1875,7 +1285,6 @@
     },
     "OpenBasicCommissioningWindow": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -1886,14 +1295,12 @@
     },
     "RevokeCommissioning": {
       "id": 2,
-      "client": true,
       "args": []
     }
   },
   "OperationalCredentials": {
     "AttestationRequest": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "AttestationNonce",
@@ -1901,23 +1308,8 @@
         }
       ]
     },
-    "AttestationResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "AttestationElements",
-          "type": "long_octet_string"
-        },
-        {
-          "name": "AttestationSignature",
-          "type": "octet_string"
-        }
-      ]
-    },
     "CertificateChainRequest": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "CertificateType",
@@ -1930,19 +1322,8 @@
         }
       ]
     },
-    "CertificateChainResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "name": "Certificate",
-          "type": "long_octet_string"
-        }
-      ]
-    },
     "CSRRequest": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "CSRNonce",
@@ -1956,23 +1337,8 @@
         }
       ]
     },
-    "CSRResponse": {
-      "id": 5,
-      "server": true,
-      "args": [
-        {
-          "name": "NOCSRElements",
-          "type": "long_octet_string"
-        },
-        {
-          "name": "AttestationSignature",
-          "type": "octet_string"
-        }
-      ]
-    },
     "AddNOC": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "NOCValue",
@@ -1999,7 +1365,6 @@
     },
     "UpdateNOC": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "NOCValue",
@@ -2012,44 +1377,8 @@
         }
       ]
     },
-    "NOCResponse": {
-      "id": 8,
-      "server": true,
-      "args": [
-        {
-          "name": "StatusCode",
-          "type": "enum8",
-          "max": 11,
-          "enum_values": {
-            "ok": 0,
-            "invalid_public_key": 1,
-            "invalid_node_op_id": 2,
-            "invalid_noc": 3,
-            "missing_csr": 4,
-            "table_full": 5,
-            "invalid_admin_subject": 6,
-            "fabric_conflict": 9,
-            "label_conflict": 10,
-            "invalid_fabric_index": 11
-          }
-        },
-        {
-          "name": "FabricIndex",
-          "type": "int8u",
-          "min": 1,
-          "max": 254,
-          "optional": true
-        },
-        {
-          "name": "DebugText",
-          "type": "char_string",
-          "optional": true
-        }
-      ]
-    },
     "UpdateFabricLabel": {
       "id": 9,
-      "client": true,
       "args": [
         {
           "name": "Label",
@@ -2059,7 +1388,6 @@
     },
     "RemoveFabric": {
       "id": 10,
-      "client": true,
       "args": [
         {
           "name": "FabricIndex",
@@ -2071,7 +1399,6 @@
     },
     "AddTrustedRootCertificate": {
       "id": 11,
-      "client": true,
       "args": [
         {
           "name": "RootCACertificate",
@@ -2081,7 +1408,6 @@
     },
     "SetVIDVerificationStatement": {
       "id": 12,
-      "client": true,
       "args": [
         {
           "name": "VendorID",
@@ -2102,7 +1428,6 @@
     },
     "SignVIDVerificationRequest": {
       "id": 13,
-      "client": true,
       "args": [
         {
           "name": "FabricIndex",
@@ -2115,33 +1440,11 @@
           "type": "octet_string"
         }
       ]
-    },
-    "SignVIDVerificationResponse": {
-      "id": 14,
-      "server": true,
-      "args": [
-        {
-          "name": "FabricIndex",
-          "type": "int8u",
-          "min": 1,
-          "max": 254
-        },
-        {
-          "name": "FabricBindingVersion",
-          "type": "int8u",
-          "min": 1
-        },
-        {
-          "name": "Signature",
-          "type": "octet_string"
-        }
-      ]
     }
   },
   "GroupKeyManagement": {
     "KeySetWrite": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "GroupKeySet",
@@ -2199,7 +1502,6 @@
     },
     "KeySetRead": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "GroupKeySetID",
@@ -2207,67 +1509,8 @@
         }
       ]
     },
-    "KeySetReadResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "name": "GroupKeySet",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "GroupKeySetID",
-              "type": "int16u"
-            },
-            {
-              "name": "GroupKeySecurityPolicy",
-              "type": "enum8",
-              "max": 1,
-              "enum_values": {
-                "trust_first": 0,
-                "cache_and_sync": 1
-              }
-            },
-            {
-              "name": "EpochKey0",
-              "type": "octet_string"
-            },
-            {
-              "name": "EpochStartTime0",
-              "type": "int64u"
-            },
-            {
-              "name": "EpochKey1",
-              "type": "octet_string"
-            },
-            {
-              "name": "EpochStartTime1",
-              "type": "int64u"
-            },
-            {
-              "name": "EpochKey2",
-              "type": "octet_string"
-            },
-            {
-              "name": "EpochStartTime2",
-              "type": "int64u"
-            },
-            {
-              "name": "GroupKeyMulticastPolicy",
-              "type": "enum8",
-              "max": 1,
-              "enum_values": {
-                "per_group_id": 0,
-                "all_nodes": 1
-              }
-            }
-          ]
-        }
-      ]
-    },
     "KeySetRemove": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "GroupKeySetID",
@@ -2277,24 +1520,12 @@
     },
     "KeySetReadAllIndices": {
       "id": 4,
-      "client": true,
       "args": []
-    },
-    "KeySetReadAllIndicesResponse": {
-      "id": 5,
-      "server": true,
-      "args": [
-        {
-          "name": "GroupKeySetIDs",
-          "type": "int16u"
-        }
-      ]
     }
   },
   "ICDManagement": {
     "RegisterClient": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2329,20 +1560,8 @@
         }
       ]
     },
-    "RegisterClientResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "ICDCounter",
-          "type": "int32u"
-        }
-      ]
-    },
     "UnregisterClient": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2359,22 +1578,10 @@
     },
     "StayActiveRequest": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
           "name": "StayActiveDuration",
-          "type": "int32u"
-        }
-      ]
-    },
-    "StayActiveResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "PromisedActiveDuration",
           "type": "int32u"
         }
       ]
@@ -2383,48 +1590,20 @@
   "OvenCavityOperationalState": {
     "Stop": {
       "id": 1,
-      "client": true,
       "args": []
     },
     "Start": {
       "id": 2,
-      "client": true,
       "args": []
-    },
-    "OperationalCommandResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "name": "CommandResponseState",
-          "type": "errorstatestruct"
-        }
-      ]
     }
   },
   "OvenMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "NewMode",
           "type": "int8u"
-        }
-      ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
         }
       ]
     }
@@ -2432,7 +1611,6 @@
   "ModeSelect": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2445,26 +1623,10 @@
   "LaundryWasherMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "NewMode",
           "type": "int8u"
-        }
-      ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
         }
       ]
     }
@@ -2472,26 +1634,10 @@
   "RefrigeratorAndTemperatureControlledCabinetMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "NewMode",
           "type": "int8u"
-        }
-      ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
         }
       ]
     }
@@ -2499,26 +1645,10 @@
   "RVCRunMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "NewMode",
           "type": "int8u"
-        }
-      ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
         }
       ]
     }
@@ -2526,26 +1656,10 @@
   "RVCCleanMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "NewMode",
           "type": "int8u"
-        }
-      ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
         }
       ]
     }
@@ -2553,7 +1667,6 @@
   "TemperatureControl": {
     "SetTemperature": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2573,26 +1686,10 @@
   "DishwasherMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "NewMode",
           "type": "int8u"
-        }
-      ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
         }
       ]
     }
@@ -2600,14 +1697,12 @@
   "SmokeCOAlarm": {
     "SelfTestRequest": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "DishwasherAlarm": {
     "Reset": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2629,7 +1724,6 @@
     },
     "ModifyEnabledAlarms": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2653,7 +1747,6 @@
   "MicrowaveOvenControl": {
     "SetCookingParameters": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2696,7 +1789,6 @@
     },
     "AddMoreTime": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2711,83 +1803,38 @@
   "OperationalState": {
     "Pause": {
       "id": 0,
-      "client": true,
       "args": []
     },
     "Stop": {
       "id": 1,
-      "client": true,
       "args": []
     },
     "Start": {
       "id": 2,
-      "client": true,
       "args": []
     },
     "Resume": {
       "id": 3,
-      "client": true,
       "args": []
-    },
-    "OperationalCommandResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "name": "CommandResponseState",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "ErrorStateID",
-              "type": "enum8",
-              "default": "0"
-            },
-            {
-              "name": "ErrorStateLabel",
-              "type": "char_string",
-              "optional": true
-            },
-            {
-              "name": "ErrorStateDetails",
-              "type": "char_string",
-              "optional": true
-            }
-          ]
-        }
-      ]
     }
   },
   "RVCOperationalState": {
     "Pause": {
       "id": 0,
-      "client": true,
       "args": []
     },
     "Resume": {
       "id": 3,
-      "client": true,
       "args": []
-    },
-    "OperationalCommandResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "name": "CommandResponseState",
-          "type": "errorstatestruct"
-        }
-      ]
     },
     "GoHome": {
       "id": 128,
-      "client": true,
       "args": []
     }
   },
   "ScenesManagement": {
     "AddScene": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2874,31 +1921,8 @@
         }
       ]
     },
-    "AddSceneResponse": {
-      "id": 0,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "int8u"
-        },
-        {
-          "id": 1,
-          "name": "GroupID",
-          "type": "int16u"
-        },
-        {
-          "id": 2,
-          "name": "SceneID",
-          "type": "int8u",
-          "max": 254
-        }
-      ]
-    },
     "ViewScene": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -2910,109 +1934,11 @@
           "name": "SceneID",
           "type": "int8u",
           "max": 254
-        }
-      ]
-    },
-    "ViewSceneResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "int8u"
-        },
-        {
-          "id": 1,
-          "name": "GroupID",
-          "type": "int16u"
-        },
-        {
-          "id": 2,
-          "name": "SceneID",
-          "type": "int8u",
-          "max": 254
-        },
-        {
-          "id": 3,
-          "name": "TransitionTime",
-          "type": "int32u",
-          "max": 60000000,
-          "optional": true
-        },
-        {
-          "id": 4,
-          "name": "SceneName",
-          "type": "char_string",
-          "optional": true
-        },
-        {
-          "id": 5,
-          "name": "ExtensionFieldSetStructs",
-          "type": "struct",
-          "optional": true,
-          "struct": [
-            {
-              "name": "ClusterID",
-              "type": "cluster_id"
-            },
-            {
-              "name": "AttributeValueList",
-              "type": "struct",
-              "struct": [
-                {
-                  "name": "AttributeID",
-                  "type": "int32u"
-                },
-                {
-                  "name": "ValueUnsigned8",
-                  "type": "int8u",
-                  "optional": true
-                },
-                {
-                  "name": "ValueSigned8",
-                  "type": "int8s",
-                  "optional": true
-                },
-                {
-                  "name": "ValueUnsigned16",
-                  "type": "int16u",
-                  "optional": true
-                },
-                {
-                  "name": "ValueSigned16",
-                  "type": "int16s",
-                  "optional": true
-                },
-                {
-                  "name": "ValueUnsigned32",
-                  "type": "int32u",
-                  "optional": true
-                },
-                {
-                  "name": "ValueSigned32",
-                  "type": "int32s",
-                  "optional": true
-                },
-                {
-                  "name": "ValueUnsigned64",
-                  "type": "int64u",
-                  "optional": true
-                },
-                {
-                  "name": "ValueSigned64",
-                  "type": "int64s",
-                  "optional": true
-                }
-              ]
-            }
-          ]
         }
       ]
     },
     "RemoveScene": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -3021,28 +1947,6 @@
         },
         {
           "id": 1,
-          "name": "SceneID",
-          "type": "int8u",
-          "max": 254
-        }
-      ]
-    },
-    "RemoveSceneResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "int8u"
-        },
-        {
-          "id": 1,
-          "name": "GroupID",
-          "type": "int16u"
-        },
-        {
-          "id": 2,
           "name": "SceneID",
           "type": "int8u",
           "max": 254
@@ -3051,26 +1955,9 @@
     },
     "RemoveAllScenes": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
-          "name": "GroupID",
-          "type": "int16u"
-        }
-      ]
-    },
-    "RemoveAllScenesResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "int8u"
-        },
-        {
-          "id": 1,
           "name": "GroupID",
           "type": "int16u"
         }
@@ -3078,7 +1965,6 @@
     },
     "StoreScene": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -3087,28 +1973,6 @@
         },
         {
           "id": 1,
-          "name": "SceneID",
-          "type": "int8u",
-          "max": 254
-        }
-      ]
-    },
-    "StoreSceneResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "int8u"
-        },
-        {
-          "id": 1,
-          "name": "GroupID",
-          "type": "int16u"
-        },
-        {
-          "id": 2,
           "name": "SceneID",
           "type": "int8u",
           "max": 254
@@ -3117,7 +1981,6 @@
     },
     "RecallScene": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -3141,45 +2004,16 @@
     },
     "GetSceneMembership": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "id": 0,
           "name": "GroupID",
           "type": "int16u"
-        }
-      ]
-    },
-    "GetSceneMembershipResponse": {
-      "id": 6,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "int8u"
-        },
-        {
-          "id": 1,
-          "name": "Capacity",
-          "type": "int8u"
-        },
-        {
-          "id": 2,
-          "name": "GroupID",
-          "type": "int16u"
-        },
-        {
-          "id": 3,
-          "name": "SceneList",
-          "type": "int8u",
-          "optional": true
         }
       ]
     },
     "CopyScene": {
       "id": 64,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -3214,34 +2048,11 @@
           "max": 254
         }
       ]
-    },
-    "CopySceneResponse": {
-      "id": 64,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "int8u"
-        },
-        {
-          "id": 1,
-          "name": "GroupIdentifierFrom",
-          "type": "int16u"
-        },
-        {
-          "id": 2,
-          "name": "SceneIdentifierFrom",
-          "type": "int8u",
-          "max": 254
-        }
-      ]
     }
   },
   "Groupcast": {
     "JoinGroup": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -3286,7 +2097,6 @@
     },
     "LeaveGroup": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -3299,23 +2109,8 @@
         }
       ]
     },
-    "LeaveGroupResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "name": "GroupID",
-          "type": "int16u"
-        },
-        {
-          "name": "Endpoints",
-          "type": "int16u"
-        }
-      ]
-    },
     "UpdateGroupKey": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -3336,7 +2131,6 @@
     },
     "ConfigureAuxiliaryACL": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -3350,7 +2144,6 @@
     },
     "GroupcastTesting": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "TestOperation",
@@ -3376,28 +2169,24 @@
   "HEPAFilterMonitoring": {
     "ResetCondition": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "ActivatedCarbonFilterMonitoring": {
     "ResetCondition": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "WaterTankLevelMonitoring": {
     "ResetCondition": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "BooleanStateConfiguration": {
     "SuppressAlarm": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "AlarmsToSuppress",
@@ -3412,7 +2201,6 @@
     },
     "EnableDisableAlarm": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "AlarmsToEnableDisable",
@@ -3429,7 +2217,6 @@
   "ValveConfigurationandControl": {
     "Open": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "OpenDuration",
@@ -3448,14 +2235,12 @@
     },
     "Close": {
       "id": 1,
-      "client": true,
       "args": []
     }
   },
   "WaterHeaterManagement": {
     "Boost": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -3500,14 +2285,12 @@
     },
     "CancelBoost": {
       "id": 1,
-      "client": true,
       "args": []
     }
   },
   "CommodityPrice": {
     "GetDetailedPriceRequest": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -3519,82 +2302,11 @@
             "description": 1,
             "components": 2
           }
-        }
-      ]
-    },
-    "GetDetailedPriceResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "CurrentPrice",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "PeriodStart",
-              "type": "int32u"
-            },
-            {
-              "name": "PeriodEnd",
-              "type": "int32u"
-            },
-            {
-              "name": "Price",
-              "type": "money",
-              "optional": true
-            },
-            {
-              "name": "PriceLevel",
-              "type": "int16s",
-              "optional": true
-            },
-            {
-              "name": "Description",
-              "type": "char_string",
-              "optional": true
-            },
-            {
-              "name": "Components",
-              "type": "struct",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Price",
-                  "type": "money"
-                },
-                {
-                  "name": "Source",
-                  "type": "enum8",
-                  "min": 0,
-                  "max": 4,
-                  "enum_values": {
-                    "standard": 0,
-                    "critical": 1,
-                    "virtual": 2,
-                    "incentive": 3,
-                    "incentive_signal": 4
-                  }
-                },
-                {
-                  "name": "Description",
-                  "type": "char_string",
-                  "optional": true
-                },
-                {
-                  "name": "TariffComponentID",
-                  "type": "int32u",
-                  "optional": true
-                }
-              ]
-            }
-          ]
         }
       ]
     },
     "GetDetailedForecastRequest": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -3606,76 +2318,6 @@
             "description": 1,
             "components": 2
           }
-        }
-      ]
-    },
-    "GetDetailedForecastResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "PriceForecast",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "PeriodStart",
-              "type": "int32u"
-            },
-            {
-              "name": "PeriodEnd",
-              "type": "int32u"
-            },
-            {
-              "name": "Price",
-              "type": "money",
-              "optional": true
-            },
-            {
-              "name": "PriceLevel",
-              "type": "int16s",
-              "optional": true
-            },
-            {
-              "name": "Description",
-              "type": "char_string",
-              "optional": true
-            },
-            {
-              "name": "Components",
-              "type": "struct",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Price",
-                  "type": "money"
-                },
-                {
-                  "name": "Source",
-                  "type": "enum8",
-                  "min": 0,
-                  "max": 4,
-                  "enum_values": {
-                    "standard": 0,
-                    "critical": 1,
-                    "virtual": 2,
-                    "incentive": 3,
-                    "incentive_signal": 4
-                  }
-                },
-                {
-                  "name": "Description",
-                  "type": "char_string",
-                  "optional": true
-                },
-                {
-                  "name": "TariffComponentID",
-                  "type": "int32u",
-                  "optional": true
-                }
-              ]
-            }
-          ]
         }
       ]
     }
@@ -3683,7 +2325,6 @@
   "Messages": {
     "PresentMessagesRequest": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "MessageID",
@@ -3746,7 +2387,6 @@
     },
     "CancelMessagesRequest": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "MessageIDs",
@@ -3758,7 +2398,6 @@
   "DeviceEnergyManagement": {
     "PowerAdjustRequest": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Power",
@@ -3781,12 +2420,10 @@
     },
     "CancelPowerAdjustRequest": {
       "id": 1,
-      "client": true,
       "args": []
     },
     "StartTimeAdjustRequest": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "RequestedStartTime",
@@ -3805,7 +2442,6 @@
     },
     "PauseRequest": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "Duration",
@@ -3824,12 +2460,10 @@
     },
     "ResumeRequest": {
       "id": 4,
-      "client": true,
       "args": []
     },
     "ModifyForecastRequest": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "ForecastID",
@@ -3867,7 +2501,6 @@
     },
     "RequestConstraintBasedForecast": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "Constraints",
@@ -3914,12 +2547,10 @@
     },
     "CancelRequest": {
       "id": 7,
-      "client": true,
       "args": []
     },
     "PowerRangeAdjustRequest": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "MinPower",
@@ -3953,72 +2584,16 @@
     },
     "CancelPowerRangeAdjustRequest": {
       "id": 9,
-      "client": true,
       "args": []
     }
   },
   "EnergyEVSE": {
-    "GetTargetsResponse": {
-      "id": 0,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "ChargingTargetSchedules",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "DayOfWeekForSequence",
-              "type": "bitmap8",
-              "min": 0,
-              "max": 127,
-              "bitmap_masks": {
-                "sunday": 1,
-                "monday": 2,
-                "tuesday": 4,
-                "wednesday": 8,
-                "thursday": 16,
-                "friday": 32,
-                "saturday": 64
-              }
-            },
-            {
-              "name": "ChargingTargets",
-              "type": "struct",
-              "struct": [
-                {
-                  "name": "TargetTimeMinutesPastMidnight",
-                  "type": "int16u",
-                  "max": 1439,
-                  "default": "0"
-                },
-                {
-                  "name": "TargetSoC",
-                  "type": "int8u",
-                  "default": "0",
-                  "optional": true
-                },
-                {
-                  "name": "AddedEnergy",
-                  "type": "energy_mwh",
-                  "min": 0,
-                  "default": "0",
-                  "optional": true
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
     "Disable": {
       "id": 1,
-      "client": true,
       "args": []
     },
     "EnableCharging": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -4041,7 +2616,6 @@
     },
     "EnableDischarging": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -4058,12 +2632,10 @@
     },
     "StartDiagnostics": {
       "id": 4,
-      "client": true,
       "args": []
     },
     "SetTargets": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -4116,41 +2688,21 @@
     },
     "GetTargets": {
       "id": 6,
-      "client": true,
       "args": []
     },
     "ClearTargets": {
       "id": 7,
-      "client": true,
       "args": []
     }
   },
   "EnergyEVSEMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
           "name": "NewMode",
           "type": "int8u"
-        }
-      ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "id": 1,
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
         }
       ]
     }
@@ -4158,29 +2710,11 @@
   "WaterHeaterMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
           "name": "NewMode",
           "type": "int8u"
-        }
-      ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "id": 1,
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
         }
       ]
     }
@@ -4188,7 +2722,6 @@
   "DeviceEnergyManagementMode": {
     "ChangeToMode": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -4196,29 +2729,11 @@
           "type": "int8u"
         }
       ]
-    },
-    "ChangeToModeResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8"
-        },
-        {
-          "id": 1,
-          "name": "StatusText",
-          "type": "char_string",
-          "optional": true
-        }
-      ]
     }
   },
   "ElectricalAlarm": {
     "Reset": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Alarms",
@@ -4246,7 +2761,6 @@
     },
     "ModifyEnabledAlarms": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "Mask",
@@ -4274,7 +2788,6 @@
     },
     "SetElectricalAlarmThresholds": {
       "id": 128,
-      "client": true,
       "args": [
         {
           "name": "OverVoltageThreshold",
@@ -4360,7 +2873,6 @@
   "ElectricalProtectionAlarm": {
     "ModifyEnabledAlarms": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "Mask",
@@ -4382,7 +2894,6 @@
   "DoorLock": {
     "LockDoor": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "PINCode",
@@ -4393,7 +2904,6 @@
     },
     "UnlockDoor": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "PINCode",
@@ -4404,7 +2914,6 @@
     },
     "UnlockWithTimeout": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "Timeout",
@@ -4419,7 +2928,6 @@
     },
     "SetWeekDaySchedule": {
       "id": 11,
-      "client": true,
       "args": [
         {
           "name": "WeekDayIndex",
@@ -4470,7 +2978,6 @@
     },
     "GetWeekDaySchedule": {
       "id": 12,
-      "client": true,
       "args": [
         {
           "name": "WeekDayIndex",
@@ -4482,81 +2989,11 @@
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
-        }
-      ]
-    },
-    "GetWeekDayScheduleResponse": {
-      "id": 12,
-      "server": true,
-      "args": [
-        {
-          "name": "WeekDayIndex",
-          "type": "int8u",
-          "min": 1,
-          "max": 253
-        },
-        {
-          "name": "UserIndex",
-          "type": "int16u",
-          "min": 1
-        },
-        {
-          "name": "Status",
-          "type": "enum8",
-          "enum_values": {
-            "success": 0,
-            "failure": 1,
-            "duplicate": 2,
-            "occupied": 3,
-            "invalid_field": 133,
-            "resource_exhausted": 137,
-            "not_found": 139
-          }
-        },
-        {
-          "name": "DaysMask",
-          "type": "bitmap8",
-          "max": 127,
-          "optional": true,
-          "bitmap_masks": {
-            "sunday": 1,
-            "monday": 2,
-            "tuesday": 4,
-            "wednesday": 8,
-            "thursday": 16,
-            "friday": 32,
-            "saturday": 64
-          }
-        },
-        {
-          "name": "StartHour",
-          "type": "int8u",
-          "max": 23,
-          "optional": true
-        },
-        {
-          "name": "StartMinute",
-          "type": "int8u",
-          "max": 59,
-          "optional": true
-        },
-        {
-          "name": "EndHour",
-          "type": "int8u",
-          "max": 23,
-          "optional": true
-        },
-        {
-          "name": "EndMinute",
-          "type": "int8u",
-          "max": 59,
-          "optional": true
         }
       ]
     },
     "ClearWeekDaySchedule": {
       "id": 13,
-      "client": true,
       "args": [
         {
           "name": "WeekDayIndex",
@@ -4573,7 +3010,6 @@
     },
     "SetYearDaySchedule": {
       "id": 14,
-      "client": true,
       "args": [
         {
           "name": "YearDayIndex",
@@ -4598,7 +3034,6 @@
     },
     "GetYearDaySchedule": {
       "id": 15,
-      "client": true,
       "args": [
         {
           "name": "YearDayIndex",
@@ -4610,52 +3045,11 @@
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
-        }
-      ]
-    },
-    "GetYearDayScheduleResponse": {
-      "id": 15,
-      "server": true,
-      "args": [
-        {
-          "name": "YearDayIndex",
-          "type": "int8u",
-          "min": 1,
-          "max": 253
-        },
-        {
-          "name": "UserIndex",
-          "type": "int16u",
-          "min": 1
-        },
-        {
-          "name": "Status",
-          "type": "enum8",
-          "enum_values": {
-            "success": 0,
-            "failure": 1,
-            "duplicate": 2,
-            "occupied": 3,
-            "invalid_field": 133,
-            "resource_exhausted": 137,
-            "not_found": 139
-          }
-        },
-        {
-          "name": "LocalStartTime",
-          "type": "int32u",
-          "optional": true
-        },
-        {
-          "name": "LocalEndTime",
-          "type": "int32u",
-          "optional": true
         }
       ]
     },
     "ClearYearDaySchedule": {
       "id": 16,
-      "client": true,
       "args": [
         {
           "name": "YearDayIndex",
@@ -4672,7 +3066,6 @@
     },
     "SetHolidaySchedule": {
       "id": 17,
-      "client": true,
       "args": [
         {
           "name": "HolidayIndex",
@@ -4704,67 +3097,17 @@
     },
     "GetHolidaySchedule": {
       "id": 18,
-      "client": true,
       "args": [
         {
           "name": "HolidayIndex",
           "type": "int8u",
           "min": 1,
           "max": 253
-        }
-      ]
-    },
-    "GetHolidayScheduleResponse": {
-      "id": 18,
-      "server": true,
-      "args": [
-        {
-          "name": "HolidayIndex",
-          "type": "int8u",
-          "min": 1,
-          "max": 253
-        },
-        {
-          "name": "Status",
-          "type": "enum8",
-          "enum_values": {
-            "success": 0,
-            "failure": 1,
-            "duplicate": 2,
-            "occupied": 3,
-            "invalid_field": 133,
-            "resource_exhausted": 137,
-            "not_found": 139
-          }
-        },
-        {
-          "name": "LocalStartTime",
-          "type": "int32u",
-          "optional": true
-        },
-        {
-          "name": "LocalEndTime",
-          "type": "int32u",
-          "optional": true
-        },
-        {
-          "name": "OperatingMode",
-          "type": "enum8",
-          "max": 4,
-          "optional": true,
-          "enum_values": {
-            "normal": 0,
-            "vacation": 1,
-            "privacy": 2,
-            "no_remote_lock_unlock": 3,
-            "passage": 4
-          }
         }
       ]
     },
     "ClearHolidaySchedule": {
       "id": 19,
-      "client": true,
       "args": [
         {
           "name": "HolidayIndex",
@@ -4776,7 +3119,6 @@
     },
     "SetUser": {
       "id": 26,
-      "client": true,
       "args": [
         {
           "name": "OperationType",
@@ -4843,114 +3185,16 @@
     },
     "GetUser": {
       "id": 27,
-      "client": true,
       "args": [
         {
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
-        }
-      ]
-    },
-    "GetUserResponse": {
-      "id": 28,
-      "server": true,
-      "args": [
-        {
-          "name": "UserIndex",
-          "type": "int16u",
-          "min": 1
-        },
-        {
-          "name": "UserName",
-          "type": "char_string"
-        },
-        {
-          "name": "UserUniqueID",
-          "type": "int32u"
-        },
-        {
-          "name": "UserStatus",
-          "type": "enum8",
-          "max": 3,
-          "enum_values": {
-            "available": 0,
-            "occupied_enabled": 1,
-            "occupied_disabled": 3
-          }
-        },
-        {
-          "name": "UserType",
-          "type": "enum8",
-          "max": 9,
-          "enum_values": {
-            "unrestricted_user": 0,
-            "year_day_schedule_user": 1,
-            "week_day_schedule_user": 2,
-            "programming_user": 3,
-            "non_access_user": 4,
-            "forced_user": 5,
-            "disposable_user": 6,
-            "expiring_user": 7,
-            "schedule_restricted_user": 8,
-            "remote_only_user": 9
-          }
-        },
-        {
-          "name": "CredentialRule",
-          "type": "enum8",
-          "max": 2,
-          "enum_values": {
-            "single": 0,
-            "dual": 1,
-            "tri": 2
-          }
-        },
-        {
-          "name": "Credentials",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "CredentialType",
-              "type": "enum8",
-              "max": 8,
-              "enum_values": {
-                "programming_pin": 0,
-                "pin": 1,
-                "rfid": 2,
-                "fingerprint": 3,
-                "finger_vein": 4,
-                "face": 5,
-                "aliro_credential_issuer_key": 6,
-                "aliro_evictable_endpoint_key": 7,
-                "aliro_non_evictable_endpoint_key": 8
-              }
-            },
-            {
-              "name": "CredentialIndex",
-              "type": "int16u"
-            }
-          ]
-        },
-        {
-          "name": "CreatorFabricIndex",
-          "type": "int8u"
-        },
-        {
-          "name": "LastModifiedFabricIndex",
-          "type": "int8u"
-        },
-        {
-          "name": "NextUserIndex",
-          "type": "int16u",
-          "min": 1,
-          "max": 65534
         }
       ]
     },
     "ClearUser": {
       "id": 29,
-      "client": true,
       "args": [
         {
           "name": "UserIndex",
@@ -4961,7 +3205,6 @@
     },
     "SetCredential": {
       "id": 34,
-      "client": true,
       "args": [
         {
           "name": "OperationType",
@@ -5039,38 +3282,8 @@
         }
       ]
     },
-    "SetCredentialResponse": {
-      "id": 35,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8",
-          "enum_values": {
-            "success": 0,
-            "failure": 1,
-            "duplicate": 2,
-            "occupied": 3,
-            "invalid_field": 133,
-            "resource_exhausted": 137,
-            "not_found": 139
-          }
-        },
-        {
-          "name": "UserIndex",
-          "type": "int16u",
-          "min": 1,
-          "max": 65534
-        },
-        {
-          "name": "NextCredentialIndex",
-          "type": "int16u"
-        }
-      ]
-    },
     "GetCredentialStatus": {
       "id": 36,
-      "client": true,
       "args": [
         {
           "name": "Credential",
@@ -5100,42 +3313,8 @@
         }
       ]
     },
-    "GetCredentialStatusResponse": {
-      "id": 37,
-      "server": true,
-      "args": [
-        {
-          "name": "CredentialExists",
-          "type": "boolean"
-        },
-        {
-          "name": "UserIndex",
-          "type": "int16u",
-          "min": 1,
-          "max": 65534
-        },
-        {
-          "name": "CreatorFabricIndex",
-          "type": "int8u"
-        },
-        {
-          "name": "LastModifiedFabricIndex",
-          "type": "int8u"
-        },
-        {
-          "name": "NextCredentialIndex",
-          "type": "int16u"
-        },
-        {
-          "name": "CredentialData",
-          "type": "octet_string",
-          "optional": true
-        }
-      ]
-    },
     "ClearCredential": {
       "id": 38,
-      "client": true,
       "args": [
         {
           "name": "Credential",
@@ -5167,7 +3346,6 @@
     },
     "UnboltDoor": {
       "id": 39,
-      "client": true,
       "args": [
         {
           "name": "PINCode",
@@ -5178,7 +3356,6 @@
     },
     "SetAliroReaderConfig": {
       "id": 40,
-      "client": true,
       "args": [
         {
           "name": "SigningKey",
@@ -5201,29 +3378,24 @@
     },
     "ClearAliroReaderConfig": {
       "id": 41,
-      "client": true,
       "args": []
     }
   },
   "WindowCovering": {
     "UpOrOpen": {
       "id": 0,
-      "client": true,
       "args": []
     },
     "DownOrClose": {
       "id": 1,
-      "client": true,
       "args": []
     },
     "StopMotion": {
       "id": 2,
-      "client": true,
       "args": []
     },
     "GoToLiftValue": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "LiftValue",
@@ -5233,7 +3405,6 @@
     },
     "GoToLiftPercentage": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "LiftPercent100thsValue",
@@ -5243,7 +3414,6 @@
     },
     "GoToTiltValue": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "TiltValue",
@@ -5253,7 +3423,6 @@
     },
     "GoToTiltPercentage": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "TiltPercent100thsValue",
@@ -5265,12 +3434,10 @@
   "ClosureControl": {
     "Stop": {
       "id": 0,
-      "client": true,
       "args": []
     },
     "MoveTo": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -5310,14 +3477,12 @@
     },
     "Calibrate": {
       "id": 2,
-      "client": true,
       "args": []
     }
   },
   "ClosureDimension": {
     "SetTarget": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -5349,7 +3514,6 @@
     },
     "Step": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -5387,7 +3551,6 @@
   "ServiceArea": {
     "SelectAreas": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -5396,32 +3559,8 @@
         }
       ]
     },
-    "SelectAreasResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8",
-          "max": 3,
-          "enum_values": {
-            "success": 0,
-            "unsupported_area": 1,
-            "invalid_in_mode": 2,
-            "invalid_set": 3
-          }
-        },
-        {
-          "id": 1,
-          "name": "StatusText",
-          "type": "long_char_string"
-        }
-      ]
-    },
     "SkipArea": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -5429,35 +3568,11 @@
           "type": "int32u"
         }
       ]
-    },
-    "SkipAreaResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8",
-          "max": 3,
-          "enum_values": {
-            "success": 0,
-            "invalid_area_list": 1,
-            "invalid_in_mode": 2,
-            "invalid_skipped_area": 3
-          }
-        },
-        {
-          "id": 1,
-          "name": "StatusText",
-          "type": "long_char_string"
-        }
-      ]
     }
   },
   "Thermostat": {
     "SetpointRaiseLower": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Mode",
@@ -5475,62 +3590,8 @@
         }
       ]
     },
-    "GetWeeklyScheduleResponse": {
-      "id": 0,
-      "server": true,
-      "args": [
-        {
-          "name": "NumberOfTransitionsForSequence",
-          "type": "int8u"
-        },
-        {
-          "name": "DayOfWeekForSequence",
-          "type": "bitmap8",
-          "bitmap_masks": {
-            "sunday": 1,
-            "monday": 2,
-            "tuesday": 4,
-            "wednesday": 8,
-            "thursday": 16,
-            "friday": 32,
-            "saturday": 64,
-            "away": 128
-          }
-        },
-        {
-          "name": "ModeForSequence",
-          "type": "bitmap8",
-          "bitmap_masks": {
-            "heat_setpoint_present": 1,
-            "cool_setpoint_present": 2
-          }
-        },
-        {
-          "name": "Transitions",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "TransitionTime",
-              "type": "int16u",
-              "max": 1439
-            },
-            {
-              "name": "HeatSetpoint",
-              "type": "int16s",
-              "min": -27315
-            },
-            {
-              "name": "CoolSetpoint",
-              "type": "int16s",
-              "min": -27315
-            }
-          ]
-        }
-      ]
-    },
     "SetWeeklySchedule": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "NumberOfTransitionsForSequence",
@@ -5583,7 +3644,6 @@
     },
     "GetWeeklySchedule": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "DaysToReturn",
@@ -5609,24 +3669,12 @@
         }
       ]
     },
-    "AddThermostatSuggestionResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "name": "UniqueID",
-          "type": "int8u"
-        }
-      ]
-    },
     "ClearWeeklySchedule": {
       "id": 3,
-      "client": true,
       "args": []
     },
     "SetActiveScheduleRequest": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "ScheduleHandle",
@@ -5636,7 +3684,6 @@
     },
     "SetActivePresetRequest": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "PresetHandle",
@@ -5646,7 +3693,6 @@
     },
     "AddThermostatSuggestion": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "PresetHandle",
@@ -5666,7 +3712,6 @@
     },
     "RemoveThermostatSuggestion": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "UniqueID",
@@ -5674,41 +3719,8 @@
         }
       ]
     },
-    "AtomicResponse": {
-      "id": 253,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "StatusCode",
-          "type": "int8u"
-        },
-        {
-          "id": 0,
-          "name": "AttributeStatus",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "AttributeID",
-              "type": "int32u"
-            },
-            {
-              "name": "StatusCode",
-              "type": "int8u"
-            }
-          ]
-        },
-        {
-          "id": 0,
-          "name": "Timeout",
-          "type": "int16u",
-          "optional": true
-        }
-      ]
-    },
     "AtomicRequest": {
       "id": 254,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -5737,7 +3749,6 @@
   "FanControl": {
     "Step": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -5771,7 +3782,6 @@
   "Humidistat": {
     "SetSettings": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "UserSetpoint",
@@ -5822,7 +3832,6 @@
   "ColorControl": {
     "MoveToHue": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Hue",
@@ -5865,7 +3874,6 @@
     },
     "MoveHue": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "MoveMode",
@@ -5901,7 +3909,6 @@
     },
     "StepHue": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "StepMode",
@@ -5940,7 +3947,6 @@
     },
     "MoveToSaturation": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "Saturation",
@@ -5972,7 +3978,6 @@
     },
     "MoveSaturation": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "MoveMode",
@@ -6008,7 +4013,6 @@
     },
     "StepSaturation": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "StepMode",
@@ -6047,7 +4051,6 @@
     },
     "MoveToHueAndSaturation": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "Hue",
@@ -6084,7 +4087,6 @@
     },
     "MoveToColor": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "ColorX",
@@ -6121,7 +4123,6 @@
     },
     "MoveColor": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "RateX",
@@ -6151,7 +4152,6 @@
     },
     "StepColor": {
       "id": 9,
-      "client": true,
       "args": [
         {
           "name": "StepX",
@@ -6186,7 +4186,6 @@
     },
     "MoveToColorTemperature": {
       "id": 10,
-      "client": true,
       "args": [
         {
           "name": "ColorTemperatureMireds",
@@ -6218,7 +4217,6 @@
     },
     "EnhancedMoveToHue": {
       "id": 64,
-      "client": true,
       "args": [
         {
           "name": "EnhancedHue",
@@ -6260,7 +4258,6 @@
     },
     "EnhancedMoveHue": {
       "id": 65,
-      "client": true,
       "args": [
         {
           "name": "MoveMode",
@@ -6296,7 +4293,6 @@
     },
     "EnhancedStepHue": {
       "id": 66,
-      "client": true,
       "args": [
         {
           "name": "StepMode",
@@ -6336,7 +4332,6 @@
     },
     "EnhancedMoveToHueAndSaturation": {
       "id": 67,
-      "client": true,
       "args": [
         {
           "name": "EnhancedHue",
@@ -6372,7 +4367,6 @@
     },
     "ColorLoopSet": {
       "id": 68,
-      "client": true,
       "args": [
         {
           "name": "UpdateFlags",
@@ -6432,7 +4426,6 @@
     },
     "StopMoveStep": {
       "id": 71,
-      "client": true,
       "args": [
         {
           "name": "OptionsMask",
@@ -6454,7 +4447,6 @@
     },
     "MoveColorTemperature": {
       "id": 75,
-      "client": true,
       "args": [
         {
           "name": "MoveMode",
@@ -6500,7 +4492,6 @@
     },
     "StepColorTemperature": {
       "id": 76,
-      "client": true,
       "args": [
         {
           "name": "StepMode",
@@ -6552,7 +4543,6 @@
   "DynamicLighting": {
     "StartEffect": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "EffectID",
@@ -6612,14 +4602,12 @@
     },
     "StopEffect": {
       "id": 1,
-      "client": true,
       "args": []
     }
   },
   "ProximityRanging": {
     "StartRangingRequest": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Technology",
@@ -6824,31 +4812,8 @@
         }
       ]
     },
-    "StartRangingResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "ResultCode",
-          "type": "enum8",
-          "max": 4,
-          "enum_values": {
-            "accepted": 0,
-            "rejected_infeasible_ranging": 1,
-            "rejected_infeasible_ranging_triggers": 2,
-            "busy_session_capacity_reached": 3,
-            "busy_try_again_later": 4
-          }
-        },
-        {
-          "name": "SessionID",
-          "type": "int8u"
-        }
-      ]
-    },
     "StopRangingRequest": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "SessionID",
@@ -6860,7 +4825,6 @@
   "NetworkIdentityManagement": {
     "AddClient": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "ClientIdentity",
@@ -6868,21 +4832,8 @@
         }
       ]
     },
-    "AddClientResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "ClientIndex",
-          "type": "int16u",
-          "min": 1,
-          "max": 2047
-        }
-      ]
-    },
     "RemoveClient": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "ClientIndex",
@@ -6900,7 +4851,6 @@
     },
     "QueryIdentity": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "NetworkIdentityIndex",
@@ -6928,19 +4878,8 @@
         }
       ]
     },
-    "QueryIdentityResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "name": "Identity",
-          "type": "octet_string"
-        }
-      ]
-    },
     "ImportAdminSecret": {
       "id": 64,
-      "client": true,
       "args": [
         {
           "name": "NetworkAdministratorSharedSecret",
@@ -6950,63 +4889,26 @@
     },
     "ExportAdminSecret": {
       "id": 65,
-      "client": true,
       "args": []
-    },
-    "ExportAdminSecretResponse": {
-      "id": 66,
-      "server": true,
-      "args": [
-        {
-          "name": "NetworkAdministratorSharedSecret",
-          "type": "octet_string"
-        }
-      ]
     }
   },
   "WiFiNetworkManagement": {
     "NetworkPassphraseRequest": {
       "id": 0,
-      "client": true,
       "args": []
-    },
-    "NetworkPassphraseResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Passphrase",
-          "type": "octet_string"
-        }
-      ]
     }
   },
   "ThreadBorderRouterManagement": {
     "GetActiveDatasetRequest": {
       "id": 0,
-      "client": true,
       "args": []
     },
     "GetPendingDatasetRequest": {
       "id": 1,
-      "client": true,
       "args": []
-    },
-    "DatasetResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Dataset",
-          "type": "octet_string"
-        }
-      ]
     },
     "SetActiveDatasetRequest": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -7023,7 +4925,6 @@
     },
     "SetPendingDatasetRequest": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -7036,7 +4937,6 @@
   "ThreadNetworkDirectory": {
     "AddNetwork": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -7047,7 +4947,6 @@
     },
     "RemoveNetwork": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -7058,22 +4957,10 @@
     },
     "GetOperationalDataset": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
           "name": "ExtendedPanID",
-          "type": "octet_string"
-        }
-      ]
-    },
-    "OperationalDatasetResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "OperationalDataset",
           "type": "octet_string"
         }
       ]
@@ -7082,7 +4969,6 @@
   "Channel": {
     "ChangeChannel": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Match",
@@ -7090,29 +4976,8 @@
         }
       ]
     },
-    "ChangeChannelResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8",
-          "enum_values": {
-            "success": 0,
-            "multiple_matches": 1,
-            "no_matches": 2
-          }
-        },
-        {
-          "name": "Data",
-          "type": "char_string",
-          "optional": true
-        }
-      ]
-    },
     "ChangeChannelByNumber": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "MajorNumber",
@@ -7126,7 +4991,6 @@
     },
     "SkipChannel": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "Count",
@@ -7136,7 +5000,6 @@
     },
     "GetProgramGuide": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "StartTime",
@@ -7253,296 +5116,8 @@
         }
       ]
     },
-    "ProgramGuideResponse": {
-      "id": 5,
-      "server": true,
-      "args": [
-        {
-          "name": "Paging",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "PreviousToken",
-              "type": "struct",
-              "default": "0x0",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Limit",
-                  "type": "int16u",
-                  "default": "0",
-                  "optional": true
-                },
-                {
-                  "name": "After",
-                  "type": "char_string",
-                  "max": 8192,
-                  "default": "",
-                  "optional": true
-                },
-                {
-                  "name": "Before",
-                  "type": "char_string",
-                  "max": 8192,
-                  "default": "",
-                  "optional": true
-                }
-              ]
-            },
-            {
-              "name": "NextToken",
-              "type": "struct",
-              "default": "0x0",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Limit",
-                  "type": "int16u",
-                  "default": "0",
-                  "optional": true
-                },
-                {
-                  "name": "After",
-                  "type": "char_string",
-                  "max": 8192,
-                  "default": "",
-                  "optional": true
-                },
-                {
-                  "name": "Before",
-                  "type": "char_string",
-                  "max": 8192,
-                  "default": "",
-                  "optional": true
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "ProgramList",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "Identifier",
-              "type": "char_string",
-              "max": 255
-            },
-            {
-              "name": "Channel",
-              "type": "struct",
-              "struct": [
-                {
-                  "name": "MajorNumber",
-                  "type": "int16u"
-                },
-                {
-                  "name": "MinorNumber",
-                  "type": "int16u"
-                },
-                {
-                  "name": "Name",
-                  "type": "char_string",
-                  "optional": true
-                },
-                {
-                  "name": "CallSign",
-                  "type": "char_string",
-                  "optional": true
-                },
-                {
-                  "name": "AffiliateCallSign",
-                  "type": "char_string",
-                  "optional": true
-                },
-                {
-                  "name": "Identifier",
-                  "type": "char_string",
-                  "optional": true
-                },
-                {
-                  "name": "Type",
-                  "type": "enum8",
-                  "optional": true,
-                  "enum_values": {
-                    "satellite": 0,
-                    "cable": 1,
-                    "terrestrial": 2,
-                    "ott": 3
-                  }
-                }
-              ]
-            },
-            {
-              "name": "StartTime",
-              "type": "int32u"
-            },
-            {
-              "name": "EndTime",
-              "type": "int32u"
-            },
-            {
-              "name": "Title",
-              "type": "char_string",
-              "max": 255
-            },
-            {
-              "name": "Subtitle",
-              "type": "char_string",
-              "max": 255,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "Description",
-              "type": "char_string",
-              "max": 8192,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "AudioLanguages",
-              "type": "char_string",
-              "max": 10,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "Ratings",
-              "type": "char_string",
-              "max": 255,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "ThumbnailUrl",
-              "type": "char_string",
-              "max": 8192,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "PosterArtUrl",
-              "type": "char_string",
-              "max": 8192,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "DvbiUrl",
-              "type": "char_string",
-              "max": 8192,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "ReleaseDate",
-              "type": "char_string",
-              "max": 30,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "ParentalGuidanceText",
-              "type": "char_string",
-              "max": 255,
-              "default": "",
-              "optional": true
-            },
-            {
-              "name": "RecordingFlag",
-              "type": "bitmap32",
-              "optional": true,
-              "bitmap_masks": {
-                "scheduled": 1,
-                "record_series": 2,
-                "recorded": 4
-              }
-            },
-            {
-              "name": "SeriesInfo",
-              "type": "struct",
-              "default": "0x0",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Season",
-                  "type": "char_string",
-                  "max": 256
-                },
-                {
-                  "name": "Episode",
-                  "type": "char_string",
-                  "max": 256
-                }
-              ]
-            },
-            {
-              "name": "CategoryList",
-              "type": "struct",
-              "max": 255,
-              "default": "",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Category",
-                  "type": "char_string",
-                  "max": 256
-                },
-                {
-                  "name": "SubCategory",
-                  "type": "char_string",
-                  "max": 256,
-                  "default": "",
-                  "optional": true
-                }
-              ]
-            },
-            {
-              "name": "CastList",
-              "type": "struct",
-              "max": 255,
-              "default": "",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Name",
-                  "type": "char_string",
-                  "max": 256
-                },
-                {
-                  "name": "Role",
-                  "type": "char_string",
-                  "max": 256
-                }
-              ]
-            },
-            {
-              "name": "ExternalIDList",
-              "type": "struct",
-              "max": 255,
-              "default": "",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Name",
-                  "type": "char_string",
-                  "max": 256
-                },
-                {
-                  "name": "Role",
-                  "type": "char_string",
-                  "max": 256
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
     "RecordProgram": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "ProgramIdentifier",
@@ -7574,7 +5149,6 @@
     },
     "CancelRecordProgram": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "ProgramIdentifier",
@@ -7608,7 +5182,6 @@
   "TargetNavigator": {
     "NavigateTarget": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -7622,65 +5195,35 @@
           "optional": true
         }
       ]
-    },
-    "NavigateTargetResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8",
-          "max": 2,
-          "enum_values": {
-            "success": 0,
-            "target_not_found": 1,
-            "not_allowed": 2
-          }
-        },
-        {
-          "id": 1,
-          "name": "Data",
-          "type": "char_string",
-          "optional": true
-        }
-      ]
     }
   },
   "MediaPlayback": {
     "Play": {
       "id": 0,
-      "client": true,
       "args": []
     },
     "Pause": {
       "id": 1,
-      "client": true,
       "args": []
     },
     "Stop": {
       "id": 2,
-      "client": true,
       "args": []
     },
     "StartOver": {
       "id": 3,
-      "client": true,
       "args": []
     },
     "Previous": {
       "id": 4,
-      "client": true,
       "args": []
     },
     "Next": {
       "id": 5,
-      "client": true,
       "args": []
     },
     "Rewind": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "AudioAdvanceUnmuted",
@@ -7691,7 +5234,6 @@
     },
     "FastForward": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "AudioAdvanceUnmuted",
@@ -7702,7 +5244,6 @@
     },
     "SkipForward": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "DeltaPositionMilliseconds",
@@ -7712,7 +5253,6 @@
     },
     "SkipBackward": {
       "id": 9,
-      "client": true,
       "args": [
         {
           "name": "DeltaPositionMilliseconds",
@@ -7720,32 +5260,8 @@
         }
       ]
     },
-    "PlaybackResponse": {
-      "id": 10,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8",
-          "enum_values": {
-            "success": 0,
-            "invalid_state_for_command": 1,
-            "not_allowed": 2,
-            "not_active": 3,
-            "speed_out_of_range": 4,
-            "seek_out_of_range": 5
-          }
-        },
-        {
-          "name": "Data",
-          "type": "char_string",
-          "optional": true
-        }
-      ]
-    },
     "Seek": {
       "id": 11,
-      "client": true,
       "args": [
         {
           "name": "position",
@@ -7755,7 +5271,6 @@
     },
     "ActivateAudioTrack": {
       "id": 12,
-      "client": true,
       "args": [
         {
           "name": "TrackID",
@@ -7769,7 +5284,6 @@
     },
     "ActivateTextTrack": {
       "id": 13,
-      "client": true,
       "args": [
         {
           "name": "TrackID",
@@ -7779,14 +5293,12 @@
     },
     "DeactivateTextTrack": {
       "id": 14,
-      "client": true,
       "args": []
     }
   },
   "MediaInput": {
     "SelectInput": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -7797,17 +5309,14 @@
     },
     "ShowInputStatus": {
       "id": 1,
-      "client": true,
       "args": []
     },
     "HideInputStatus": {
       "id": 2,
-      "client": true,
       "args": []
     },
     "RenameInput": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -7825,14 +5334,12 @@
   "LowPower": {
     "Sleep": {
       "id": 0,
-      "client": true,
       "args": []
     }
   },
   "KeypadInput": {
     "SendKey": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -7929,29 +5436,11 @@
           }
         }
       ]
-    },
-    "SendKeyResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8",
-          "max": 2,
-          "enum_values": {
-            "success": 0,
-            "unsupported_key": 1,
-            "invalid_key_in_current_state": 2
-          }
-        }
-      ]
     }
   },
   "ContentLauncher": {
     "LaunchContent": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Search",
@@ -8115,7 +5604,6 @@
     },
     "LaunchURL": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "ContentURL",
@@ -8338,34 +5826,11 @@
           ]
         }
       ]
-    },
-    "LauncherResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "name": "Status",
-          "type": "enum8",
-          "enum_values": {
-            "success": 0,
-            "url_not_available": 1,
-            "auth_failed": 2,
-            "text_track_not_available": 3,
-            "audio_track_not_available": 4
-          }
-        },
-        {
-          "name": "Data",
-          "type": "char_string",
-          "optional": true
-        }
-      ]
     }
   },
   "AudioOutput": {
     "SelectOutput": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8376,7 +5841,6 @@
     },
     "RenameOutput": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8394,7 +5858,6 @@
   "ApplicationLauncher": {
     "LaunchApp": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8422,7 +5885,6 @@
     },
     "StopApp": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8444,7 +5906,6 @@
     },
     "HideApp": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8463,38 +5924,11 @@
           ]
         }
       ]
-    },
-    "LauncherResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8",
-          "max": 5,
-          "enum_values": {
-            "success": 0,
-            "app_not_available": 1,
-            "system_busy": 2,
-            "pending_user_approval": 3,
-            "downloading": 4,
-            "installing": 5
-          }
-        },
-        {
-          "id": 1,
-          "name": "Data",
-          "type": "octet_string",
-          "optional": true
-        }
-      ]
     }
   },
   "AccountLogin": {
     "GetSetupPIN": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8503,20 +5937,8 @@
         }
       ]
     },
-    "GetSetupPINResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "SetupPIN",
-          "type": "char_string"
-        }
-      ]
-    },
     "Login": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8538,7 +5960,6 @@
     },
     "Logout": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8552,7 +5973,6 @@
   "ContentControl": {
     "UpdatePIN": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8568,33 +5988,18 @@
     },
     "ResetPIN": {
       "id": 1,
-      "client": true,
       "args": []
-    },
-    "ResetPINResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "PINCode",
-          "type": "char_string"
-        }
-      ]
     },
     "Enable": {
       "id": 3,
-      "client": true,
       "args": []
     },
     "Disable": {
       "id": 4,
-      "client": true,
       "args": []
     },
     "AddBonusTime": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8612,7 +6017,6 @@
     },
     "SetScreenDailyTime": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8624,17 +6028,14 @@
     },
     "BlockUnratedContent": {
       "id": 7,
-      "client": true,
       "args": []
     },
     "UnblockUnratedContent": {
       "id": 8,
-      "client": true,
       "args": []
     },
     "SetOnDemandRatingThreshold": {
       "id": 9,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8645,7 +6046,6 @@
     },
     "SetScheduledContentRatingThreshold": {
       "id": 10,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8656,7 +6056,6 @@
     },
     "AddBlockChannels": {
       "id": 11,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8686,7 +6085,6 @@
     },
     "RemoveBlockChannels": {
       "id": 12,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8697,7 +6095,6 @@
     },
     "AddBlockApplications": {
       "id": 13,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8718,7 +6115,6 @@
     },
     "RemoveBlockApplications": {
       "id": 14,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8739,7 +6135,6 @@
     },
     "SetBlockContentTimeWindow": {
       "id": 15,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8796,7 +6191,6 @@
     },
     "RemoveBlockContentTimeWindow": {
       "id": 16,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8809,7 +6203,6 @@
   "ContentAppObserver": {
     "ContentAppMessage": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -8823,40 +6216,11 @@
           "type": "char_string"
         }
       ]
-    },
-    "ContentAppMessageResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Status",
-          "type": "enum8",
-          "max": 1,
-          "enum_values": {
-            "success": 0,
-            "unexpected_data": 1
-          }
-        },
-        {
-          "id": 1,
-          "name": "Data",
-          "type": "long_char_string",
-          "optional": true
-        },
-        {
-          "id": 2,
-          "name": "EncodingHint",
-          "type": "char_string",
-          "optional": true
-        }
-      ]
     }
   },
   "ZoneManagement": {
     "CreateTwoDCartesianZone": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Zone",
@@ -8899,19 +6263,8 @@
         }
       ]
     },
-    "CreateTwoDCartesianZoneResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "ZoneID",
-          "type": "int16u"
-        }
-      ]
-    },
     "UpdateTwoDCartesianZone": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "ZoneID",
@@ -8960,7 +6313,6 @@
     },
     "RemoveZone": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "ZoneID",
@@ -8970,7 +6322,6 @@
     },
     "CreateOrUpdateTrigger": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "Trigger",
@@ -9013,7 +6364,6 @@
     },
     "RemoveTrigger": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "ZoneID",
@@ -9025,7 +6375,6 @@
   "CameraAVStreamManagement": {
     "AudioStreamAllocate": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "StreamUsage",
@@ -9072,19 +6421,8 @@
         }
       ]
     },
-    "AudioStreamAllocateResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "AudioStreamID",
-          "type": "int16u"
-        }
-      ]
-    },
     "AudioStreamDeallocate": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "AudioStreamID",
@@ -9094,7 +6432,6 @@
     },
     "VideoStreamAllocate": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "StreamUsage",
@@ -9188,19 +6525,8 @@
         }
       ]
     },
-    "VideoStreamAllocateResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "name": "VideoStreamID",
-          "type": "int16u"
-        }
-      ]
-    },
     "VideoStreamModify": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "VideoStreamID",
@@ -9220,7 +6546,6 @@
     },
     "VideoStreamDeallocate": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "VideoStreamID",
@@ -9230,7 +6555,6 @@
     },
     "SnapshotStreamAllocate": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "ImageCodec",
@@ -9296,19 +6620,8 @@
         }
       ]
     },
-    "SnapshotStreamAllocateResponse": {
-      "id": 8,
-      "server": true,
-      "args": [
-        {
-          "name": "SnapshotStreamID",
-          "type": "int16u"
-        }
-      ]
-    },
     "SnapshotStreamModify": {
       "id": 9,
-      "client": true,
       "args": [
         {
           "name": "SnapshotStreamID",
@@ -9328,7 +6641,6 @@
     },
     "SnapshotStreamDeallocate": {
       "id": 10,
-      "client": true,
       "args": [
         {
           "name": "SnapshotStreamID",
@@ -9338,7 +6650,6 @@
     },
     "SetStreamPriorities": {
       "id": 11,
-      "client": true,
       "args": [
         {
           "name": "StreamPriorities",
@@ -9354,7 +6665,6 @@
     },
     "CaptureSnapshot": {
       "id": 12,
-      "client": true,
       "args": [
         {
           "name": "SnapshotStreamID",
@@ -9377,47 +6687,11 @@
           ]
         }
       ]
-    },
-    "CaptureSnapshotResponse": {
-      "id": 13,
-      "server": true,
-      "args": [
-        {
-          "name": "Data",
-          "type": "octet_string"
-        },
-        {
-          "name": "ImageCodec",
-          "type": "enum8",
-          "max": 1,
-          "enum_values": {
-            "jpeg": 0,
-            "heic": 1
-          }
-        },
-        {
-          "name": "Resolution",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "Width",
-              "type": "int16u",
-              "min": 1
-            },
-            {
-              "name": "Height",
-              "type": "int16u",
-              "min": 1
-            }
-          ]
-        }
-      ]
     }
   },
   "CameraAVSettingsUserLevelManagement": {
     "MPTZSetPosition": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9447,7 +6721,6 @@
     },
     "MPTZRelativeMove": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9480,7 +6753,6 @@
     },
     "MPTZMoveToPreset": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9492,7 +6764,6 @@
     },
     "MPTZSavePreset": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9510,7 +6781,6 @@
     },
     "MPTZRemovePreset": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9522,7 +6792,6 @@
     },
     "DPTZSetViewport": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9556,7 +6825,6 @@
     },
     "DPTZRelativeMove": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9592,7 +6860,6 @@
   "WebRTCTransportProvider": {
     "SolicitOffer": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9699,37 +6966,8 @@
         }
       ]
     },
-    "SolicitOfferResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "WebRTCSessionID",
-          "type": "int16u"
-        },
-        {
-          "id": 1,
-          "name": "DeferredOffer",
-          "type": "boolean"
-        },
-        {
-          "id": 2,
-          "name": "VideoStreamID",
-          "type": "int16u",
-          "optional": true
-        },
-        {
-          "id": 3,
-          "name": "AudioStreamID",
-          "type": "int16u",
-          "optional": true
-        }
-      ]
-    },
     "ProvideOffer": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9846,32 +7084,8 @@
         }
       ]
     },
-    "ProvideOfferResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "WebRTCSessionID",
-          "type": "int16u"
-        },
-        {
-          "id": 1,
-          "name": "VideoStreamID",
-          "type": "int16u",
-          "optional": true
-        },
-        {
-          "id": 2,
-          "name": "AudioStreamID",
-          "type": "int16u",
-          "optional": true
-        }
-      ]
-    },
     "ProvideAnswer": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9887,7 +7101,6 @@
     },
     "ProvideICECandidates": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9917,7 +7130,6 @@
     },
     "EndSession": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -9951,7 +7163,6 @@
   "WebRTCTransportRequestor": {
     "Offer": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -10002,7 +7213,6 @@
     },
     "Answer": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -10018,7 +7228,6 @@
     },
     "ICECandidates": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -10048,7 +7257,6 @@
     },
     "End": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -10082,7 +7290,6 @@
   "PushAVStreamTransport": {
     "AllocatePushTransport": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "TransportOptions",
@@ -10295,246 +7502,8 @@
         }
       ]
     },
-    "AllocatePushTransportResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "TransportConfiguration",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "ConnectionID",
-              "type": "int16u",
-              "min": 0,
-              "max": 65534
-            },
-            {
-              "name": "TransportStatus",
-              "type": "enum8",
-              "max": 1,
-              "enum_values": {
-                "active": 0,
-                "inactive": 1
-              }
-            },
-            {
-              "name": "TransportOptions",
-              "type": "struct",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "StreamUsage",
-                  "type": "enum8",
-                  "max": 3,
-                  "enum_values": {
-                    "internal": 0,
-                    "recording": 1,
-                    "analysis": 2,
-                    "live_view": 3
-                  }
-                },
-                {
-                  "name": "VideoStreamID",
-                  "type": "int16u",
-                  "optional": true
-                },
-                {
-                  "name": "AudioStreamID",
-                  "type": "int16u",
-                  "optional": true
-                },
-                {
-                  "name": "TLSEndpointID",
-                  "type": "int16u",
-                  "min": 0,
-                  "max": 65534
-                },
-                {
-                  "name": "URL",
-                  "type": "long_char_string"
-                },
-                {
-                  "name": "TriggerOptions",
-                  "type": "struct",
-                  "struct": [
-                    {
-                      "name": "TriggerType",
-                      "type": "enum8",
-                      "max": 3,
-                      "enum_values": {
-                        "command": 0,
-                        "motion": 1,
-                        "continuous": 2,
-                        "ambient_context": 3
-                      }
-                    },
-                    {
-                      "name": "MotionZones",
-                      "type": "struct",
-                      "optional": true,
-                      "struct": [
-                        {
-                          "name": "Zone",
-                          "type": "int16u"
-                        },
-                        {
-                          "name": "Sensitivity",
-                          "type": "int8u",
-                          "min": 1,
-                          "max": 10,
-                          "optional": true
-                        }
-                      ]
-                    },
-                    {
-                      "name": "MotionSensitivity",
-                      "type": "int8u",
-                      "min": 1,
-                      "max": 10,
-                      "optional": true
-                    },
-                    {
-                      "name": "MotionTimeControl",
-                      "type": "struct",
-                      "optional": true,
-                      "struct": [
-                        {
-                          "name": "InitialDuration",
-                          "type": "int16u",
-                          "min": 1
-                        },
-                        {
-                          "name": "AugmentationDuration",
-                          "type": "int16u"
-                        },
-                        {
-                          "name": "MaxDuration",
-                          "type": "int32u",
-                          "min": 1
-                        },
-                        {
-                          "name": "BlindDuration",
-                          "type": "int16u"
-                        }
-                      ]
-                    },
-                    {
-                      "name": "MaxPreRollLen",
-                      "type": "int16u",
-                      "optional": true
-                    }
-                  ]
-                },
-                {
-                  "name": "IngestMethod",
-                  "type": "enum8",
-                  "max": 0,
-                  "enum_values": {
-                    "cmaf_ingest": 0
-                  }
-                },
-                {
-                  "name": "ContainerOptions",
-                  "type": "struct",
-                  "struct": [
-                    {
-                      "name": "ContainerType",
-                      "type": "enum8",
-                      "max": 0,
-                      "enum_values": {
-                        "cmaf": 0
-                      }
-                    },
-                    {
-                      "name": "CMAFContainerOptions",
-                      "type": "struct",
-                      "optional": true,
-                      "struct": [
-                        {
-                          "name": "CMAFInterface",
-                          "type": "enum8",
-                          "max": 2,
-                          "enum_values": {
-                            "interface1": 0,
-                            "interface2_dash": 1,
-                            "interface2_hls": 2
-                          }
-                        },
-                        {
-                          "name": "SegmentDuration",
-                          "type": "int16u",
-                          "min": 500,
-                          "max": 65500
-                        },
-                        {
-                          "name": "ChunkDuration",
-                          "type": "int16u",
-                          "max": 32750
-                        },
-                        {
-                          "name": "SessionGroup",
-                          "type": "int8u",
-                          "optional": true
-                        },
-                        {
-                          "name": "TrackName",
-                          "type": "char_string",
-                          "optional": true
-                        },
-                        {
-                          "name": "MetadataEnabled",
-                          "type": "boolean",
-                          "optional": true
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "ExpiryTime",
-                  "type": "int32u",
-                  "optional": true
-                },
-                {
-                  "name": "VideoStreams",
-                  "type": "struct",
-                  "optional": true,
-                  "struct": [
-                    {
-                      "name": "VideoStreamName",
-                      "type": "char_string"
-                    },
-                    {
-                      "name": "VideoStreamID",
-                      "type": "int16u"
-                    }
-                  ]
-                },
-                {
-                  "name": "AudioStreams",
-                  "type": "struct",
-                  "optional": true,
-                  "struct": [
-                    {
-                      "name": "AudioStreamName",
-                      "type": "char_string"
-                    },
-                    {
-                      "name": "AudioStreamID",
-                      "type": "int16u"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
     "DeallocatePushTransport": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "ConnectionID",
@@ -10546,7 +7515,6 @@
     },
     "ModifyPushTransport": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "ConnectionID",
@@ -10767,7 +7735,6 @@
     },
     "SetTransportStatus": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "ConnectionID",
@@ -10786,7 +7753,6 @@
     },
     "ManuallyTriggerTransport": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "ConnectionID",
@@ -10839,248 +7805,10 @@
     },
     "FindTransport": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "ConnectionID",
           "type": "int16u"
-        }
-      ]
-    },
-    "FindTransportResponse": {
-      "id": 7,
-      "server": true,
-      "args": [
-        {
-          "name": "TransportConfigurations",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "ConnectionID",
-              "type": "int16u",
-              "min": 0,
-              "max": 65534
-            },
-            {
-              "name": "TransportStatus",
-              "type": "enum8",
-              "max": 1,
-              "enum_values": {
-                "active": 0,
-                "inactive": 1
-              }
-            },
-            {
-              "name": "TransportOptions",
-              "type": "struct",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "StreamUsage",
-                  "type": "enum8",
-                  "max": 3,
-                  "enum_values": {
-                    "internal": 0,
-                    "recording": 1,
-                    "analysis": 2,
-                    "live_view": 3
-                  }
-                },
-                {
-                  "name": "VideoStreamID",
-                  "type": "int16u",
-                  "optional": true
-                },
-                {
-                  "name": "AudioStreamID",
-                  "type": "int16u",
-                  "optional": true
-                },
-                {
-                  "name": "TLSEndpointID",
-                  "type": "int16u",
-                  "min": 0,
-                  "max": 65534
-                },
-                {
-                  "name": "URL",
-                  "type": "long_char_string"
-                },
-                {
-                  "name": "TriggerOptions",
-                  "type": "struct",
-                  "struct": [
-                    {
-                      "name": "TriggerType",
-                      "type": "enum8",
-                      "max": 3,
-                      "enum_values": {
-                        "command": 0,
-                        "motion": 1,
-                        "continuous": 2,
-                        "ambient_context": 3
-                      }
-                    },
-                    {
-                      "name": "MotionZones",
-                      "type": "struct",
-                      "optional": true,
-                      "struct": [
-                        {
-                          "name": "Zone",
-                          "type": "int16u"
-                        },
-                        {
-                          "name": "Sensitivity",
-                          "type": "int8u",
-                          "min": 1,
-                          "max": 10,
-                          "optional": true
-                        }
-                      ]
-                    },
-                    {
-                      "name": "MotionSensitivity",
-                      "type": "int8u",
-                      "min": 1,
-                      "max": 10,
-                      "optional": true
-                    },
-                    {
-                      "name": "MotionTimeControl",
-                      "type": "struct",
-                      "optional": true,
-                      "struct": [
-                        {
-                          "name": "InitialDuration",
-                          "type": "int16u",
-                          "min": 1
-                        },
-                        {
-                          "name": "AugmentationDuration",
-                          "type": "int16u"
-                        },
-                        {
-                          "name": "MaxDuration",
-                          "type": "int32u",
-                          "min": 1
-                        },
-                        {
-                          "name": "BlindDuration",
-                          "type": "int16u"
-                        }
-                      ]
-                    },
-                    {
-                      "name": "MaxPreRollLen",
-                      "type": "int16u",
-                      "optional": true
-                    }
-                  ]
-                },
-                {
-                  "name": "IngestMethod",
-                  "type": "enum8",
-                  "max": 0,
-                  "enum_values": {
-                    "cmaf_ingest": 0
-                  }
-                },
-                {
-                  "name": "ContainerOptions",
-                  "type": "struct",
-                  "struct": [
-                    {
-                      "name": "ContainerType",
-                      "type": "enum8",
-                      "max": 0,
-                      "enum_values": {
-                        "cmaf": 0
-                      }
-                    },
-                    {
-                      "name": "CMAFContainerOptions",
-                      "type": "struct",
-                      "optional": true,
-                      "struct": [
-                        {
-                          "name": "CMAFInterface",
-                          "type": "enum8",
-                          "max": 2,
-                          "enum_values": {
-                            "interface1": 0,
-                            "interface2_dash": 1,
-                            "interface2_hls": 2
-                          }
-                        },
-                        {
-                          "name": "SegmentDuration",
-                          "type": "int16u",
-                          "min": 500,
-                          "max": 65500
-                        },
-                        {
-                          "name": "ChunkDuration",
-                          "type": "int16u",
-                          "max": 32750
-                        },
-                        {
-                          "name": "SessionGroup",
-                          "type": "int8u",
-                          "optional": true
-                        },
-                        {
-                          "name": "TrackName",
-                          "type": "char_string",
-                          "optional": true
-                        },
-                        {
-                          "name": "MetadataEnabled",
-                          "type": "boolean",
-                          "optional": true
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "ExpiryTime",
-                  "type": "int32u",
-                  "optional": true
-                },
-                {
-                  "name": "VideoStreams",
-                  "type": "struct",
-                  "optional": true,
-                  "struct": [
-                    {
-                      "name": "VideoStreamName",
-                      "type": "char_string"
-                    },
-                    {
-                      "name": "VideoStreamID",
-                      "type": "int16u"
-                    }
-                  ]
-                },
-                {
-                  "name": "AudioStreams",
-                  "type": "struct",
-                  "optional": true,
-                  "struct": [
-                    {
-                      "name": "AudioStreamName",
-                      "type": "char_string"
-                    },
-                    {
-                      "name": "AudioStreamID",
-                      "type": "int16u"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
         }
       ]
     }
@@ -11088,7 +7816,6 @@
   "Chime": {
     "PlayChimeSound": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -11102,7 +7829,6 @@
   "AVAnalysis": {
     "EnableContextTriggers": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "ContextTriggers",
@@ -11142,7 +7868,6 @@
     },
     "DisableContextTriggers": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "ContextTriggers",
@@ -11182,7 +7907,6 @@
     },
     "EstablishAnalysisStream": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11190,19 +7914,8 @@
         }
       ]
     },
-    "EstablishAnalysisStreamResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "name": "AnalysisStreamID",
-          "type": "int16u"
-        }
-      ]
-    },
     "ActivateAnalysisStream": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "AnalysisStreamID",
@@ -11222,7 +7935,6 @@
     },
     "DeactivateAnalysisStream": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "AnalysisStreamID",
@@ -11232,7 +7944,6 @@
     },
     "RemoveAnalysisStream": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "AnalysisStreamID",
@@ -11244,7 +7955,6 @@
   "CommodityTariff": {
     "GetTariffComponent": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "TariffComponentID",
@@ -11252,213 +7962,12 @@
         }
       ]
     },
-    "GetTariffComponentResponse": {
-      "id": 0,
-      "server": true,
-      "args": [
-        {
-          "name": "Label",
-          "type": "char_string"
-        },
-        {
-          "name": "DayEntryIDs",
-          "type": "int32u"
-        },
-        {
-          "name": "TariffComponent",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "TariffComponentID",
-              "type": "int32u"
-            },
-            {
-              "name": "Price",
-              "type": "struct",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "PriceType",
-                  "type": "enum8",
-                  "max": 4,
-                  "enum_values": {
-                    "standard": 0,
-                    "critical": 1,
-                    "virtual": 2,
-                    "incentive": 3,
-                    "incentive_signal": 4
-                  }
-                },
-                {
-                  "name": "Price",
-                  "type": "money",
-                  "optional": true
-                },
-                {
-                  "name": "PriceLevel",
-                  "type": "int16s",
-                  "optional": true
-                }
-              ]
-            },
-            {
-              "name": "FriendlyCredit",
-              "type": "boolean",
-              "optional": true
-            },
-            {
-              "name": "AuxiliaryLoad",
-              "type": "struct",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Number",
-                  "type": "int8u"
-                },
-                {
-                  "name": "RequiredState",
-                  "type": "enum8",
-                  "max": 2,
-                  "enum_values": {
-                    "off": 0,
-                    "on": 1,
-                    "none": 2
-                  }
-                }
-              ]
-            },
-            {
-              "name": "PeakPeriod",
-              "type": "struct",
-              "default": "0",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "Severity",
-                  "type": "enum8",
-                  "max": 3,
-                  "enum_values": {
-                    "unused": 0,
-                    "low": 1,
-                    "medium": 2,
-                    "high": 3
-                  }
-                },
-                {
-                  "name": "PeakPeriod",
-                  "type": "int16u",
-                  "min": 1
-                }
-              ]
-            },
-            {
-              "name": "PowerThreshold",
-              "type": "struct",
-              "default": "0",
-              "optional": true,
-              "struct": [
-                {
-                  "name": "PowerThreshold",
-                  "type": "int64s",
-                  "min": 13835058055282163712,
-                  "max": 4611686018427387903,
-                  "optional": true
-                },
-                {
-                  "name": "ApparentPowerThreshold",
-                  "type": "power_mva",
-                  "min": 13835058055282163712,
-                  "max": 4611686018427387903,
-                  "optional": true
-                },
-                {
-                  "name": "PowerThresholdSource",
-                  "type": "enum8",
-                  "max": 2,
-                  "enum_values": {
-                    "contract": 0,
-                    "regulator": 1,
-                    "equipment": 2
-                  }
-                }
-              ]
-            },
-            {
-              "name": "Threshold",
-              "type": "int64s"
-            },
-            {
-              "name": "Label",
-              "type": "char_string",
-              "optional": true
-            },
-            {
-              "name": "Predicted",
-              "type": "boolean",
-              "optional": true
-            },
-            {
-              "name": "ExternalID",
-              "type": "char_string",
-              "optional": true
-            }
-          ]
-        }
-      ]
-    },
     "GetDayEntry": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "DayEntryID",
           "type": "int32u"
-        }
-      ]
-    },
-    "GetDayEntryResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "DayEntry",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "DayEntryID",
-              "type": "int32u"
-            },
-            {
-              "name": "StartTime",
-              "type": "int16u",
-              "max": 1499
-            },
-            {
-              "name": "Duration",
-              "type": "int16u",
-              "max": 1500,
-              "optional": true
-            },
-            {
-              "name": "RandomizationOffset",
-              "type": "int16s",
-              "optional": true
-            },
-            {
-              "name": "RandomizationType",
-              "type": "enum8",
-              "max": 4,
-              "default": "0x00",
-              "optional": true,
-              "enum_values": {
-                "none": 0,
-                "fixed": 1,
-                "random": 2,
-                "random_positive": 3,
-                "random_negative": 4
-              }
-            }
-          ]
         }
       ]
     }
@@ -11466,7 +7975,6 @@
   "CommissionerControl": {
     "RequestCommissioningApproval": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -11493,7 +8001,6 @@
     },
     "CommissionNode": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -11509,46 +8016,11 @@
           "default": "30"
         }
       ]
-    },
-    "ReverseOpenCommissioningWindow": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "CommissioningTimeout",
-          "type": "int16u"
-        },
-        {
-          "id": 1,
-          "name": "PAKEPasscodeVerifier",
-          "type": "octet_string"
-        },
-        {
-          "id": 2,
-          "name": "Discriminator",
-          "type": "int16u",
-          "max": 4095
-        },
-        {
-          "id": 3,
-          "name": "Iterations",
-          "type": "int32u",
-          "min": 1000,
-          "max": 100000
-        },
-        {
-          "id": 4,
-          "name": "Salt",
-          "type": "octet_string"
-        }
-      ]
     }
   },
   "JointFabricDatastore": {
     "AddKeySet": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "GroupKeySet",
@@ -11596,7 +8068,6 @@
     },
     "UpdateKeySet": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "GroupKeySet",
@@ -11644,7 +8115,6 @@
     },
     "RemoveKeySet": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "GroupKeySetID",
@@ -11654,7 +8124,6 @@
     },
     "AddGroup": {
       "id": 3,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -11695,7 +8164,6 @@
     },
     "UpdateGroup": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -11736,7 +8204,6 @@
     },
     "RemoveGroup": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "GroupID",
@@ -11746,7 +8213,6 @@
     },
     "AddAdmin": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11768,7 +8234,6 @@
     },
     "UpdateAdmin": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11788,7 +8253,6 @@
     },
     "RemoveAdmin": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11798,7 +8262,6 @@
     },
     "AddPendingNode": {
       "id": 9,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11812,7 +8275,6 @@
     },
     "RefreshNode": {
       "id": 10,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11822,7 +8284,6 @@
     },
     "UpdateNode": {
       "id": 11,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11836,7 +8297,6 @@
     },
     "RemoveNode": {
       "id": 12,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11846,7 +8306,6 @@
     },
     "UpdateEndpointForNode": {
       "id": 13,
-      "client": true,
       "args": [
         {
           "name": "EndpointID",
@@ -11864,7 +8323,6 @@
     },
     "AddGroupIDToEndpointForNode": {
       "id": 14,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11882,7 +8340,6 @@
     },
     "RemoveGroupIDFromEndpointForNode": {
       "id": 15,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11900,7 +8357,6 @@
     },
     "AddBindingToEndpointForNode": {
       "id": 16,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -11941,7 +8397,6 @@
     },
     "RemoveBindingFromEndpointForNode": {
       "id": 17,
-      "client": true,
       "args": [
         {
           "name": "ListID",
@@ -11959,7 +8414,6 @@
     },
     "AddACLToNode": {
       "id": 18,
-      "client": true,
       "args": [
         {
           "name": "NodeID",
@@ -12018,7 +8472,6 @@
     },
     "RemoveACLFromNode": {
       "id": 19,
-      "client": true,
       "args": [
         {
           "name": "ListID",
@@ -12034,36 +8487,10 @@
   "JointFabricAdministrator": {
     "ICACCSRRequest": {
       "id": 0,
-      "client": true,
       "args": []
-    },
-    "ICACCSRResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "StatusCode",
-          "type": "enum8",
-          "max": 5,
-          "enum_values": {
-            "ok": 0,
-            "busy": 1,
-            "pake_parameter_error": 2,
-            "window_not_open": 3,
-            "vid_not_verified": 4,
-            "invalid_administrator_fabric_index": 5
-          }
-        },
-        {
-          "name": "ICACCSR",
-          "type": "long_octet_string",
-          "optional": true
-        }
-      ]
     },
     "AddICAC": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "ICACValue",
@@ -12071,25 +8498,8 @@
         }
       ]
     },
-    "ICACResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "name": "StatusCode",
-          "type": "enum8",
-          "max": 2,
-          "enum_values": {
-            "ok": 0,
-            "invalid_public_key": 1,
-            "invalid_icac": 2
-          }
-        }
-      ]
-    },
     "OpenJointCommissioningWindow": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "CommissioningTimeout",
@@ -12118,33 +8528,14 @@
     },
     "TransferAnchorRequest": {
       "id": 5,
-      "client": true,
       "args": []
-    },
-    "TransferAnchorResponse": {
-      "id": 6,
-      "server": true,
-      "args": [
-        {
-          "name": "StatusCode",
-          "type": "enum8",
-          "max": 2,
-          "enum_values": {
-            "ok": 0,
-            "transfer_anchor_status_datastore_busy": 1,
-            "transfer_anchor_status_no_user_consent": 2
-          }
-        }
-      ]
     },
     "TransferAnchorComplete": {
       "id": 7,
-      "client": true,
       "args": []
     },
     "AnnounceJointFabricAdministrator": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "EndpointID",
@@ -12156,7 +8547,6 @@
   "TLSCertificateManagement": {
     "ProvisionRootCertificate": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12170,22 +8560,8 @@
         }
       ]
     },
-    "ProvisionRootCertificateResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "CAID",
-          "type": "int16u",
-          "min": 0,
-          "max": 65534
-        }
-      ]
-    },
     "FindRootCertificate": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12194,33 +8570,8 @@
         }
       ]
     },
-    "FindRootCertificateResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "CertificateDetails",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "CAID",
-              "type": "int16u",
-              "min": 0,
-              "max": 65534
-            },
-            {
-              "name": "Certificate",
-              "type": "long_octet_string",
-              "optional": true
-            }
-          ]
-        }
-      ]
-    },
     "LookupRootCertificate": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12229,22 +8580,8 @@
         }
       ]
     },
-    "LookupRootCertificateResponse": {
-      "id": 5,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "CAID",
-          "type": "int16u",
-          "min": 0,
-          "max": 65534
-        }
-      ]
-    },
     "RemoveRootCertificate": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12257,7 +8594,6 @@
     },
     "ClientCSR": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12273,32 +8609,8 @@
         }
       ]
     },
-    "ClientCSRResponse": {
-      "id": 8,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "CCDID",
-          "type": "int16u",
-          "min": 0,
-          "max": 65534
-        },
-        {
-          "id": 1,
-          "name": "CSR",
-          "type": "long_octet_string"
-        },
-        {
-          "id": 2,
-          "name": "NonceSignature",
-          "type": "octet_string"
-        }
-      ]
-    },
     "ProvisionClientCertificate": {
       "id": 9,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12321,7 +8633,6 @@
     },
     "FindClientCertificate": {
       "id": 10,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12330,38 +8641,8 @@
         }
       ]
     },
-    "FindClientCertificateResponse": {
-      "id": 11,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "CertificateDetails",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "CCDID",
-              "type": "int16u",
-              "min": 0,
-              "max": 65534
-            },
-            {
-              "name": "ClientCertificate",
-              "type": "long_octet_string",
-              "optional": true
-            },
-            {
-              "name": "IntermediateCertificates",
-              "type": "octet_string",
-              "optional": true
-            }
-          ]
-        }
-      ]
-    },
     "LookupClientCertificate": {
       "id": 12,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12370,22 +8651,8 @@
         }
       ]
     },
-    "LookupClientCertificateResponse": {
-      "id": 13,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "CCDID",
-          "type": "int16u",
-          "min": 0,
-          "max": 65534
-        }
-      ]
-    },
     "RemoveClientCertificate": {
       "id": 14,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12400,7 +8667,6 @@
   "TLSClientManagement": {
     "ProvisionEndpoint": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12432,22 +8698,8 @@
         }
       ]
     },
-    "ProvisionEndpointResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "EndpointID",
-          "type": "int16u",
-          "min": 0,
-          "max": 65534
-        }
-      ]
-    },
     "FindEndpoint": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12455,56 +8707,11 @@
           "type": "int16u",
           "min": 0,
           "max": 65534
-        }
-      ]
-    },
-    "FindEndpointResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "id": 0,
-          "name": "Endpoint",
-          "type": "struct",
-          "min": 0,
-          "max": 65534,
-          "struct": [
-            {
-              "name": "EndpointID",
-              "type": "int16u",
-              "min": 0,
-              "max": 65534
-            },
-            {
-              "name": "Hostname",
-              "type": "octet_string"
-            },
-            {
-              "name": "Port",
-              "type": "int16u",
-              "min": 1
-            },
-            {
-              "name": "CAID",
-              "type": "int16u",
-              "min": 0,
-              "max": 65534
-            },
-            {
-              "name": "CCDID",
-              "type": "int16u"
-            },
-            {
-              "name": "ReferenceCount",
-              "type": "int8u"
-            }
-          ]
         }
       ]
     },
     "RemoveEndpoint": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "id": 0,
@@ -12519,294 +8726,22 @@
   "UnitTesting": {
     "Test": {
       "id": 0,
-      "client": true,
       "args": []
-    },
-    "TestSpecificResponse": {
-      "id": 0,
-      "server": true,
-      "args": [
-        {
-          "name": "returnValue",
-          "type": "int8u"
-        }
-      ]
     },
     "TestNotHandled": {
       "id": 1,
-      "client": true,
       "args": []
-    },
-    "TestAddArgumentsResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "returnValue",
-          "type": "int8u"
-        }
-      ]
     },
     "TestSpecific": {
       "id": 2,
-      "client": true,
       "args": []
-    },
-    "TestSimpleArgumentResponse": {
-      "id": 2,
-      "server": true,
-      "args": [
-        {
-          "name": "returnValue",
-          "type": "boolean"
-        }
-      ]
     },
     "TestUnknownCommand": {
       "id": 3,
-      "client": true,
       "args": []
-    },
-    "TestStructArrayArgumentResponse": {
-      "id": 3,
-      "server": true,
-      "args": [
-        {
-          "name": "arg1",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "a",
-              "type": "int8u"
-            },
-            {
-              "name": "b",
-              "type": "boolean"
-            },
-            {
-              "name": "c",
-              "type": "struct",
-              "struct": [
-                {
-                  "name": "a",
-                  "type": "int8u"
-                },
-                {
-                  "name": "b",
-                  "type": "boolean"
-                },
-                {
-                  "name": "c",
-                  "type": "enum8",
-                  "enum_values": {
-                    "unspecified": 0,
-                    "value_a": 1,
-                    "value_b": 2,
-                    "value_c": 3
-                  }
-                },
-                {
-                  "name": "d",
-                  "type": "octet_string"
-                },
-                {
-                  "name": "e",
-                  "type": "char_string"
-                },
-                {
-                  "name": "f",
-                  "type": "bitmap8",
-                  "bitmap_masks": {
-                    "value_a": 1,
-                    "value_b": 2,
-                    "value_c": 4
-                  }
-                },
-                {
-                  "name": "g",
-                  "type": "single"
-                },
-                {
-                  "name": "h",
-                  "type": "double"
-                },
-                {
-                  "name": "i",
-                  "type": "enum8",
-                  "optional": true,
-                  "enum_values": {
-                    "some_value": 0,
-                    "some_other_value": 1,
-                    "final_value": 2
-                  }
-                }
-              ]
-            },
-            {
-              "name": "d",
-              "type": "struct",
-              "struct": [
-                {
-                  "name": "a",
-                  "type": "int8u"
-                },
-                {
-                  "name": "b",
-                  "type": "boolean"
-                },
-                {
-                  "name": "c",
-                  "type": "enum8",
-                  "enum_values": {
-                    "unspecified": 0,
-                    "value_a": 1,
-                    "value_b": 2,
-                    "value_c": 3
-                  }
-                },
-                {
-                  "name": "d",
-                  "type": "octet_string"
-                },
-                {
-                  "name": "e",
-                  "type": "char_string"
-                },
-                {
-                  "name": "f",
-                  "type": "bitmap8",
-                  "bitmap_masks": {
-                    "value_a": 1,
-                    "value_b": 2,
-                    "value_c": 4
-                  }
-                },
-                {
-                  "name": "g",
-                  "type": "single"
-                },
-                {
-                  "name": "h",
-                  "type": "double"
-                },
-                {
-                  "name": "i",
-                  "type": "enum8",
-                  "optional": true,
-                  "enum_values": {
-                    "some_value": 0,
-                    "some_other_value": 1,
-                    "final_value": 2
-                  }
-                }
-              ]
-            },
-            {
-              "name": "e",
-              "type": "int32u"
-            },
-            {
-              "name": "f",
-              "type": "octet_string"
-            },
-            {
-              "name": "g",
-              "type": "int8u"
-            }
-          ]
-        },
-        {
-          "name": "arg2",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "a",
-              "type": "int8u"
-            },
-            {
-              "name": "b",
-              "type": "boolean"
-            },
-            {
-              "name": "c",
-              "type": "enum8",
-              "enum_values": {
-                "unspecified": 0,
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 3
-              }
-            },
-            {
-              "name": "d",
-              "type": "octet_string"
-            },
-            {
-              "name": "e",
-              "type": "char_string"
-            },
-            {
-              "name": "f",
-              "type": "bitmap8",
-              "bitmap_masks": {
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 4
-              }
-            },
-            {
-              "name": "g",
-              "type": "single"
-            },
-            {
-              "name": "h",
-              "type": "double"
-            },
-            {
-              "name": "i",
-              "type": "enum8",
-              "optional": true,
-              "enum_values": {
-                "some_value": 0,
-                "some_other_value": 1,
-                "final_value": 2
-              }
-            }
-          ]
-        },
-        {
-          "name": "arg3",
-          "type": "enum8",
-          "enum_values": {
-            "unspecified": 0,
-            "value_a": 1,
-            "value_b": 2,
-            "value_c": 3
-          }
-        },
-        {
-          "name": "arg4",
-          "type": "boolean"
-        },
-        {
-          "name": "arg5",
-          "type": "enum8",
-          "enum_values": {
-            "unspecified": 0,
-            "value_a": 1,
-            "value_b": 2,
-            "value_c": 3
-          }
-        },
-        {
-          "name": "arg6",
-          "type": "boolean"
-        }
-      ]
     },
     "TestAddArguments": {
       "id": 4,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -12814,23 +8749,12 @@
         },
         {
           "name": "arg2",
-          "type": "int8u"
-        }
-      ]
-    },
-    "TestListInt8UReverseResponse": {
-      "id": 4,
-      "server": true,
-      "args": [
-        {
-          "name": "arg1",
           "type": "int8u"
         }
       ]
     },
     "TestSimpleArgumentRequest": {
       "id": 5,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -12838,29 +8762,8 @@
         }
       ]
     },
-    "TestEnumsResponse": {
-      "id": 5,
-      "server": true,
-      "args": [
-        {
-          "name": "arg1",
-          "type": "int16u"
-        },
-        {
-          "name": "arg2",
-          "type": "enum8",
-          "enum_values": {
-            "unspecified": 0,
-            "value_a": 1,
-            "value_b": 2,
-            "value_c": 3
-          }
-        }
-      ]
-    },
     "TestStructArrayArgumentRequest": {
       "id": 6,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -13095,34 +8998,8 @@
         }
       ]
     },
-    "TestNullableOptionalResponse": {
-      "id": 6,
-      "server": true,
-      "args": [
-        {
-          "name": "wasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "wasNull",
-          "type": "boolean",
-          "optional": true
-        },
-        {
-          "name": "value",
-          "type": "int8u",
-          "optional": true
-        },
-        {
-          "name": "originalValue",
-          "type": "int8u",
-          "optional": true
-        }
-      ]
-    },
     "TestStructArgumentRequest": {
       "id": 7,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -13185,326 +9062,8 @@
         }
       ]
     },
-    "TestComplexNullableOptionalResponse": {
-      "id": 7,
-      "server": true,
-      "args": [
-        {
-          "name": "NullableIntWasNull",
-          "type": "boolean"
-        },
-        {
-          "name": "NullableIntValue",
-          "type": "int16u",
-          "optional": true
-        },
-        {
-          "name": "OptionalIntWasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "OptionalIntValue",
-          "type": "int16u",
-          "optional": true
-        },
-        {
-          "name": "NullableOptionalIntWasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "NullableOptionalIntWasNull",
-          "type": "boolean",
-          "optional": true
-        },
-        {
-          "name": "NullableOptionalIntValue",
-          "type": "int16u",
-          "optional": true
-        },
-        {
-          "name": "NullableStringWasNull",
-          "type": "boolean"
-        },
-        {
-          "name": "NullableStringValue",
-          "type": "char_string",
-          "optional": true
-        },
-        {
-          "name": "OptionalStringWasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "OptionalStringValue",
-          "type": "char_string",
-          "optional": true
-        },
-        {
-          "name": "NullableOptionalStringWasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "NullableOptionalStringWasNull",
-          "type": "boolean",
-          "optional": true
-        },
-        {
-          "name": "NullableOptionalStringValue",
-          "type": "char_string",
-          "optional": true
-        },
-        {
-          "name": "NullableStructWasNull",
-          "type": "boolean"
-        },
-        {
-          "name": "NullableStructValue",
-          "type": "struct",
-          "optional": true,
-          "struct": [
-            {
-              "name": "a",
-              "type": "int8u"
-            },
-            {
-              "name": "b",
-              "type": "boolean"
-            },
-            {
-              "name": "c",
-              "type": "enum8",
-              "enum_values": {
-                "unspecified": 0,
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 3
-              }
-            },
-            {
-              "name": "d",
-              "type": "octet_string"
-            },
-            {
-              "name": "e",
-              "type": "char_string"
-            },
-            {
-              "name": "f",
-              "type": "bitmap8",
-              "bitmap_masks": {
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 4
-              }
-            },
-            {
-              "name": "g",
-              "type": "single"
-            },
-            {
-              "name": "h",
-              "type": "double"
-            },
-            {
-              "name": "i",
-              "type": "enum8",
-              "optional": true,
-              "enum_values": {
-                "some_value": 0,
-                "some_other_value": 1,
-                "final_value": 2
-              }
-            }
-          ]
-        },
-        {
-          "name": "OptionalStructWasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "OptionalStructValue",
-          "type": "struct",
-          "optional": true,
-          "struct": [
-            {
-              "name": "a",
-              "type": "int8u"
-            },
-            {
-              "name": "b",
-              "type": "boolean"
-            },
-            {
-              "name": "c",
-              "type": "enum8",
-              "enum_values": {
-                "unspecified": 0,
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 3
-              }
-            },
-            {
-              "name": "d",
-              "type": "octet_string"
-            },
-            {
-              "name": "e",
-              "type": "char_string"
-            },
-            {
-              "name": "f",
-              "type": "bitmap8",
-              "bitmap_masks": {
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 4
-              }
-            },
-            {
-              "name": "g",
-              "type": "single"
-            },
-            {
-              "name": "h",
-              "type": "double"
-            },
-            {
-              "name": "i",
-              "type": "enum8",
-              "optional": true,
-              "enum_values": {
-                "some_value": 0,
-                "some_other_value": 1,
-                "final_value": 2
-              }
-            }
-          ]
-        },
-        {
-          "name": "NullableOptionalStructWasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "NullableOptionalStructWasNull",
-          "type": "boolean",
-          "optional": true
-        },
-        {
-          "name": "NullableOptionalStructValue",
-          "type": "struct",
-          "optional": true,
-          "struct": [
-            {
-              "name": "a",
-              "type": "int8u"
-            },
-            {
-              "name": "b",
-              "type": "boolean"
-            },
-            {
-              "name": "c",
-              "type": "enum8",
-              "enum_values": {
-                "unspecified": 0,
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 3
-              }
-            },
-            {
-              "name": "d",
-              "type": "octet_string"
-            },
-            {
-              "name": "e",
-              "type": "char_string"
-            },
-            {
-              "name": "f",
-              "type": "bitmap8",
-              "bitmap_masks": {
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 4
-              }
-            },
-            {
-              "name": "g",
-              "type": "single"
-            },
-            {
-              "name": "h",
-              "type": "double"
-            },
-            {
-              "name": "i",
-              "type": "enum8",
-              "optional": true,
-              "enum_values": {
-                "some_value": 0,
-                "some_other_value": 1,
-                "final_value": 2
-              }
-            }
-          ]
-        },
-        {
-          "name": "NullableListWasNull",
-          "type": "boolean"
-        },
-        {
-          "name": "NullableListValue",
-          "type": "enum8",
-          "optional": true,
-          "enum_values": {
-            "unspecified": 0,
-            "value_a": 1,
-            "value_b": 2,
-            "value_c": 3
-          }
-        },
-        {
-          "name": "OptionalListWasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "OptionalListValue",
-          "type": "enum8",
-          "optional": true,
-          "enum_values": {
-            "unspecified": 0,
-            "value_a": 1,
-            "value_b": 2,
-            "value_c": 3
-          }
-        },
-        {
-          "name": "NullableOptionalListWasPresent",
-          "type": "boolean"
-        },
-        {
-          "name": "NullableOptionalListWasNull",
-          "type": "boolean",
-          "optional": true
-        },
-        {
-          "name": "NullableOptionalListValue",
-          "type": "enum8",
-          "optional": true,
-          "enum_values": {
-            "unspecified": 0,
-            "value_a": 1,
-            "value_b": 2,
-            "value_c": 3
-          }
-        }
-      ]
-    },
     "TestNestedStructArgumentRequest": {
       "id": 8,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -13606,84 +9165,8 @@
         }
       ]
     },
-    "BooleanResponse": {
-      "id": 8,
-      "server": true,
-      "args": [
-        {
-          "name": "value",
-          "type": "boolean"
-        }
-      ]
-    },
     "TestListStructArgumentRequest": {
       "id": 9,
-      "client": true,
-      "args": [
-        {
-          "name": "arg1",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "a",
-              "type": "int8u"
-            },
-            {
-              "name": "b",
-              "type": "boolean"
-            },
-            {
-              "name": "c",
-              "type": "enum8",
-              "enum_values": {
-                "unspecified": 0,
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 3
-              }
-            },
-            {
-              "name": "d",
-              "type": "octet_string"
-            },
-            {
-              "name": "e",
-              "type": "char_string"
-            },
-            {
-              "name": "f",
-              "type": "bitmap8",
-              "bitmap_masks": {
-                "value_a": 1,
-                "value_b": 2,
-                "value_c": 4
-              }
-            },
-            {
-              "name": "g",
-              "type": "single"
-            },
-            {
-              "name": "h",
-              "type": "double"
-            },
-            {
-              "name": "i",
-              "type": "enum8",
-              "optional": true,
-              "enum_values": {
-                "some_value": 0,
-                "some_other_value": 1,
-                "final_value": 2
-              }
-            }
-          ]
-        }
-      ]
-    },
-    "SimpleStructResponse": {
-      "id": 9,
-      "server": true,
       "args": [
         {
           "name": "arg1",
@@ -13748,27 +9231,15 @@
     },
     "TestListInt8UArgumentRequest": {
       "id": 10,
-      "client": true,
       "args": [
         {
           "name": "arg1",
           "type": "int8u"
-        }
-      ]
-    },
-    "TestEmitTestEventResponse": {
-      "id": 10,
-      "server": true,
-      "args": [
-        {
-          "name": "value",
-          "type": "int64u"
         }
       ]
     },
     "TestNestedStructListArgumentRequest": {
       "id": 11,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -13913,22 +9384,11 @@
               "type": "int8u"
             }
           ]
-        }
-      ]
-    },
-    "TestEmitTestFabricScopedEventResponse": {
-      "id": 11,
-      "server": true,
-      "args": [
-        {
-          "name": "value",
-          "type": "int64u"
         }
       ]
     },
     "TestListNestedStructListArgumentRequest": {
       "id": 12,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -14076,19 +9536,8 @@
         }
       ]
     },
-    "TestBatchHelperResponse": {
-      "id": 12,
-      "server": true,
-      "args": [
-        {
-          "name": "buffer",
-          "type": "octet_string"
-        }
-      ]
-    },
     "TestListInt8UReverseRequest": {
       "id": 13,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -14096,19 +9545,8 @@
         }
       ]
     },
-    "StringEchoResponse": {
-      "id": 13,
-      "server": true,
-      "args": [
-        {
-          "name": "payload",
-          "type": "octet_string"
-        }
-      ]
-    },
     "TestEnumsRequest": {
       "id": 14,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -14126,48 +9564,8 @@
         }
       ]
     },
-    "GlobalEchoResponse": {
-      "id": 14,
-      "server": true,
-      "args": [
-        {
-          "name": "field1",
-          "type": "struct",
-          "struct": [
-            {
-              "name": "Name",
-              "type": "char_string"
-            },
-            {
-              "name": "MyBitmap",
-              "type": "testglobalbitmap"
-            },
-            {
-              "name": "MyEnum",
-              "type": "enum8",
-              "optional": true,
-              "enum_values": {
-                "some_value": 0,
-                "some_other_value": 1,
-                "final_value": 2
-              }
-            }
-          ]
-        },
-        {
-          "name": "field2",
-          "type": "enum8",
-          "enum_values": {
-            "some_value": 0,
-            "some_other_value": 1,
-            "final_value": 2
-          }
-        }
-      ]
-    },
     "TestNullableOptionalRequest": {
       "id": 15,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -14178,7 +9576,6 @@
     },
     "TestComplexNullableOptionalRequest": {
       "id": 16,
-      "client": true,
       "args": [
         {
           "name": "NullableInt",
@@ -14423,7 +9820,6 @@
     },
     "SimpleStructEchoRequest": {
       "id": 17,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -14488,12 +9884,10 @@
     },
     "TimedInvokeRequest": {
       "id": 18,
-      "client": true,
       "args": []
     },
     "TestSimpleOptionalArgumentRequest": {
       "id": 19,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -14504,7 +9898,6 @@
     },
     "TestEmitTestEventRequest": {
       "id": 20,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -14528,7 +9921,6 @@
     },
     "TestEmitTestFabricScopedEventRequest": {
       "id": 21,
-      "client": true,
       "args": [
         {
           "name": "arg1",
@@ -14538,7 +9930,6 @@
     },
     "TestBatchHelperRequest": {
       "id": 22,
-      "client": true,
       "args": [
         {
           "name": "sleepBeforeResponseTimeMs",
@@ -14558,7 +9949,6 @@
     },
     "TestSecondBatchHelperRequest": {
       "id": 23,
-      "client": true,
       "args": [
         {
           "name": "sleepBeforeResponseTimeMs",
@@ -14578,7 +9968,6 @@
     },
     "StringEchoRequest": {
       "id": 24,
-      "client": true,
       "args": [
         {
           "name": "payload",
@@ -14588,7 +9977,6 @@
     },
     "GlobalEchoRequest": {
       "id": 25,
-      "client": true,
       "args": [
         {
           "name": "field1",
@@ -14627,30 +10015,14 @@
     },
     "TestCheckCommandFlags": {
       "id": 26,
-      "client": true,
       "args": []
     },
     "TestDifferentVendorMeiRequest": {
       "id": 4294049962,
-      "client": true,
       "args": [
         {
           "name": "arg1",
           "type": "int8u"
-        }
-      ]
-    },
-    "TestDifferentVendorMeiResponse": {
-      "id": 4294049979,
-      "server": true,
-      "args": [
-        {
-          "name": "arg1",
-          "type": "int8u"
-        },
-        {
-          "name": "eventNumber",
-          "type": "int64u"
         }
       ]
     }
@@ -14658,7 +10030,6 @@
   "FaultInjection": {
     "FailAtFault": {
       "id": 0,
-      "client": true,
       "args": [
         {
           "name": "Type",
@@ -14691,7 +10062,6 @@
     },
     "FailRandomlyAtFault": {
       "id": 1,
-      "client": true,
       "args": [
         {
           "name": "Type",
@@ -14718,22 +10088,10 @@
   "SampleMEI": {
     "Ping": {
       "id": 0,
-      "client": true,
       "args": []
-    },
-    "AddArgumentsResponse": {
-      "id": 1,
-      "server": true,
-      "args": [
-        {
-          "name": "returnValue",
-          "type": "int8u"
-        }
-      ]
     },
     "AddArguments": {
       "id": 2,
-      "client": true,
       "args": [
         {
           "name": "arg1",
