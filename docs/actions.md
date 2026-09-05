@@ -16,13 +16,12 @@ matter:
 binary_sensor:
   - name: "Some button"
     on_click:
-      matter.on_off.toggle: dimmer_endpoint  # 1 is also accepted
+      matter.on_off.toggle: dimmer_endpoint # 1 is also accepted
 ```
 
 After the endpoint has been bound in your Matter controller, automations can call the command actions below using that endpoint id.
 
 Field values use the raw Matter units for now. Units like percentage or seconds will be added later. Required fields are shown uncommented. Optional fields are commented out and show the default value used when you omit them.
-
 
 ### Units
 
@@ -48,11 +47,9 @@ matter.level_control.step:
   transition_time: 20
 ```
 
-
 ### enums
 
 Some command arguments are "enums". These are actually integers but with names mapped to specific values. One such example is the `move_mode` argument in some of the `level_control` commands. This is an integer with a value of either 0 or 1 where 0 means "up" and 1 means "down". In the commands below, the supported values are mentioned in the comment behind the argument. esphome-matter supports either the name in snake_case format or the integer value.
-
 
 ### bitmasks
 
@@ -71,7 +68,6 @@ days_mask:
 days_mask: 65
 ```
 
-
 # Cluster commands
 
 ### Identify cluster
@@ -82,12 +78,12 @@ Identify commands make a bound device identify itself. This is mostly useful whi
 # Ask the device to identify itself for a number of seconds.
 matter.identify.identify:
   endpoint_id:
-  identify_time:  # s - Use 0s to stop identifying
+  identify_time: # s - Use 0s to stop identifying
 
 # Trigger a specific identify effect, if the bound device supports it.
 matter.identify.trigger_effect:
   endpoint_id:
-  effect_identifier:  # Either blink, breathe, okay, channel_effect, finish_effect or stop_effect
+  effect_identifier: # Either blink, breathe, okay, channel_effect, finish_effect or stop_effect
   # effect_variant: 0
 ```
 
@@ -105,7 +101,7 @@ matter.on_off.toggle: some_id
 # Common effect_identifier values are 0=delayed all off and 1=dying light.
 matter.on_off.off_with_effect:
   endpoint_id:
-  effect_identifier:  # Either delayed_all_off or dying_light
+  effect_identifier: # Either delayed_all_off or dying_light
   # effect_variant: 0
 
 # Turn on and recall the device's global scene, if the device supports scenes.
@@ -114,7 +110,7 @@ matter.on_off.on_with_recall_global_scene: some_id
 # Intended for motion sensors temporarily turning on a light.
 matter.on_off.on_with_timed_off:
   endpoint_id:
-  on_time:  # s
+  on_time: # s
   # on_off_control: 0  # No idea what this does. You'll have to figure that out yourself.
   # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
 ```
@@ -129,21 +125,21 @@ The commands with `_with_on_off` also affect the OnOff state, which is usually w
 # Move directly to a brightness level.
 matter.level_control.move_to_level:
   endpoint_id:
-  level:  # %
+  level: # %
   # transition_time: 0s
 
 # Move continuously up or down until a stop command is sent or the device
 # reaches its minimum/maximum level.
 matter.level_control.move:
   endpoint_id:
-  move_mode:  # Either up or down.
-  rate:  # %/s
+  move_mode: # Either up or down.
+  rate: # %/s
 
 # Step once by a fixed amount.
 matter.level_control.step:
   endpoint_id:
-  step_mode:  # Either up or down
-  step_size:  # %
+  step_mode: # Either up or down
+  step_size: # %
   # transition_time: 0s
 
 # Stop a previous move command.
@@ -152,20 +148,20 @@ matter.level_control.stop: some_id
 # Move directly to a brightness level and allow the device to update OnOff state.
 matter.level_control.move_to_level_with_on_off:
   endpoint_id:
-  level:  # %
+  level: # %
   # transition_time: 0s
 
 # Move continuously up or down and allow the device to update OnOff state.
 matter.level_control.move_with_on_off:
   endpoint_id:
-  move_mode:  # Either up or down
-  rate:  # %/s
+  move_mode: # Either up or down
+  rate: # %/s
 
 # Step once by a fixed amount and allow the device to update OnOff state.
 matter.level_control.step_with_on_off:
   endpoint_id:
-  step_mode:  # Either up or down
-  step_size:  # %
+  step_mode: # Either up or down
+  step_size: # %
   # transition_time: 0s
 
 # Stop a previous move-with-on-off command.

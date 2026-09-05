@@ -63,6 +63,7 @@
       preCommitCheck = pre-commit-hooks.lib.${system}.run {
         src = ./.;
         hooks.clang-format.enable = true;
+        hooks.prettier.enable = true;
         hooks.nixfmt.enable = true;
         hooks.ruff-format.enable = true;
       };
