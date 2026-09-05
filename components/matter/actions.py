@@ -163,12 +163,7 @@ def _build_data(config, command: Command) -> str:
 
     This means that the first field is an uint8 with a value of 0 and the second field is uint16 with value 10.
     """
-    data = {}
-
-    for arg in command.args:
-        data[arg.data_key] = config[arg.conf_key]
-
-    return json.dumps(data)
+    return json.dumps({arg.data_key: config[arg.schema_key] for arg in command.args})
 
 
 def _command_schema(command: Command):
@@ -181,15 +176,15 @@ def _command_schema(command: Command):
 
     has_required = False
     for arg in command.args:
+        arg_schema = arg.schema
         converter = (
             COMMAND_ARG_TYPES.get(command.cluster_name, {})
             .get(command.name, {})
             .get(arg.name)
         )
         if converter is not None:
-            schema[arg.conf_key] = cv.All(converter, arg.validator)
-        else:
-            schema[arg.conf_key] = arg.validator
+            arg_schema = cv.All(converter, arg_schema)
+        schema[arg.schema_key] = arg_schema
         if not arg.optional:
             has_required = True
 

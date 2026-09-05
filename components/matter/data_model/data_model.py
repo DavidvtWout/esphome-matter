@@ -76,7 +76,7 @@ class CommandArg:
         return f"{self.id}:{self.type}"
 
     @property
-    def conf_key(self) -> str:
+    def schema_key(self) -> str:
         """Key as used in device config YAML."""
         conf_key = snake_case(self.name)
         if not self.optional:
@@ -121,7 +121,7 @@ class CommandArg:
         raise cv.Invalid("Expected a (list of) bitmask name(s) or integer")
 
     @property
-    def validator(self):
+    def schema(self):
         if self.type in _INTEGER_RANGES:
             type_min, type_max = _INTEGER_RANGES[self.type]
             validator = cv.int_range(
@@ -197,7 +197,7 @@ class Attribute:
 @dataclass(frozen=True, slots=True)
 class Cluster:
     id: int
-    name: str  # CamelCase
+    name: str  # Name with spaces and special characters such as "/"
     revision: int
     client: bool
     server: bool
@@ -217,8 +217,34 @@ class Cluster:
         )
 
     @property
+    def sdkconfig_option(self) -> str:
+        sdkconfig_name = (
+            self.name.replace(" ", "_")
+            .replace("/", "_")
+            .replace(".", "_")
+            .replace("-", "")
+            .upper()
+        )
+        sdkconfig_name = sdkconfig_name.replace("WEBRTC", "WEB_RTC")
+        sdkconfig_name = sdkconfig_name.replace(
+            "TOTAL_VOLATILE_ORGANIC_COMPOUNDS", "TVOC"
+        )
+        sdkconfig_name = sdkconfig_name.replace("SCENES_MANAGEMENT", "SCENES")
+        sdkconfig_name = sdkconfig_name.replace(
+            "OVEN_CAVITY_OPERATIONAL_STATE", "OPERATIONAL_STATE_OVEN"
+        )
+        sdkconfig_name = sdkconfig_name.replace(
+            "RVC_OPERATIONAL_STATE", "OPERATIONAL_STATE_RVC"
+        )
+        return f"CONFIG_SUPPORT_{sdkconfig_name}_CLUSTER"
+
+    @property
+    def camel_case_name(self) -> str:
+        return self.name.replace("/", "").replace(" ", "").replace("-", "")
+
+    @property
     def namespace(self) -> str:
-        return snake_case(self.name)
+        return snake_case(self.camel_case_name)
 
 
 @dataclass(frozen=True, slots=True)
@@ -249,10 +275,17 @@ class DeviceType:
     def sensor_attributes(self) -> list[SensorAttribute]:
         sensor_attributes = []
         for cluster in self.clusters:
-            for sensor_attribute in SENSOR_ATTRIBUTES.get(cluster.name, {}).values():
+            for sensor_attribute in SENSOR_ATTRIBUTES.get(
+                cluster.camel_case_name, {}
+            ).values():
                 sensor_attributes.append(sensor_attribute)
         return sensor_attributes
 
+    @property
+    def schema_key(self):
+        return cv.Optional(self.conf_key)
+
+    @property
     def schema(self):
         sensor_attributes: dict[str, SensorAttribute] = {}
         for sensor_attribute in self.sensor_attributes:
@@ -317,7 +350,9 @@ DEVICE_TYPES_BY_CONF_KEY: dict[str, DeviceType] = {
 
 CLUSTER_ID_TO_NAME = {}
 CLUSTER_NAME_TO_ID = {}
+CLUSTER_SDKCONFIG_OPTIONS: set[str] = set()
 for dt in DEVICE_TYPES:
     for c in dt.clusters:
-        CLUSTER_ID_TO_NAME[c.id] = c.name
-        CLUSTER_NAME_TO_ID[c.name] = c.id
+        CLUSTER_ID_TO_NAME[c.id] = c.camel_case_name
+        CLUSTER_NAME_TO_ID[c.camel_case_name] = c.id
+        CLUSTER_SDKCONFIG_OPTIONS.add(c.sdkconfig_option)

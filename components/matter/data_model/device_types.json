@@ -67,7 +67,7 @@
       },
       {
         "id": 257,
-        "name": "DoorLock",
+        "name": "Door Lock",
         "revision": 10,
         "server": true,
         "attributes": [
@@ -389,7 +389,7 @@
       },
       {
         "id": 257,
-        "name": "DoorLock",
+        "name": "Door Lock",
         "revision": 10,
         "client": true,
         "attributes": [
@@ -733,7 +733,7 @@
       },
       {
         "id": 1873,
-        "name": "CommissionerControl",
+        "name": "Commissioner Control",
         "revision": 1,
         "attributes": [
           {
@@ -842,7 +842,7 @@
       },
       {
         "id": 64,
-        "name": "FixedLabel",
+        "name": "Fixed Label",
         "revision": 1,
         "attributes": [
           {
@@ -855,7 +855,7 @@
       },
       {
         "id": 65,
-        "name": "UserLabel",
+        "name": "User Label",
         "revision": 1,
         "attributes": [
           {
@@ -914,7 +914,7 @@
       },
       {
         "id": 47,
-        "name": "PowerSource",
+        "name": "Power Source",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -1129,7 +1129,7 @@
       },
       {
         "id": 41,
-        "name": "OTASoftwareUpdateProvider",
+        "name": "OTA Software Update Provider",
         "revision": 1,
         "client": true,
         "attributes": [],
@@ -1143,7 +1143,7 @@
       },
       {
         "id": 42,
-        "name": "OTASoftwareUpdateRequestor",
+        "name": "OTA Software Update Requestor",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -1220,7 +1220,7 @@
       },
       {
         "id": 46,
-        "name": "PowerSourceConfiguration",
+        "name": "Power Source Configuration",
         "revision": 1,
         "attributes": [
           {
@@ -1233,7 +1233,7 @@
       },
       {
         "id": 47,
-        "name": "PowerSource",
+        "name": "Power Source",
         "revision": 3,
         "attributes": [
           {
@@ -1401,7 +1401,7 @@
       },
       {
         "id": 57,
-        "name": "BridgedDeviceBasicInformation",
+        "name": "Bridged Device Basic Information",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -1507,7 +1507,7 @@
       },
       {
         "id": 60,
-        "name": "AdministratorCommissioning",
+        "name": "Administrator Commissioning",
         "revision": 1,
         "attributes": [
           {
@@ -1580,7 +1580,7 @@
       },
       {
         "id": 41,
-        "name": "OTASoftwareUpdateProvider",
+        "name": "OTA Software Update Provider",
         "revision": 1,
         "server": true,
         "attributes": [],
@@ -1594,7 +1594,7 @@
       },
       {
         "id": 42,
-        "name": "OTASoftwareUpdateRequestor",
+        "name": "OTA Software Update Requestor",
         "revision": 1,
         "attributes": [
           {
@@ -1692,7 +1692,7 @@
       },
       {
         "id": 69,
-        "name": "BooleanState",
+        "name": "Boolean State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -1752,7 +1752,7 @@
       },
       {
         "id": 31,
-        "name": "AccessControl",
+        "name": "Access Control",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -1804,7 +1804,7 @@
       },
       {
         "id": 40,
-        "name": "BasicInformation",
+        "name": "Basic Information",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -1938,7 +1938,7 @@
       },
       {
         "id": 43,
-        "name": "LocalizationConfiguration",
+        "name": "Localization Configuration",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -1957,7 +1957,7 @@
       },
       {
         "id": 44,
-        "name": "TimeFormatLocalization",
+        "name": "Time Format Localization",
         "revision": 1,
         "attributes": [
           {
@@ -1980,7 +1980,7 @@
       },
       {
         "id": 45,
-        "name": "UnitLocalization",
+        "name": "Unit Localization",
         "revision": 2,
         "attributes": [
           {
@@ -1998,7 +1998,7 @@
       },
       {
         "id": 46,
-        "name": "PowerSourceConfiguration",
+        "name": "Power Source Configuration",
         "revision": 1,
         "attributes": [
           {
@@ -2011,7 +2011,7 @@
       },
       {
         "id": 48,
-        "name": "GeneralCommissioning",
+        "name": "General Commissioning",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -2094,7 +2094,7 @@
       },
       {
         "id": 49,
-        "name": "NetworkCommissioning",
+        "name": "Network Commissioning",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -2168,7 +2168,7 @@
       },
       {
         "id": 50,
-        "name": "DiagnosticLogs",
+        "name": "Diagnostic Logs",
         "revision": 1,
         "attributes": [],
         "commands": [
@@ -2178,7 +2178,7 @@
       },
       {
         "id": 51,
-        "name": "GeneralDiagnostics",
+        "name": "General Diagnostics",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -2243,7 +2243,7 @@
       },
       {
         "id": 52,
-        "name": "SoftwareDiagnostics",
+        "name": "Software Diagnostics",
         "revision": 1,
         "attributes": [
           {
@@ -2273,7 +2273,7 @@
       },
       {
         "id": 53,
-        "name": "ThreadNetworkDiagnostics",
+        "name": "Thread Network Diagnostics",
         "revision": 3,
         "attributes": [
           {
@@ -2608,7 +2608,7 @@
       },
       {
         "id": 54,
-        "name": "WiFiNetworkDiagnostics",
+        "name": "Wi-Fi Network Diagnostics",
         "revision": 1,
         "attributes": [
           {
@@ -2683,7 +2683,7 @@
       },
       {
         "id": 55,
-        "name": "EthernetNetworkDiagnostics",
+        "name": "Ethernet Network Diagnostics",
         "revision": 1,
         "attributes": [
           {
@@ -2738,7 +2738,7 @@
       },
       {
         "id": 56,
-        "name": "TimeSynchronization",
+        "name": "Time Synchronization",
         "revision": 2,
         "attributes": [
           {
@@ -2818,7 +2818,7 @@
       },
       {
         "id": 60,
-        "name": "AdministratorCommissioning",
+        "name": "Administrator Commissioning",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -2846,7 +2846,7 @@
       },
       {
         "id": 62,
-        "name": "OperationalCredentials",
+        "name": "Operational Credentials",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -2901,7 +2901,7 @@
       },
       {
         "id": 63,
-        "name": "GroupKeyManagement",
+        "name": "Group Key Management",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -2942,7 +2942,7 @@
       },
       {
         "id": 70,
-        "name": "ICDManagement",
+        "name": "ICD Management",
         "revision": 3,
         "attributes": [
           {
@@ -3188,7 +3188,7 @@
       },
       {
         "id": 49,
-        "name": "NetworkCommissioning",
+        "name": "Network Commissioning",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -3262,7 +3262,7 @@
       },
       {
         "id": 53,
-        "name": "ThreadNetworkDiagnostics",
+        "name": "Thread Network Diagnostics",
         "revision": 3,
         "attributes": [
           {
@@ -3597,7 +3597,7 @@
       },
       {
         "id": 54,
-        "name": "WiFiNetworkDiagnostics",
+        "name": "Wi-Fi Network Diagnostics",
         "revision": 1,
         "attributes": [
           {
@@ -3672,7 +3672,7 @@
       },
       {
         "id": 55,
-        "name": "EthernetNetworkDiagnostics",
+        "name": "Ethernet Network Diagnostics",
         "revision": 1,
         "attributes": [
           {
@@ -3734,7 +3734,7 @@
     "clusters": [
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -3775,7 +3775,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -3910,7 +3910,7 @@
     "clusters": [
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -4023,7 +4023,7 @@
       },
       {
         "id": 1285,
-        "name": "TargetNavigator",
+        "name": "Target Navigator",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4045,7 +4045,7 @@
       },
       {
         "id": 1286,
-        "name": "MediaPlayback",
+        "name": "Media Playback",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4125,7 +4125,7 @@
       },
       {
         "id": 1287,
-        "name": "MediaInput",
+        "name": "Media Input",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -4149,7 +4149,7 @@
       },
       {
         "id": 1288,
-        "name": "LowPower",
+        "name": "Low Power",
         "revision": 1,
         "server": true,
         "attributes": [],
@@ -4159,7 +4159,7 @@
       },
       {
         "id": 1289,
-        "name": "KeypadInput",
+        "name": "Keypad Input",
         "revision": 1,
         "server": true,
         "attributes": [],
@@ -4170,7 +4170,7 @@
       },
       {
         "id": 1290,
-        "name": "ContentLauncher",
+        "name": "Content Launcher",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -4193,7 +4193,7 @@
       },
       {
         "id": 1291,
-        "name": "AudioOutput",
+        "name": "Audio Output",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -4215,7 +4215,7 @@
       },
       {
         "id": 1292,
-        "name": "ApplicationLauncher",
+        "name": "Application Launcher",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4239,7 +4239,7 @@
       },
       {
         "id": 1294,
-        "name": "AccountLogin",
+        "name": "Account Login",
         "revision": 2,
         "server": true,
         "attributes": [],
@@ -4331,7 +4331,7 @@
       },
       {
         "id": 1285,
-        "name": "TargetNavigator",
+        "name": "Target Navigator",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4353,7 +4353,7 @@
       },
       {
         "id": 1286,
-        "name": "MediaPlayback",
+        "name": "Media Playback",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4433,7 +4433,7 @@
       },
       {
         "id": 1289,
-        "name": "KeypadInput",
+        "name": "Keypad Input",
         "revision": 1,
         "server": true,
         "attributes": [],
@@ -4444,7 +4444,7 @@
       },
       {
         "id": 1290,
-        "name": "ContentLauncher",
+        "name": "Content Launcher",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -4467,7 +4467,7 @@
       },
       {
         "id": 1292,
-        "name": "ApplicationLauncher",
+        "name": "Application Launcher",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4491,7 +4491,7 @@
       },
       {
         "id": 1293,
-        "name": "ApplicationBasic",
+        "name": "Application Basic",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -4540,7 +4540,7 @@
       },
       {
         "id": 1294,
-        "name": "AccountLogin",
+        "name": "Account Login",
         "revision": 2,
         "server": true,
         "attributes": [],
@@ -4553,7 +4553,7 @@
       },
       {
         "id": 1296,
-        "name": "ContentAppObserver",
+        "name": "Content App Observer",
         "revision": 1,
         "attributes": [],
         "commands": [
@@ -4609,7 +4609,7 @@
       },
       {
         "id": 80,
-        "name": "ModeSelect",
+        "name": "Mode Select",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4657,7 +4657,7 @@
     "clusters": [
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -4770,7 +4770,7 @@
       },
       {
         "id": 1285,
-        "name": "TargetNavigator",
+        "name": "Target Navigator",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4792,7 +4792,7 @@
       },
       {
         "id": 1286,
-        "name": "MediaPlayback",
+        "name": "Media Playback",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -4872,7 +4872,7 @@
       },
       {
         "id": 1287,
-        "name": "MediaInput",
+        "name": "Media Input",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -4896,7 +4896,7 @@
       },
       {
         "id": 1288,
-        "name": "LowPower",
+        "name": "Low Power",
         "revision": 1,
         "server": true,
         "attributes": [],
@@ -4906,7 +4906,7 @@
       },
       {
         "id": 1289,
-        "name": "KeypadInput",
+        "name": "Keypad Input",
         "revision": 1,
         "server": true,
         "attributes": [],
@@ -4917,7 +4917,7 @@
       },
       {
         "id": 1291,
-        "name": "AudioOutput",
+        "name": "Audio Output",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -4946,7 +4946,7 @@
     "clusters": [
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -4987,7 +4987,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -5162,7 +5162,7 @@
       },
       {
         "id": 1285,
-        "name": "TargetNavigator",
+        "name": "Target Navigator",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -5184,7 +5184,7 @@
       },
       {
         "id": 1286,
-        "name": "MediaPlayback",
+        "name": "Media Playback",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -5264,7 +5264,7 @@
       },
       {
         "id": 1287,
-        "name": "MediaInput",
+        "name": "Media Input",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -5288,7 +5288,7 @@
       },
       {
         "id": 1288,
-        "name": "LowPower",
+        "name": "Low Power",
         "revision": 1,
         "client": true,
         "attributes": [],
@@ -5298,7 +5298,7 @@
       },
       {
         "id": 1289,
-        "name": "KeypadInput",
+        "name": "Keypad Input",
         "revision": 1,
         "client": true,
         "attributes": [],
@@ -5309,7 +5309,7 @@
       },
       {
         "id": 1290,
-        "name": "ContentLauncher",
+        "name": "Content Launcher",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -5332,7 +5332,7 @@
       },
       {
         "id": 1291,
-        "name": "AudioOutput",
+        "name": "Audio Output",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -5354,7 +5354,7 @@
       },
       {
         "id": 1292,
-        "name": "ApplicationLauncher",
+        "name": "Application Launcher",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -5378,7 +5378,7 @@
       },
       {
         "id": 1293,
-        "name": "ApplicationBasic",
+        "name": "Application Basic",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -5427,7 +5427,7 @@
       },
       {
         "id": 1294,
-        "name": "AccountLogin",
+        "name": "Account Login",
         "revision": 2,
         "client": true,
         "attributes": [],
@@ -5447,7 +5447,7 @@
     "clusters": [
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -5488,7 +5488,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -5663,7 +5663,7 @@
       },
       {
         "id": 1285,
-        "name": "TargetNavigator",
+        "name": "Target Navigator",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -5685,7 +5685,7 @@
       },
       {
         "id": 1286,
-        "name": "MediaPlayback",
+        "name": "Media Playback",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -5765,7 +5765,7 @@
       },
       {
         "id": 1287,
-        "name": "MediaInput",
+        "name": "Media Input",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -5789,7 +5789,7 @@
       },
       {
         "id": 1288,
-        "name": "LowPower",
+        "name": "Low Power",
         "revision": 1,
         "client": true,
         "attributes": [],
@@ -5799,7 +5799,7 @@
       },
       {
         "id": 1289,
-        "name": "KeypadInput",
+        "name": "Keypad Input",
         "revision": 1,
         "client": true,
         "attributes": [],
@@ -5810,7 +5810,7 @@
       },
       {
         "id": 1290,
-        "name": "ContentLauncher",
+        "name": "Content Launcher",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -5833,7 +5833,7 @@
       },
       {
         "id": 1291,
-        "name": "AudioOutput",
+        "name": "Audio Output",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -5855,7 +5855,7 @@
       },
       {
         "id": 1292,
-        "name": "ApplicationLauncher",
+        "name": "Application Launcher",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -5879,7 +5879,7 @@
       },
       {
         "id": 1294,
-        "name": "AccountLogin",
+        "name": "Account Login",
         "revision": 2,
         "client": true,
         "attributes": [],
@@ -5985,7 +5985,7 @@
       },
       {
         "id": 514,
-        "name": "FanControl",
+        "name": "Fan Control",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6124,7 +6124,7 @@
       },
       {
         "id": 91,
-        "name": "AirQuality",
+        "name": "Air Quality",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -6138,7 +6138,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "server": true,
         "attributes": [
@@ -6167,7 +6167,7 @@
       },
       {
         "id": 1029,
-        "name": "RelativeHumidityMeasurement",
+        "name": "Relative Humidity Measurement",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -6196,7 +6196,7 @@
       },
       {
         "id": 1036,
-        "name": "CarbonMonoxideConcentrationMeasurement",
+        "name": "Carbon Monoxide Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6260,7 +6260,7 @@
       },
       {
         "id": 1037,
-        "name": "CarbonDioxideConcentrationMeasurement",
+        "name": "Carbon Dioxide Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6324,7 +6324,7 @@
       },
       {
         "id": 1043,
-        "name": "NitrogenDioxideConcentrationMeasurement",
+        "name": "Nitrogen Dioxide Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6388,7 +6388,7 @@
       },
       {
         "id": 1045,
-        "name": "OzoneConcentrationMeasurement",
+        "name": "Ozone Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6452,7 +6452,7 @@
       },
       {
         "id": 1066,
-        "name": "PM2.5ConcentrationMeasurement",
+        "name": "PM2.5 Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6516,7 +6516,7 @@
       },
       {
         "id": 1067,
-        "name": "FormaldehydeConcentrationMeasurement",
+        "name": "Formaldehyde Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6580,7 +6580,7 @@
       },
       {
         "id": 1068,
-        "name": "PM1ConcentrationMeasurement",
+        "name": "PM1 Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6644,7 +6644,7 @@
       },
       {
         "id": 1069,
-        "name": "PM10ConcentrationMeasurement",
+        "name": "PM10 Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6708,7 +6708,7 @@
       },
       {
         "id": 1070,
-        "name": "TotalVolatileOrganicCompoundsConcentrationMeasurement",
+        "name": "Total Volatile Organic Compounds Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6772,7 +6772,7 @@
       },
       {
         "id": 1071,
-        "name": "RadonConcentrationMeasurement",
+        "name": "Radon Concentration Measurement",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -6928,7 +6928,7 @@
       },
       {
         "id": 113,
-        "name": "HEPAFilterMonitoring",
+        "name": "HEPA Filter Monitoring",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -6969,7 +6969,7 @@
       },
       {
         "id": 114,
-        "name": "ActivatedCarbonFilterMonitoring",
+        "name": "Activated Carbon Filter Monitoring",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -7010,7 +7010,7 @@
       },
       {
         "id": 514,
-        "name": "FanControl",
+        "name": "Fan Control",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -7149,7 +7149,7 @@
       },
       {
         "id": 69,
-        "name": "BooleanState",
+        "name": "Boolean State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -7163,7 +7163,7 @@
       },
       {
         "id": 128,
-        "name": "BooleanStateConfiguration",
+        "name": "Boolean State Configuration",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -7283,7 +7283,7 @@
       },
       {
         "id": 129,
-        "name": "ValveConfigurationandControl",
+        "name": "Valve Configuration and Control",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -7418,7 +7418,7 @@
       },
       {
         "id": 69,
-        "name": "BooleanState",
+        "name": "Boolean State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -7432,7 +7432,7 @@
       },
       {
         "id": 128,
-        "name": "BooleanStateConfiguration",
+        "name": "Boolean State Configuration",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -7552,7 +7552,7 @@
       },
       {
         "id": 69,
-        "name": "BooleanState",
+        "name": "Boolean State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -7566,7 +7566,7 @@
       },
       {
         "id": 128,
-        "name": "BooleanStateConfiguration",
+        "name": "Boolean State Configuration",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -7686,7 +7686,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -7714,7 +7714,7 @@
       },
       {
         "id": 1072,
-        "name": "SoilMeasurement",
+        "name": "Soil Measurement",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -7800,7 +7800,7 @@
       },
       {
         "id": 82,
-        "name": "RefrigeratorAndTemperatureControlledCabinetMode",
+        "name": "Refrigerator And Temperature Controlled Cabinet Mode",
         "revision": 3,
         "attributes": [
           {
@@ -7821,7 +7821,7 @@
       },
       {
         "id": 87,
-        "name": "RefrigeratorAlarm",
+        "name": "Refrigerator Alarm",
         "revision": 1,
         "attributes": [
           {
@@ -7890,7 +7890,7 @@
       },
       {
         "id": 72,
-        "name": "OvenCavityOperationalState",
+        "name": "Oven Cavity Operational State",
         "revision": 2,
         "attributes": [
           {
@@ -7932,7 +7932,7 @@
       },
       {
         "id": 73,
-        "name": "OvenMode",
+        "name": "Oven Mode",
         "revision": 2,
         "attributes": [
           {
@@ -7953,7 +7953,7 @@
       },
       {
         "id": 82,
-        "name": "RefrigeratorAndTemperatureControlledCabinetMode",
+        "name": "Refrigerator And Temperature Controlled Cabinet Mode",
         "revision": 3,
         "attributes": [
           {
@@ -7974,7 +7974,7 @@
       },
       {
         "id": 86,
-        "name": "TemperatureControl",
+        "name": "Temperature Control",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -8015,7 +8015,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -8096,7 +8096,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -8176,7 +8176,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "attributes": [
           {
@@ -8552,7 +8552,7 @@
       },
       {
         "id": 514,
-        "name": "FanControl",
+        "name": "Fan Control",
         "revision": 5,
         "attributes": [
           {
@@ -8622,7 +8622,7 @@
       },
       {
         "id": 516,
-        "name": "ThermostatUserInterfaceConfiguration",
+        "name": "Thermostat User Interface Configuration",
         "revision": 2,
         "attributes": [
           {
@@ -8645,7 +8645,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -8673,7 +8673,7 @@
       },
       {
         "id": 1029,
-        "name": "RelativeHumidityMeasurement",
+        "name": "Relative Humidity Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -8729,7 +8729,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "attributes": [
           {
@@ -8808,7 +8808,7 @@
       },
       {
         "id": 81,
-        "name": "LaundryWasherMode",
+        "name": "Laundry Washer Mode",
         "revision": 3,
         "attributes": [
           {
@@ -8829,7 +8829,7 @@
       },
       {
         "id": 83,
-        "name": "LaundryWasherControls",
+        "name": "Laundry Washer Controls",
         "revision": 2,
         "attributes": [
           {
@@ -8857,7 +8857,7 @@
       },
       {
         "id": 86,
-        "name": "TemperatureControl",
+        "name": "Temperature Control",
         "revision": 1,
         "attributes": [
           {
@@ -8897,7 +8897,7 @@
       },
       {
         "id": 96,
-        "name": "OperationalState",
+        "name": "Operational State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -9010,7 +9010,7 @@
       },
       {
         "id": 84,
-        "name": "RVCRunMode",
+        "name": "RVC Run Mode",
         "revision": 4,
         "server": true,
         "attributes": [
@@ -9032,7 +9032,7 @@
       },
       {
         "id": 85,
-        "name": "RVCCleanMode",
+        "name": "RVC Clean Mode",
         "revision": 5,
         "attributes": [
           {
@@ -9053,7 +9053,7 @@
       },
       {
         "id": 97,
-        "name": "RVCOperationalState",
+        "name": "RVC Operational State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -9097,7 +9097,7 @@
       },
       {
         "id": 336,
-        "name": "ServiceArea",
+        "name": "Service Area",
         "revision": 2,
         "attributes": [
           {
@@ -9168,7 +9168,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "attributes": [
           {
@@ -9247,7 +9247,7 @@
       },
       {
         "id": 86,
-        "name": "TemperatureControl",
+        "name": "Temperature Control",
         "revision": 1,
         "attributes": [
           {
@@ -9287,7 +9287,7 @@
       },
       {
         "id": 89,
-        "name": "DishwasherMode",
+        "name": "Dishwasher Mode",
         "revision": 3,
         "attributes": [
           {
@@ -9308,7 +9308,7 @@
       },
       {
         "id": 93,
-        "name": "DishwasherAlarm",
+        "name": "Dishwasher Alarm",
         "revision": 1,
         "attributes": [
           {
@@ -9339,7 +9339,7 @@
       },
       {
         "id": 96,
-        "name": "OperationalState",
+        "name": "Operational State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -9476,7 +9476,7 @@
       },
       {
         "id": 92,
-        "name": "SmokeCOAlarm",
+        "name": "Smoke CO Alarm",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -9557,7 +9557,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -9585,7 +9585,7 @@
       },
       {
         "id": 1029,
-        "name": "RelativeHumidityMeasurement",
+        "name": "Relative Humidity Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -9613,7 +9613,7 @@
       },
       {
         "id": 1036,
-        "name": "CarbonMonoxideConcentrationMeasurement",
+        "name": "Carbon Monoxide Concentration Measurement",
         "revision": 5,
         "attributes": [
           {
@@ -9683,7 +9683,7 @@
     "clusters": [
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -9763,7 +9763,7 @@
       },
       {
         "id": 86,
-        "name": "TemperatureControl",
+        "name": "Temperature Control",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -9804,7 +9804,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -9860,7 +9860,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -10007,7 +10007,7 @@
       },
       {
         "id": 94,
-        "name": "MicrowaveOvenMode",
+        "name": "Microwave Oven Mode",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -10026,7 +10026,7 @@
       },
       {
         "id": 95,
-        "name": "MicrowaveOvenControl",
+        "name": "Microwave Oven Control",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -10083,7 +10083,7 @@
       },
       {
         "id": 96,
-        "name": "OperationalState",
+        "name": "Operational State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -10128,7 +10128,7 @@
       },
       {
         "id": 514,
-        "name": "FanControl",
+        "name": "Fan Control",
         "revision": 5,
         "attributes": [
           {
@@ -10265,7 +10265,7 @@
       },
       {
         "id": 113,
-        "name": "HEPAFilterMonitoring",
+        "name": "HEPA Filter Monitoring",
         "revision": 1,
         "attributes": [
           {
@@ -10305,7 +10305,7 @@
       },
       {
         "id": 114,
-        "name": "ActivatedCarbonFilterMonitoring",
+        "name": "Activated Carbon Filter Monitoring",
         "revision": 1,
         "attributes": [
           {
@@ -10345,7 +10345,7 @@
       },
       {
         "id": 514,
-        "name": "FanControl",
+        "name": "Fan Control",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -10511,7 +10511,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "attributes": [
           {
@@ -10590,7 +10590,7 @@
       },
       {
         "id": 74,
-        "name": "LaundryDryerControls",
+        "name": "Laundry Dryer Controls",
         "revision": 1,
         "attributes": [
           {
@@ -10608,7 +10608,7 @@
       },
       {
         "id": 81,
-        "name": "LaundryWasherMode",
+        "name": "Laundry Washer Mode",
         "revision": 3,
         "attributes": [
           {
@@ -10629,7 +10629,7 @@
       },
       {
         "id": 86,
-        "name": "TemperatureControl",
+        "name": "Temperature Control",
         "revision": 1,
         "attributes": [
           {
@@ -10669,7 +10669,7 @@
       },
       {
         "id": 96,
-        "name": "OperationalState",
+        "name": "Operational State",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -10742,7 +10742,7 @@
       },
       {
         "id": 121,
-        "name": "WaterTankLevelMonitoring",
+        "name": "Water Tank Level Monitoring",
         "revision": 1,
         "attributes": [
           {
@@ -10782,7 +10782,7 @@
       },
       {
         "id": 514,
-        "name": "FanControl",
+        "name": "Fan Control",
         "revision": 5,
         "attributes": [
           {
@@ -10918,7 +10918,7 @@
       },
       {
         "id": 1029,
-        "name": "RelativeHumidityMeasurement",
+        "name": "Relative Humidity Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -10992,7 +10992,7 @@
       },
       {
         "id": 53,
-        "name": "ThreadNetworkDiagnostics",
+        "name": "Thread Network Diagnostics",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -11328,7 +11328,7 @@
       },
       {
         "id": 1105,
-        "name": "WiFiNetworkManagement",
+        "name": "Wi-Fi Network Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -11350,7 +11350,7 @@
       },
       {
         "id": 1106,
-        "name": "ThreadBorderRouterManagement",
+        "name": "Thread Border Router Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -11395,7 +11395,7 @@
       },
       {
         "id": 1107,
-        "name": "ThreadNetworkDirectory",
+        "name": "Thread Network Directory",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -11470,7 +11470,7 @@
       },
       {
         "id": 53,
-        "name": "ThreadNetworkDiagnostics",
+        "name": "Thread Network Diagnostics",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -11806,7 +11806,7 @@
       },
       {
         "id": 1106,
-        "name": "ThreadBorderRouterManagement",
+        "name": "Thread Border Router Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -11905,7 +11905,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -11946,7 +11946,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "attributes": [
           {
@@ -12073,7 +12073,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -12108,7 +12108,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -12245,7 +12245,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -12286,7 +12286,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -12427,7 +12427,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -12462,7 +12462,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -12599,7 +12599,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -12693,7 +12693,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "attributes": [
           {
@@ -12781,7 +12781,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -12822,7 +12822,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -12964,7 +12964,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "attributes": [
           {
@@ -13052,7 +13052,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -13093,7 +13093,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -13235,7 +13235,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "attributes": [
           {
@@ -13269,7 +13269,7 @@
       },
       {
         "id": 768,
-        "name": "ColorControl",
+        "name": "Color Control",
         "revision": 9,
         "client": true,
         "attributes": [
@@ -13639,7 +13639,7 @@
       },
       {
         "id": 1024,
-        "name": "IlluminanceMeasurement",
+        "name": "Illuminance Measurement",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -13754,7 +13754,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "server": true,
         "attributes": [
@@ -13892,7 +13892,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -13933,7 +13933,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "attributes": [
           {
@@ -14060,7 +14060,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -14149,7 +14149,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -14190,7 +14190,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -14318,7 +14318,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -14407,7 +14407,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -14448,7 +14448,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -14576,7 +14576,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -14611,7 +14611,7 @@
       },
       {
         "id": 768,
-        "name": "ColorControl",
+        "name": "Color Control",
         "revision": 9,
         "server": true,
         "attributes": [
@@ -14954,7 +14954,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -14995,7 +14995,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -15123,7 +15123,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -15158,7 +15158,7 @@
       },
       {
         "id": 768,
-        "name": "ColorControl",
+        "name": "Color Control",
         "revision": 9,
         "server": true,
         "attributes": [
@@ -15501,7 +15501,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -15542,7 +15542,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "attributes": [
           {
@@ -15630,7 +15630,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "attributes": [
           {
@@ -15664,7 +15664,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -15801,7 +15801,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -15842,7 +15842,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -15931,7 +15931,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -15966,7 +15966,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -16056,7 +16056,7 @@
     "clusters": [
       {
         "id": 1874,
-        "name": "JointFabricDatastore",
+        "name": "Joint Fabric Datastore",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -16156,7 +16156,7 @@
       },
       {
         "id": 1875,
-        "name": "JointFabricAdministrator",
+        "name": "Joint Fabric Administrator",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -16208,7 +16208,7 @@
       },
       {
         "id": 1361,
-        "name": "CameraAVStreamManagement",
+        "name": "Camera AV Stream Management",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -16442,7 +16442,7 @@
       },
       {
         "id": 1362,
-        "name": "CameraAVSettingsUserLevelManagement",
+        "name": "Camera AV Settings User Level Management",
         "revision": 1,
         "attributes": [
           {
@@ -16508,7 +16508,7 @@
       },
       {
         "id": 1363,
-        "name": "WebRTCTransportProvider",
+        "name": "WebRTC Transport Provider",
         "revision": 2,
         "client": true,
         "server": true,
@@ -16531,7 +16531,7 @@
       },
       {
         "id": 1364,
-        "name": "WebRTCTransportRequestor",
+        "name": "WebRTC Transport Requestor",
         "revision": 2,
         "client": true,
         "server": true,
@@ -16603,7 +16603,7 @@
       },
       {
         "id": 1361,
-        "name": "CameraAVStreamManagement",
+        "name": "Camera AV Stream Management",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -16837,7 +16837,7 @@
       },
       {
         "id": 1363,
-        "name": "WebRTCTransportProvider",
+        "name": "WebRTC Transport Provider",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -16859,7 +16859,7 @@
       },
       {
         "id": 1364,
-        "name": "WebRTCTransportRequestor",
+        "name": "WebRTC Transport Requestor",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -16878,7 +16878,7 @@
       },
       {
         "id": 1365,
-        "name": "PushAVStreamTransport",
+        "name": "Push AV Stream Transport",
         "revision": 3,
         "attributes": [
           {
@@ -16959,7 +16959,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -17042,7 +17042,7 @@
       },
       {
         "id": 1360,
-        "name": "ZoneManagement",
+        "name": "Zone Management",
         "revision": 1,
         "attributes": [
           {
@@ -17092,7 +17092,7 @@
       },
       {
         "id": 1361,
-        "name": "CameraAVStreamManagement",
+        "name": "Camera AV Stream Management",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -17326,7 +17326,7 @@
       },
       {
         "id": 1362,
-        "name": "CameraAVSettingsUserLevelManagement",
+        "name": "Camera AV Settings User Level Management",
         "revision": 1,
         "attributes": [
           {
@@ -17392,7 +17392,7 @@
       },
       {
         "id": 1363,
-        "name": "WebRTCTransportProvider",
+        "name": "WebRTC Transport Provider",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -17414,7 +17414,7 @@
       },
       {
         "id": 1364,
-        "name": "WebRTCTransportRequestor",
+        "name": "WebRTC Transport Requestor",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -17433,7 +17433,7 @@
       },
       {
         "id": 1365,
-        "name": "PushAVStreamTransport",
+        "name": "Push AV Stream Transport",
         "revision": 3,
         "attributes": [
           {
@@ -17500,7 +17500,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -17583,7 +17583,7 @@
       },
       {
         "id": 1360,
-        "name": "ZoneManagement",
+        "name": "Zone Management",
         "revision": 1,
         "attributes": [
           {
@@ -17633,7 +17633,7 @@
       },
       {
         "id": 1361,
-        "name": "CameraAVStreamManagement",
+        "name": "Camera AV Stream Management",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -17867,7 +17867,7 @@
       },
       {
         "id": 1362,
-        "name": "CameraAVSettingsUserLevelManagement",
+        "name": "Camera AV Settings User Level Management",
         "revision": 1,
         "attributes": [
           {
@@ -18015,7 +18015,7 @@
       },
       {
         "id": 47,
-        "name": "PowerSource",
+        "name": "Power Source",
         "revision": 3,
         "attributes": [
           {
@@ -18183,7 +18183,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -18266,7 +18266,7 @@
       },
       {
         "id": 1360,
-        "name": "ZoneManagement",
+        "name": "Zone Management",
         "revision": 1,
         "attributes": [
           {
@@ -18316,7 +18316,7 @@
       },
       {
         "id": 1361,
-        "name": "CameraAVStreamManagement",
+        "name": "Camera AV Stream Management",
         "revision": 2,
         "attributes": [
           {
@@ -18549,7 +18549,7 @@
       },
       {
         "id": 1362,
-        "name": "CameraAVSettingsUserLevelManagement",
+        "name": "Camera AV Settings User Level Management",
         "revision": 1,
         "attributes": [
           {
@@ -18615,7 +18615,7 @@
       },
       {
         "id": 1363,
-        "name": "WebRTCTransportProvider",
+        "name": "WebRTC Transport Provider",
         "revision": 2,
         "client": true,
         "attributes": [
@@ -18637,7 +18637,7 @@
       },
       {
         "id": 1364,
-        "name": "WebRTCTransportRequestor",
+        "name": "WebRTC Transport Requestor",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -18656,7 +18656,7 @@
       },
       {
         "id": 1365,
-        "name": "PushAVStreamTransport",
+        "name": "Push AV Stream Transport",
         "revision": 3,
         "attributes": [
           {
@@ -18683,7 +18683,7 @@
       },
       {
         "id": 2049,
-        "name": "TLSCertificateManagement",
+        "name": "TLS Certificate Management",
         "revision": 1,
         "attributes": [
           {
@@ -18727,7 +18727,7 @@
       },
       {
         "id": 2050,
-        "name": "TLSClientManagement",
+        "name": "TLS Client Management",
         "revision": 1,
         "attributes": [
           {
@@ -18873,7 +18873,7 @@
       },
       {
         "id": 128,
-        "name": "BooleanStateConfiguration",
+        "name": "Boolean State Configuration",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -18925,7 +18925,7 @@
       },
       {
         "id": 336,
-        "name": "ServiceArea",
+        "name": "Service Area",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -18969,7 +18969,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "server": true,
         "attributes": [
@@ -19053,7 +19053,7 @@
       },
       {
         "id": 1073,
-        "name": "AmbientContextSensing",
+        "name": "Ambient Context Sensing",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -19195,7 +19195,7 @@
       },
       {
         "id": 1075,
-        "name": "ProximityRanging",
+        "name": "Proximity Ranging",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -19335,7 +19335,7 @@
       },
       {
         "id": 258,
-        "name": "WindowCovering",
+        "name": "Window Covering",
         "revision": 8,
         "server": true,
         "attributes": [
@@ -19567,7 +19567,7 @@
       },
       {
         "id": 258,
-        "name": "WindowCovering",
+        "name": "Window Covering",
         "revision": 8,
         "client": true,
         "attributes": [
@@ -19762,7 +19762,7 @@
       },
       {
         "id": 260,
-        "name": "ClosureControl",
+        "name": "Closure Control",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -19851,7 +19851,7 @@
       },
       {
         "id": 261,
-        "name": "ClosureDimension",
+        "name": "Closure Dimension",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -19965,7 +19965,7 @@
       },
       {
         "id": 260,
-        "name": "ClosureControl",
+        "name": "Closure Control",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -20008,7 +20008,7 @@
       },
       {
         "id": 261,
-        "name": "ClosureDimension",
+        "name": "Closure Dimension",
         "revision": 1,
         "attributes": [
           {
@@ -20526,7 +20526,7 @@
       },
       {
         "id": 514,
-        "name": "FanControl",
+        "name": "Fan Control",
         "revision": 5,
         "attributes": [
           {
@@ -20596,7 +20596,7 @@
       },
       {
         "id": 516,
-        "name": "ThermostatUserInterfaceConfiguration",
+        "name": "Thermostat User Interface Configuration",
         "revision": 2,
         "attributes": [
           {
@@ -20619,7 +20619,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -20647,7 +20647,7 @@
       },
       {
         "id": 1029,
-        "name": "RelativeHumidityMeasurement",
+        "name": "Relative Humidity Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -20675,7 +20675,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -20826,7 +20826,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "server": true,
         "attributes": [
@@ -20908,7 +20908,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "server": true,
         "attributes": [
@@ -20949,7 +20949,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "attributes": [
           {
@@ -21089,7 +21089,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "attributes": [
           {
@@ -21123,7 +21123,7 @@
       },
       {
         "id": 512,
-        "name": "PumpConfigurationandControl",
+        "name": "Pump Configuration and Control",
         "revision": 4,
         "server": true,
         "attributes": [
@@ -21247,7 +21247,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -21275,7 +21275,7 @@
       },
       {
         "id": 1027,
-        "name": "PressureMeasurement",
+        "name": "Pressure Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -21328,7 +21328,7 @@
       },
       {
         "id": 1028,
-        "name": "FlowMeasurement",
+        "name": "Flow Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -21356,7 +21356,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -21492,7 +21492,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -21533,7 +21533,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "attributes": [
           {
@@ -21675,7 +21675,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "attributes": [
           {
@@ -21709,7 +21709,7 @@
       },
       {
         "id": 512,
-        "name": "PumpConfigurationandControl",
+        "name": "Pump Configuration and Control",
         "revision": 4,
         "client": true,
         "attributes": [
@@ -21833,7 +21833,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -21861,7 +21861,7 @@
       },
       {
         "id": 1027,
-        "name": "PressureMeasurement",
+        "name": "Pressure Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -21914,7 +21914,7 @@
       },
       {
         "id": 1028,
-        "name": "FlowMeasurement",
+        "name": "Flow Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -22010,7 +22010,7 @@
       },
       {
         "id": 1027,
-        "name": "PressureMeasurement",
+        "name": "Pressure Measurement",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -22132,7 +22132,7 @@
       },
       {
         "id": 1028,
-        "name": "FlowMeasurement",
+        "name": "Flow Measurement",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -22229,7 +22229,7 @@
       },
       {
         "id": 1029,
-        "name": "RelativeHumidityMeasurement",
+        "name": "Relative Humidity Measurement",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -22775,7 +22775,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -23219,7 +23219,7 @@
       },
       {
         "id": 153,
-        "name": "EnergyEVSE",
+        "name": "Energy EVSE",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -23352,7 +23352,7 @@
       },
       {
         "id": 157,
-        "name": "EnergyEVSEMode",
+        "name": "Energy EVSE Mode",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -23374,7 +23374,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "attributes": [
           {
@@ -23409,7 +23409,7 @@
     "clusters": [
       {
         "id": 152,
-        "name": "DeviceEnergyManagement",
+        "name": "Device Energy Management",
         "revision": 5,
         "server": true,
         "attributes": [
@@ -23474,7 +23474,7 @@
       },
       {
         "id": 159,
-        "name": "DeviceEnergyManagementMode",
+        "name": "Device Energy Management Mode",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -23564,7 +23564,7 @@
       },
       {
         "id": 148,
-        "name": "WaterHeaterManagement",
+        "name": "Water Heater Management",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -23606,7 +23606,7 @@
       },
       {
         "id": 158,
-        "name": "WaterHeaterMode",
+        "name": "Water Heater Mode",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -24016,7 +24016,7 @@
       },
       {
         "id": 144,
-        "name": "ElectricalPowerMeasurement",
+        "name": "Electrical Power Measurement",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -24120,7 +24120,7 @@
       },
       {
         "id": 145,
-        "name": "ElectricalEnergyMeasurement",
+        "name": "Electrical Energy Measurement",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -24159,7 +24159,7 @@
       },
       {
         "id": 156,
-        "name": "PowerTopology",
+        "name": "Power Topology",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -24190,7 +24190,7 @@
     "clusters": [
       {
         "id": 2822,
-        "name": "MeterIdentification",
+        "name": "Meter Identification",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -24338,7 +24338,7 @@
       },
       {
         "id": 149,
-        "name": "CommodityPrice",
+        "name": "Commodity Price",
         "revision": 4,
         "attributes": [
           {
@@ -24371,7 +24371,7 @@
       },
       {
         "id": 1792,
-        "name": "CommodityTariff",
+        "name": "Commodity Tariff",
         "revision": 2,
         "attributes": [
           {
@@ -24525,7 +24525,7 @@
       },
       {
         "id": 144,
-        "name": "ElectricalPowerMeasurement",
+        "name": "Electrical Power Measurement",
         "revision": 3,
         "server": true,
         "attributes": [
@@ -24629,7 +24629,7 @@
       },
       {
         "id": 145,
-        "name": "ElectricalEnergyMeasurement",
+        "name": "Electrical Energy Measurement",
         "revision": 2,
         "server": true,
         "attributes": [
@@ -24668,7 +24668,7 @@
       },
       {
         "id": 2823,
-        "name": "CommodityMetering",
+        "name": "Commodity Metering",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -24725,7 +24725,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "attributes": [
           {
@@ -24765,7 +24765,7 @@
       },
       {
         "id": 65,
-        "name": "UserLabel",
+        "name": "User Label",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -24779,7 +24779,7 @@
       },
       {
         "id": 156,
-        "name": "PowerTopology",
+        "name": "Power Topology",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -24803,7 +24803,7 @@
       },
       {
         "id": 162,
-        "name": "ElectricalDistribution",
+        "name": "Electrical Distribution",
         "revision": 1,
         "attributes": [
           {
@@ -24836,7 +24836,7 @@
       },
       {
         "id": 163,
-        "name": "ElectricalProtectionAlarm",
+        "name": "Electrical Protection Alarm",
         "revision": 1,
         "attributes": [
           {
@@ -24924,7 +24924,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "attributes": [
           {
@@ -24964,7 +24964,7 @@
       },
       {
         "id": 156,
-        "name": "PowerTopology",
+        "name": "Power Topology",
         "revision": 1,
         "server": true,
         "attributes": [
@@ -24988,7 +24988,7 @@
       },
       {
         "id": 162,
-        "name": "ElectricalDistribution",
+        "name": "Electrical Distribution",
         "revision": 1,
         "attributes": [
           {
@@ -25021,7 +25021,7 @@
       },
       {
         "id": 163,
-        "name": "ElectricalProtectionAlarm",
+        "name": "Electrical Protection Alarm",
         "revision": 1,
         "attributes": [
           {
@@ -25136,7 +25136,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -25177,7 +25177,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -25319,7 +25319,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "client": true,
         "attributes": [
@@ -25354,7 +25354,7 @@
       },
       {
         "id": 768,
-        "name": "ColorControl",
+        "name": "Color Control",
         "revision": 9,
         "client": true,
         "attributes": [
@@ -25643,7 +25643,7 @@
       },
       {
         "id": 1024,
-        "name": "IlluminanceMeasurement",
+        "name": "Illuminance Measurement",
         "revision": 3,
         "attributes": [
           {
@@ -25676,7 +25676,7 @@
       },
       {
         "id": 1030,
-        "name": "OccupancySensing",
+        "name": "Occupancy Sensing",
         "revision": 7,
         "attributes": [
           {
@@ -25813,7 +25813,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "attributes": [
@@ -25854,7 +25854,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "attributes": [
           {
@@ -25995,7 +25995,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "attributes": [
           {
@@ -26029,7 +26029,7 @@
       },
       {
         "id": 768,
-        "name": "ColorControl",
+        "name": "Color Control",
         "revision": 9,
         "attributes": [
           {
@@ -26324,28 +26324,28 @@
     "clusters": [
       {
         "id": 28,
-        "name": "PulseWidthModulation",
+        "name": "Pulse Width Modulation",
         "server": true,
         "attributes": [],
         "commands": []
       },
       {
         "id": 66,
-        "name": "ProxyConfiguration",
+        "name": "Proxy Configuration",
         "server": true,
         "attributes": [],
         "commands": []
       },
       {
         "id": 67,
-        "name": "ProxyDiscovery",
+        "name": "Proxy Discovery",
         "server": true,
         "attributes": [],
         "commands": []
       },
       {
         "id": 68,
-        "name": "ProxyValid",
+        "name": "Proxy Valid",
         "server": true,
         "attributes": [],
         "commands": []
@@ -26406,7 +26406,7 @@
       },
       {
         "id": 6,
-        "name": "OnOff",
+        "name": "On/Off",
         "revision": 6,
         "client": true,
         "server": true,
@@ -26448,7 +26448,7 @@
       },
       {
         "id": 8,
-        "name": "LevelControl",
+        "name": "Level Control",
         "revision": 6,
         "client": true,
         "server": true,
@@ -26591,7 +26591,7 @@
       },
       {
         "id": 98,
-        "name": "ScenesManagement",
+        "name": "Scenes Management",
         "revision": 1,
         "client": true,
         "server": true,
@@ -26627,7 +26627,7 @@
       },
       {
         "id": 257,
-        "name": "DoorLock",
+        "name": "Door Lock",
         "revision": 10,
         "client": true,
         "server": true,
@@ -26890,7 +26890,7 @@
       },
       {
         "id": 768,
-        "name": "ColorControl",
+        "name": "Color Control",
         "revision": 9,
         "client": true,
         "server": true,
@@ -27180,7 +27180,7 @@
       },
       {
         "id": 1026,
-        "name": "TemperatureMeasurement",
+        "name": "Temperature Measurement",
         "revision": 4,
         "server": true,
         "attributes": [
