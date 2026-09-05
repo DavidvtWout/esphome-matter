@@ -252,6 +252,12 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       return false;
   }
 
+  // Add extra optional clusters
+  for (auto *cluster_registration : this->cluster_registrations_) {
+    if (!cluster_registration->add_cluster(node))
+      return false;
+  }
+
   register_client_request_callbacks();
 
   return true;

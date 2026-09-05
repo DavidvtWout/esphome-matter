@@ -1,9 +1,8 @@
 import json
-from wsgiref import validate
 
-from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
+from esphome import automation
 from esphome.const import (
     CONF_COMMAND,
     CONF_ID,
@@ -13,7 +12,7 @@ from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model import COMMANDS, CLUSTER_NAME_TO_ID, COMMAND_ARG_TYPES, Command
+from .data_model import CLUSTERS_BY_NAME, COMMAND_ARG_TYPES, COMMANDS, Command
 from .types import (
     MatterComponent,
     MatterEndpointRef,
@@ -139,7 +138,8 @@ async def _new_send_command_action(
 ):
     var = cg.new_Pvariable(action_id, template_arg)
     cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
-    cg.add(var.set_cluster_id(CLUSTER_NAME_TO_ID[command.cluster_name]))
+    cluster = CLUSTERS_BY_NAME[command.cluster_name]
+    cg.add(var.set_cluster_id(cluster.id))
     cg.add(var.set_command_id(command.id))
     cg.add(var.set_data(_build_data(config, command)))
     return var

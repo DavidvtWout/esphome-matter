@@ -1,14 +1,14 @@
+import json
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 import esphome.config_validation as cv
-import json
-from dataclasses import dataclass, field
 from esphome import automation
-from esphome.const import CONF_LIGHT_ID
 from esphome.components import light
+from esphome.const import CONF_LIGHT_ID
 
+from ..util import maybe_empty, snake_case
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
-from ..util import snake_case, maybe_empty
 
 DATA_MODEL_DIR = Path(__file__).resolve().parent
 
@@ -176,21 +176,23 @@ class Feature:
 @dataclass(frozen=True, slots=True)
 class Attribute:
     id: int
-    name: str  # CamelCase
-    # side: str  # TODO: either "client", "server" or "either". Maybe enum type?
-    type: str  # TODO: maybe enum?
+    name: str | None  # CamelCase
+    type: str
     # max: int | None = None
-    # define: str | None = None
+    define: str | None = None
     # is_nullable: bool = False
-    # writable: bool = False
-    # optional: bool = False
+    writable: bool = False
+    optional: bool = False
 
     @classmethod
     def from_dict(cls, data: dict):
         return cls(
             id=data["id"],
-            name=data["name"],
+            name=data.get("name"),
             type=data["type"],
+            define=data["define"],
+            writable=data["writable"],
+            optional=data["optional"],
         )
 
 
@@ -199,21 +201,30 @@ class Cluster:
     id: int
     name: str  # Name with spaces and special characters such as "/"
     revision: int
-    client: bool
-    server: bool
-    # features: tuple[Feature, ...] = ()
-    attributes: tuple[Attribute, ...] = ()
-    # commands: tuple[Command, ...] = ()
+    required: bool = False
+    features: tuple[Feature, ...] = ()
+    server_attributes: tuple[Attribute, ...] = ()
+    client_attributes: tuple[Attribute, ...] = ()
+    commands: tuple[Command, ...] = ()
+    responses: tuple[Command, ...] = ()
 
     @classmethod
     def from_dict(cls, data: dict):
         return cls(
             id=data["id"],
             name=data["name"],
-            revision=data.get("revision", 1),
-            client=data.get("client") == "true",
-            server=data.get("server") == "true",
-            attributes=tuple([Attribute.from_dict(a) for a in data["attributes"]]),
+            revision=data.get(
+                "revision", 1
+            ),  # Some lack a revision. Assuming it's 1...
+            features=tuple(),  # TODO
+            server_attributes=tuple(
+                Attribute.from_dict(a) for a in data.get("server_attributes", ())
+            ),
+            client_attributes=tuple(
+                Attribute.from_dict(a) for a in data.get("client_attributes", ())
+            ),
+            commands=tuple(),  # TODO
+            responses=tuple(),  # TODO
         )
 
     @property
@@ -240,11 +251,68 @@ class Cluster:
 
     @property
     def camel_case_name(self) -> str:
-        return self.name.replace("/", "").replace(" ", "").replace("-", "")
+        return (
+            self.name.replace("/", "")
+            .replace(" ", "")
+            .replace("-", "")
+            .replace(".", "")
+        )
 
     @property
     def namespace(self) -> str:
-        return snake_case(self.camel_case_name)
+        """esp_matter::cluster:: namespace"""
+        return (
+            self.name.replace("/", "_")
+            .replace(" ", "_")
+            .replace("-", "")
+            .replace(".", "")
+            .lower()
+        )
+
+
+@dataclass
+class _ClusterInclude:
+    included_cluster: Cluster
+    required: bool
+    feature_codes: tuple[str, ...] = ()
+    required_attribute_names: tuple[str, ...] = ()  # By "define" value
+    required_command_names: tuple[str, ...] = ()  # By CamelCase name
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        cluster = CLUSTERS_BY_ID[data["id"]]
+        return cls(
+            included_cluster=cluster,
+            required=data.get("required", False),
+            feature_codes=data.get("features", ()),
+            required_attribute_names=data.get("required_attributes", ()),
+            required_command_names=data.get("required_commands", ()),
+        )
+
+    @property
+    def cluster(self) -> Cluster:
+        # TODO: also update feature, attribute, command info
+        return replace(self.included_cluster, required=self.required)
+
+    @property
+    def server_attributes(self) -> tuple[Attribute, ...]:
+        attrs = []
+        for attr in self.cluster.server_attributes:
+            if attr.optional and attr.define in self.required_attribute_names:
+                attrs.append(replace(attr, optional=False))
+            else:
+                attrs.append(attr)
+        return tuple(attrs)
+
+    @property
+    def client_attributes(self) -> tuple[Attribute, ...]:
+        attrs = []
+        for attr in self.cluster.client_attributes:
+            if attr.optional and attr.define in self.required_attribute_names:
+                attrs.append(replace(attr, optional=False))
+            else:
+                attrs.append(attr)
+        return tuple(attrs)
 
 
 @dataclass(frozen=True, slots=True)
@@ -252,7 +320,8 @@ class DeviceType:
     id: int
     name: str  # snake_case
     revision: int
-    clusters: tuple[Cluster, ...] = ()
+    _server_cluster_includes: tuple[_ClusterInclude, ...] = ()
+    _client_cluster_includes: tuple[_ClusterInclude, ...] = ()
 
     @classmethod
     def from_dict(cls, data: dict):
@@ -260,8 +329,21 @@ class DeviceType:
             name=data["name"],
             id=data["id"],
             revision=data["revision"],
-            clusters=tuple([Cluster.from_dict(c) for c in data["clusters"]]),
+            _server_cluster_includes=tuple(
+                [_ClusterInclude.from_dict(c) for c in data["server_clusters"]]
+            ),
+            _client_cluster_includes=tuple(
+                [_ClusterInclude.from_dict(c) for c in data["client_clusters"]]
+            ),
         )
+
+    @property
+    def server_clusters(self) -> tuple[Cluster, ...]:
+        return tuple(include.cluster for include in self._server_cluster_includes)
+
+    @property
+    def client_clusters(self) -> tuple[Cluster, ...]:
+        return tuple(include.cluster for include in self._client_cluster_includes)
 
     @property
     def namespace(self) -> str:
@@ -272,14 +354,16 @@ class DeviceType:
         return self.name
 
     @property
-    def sensor_attributes(self) -> list[SensorAttribute]:
+    def sensor_attributes(self) -> tuple[tuple[str, str, SensorAttribute], ...]:
         sensor_attributes = []
-        for cluster in self.clusters:
-            for sensor_attribute in SENSOR_ATTRIBUTES.get(
+        for cluster in self.server_clusters:
+            for attribute_name, sensor_attribute in SENSOR_ATTRIBUTES.get(
                 cluster.camel_case_name, {}
-            ).values():
-                sensor_attributes.append(sensor_attribute)
-        return sensor_attributes
+            ).items():
+                sensor_attributes.append(
+                    (cluster.camel_case_name, attribute_name, sensor_attribute)
+                )
+        return tuple(sensor_attributes)
 
     @property
     def schema_key(self):
@@ -288,7 +372,7 @@ class DeviceType:
     @property
     def schema(self):
         sensor_attributes: dict[str, SensorAttribute] = {}
-        for sensor_attribute in self.sensor_attributes:
+        for _, _, sensor_attribute in self.sensor_attributes:
             sensor_attributes[sensor_attribute.conf_key] = sensor_attribute
 
         schema = {
@@ -309,15 +393,23 @@ def _load_commands(
     commands_file: Path = DATA_MODEL_DIR / "commands.json",
 ) -> tuple[Command, ...]:
     commands: list[Command] = []
-
     with open(commands_file, "r") as file:
         contents = json.load(file)
-
     for cluster_name, commands_data in contents.items():
         for name, data in commands_data.items():
             commands.append(Command.from_dict(cluster_name, name, data))
-
     return tuple(commands)
+
+
+def _load_clusters(
+    clusters_file: Path = DATA_MODEL_DIR / "clusters.json",
+) -> tuple[Cluster, ...]:
+    clusters: list[Cluster] = []
+    with open(clusters_file, "r") as file:
+        contents = json.load(file)
+    for clusters_data in contents:
+        clusters.append(Cluster.from_dict(clusters_data))
+    return tuple(clusters)
 
 
 def _load_device_types(
@@ -337,6 +429,14 @@ def _load_device_types(
 # Commands by ClusterName
 COMMANDS: tuple[Command, ...] = _load_commands()
 
+# Cluster
+CLUSTERS: tuple[Cluster, ...] = _load_clusters()
+CLUSTERS_BY_ID: dict[int, Cluster] = {cluster.id: cluster for cluster in CLUSTERS}
+CLUSTERS_BY_NAME: dict[str, Cluster] = {
+    cluster.camel_case_name: cluster for cluster in CLUSTERS
+}
+
+# Device types
 DEVICE_TYPES: tuple[DeviceType, ...] = _load_device_types()
 DEVICE_TYPES_BY_NAME: dict[str, DeviceType] = {
     device_type.name: device_type for device_type in DEVICE_TYPES
@@ -347,12 +447,3 @@ DEVICE_TYPES_BY_ID: dict[int, DeviceType] = {
 DEVICE_TYPES_BY_CONF_KEY: dict[str, DeviceType] = {
     device_type.conf_key: device_type for device_type in DEVICE_TYPES
 }
-
-CLUSTER_ID_TO_NAME = {}
-CLUSTER_NAME_TO_ID = {}
-CLUSTER_SDKCONFIG_OPTIONS: set[str] = set()
-for dt in DEVICE_TYPES:
-    for c in dt.clusters:
-        CLUSTER_ID_TO_NAME[c.id] = c.camel_case_name
-        CLUSTER_NAME_TO_ID[c.camel_case_name] = c.id
-        CLUSTER_SDKCONFIG_OPTIONS.add(c.sdkconfig_option)
