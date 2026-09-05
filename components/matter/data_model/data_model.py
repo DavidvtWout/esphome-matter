@@ -4,6 +4,8 @@ import esphome.config_validation as cv
 import json
 from dataclasses import dataclass, field
 from esphome import automation
+from esphome.const import CONF_LIGHT_ID
+from esphome.components import light
 
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
 from ..util import snake_case, maybe_empty
@@ -209,8 +211,8 @@ class Cluster:
             id=data["id"],
             name=data["name"],
             revision=data.get("revision", 1),
-            client=data.get("client"),
-            server=data.get("server"),
+            client=data.get("client") == "true",
+            server=data.get("server") == "true",
             attributes=tuple([Attribute.from_dict(a) for a in data["attributes"]]),
         )
 
@@ -260,6 +262,10 @@ class DeviceType:
             cv.Optional(conf_key): cv.use_id(sensor_attribute.sensor_type)
             for conf_key, sensor_attribute in sensor_attributes.items()
         }
+
+        # TODO: replace with something better
+        if self.name.endswith("light"):
+            schema[cv.Optional(CONF_LIGHT_ID)] = cv.use_id(light.LightState)
 
         if len(sensor_attributes) == 1:
             schema = automation.maybe_conf(next(iter(sensor_attributes)), schema)
