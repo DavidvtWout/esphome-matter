@@ -1,12 +1,12 @@
-import re
-from collections import defaultdict
-from pathlib import Path
-from xml.etree import ElementTree
-
 import argparse
 import json
+import re
+from collections import defaultdict
 from dataclasses import dataclass, field
+from pathlib import Path
+from pyexpat import features
 from typing import Any
+from xml.etree import ElementTree
 
 
 def snake_case(name: str) -> str:
@@ -26,6 +26,10 @@ def camel_case(name: str) -> str:
 
 def filter_none(data: dict) -> dict:
     return {k: v for k, v in data.items() if v is not None}
+
+
+def filter_empty(data: dict) -> dict:
+    return {k: v for k, v in data.items() if v}
 
 
 def format_counter(data: dict[str, int]) -> str:
@@ -103,12 +107,20 @@ class Command:
 
 
 @dataclass
+class Feature:
+    bit: int
+    code: str
+    name: str
+    summary: str
+
+
+@dataclass
 class Cluster:
     id: int
     name: str  # CamelCase
     description: str
     revision: int | None = None
-    # features: list
+    features: list[Feature] = field(default_factory=list)
     attributes: list[Attribute] = field(default_factory=list)
     commands: list[Command] = field(default_factory=list)
 
@@ -122,7 +134,7 @@ class DeviceCluster:
     server: bool
     client_locked: bool
     server_locked: bool
-    # features: list
+    features: list
     required_attributes: list
     required_commands: list
 
@@ -151,7 +163,9 @@ def parse_device_type_elem(elem) -> DeviceType:
             server=cluster_elem.get("server") == "true",
             client_locked=cluster_elem.get("clientLocked") == "true",
             server_locked=cluster_elem.get("serverLocked") == "true",
-            # "features= [e.attrib["code"] for e in cluster_elem.findall("./features/feature")],
+            features=[
+                e.attrib["code"] for e in cluster_elem.findall("./features/feature")
+            ],
             required_attributes=[
                 e.text for e in cluster_elem.findall("./requireAttribute")
             ],  # Refers to "define" attr in cluster attributes
@@ -223,7 +237,17 @@ def parse_cluster_elem(elem) -> Cluster:
     if (rev_elem := elem.find('globalAttribute[@code="0xFFFD"]')) is not None:
         cluster.revision = int(rev_elem.attrib["value"])
 
-    # TODO: features
+    features: list[Feature] = []
+    for feature_elem in elem.findall("./features/feature"):
+        features.append(
+            Feature(
+                bit=int(feature_elem.get("bit")),
+                code=feature_elem.get("code"),
+                name=feature_elem.get("name"),
+                summary=feature_elem.get("summary"),
+            )
+        )
+    cluster.features = features
 
     attributes: list[Attribute] = []
     for attribute_elem in elem.findall("./attribute"):
@@ -438,6 +462,46 @@ def post_process_commands(
     return commands
 
 
+def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
+    clusters = []
+    for cluster in sorted(raw_clusters, key=lambda c: c.id):
+        cluster_data = {
+            "id": cluster.id,
+            "name": cluster.name,
+            "revision": cluster.revision,
+        }
+
+        server_attributes = []
+        client_attributes = []
+
+        for attr in cluster.attributes:
+            attribute_data = filter_none(
+                {
+                    "id": attr.code,
+                    "define": attr.define,
+                    "name": attr.name,
+                    "type": attr.type,
+                    "min": attr.min,
+                    "max": attr.max,
+                    "writable": attr.writable,
+                    "optional": attr.optional,
+                    "default": attr.default,
+                }
+            )
+            if attr.side in ("server", "either"):
+                server_attributes.append(attribute_data)
+            if attr.side in ("client", "either"):
+                client_attributes.append(attribute_data)
+
+        if server_attributes:
+            cluster_data["server_attributes"] = server_attributes
+        if client_attributes:
+            cluster_data["client_attributes"] = client_attributes
+
+        clusters.append(cluster_data)
+    return clusters
+
+
 def post_process_device_types(
     raw_device_types: list[DeviceType], raw_clusters: list[Cluster]
 ) -> list[dict]:
@@ -451,41 +515,45 @@ def post_process_device_types(
             "name": raw_device_type.name,
             "revision": raw_device_type.revision,
         }
-        device_clusters = []
+        server_clusters = []
+        client_clusters = []
         for cluster_config in raw_device_type.clusters:
             cluster = raw_clusters_by_name.get(cluster_config.name)
             if not cluster:
                 print(f"WARNING: {cluster_config.name} cluster not found!")
                 continue
 
-            # TODO: use required_attributes and features
-            attributes = []
-            for attribute in cluster.attributes:
-                attributes.append(
-                    {
-                        "id": attribute.code,
-                        "name": attribute.name,
-                        "type": attribute.type,  # TODO: resolve enum types
-                    }
+            if cluster_config.server:
+                server_clusters.append(
+                    filter_empty(
+                        {
+                            "id": cluster.id,
+                            "name": cluster_config.name,
+                            "required": cluster_config.server_locked,
+                            "features": cluster_config.features,
+                            "required_attributes": cluster_config.required_attributes,
+                            "required_commands": cluster_config.required_commands,
+                        }
+                    )
+                )
+            if cluster_config.client:
+                client_clusters.append(
+                    filter_empty(
+                        {
+                            "id": cluster.id,
+                            "name": cluster_config.name,
+                            "required": cluster_config.client_locked,
+                            "features": cluster_config.features,
+                            "required_attributes": cluster_config.required_attributes,
+                            "required_commands": cluster_config.required_commands,
+                        }
+                    )
                 )
 
-            device_clusters.append(
-                filter_none(
-                    {
-                        "id": cluster.id,
-                        "name": cluster_config.name,
-                        "revision": cluster.revision,
-                        "client": True if cluster_config.client else None,
-                        "server": True if cluster_config.server else None,
-                        "attributes": attributes,
-                        "commands": [
-                            c.name for c in cluster.commands
-                        ],  # TODO: process required
-                    }
-                )
-            )
-        device_clusters.sort(key=lambda c: c["id"])
-        device_type["clusters"] = device_clusters
+        server_clusters.sort(key=lambda c: c["id"])
+        device_type["server_clusters"] = server_clusters
+        client_clusters.sort(key=lambda c: c["id"])
+        device_type["client_clusters"] = client_clusters
         device_types.append(device_type)
 
     device_types.sort(key=lambda d: d["id"])
@@ -603,11 +671,15 @@ def main():
     )
 
     commands = post_process_commands(raw_clusters, enums, bitmaps, structs)
+    clusters = post_process_clusters(raw_clusters)
     device_types = post_process_device_types(raw_device_types, raw_clusters)
     fixup(device_types)
 
     with open(args.output_path / "device_types.json", "w") as file:
         json.dump(device_types, file, indent=2)
+
+    with open(args.output_path / "clusters.json", "w") as file:
+        json.dump(clusters, file, indent=2)
 
     with open(args.output_path / "commands.json", "w") as file:
         json.dump(commands, file, indent=2)

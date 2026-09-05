@@ -2,6 +2,7 @@ CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
 CONF_MATTER = "matter"
 CONF_ENDPOINTS = "endpoints"
+CONF_EXTRA_CLUSTERS = "extra_clusters"
 CONF_VENDOR_NAME = "vendor_name"
 CONF_PRODUCT_NAME = "product_name"
 
