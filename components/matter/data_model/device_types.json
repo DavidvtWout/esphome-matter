@@ -1,0 +1,4224 @@
+[
+  {
+    "id": 10,
+    "name": "door_lock",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 257,
+        "name": "Door Lock",
+        "required": true,
+        "features": [
+          "USR",
+          ""
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 11,
+    "name": "door_lock_controller",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 257,
+        "name": "Door Lock",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "aggregator",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 15,
+    "name": "generic_switch",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 59,
+        "name": "Switch",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 17,
+    "name": "power_source",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 47,
+        "name": "Power Source",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 18,
+    "name": "ota_requestor",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 42,
+        "name": "OTA Software Update Requestor",
+        "required": true
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 41,
+        "name": "OTA Software Update Provider",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "bridged_node",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 57,
+        "name": "Bridged Device Basic Information",
+        "required": true,
+        "required_attributes": [
+          "REACHABLE"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 20,
+    "name": "ota_provider",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 41,
+        "name": "OTA Software Update Provider",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 21,
+    "name": "contact_sensor",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 69,
+        "name": "Boolean State",
+        "required": true,
+        "required_attributes": [
+          "STATE_VALUE"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 22,
+    "name": "root_node",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 31,
+        "name": "Access Control",
+        "required": true,
+        "required_attributes": [
+          "ACL"
+        ]
+      },
+      {
+        "id": 40,
+        "name": "Basic Information",
+        "required": true,
+        "required_attributes": [
+          "DATA_MODEL_REVISION",
+          "VENDOR_NAME",
+          "VENDOR_ID",
+          "PRODUCT_NAME",
+          "PRODUCT_ID",
+          "NODE_LABEL",
+          "LOCATION",
+          "HARDWARE_VERSION",
+          "HARDWARE_VERSION_STRING",
+          "SOFTWARE_VERSION",
+          "SOFTWARE_VERSION_STRING"
+        ]
+      },
+      {
+        "id": 43,
+        "name": "Localization Configuration"
+      },
+      {
+        "id": 48,
+        "name": "General Commissioning",
+        "required": true,
+        "required_commands": [
+          "SetRegulatoryConfig"
+        ]
+      },
+      {
+        "id": 49,
+        "name": "Network Commissioning",
+        "required": true
+      },
+      {
+        "id": 51,
+        "name": "General Diagnostics",
+        "required": true,
+        "required_attributes": [
+          "UP_TIME"
+        ]
+      },
+      {
+        "id": 60,
+        "name": "Administrator Commissioning",
+        "required": true
+      },
+      {
+        "id": 62,
+        "name": "Operational Credentials",
+        "required": true
+      },
+      {
+        "id": 63,
+        "name": "Group Key Management",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 23,
+    "name": "solar_power",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "CLIENT_LIST",
+          "DEVICE_TYPE_LIST",
+          "PARTS_LIST",
+          "SERVER_LIST"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 24,
+    "name": "battery_storage",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "CLIENT_LIST",
+          "DEVICE_TYPE_LIST",
+          "PARTS_LIST",
+          "SERVER_LIST"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 25,
+    "name": "secondary_network_interface",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 49,
+        "name": "Network Commissioning",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 34,
+    "name": "speaker",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 35,
+    "name": "casting_video_player",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1284,
+        "name": "Channel"
+      },
+      {
+        "id": 1285,
+        "name": "Target Navigator"
+      },
+      {
+        "id": 1286,
+        "name": "Media Playback",
+        "required": true
+      },
+      {
+        "id": 1287,
+        "name": "Media Input"
+      },
+      {
+        "id": 1288,
+        "name": "Low Power"
+      },
+      {
+        "id": 1289,
+        "name": "Keypad Input",
+        "required": true
+      },
+      {
+        "id": 1290,
+        "name": "Content Launcher",
+        "required": true
+      },
+      {
+        "id": 1291,
+        "name": "Audio Output"
+      },
+      {
+        "id": 1292,
+        "name": "Application Launcher",
+        "features": [
+          "AP"
+        ]
+      },
+      {
+        "id": 1294,
+        "name": "Account Login"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 36,
+    "name": "content_app",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1284,
+        "name": "Channel"
+      },
+      {
+        "id": 1285,
+        "name": "Target Navigator"
+      },
+      {
+        "id": 1286,
+        "name": "Media Playback"
+      },
+      {
+        "id": 1289,
+        "name": "Keypad Input",
+        "required": true
+      },
+      {
+        "id": 1290,
+        "name": "Content Launcher"
+      },
+      {
+        "id": 1292,
+        "name": "Application Launcher",
+        "required": true,
+        "features": [
+          "AP"
+        ]
+      },
+      {
+        "id": 1293,
+        "name": "Application Basic",
+        "required": true
+      },
+      {
+        "id": 1294,
+        "name": "Account Login"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 39,
+    "name": "mode_select",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 80,
+        "name": "Mode Select",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 40,
+    "name": "basic_video_player",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1284,
+        "name": "Channel"
+      },
+      {
+        "id": 1285,
+        "name": "Target Navigator"
+      },
+      {
+        "id": 1286,
+        "name": "Media Playback",
+        "required": true
+      },
+      {
+        "id": 1287,
+        "name": "Media Input"
+      },
+      {
+        "id": 1288,
+        "name": "Low Power"
+      },
+      {
+        "id": 1289,
+        "name": "Keypad Input",
+        "required": true
+      },
+      {
+        "id": 1291,
+        "name": "Audio Output"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 41,
+    "name": "casting_video_client",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 8,
+        "name": "Level Control"
+      },
+      {
+        "id": 1284,
+        "name": "Channel"
+      },
+      {
+        "id": 1285,
+        "name": "Target Navigator"
+      },
+      {
+        "id": 1286,
+        "name": "Media Playback"
+      },
+      {
+        "id": 1287,
+        "name": "Media Input"
+      },
+      {
+        "id": 1288,
+        "name": "Low Power"
+      },
+      {
+        "id": 1289,
+        "name": "Keypad Input",
+        "required": true
+      },
+      {
+        "id": 1290,
+        "name": "Content Launcher",
+        "required": true
+      },
+      {
+        "id": 1291,
+        "name": "Audio Output"
+      },
+      {
+        "id": 1292,
+        "name": "Application Launcher"
+      },
+      {
+        "id": 1293,
+        "name": "Application Basic",
+        "required": true
+      },
+      {
+        "id": 1294,
+        "name": "Account Login"
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "name": "video_remote_control",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 8,
+        "name": "Level Control"
+      },
+      {
+        "id": 1284,
+        "name": "Channel"
+      },
+      {
+        "id": 1285,
+        "name": "Target Navigator"
+      },
+      {
+        "id": 1286,
+        "name": "Media Playback",
+        "required": true
+      },
+      {
+        "id": 1287,
+        "name": "Media Input"
+      },
+      {
+        "id": 1288,
+        "name": "Low Power"
+      },
+      {
+        "id": 1289,
+        "name": "Keypad Input",
+        "required": true
+      },
+      {
+        "id": 1290,
+        "name": "Content Launcher"
+      },
+      {
+        "id": 1291,
+        "name": "Audio Output"
+      },
+      {
+        "id": 1292,
+        "name": "Application Launcher"
+      },
+      {
+        "id": 1294,
+        "name": "Account Login"
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "name": "fan",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true,
+        "required_attributes": [
+          "GROUP_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddGroup",
+          "AddGroupResponse",
+          "ViewGroup",
+          "ViewGroupResponse",
+          "GetGroupMembership",
+          "GetGroupMembershipResponse",
+          "RemoveGroup",
+          "RemoveGroupResponse",
+          "RemoveAllGroups",
+          "AddGroupIfIdentifying"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 514,
+        "name": "Fan Control",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 44,
+    "name": "air_quality_sensor",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 91,
+        "name": "Air Quality",
+        "required": true
+      },
+      {
+        "id": 1026,
+        "name": "Temperature Measurement"
+      },
+      {
+        "id": 1029,
+        "name": "Relative Humidity Measurement"
+      },
+      {
+        "id": 1036,
+        "name": "Carbon Monoxide Concentration Measurement"
+      },
+      {
+        "id": 1037,
+        "name": "Carbon Dioxide Concentration Measurement"
+      },
+      {
+        "id": 1043,
+        "name": "Nitrogen Dioxide Concentration Measurement"
+      },
+      {
+        "id": 1045,
+        "name": "Ozone Concentration Measurement"
+      },
+      {
+        "id": 1066,
+        "name": "PM2.5 Concentration Measurement"
+      },
+      {
+        "id": 1067,
+        "name": "Formaldehyde Concentration Measurement"
+      },
+      {
+        "id": 1068,
+        "name": "PM1 Concentration Measurement"
+      },
+      {
+        "id": 1069,
+        "name": "PM10 Concentration Measurement"
+      },
+      {
+        "id": 1070,
+        "name": "Total Volatile Organic Compounds Concentration Measurement"
+      },
+      {
+        "id": 1071,
+        "name": "Radon Concentration Measurement"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 45,
+    "name": "air_purifier",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 113,
+        "name": "HEPA Filter Monitoring"
+      },
+      {
+        "id": 114,
+        "name": "Activated Carbon Filter Monitoring"
+      },
+      {
+        "id": 514,
+        "name": "Fan Control",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 65,
+    "name": "water_freeze_detector",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 69,
+        "name": "Boolean State",
+        "required": true
+      },
+      {
+        "id": 128,
+        "name": "Boolean State Configuration"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 66,
+    "name": "water_valve",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 129,
+        "name": "Valve Configuration and Control",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 67,
+    "name": "water_leak_detector",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 69,
+        "name": "Boolean State",
+        "required": true
+      },
+      {
+        "id": 128,
+        "name": "Boolean State Configuration"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 68,
+    "name": "rain_sensor",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 69,
+        "name": "Boolean State",
+        "required": true
+      },
+      {
+        "id": 128,
+        "name": "Boolean State Configuration"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 69,
+    "name": "soil_sensor",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 1072,
+        "name": "Soil Measurement",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 112,
+    "name": "refrigerator",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 113,
+    "name": "temperature_controlled_cabinet",
+    "revision": 5,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 86,
+        "name": "Temperature Control",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 114,
+    "name": "room_air_conditioner",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "DF"
+        ],
+        "required_attributes": [
+          "ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 513,
+        "name": "Thermostat",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 115,
+    "name": "laundry_washer",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 96,
+        "name": "Operational State",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 116,
+    "name": "robotic_vacuum_cleaner",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 84,
+        "name": "RVC Run Mode",
+        "required": true
+      },
+      {
+        "id": 97,
+        "name": "RVC Operational State",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 117,
+    "name": "dishwasher",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 96,
+        "name": "Operational State",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 118,
+    "name": "smoke_co_alarm",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 92,
+        "name": "Smoke CO Alarm",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 119,
+    "name": "cook_surface",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "features": [
+          "OFFONLY"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 86,
+        "name": "Temperature Control"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 120,
+    "name": "cooktop",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "OFFONLY"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 121,
+    "name": "microwave_oven",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 94,
+        "name": "Microwave Oven Mode",
+        "required": true
+      },
+      {
+        "id": 95,
+        "name": "Microwave Oven Control",
+        "required": true
+      },
+      {
+        "id": 96,
+        "name": "Operational State",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 122,
+    "name": "extractor_hood",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 514,
+        "name": "Fan Control",
+        "required": true,
+        "features": [
+          "RCK",
+          "WND",
+          "DIR"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 123,
+    "name": "oven",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 124,
+    "name": "laundry_dryer",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 96,
+        "name": "Operational State",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 125,
+    "name": "humidifier_dehumidifier",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 517,
+        "name": "Humidistat",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 144,
+    "name": "network_infrastructure_manager",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 53,
+        "name": "Thread Network Diagnostics",
+        "required": true
+      },
+      {
+        "id": 1105,
+        "name": "Wi-Fi Network Management",
+        "required": true
+      },
+      {
+        "id": 1106,
+        "name": "Thread Border Router Management",
+        "required": true
+      },
+      {
+        "id": 1107,
+        "name": "Thread Network Directory",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 145,
+    "name": "thread_border_router",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 53,
+        "name": "Thread Network Diagnostics",
+        "required": true
+      },
+      {
+        "id": 1106,
+        "name": "Thread Border Router Management",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 256,
+    "name": "on_off_light",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true,
+        "required_attributes": [
+          "GROUP_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddGroup",
+          "AddGroupResponse",
+          "ViewGroup",
+          "ViewGroupResponse",
+          "GetGroupMembership",
+          "GetGroupMembershipResponse",
+          "RemoveGroup",
+          "RemoveGroupResponse",
+          "RemoveAllGroups",
+          "AddGroupIfIdentifying"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "LT"
+        ],
+        "required_attributes": [
+          "ON_OFF",
+          "GLOBAL_SCENE_CONTROL",
+          "ON_TIME",
+          "OFF_WAIT_TIME",
+          "START_UP_ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle",
+          "OffWithEffect",
+          "OnWithRecallGlobalScene",
+          "OnWithTimedOff"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true,
+        "required_attributes": [
+          "SCENE_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddScene",
+          "AddSceneResponse",
+          "ViewScene",
+          "ViewSceneResponse",
+          "RemoveScene",
+          "RemoveSceneResponse",
+          "RemoveAllScenes",
+          "RemoveAllScenesResponse",
+          "StoreScene",
+          "StoreSceneResponse",
+          "RecallScene",
+          "GetSceneMembership",
+          "GetSceneMembershipResponse",
+          "CopyScene",
+          "CopySceneResponse"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 257,
+    "name": "dimmable_light",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true,
+        "required_attributes": [
+          "GROUP_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddGroup",
+          "AddGroupResponse",
+          "ViewGroup",
+          "ViewGroupResponse",
+          "GetGroupMembership",
+          "GetGroupMembershipResponse",
+          "RemoveGroup",
+          "RemoveGroupResponse",
+          "RemoveAllGroups",
+          "AddGroupIfIdentifying"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "LT"
+        ],
+        "required_attributes": [
+          "ON_OFF",
+          "GLOBAL_SCENE_CONTROL",
+          "ON_TIME",
+          "OFF_WAIT_TIME",
+          "START_UP_ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle",
+          "OffWithEffect",
+          "OnWithRecallGlobalScene",
+          "OnWithTimedOff"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true,
+        "features": [
+          "LT",
+          "OO"
+        ],
+        "required_attributes": [
+          "CURRENT_LEVEL",
+          "OPTIONS",
+          "LEVEL_CONTROL_REMAINING_TIME",
+          "ON_LEVEL",
+          "START_UP_CURRENT_LEVEL"
+        ],
+        "required_commands": [
+          "MoveToLevel",
+          "Move",
+          "Step",
+          "Stop",
+          "MoveToLevelWithOnOff",
+          "MoveWithOnOff",
+          "StepWithOnOff",
+          "StopWithOnOff"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true,
+        "required_attributes": [
+          "SCENE_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddScene",
+          "AddSceneResponse",
+          "ViewScene",
+          "ViewSceneResponse",
+          "RemoveScene",
+          "RemoveSceneResponse",
+          "RemoveAllScenes",
+          "RemoveAllScenesResponse",
+          "StoreScene",
+          "StoreSceneResponse",
+          "RecallScene",
+          "GetSceneMembership",
+          "GetSceneMembershipResponse",
+          "CopyScene",
+          "CopySceneResponse"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 259,
+    "name": "on_off_light_switch",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 260,
+    "name": "dimmer_switch",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 261,
+    "name": "color_dimmer_switch",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true
+      },
+      {
+        "id": 768,
+        "name": "Color Control",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 262,
+    "name": "light_sensor",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1024,
+        "name": "Illuminance Measurement",
+        "required": true,
+        "required_attributes": [
+          "ILLUM_MEASURED_VALUE",
+          "ILLUM_MIN_MEASURED_VALUE",
+          "ILLUM_MAX_MEASURED_VALUE"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 263,
+    "name": "occupancy_sensor",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1030,
+        "name": "Occupancy Sensing",
+        "required": true,
+        "required_attributes": [
+          "OCCUPANCY",
+          "OCCUPANCY_SENSOR_TYPE"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 266,
+    "name": "on_off_plug_in_unit",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true,
+        "required_attributes": [
+          "GROUP_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddGroup",
+          "AddGroupResponse",
+          "ViewGroup",
+          "ViewGroupResponse",
+          "GetGroupMembership",
+          "GetGroupMembershipResponse",
+          "RemoveGroup",
+          "RemoveGroupResponse",
+          "RemoveAllGroups",
+          "AddGroupIfIdentifying"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "LT"
+        ],
+        "required_attributes": [
+          "ON_OFF",
+          "GLOBAL_SCENE_CONTROL",
+          "ON_TIME",
+          "OFF_WAIT_TIME",
+          "START_UP_ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle",
+          "OffWithEffect",
+          "OnWithRecallGlobalScene",
+          "OnWithTimedOff"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true,
+        "required_attributes": [
+          "SCENE_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddScene",
+          "AddSceneResponse",
+          "ViewScene",
+          "ViewSceneResponse",
+          "RemoveScene",
+          "RemoveSceneResponse",
+          "RemoveAllScenes",
+          "RemoveAllScenesResponse",
+          "StoreScene",
+          "StoreSceneResponse",
+          "RecallScene",
+          "GetSceneMembership",
+          "GetSceneMembershipResponse",
+          "CopyScene",
+          "CopySceneResponse"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 267,
+    "name": "dimmable_plug_in_unit",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true,
+        "required_attributes": [
+          "GROUP_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddGroup",
+          "AddGroupResponse",
+          "ViewGroup",
+          "ViewGroupResponse",
+          "GetGroupMembership",
+          "GetGroupMembershipResponse",
+          "RemoveGroup",
+          "RemoveGroupResponse",
+          "RemoveAllGroups",
+          "AddGroupIfIdentifying"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "LT"
+        ],
+        "required_attributes": [
+          "ON_OFF",
+          "GLOBAL_SCENE_CONTROL",
+          "ON_TIME",
+          "OFF_WAIT_TIME",
+          "START_UP_ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle",
+          "OffWithEffect",
+          "OnWithRecallGlobalScene",
+          "OnWithTimedOff"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true,
+        "features": [
+          "OO",
+          "LT"
+        ],
+        "required_attributes": [
+          "CURRENT_LEVEL",
+          "OPTIONS",
+          "LEVEL_CONTROL_REMAINING_TIME",
+          "ON_LEVEL",
+          "START_UP_CURRENT_LEVEL"
+        ],
+        "required_commands": [
+          "MoveToLevel",
+          "Move",
+          "Step",
+          "Stop",
+          "MoveToLevelWithOnOff",
+          "MoveWithOnOff",
+          "StepWithOnOff",
+          "StopWithOnOff"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true,
+        "required_attributes": [
+          "SCENE_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddScene",
+          "AddSceneResponse",
+          "ViewScene",
+          "ViewSceneResponse",
+          "RemoveScene",
+          "RemoveSceneResponse",
+          "RemoveAllScenes",
+          "RemoveAllScenesResponse",
+          "StoreScene",
+          "StoreSceneResponse",
+          "RecallScene",
+          "GetSceneMembership",
+          "GetSceneMembershipResponse",
+          "CopyScene",
+          "CopySceneResponse"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 268,
+    "name": "color_temperature_light",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true,
+        "required_attributes": [
+          "GROUP_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddGroup",
+          "AddGroupResponse",
+          "ViewGroup",
+          "ViewGroupResponse",
+          "GetGroupMembership",
+          "GetGroupMembershipResponse",
+          "RemoveGroup",
+          "RemoveGroupResponse",
+          "RemoveAllGroups",
+          "AddGroupIfIdentifying"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "LT"
+        ],
+        "required_attributes": [
+          "ON_OFF",
+          "GLOBAL_SCENE_CONTROL",
+          "ON_TIME",
+          "OFF_WAIT_TIME",
+          "START_UP_ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle",
+          "OffWithEffect",
+          "OnWithRecallGlobalScene",
+          "OnWithTimedOff"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true,
+        "features": [
+          "OO",
+          "LT"
+        ],
+        "required_attributes": [
+          "CURRENT_LEVEL",
+          "OPTIONS",
+          "LEVEL_CONTROL_REMAINING_TIME",
+          "ON_LEVEL",
+          "START_UP_CURRENT_LEVEL"
+        ],
+        "required_commands": [
+          "MoveToLevel",
+          "Move",
+          "Step",
+          "Stop",
+          "MoveToLevelWithOnOff",
+          "MoveWithOnOff",
+          "StepWithOnOff",
+          "StopWithOnOff"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true,
+        "required_attributes": [
+          "SCENE_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddScene",
+          "AddSceneResponse",
+          "ViewScene",
+          "ViewSceneResponse",
+          "RemoveScene",
+          "RemoveSceneResponse",
+          "RemoveAllScenes",
+          "RemoveAllScenesResponse",
+          "StoreScene",
+          "StoreSceneResponse",
+          "RecallScene",
+          "GetSceneMembership",
+          "GetSceneMembershipResponse",
+          "CopyScene",
+          "CopySceneResponse"
+        ]
+      },
+      {
+        "id": 768,
+        "name": "Color Control",
+        "required": true,
+        "features": [
+          "CT"
+        ],
+        "required_attributes": [
+          "COLOR_CONTROL_REMAINING_TIME",
+          "COLOR_CONTROL_COLOR_TEMPERATURE",
+          "COLOR_CONTROL_COLOR_MODE",
+          "COLOR_CONTROL_OPTIONS",
+          "COLOR_CONTROL_ENHANCED_COLOR_MODE",
+          "COLOR_CONTROL_NUMBER_OF_PRIMARIES",
+          "COLOR_CONTROL_COLOR_CAPABILITIES",
+          "COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MIN",
+          "COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MAX",
+          "COLOR_CONTROL_TEMPERATURE_LEVEL_MIN_MIREDS",
+          "START_UP_COLOR_TEMPERATURE_MIREDS"
+        ],
+        "required_commands": [
+          "MoveToColorTemperature",
+          "StopMoveStep",
+          "MoveColorTemperature",
+          "StepColorTemperature"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 269,
+    "name": "extended_color_light",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true,
+        "required_attributes": [
+          "GROUP_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddGroup",
+          "AddGroupResponse",
+          "ViewGroup",
+          "ViewGroupResponse",
+          "GetGroupMembership",
+          "GetGroupMembershipResponse",
+          "RemoveGroup",
+          "RemoveGroupResponse",
+          "RemoveAllGroups",
+          "AddGroupIfIdentifying"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "LT"
+        ],
+        "required_attributes": [
+          "ON_OFF",
+          "GLOBAL_SCENE_CONTROL",
+          "ON_TIME",
+          "OFF_WAIT_TIME",
+          "START_UP_ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle",
+          "OffWithEffect",
+          "OnWithRecallGlobalScene",
+          "OnWithTimedOff"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true,
+        "features": [
+          "OO",
+          "LT"
+        ],
+        "required_attributes": [
+          "CURRENT_LEVEL",
+          "OPTIONS",
+          "LEVEL_CONTROL_REMAINING_TIME",
+          "ON_LEVEL",
+          "START_UP_CURRENT_LEVEL"
+        ],
+        "required_commands": [
+          "MoveToLevel",
+          "Move",
+          "Step",
+          "Stop",
+          "MoveToLevelWithOnOff",
+          "MoveWithOnOff",
+          "StepWithOnOff",
+          "StopWithOnOff"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true,
+        "required_attributes": [
+          "SCENE_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddScene",
+          "AddSceneResponse",
+          "ViewScene",
+          "ViewSceneResponse",
+          "RemoveScene",
+          "RemoveSceneResponse",
+          "RemoveAllScenes",
+          "RemoveAllScenesResponse",
+          "StoreScene",
+          "StoreSceneResponse",
+          "RecallScene",
+          "GetSceneMembership",
+          "GetSceneMembershipResponse",
+          "CopyScene",
+          "CopySceneResponse"
+        ]
+      },
+      {
+        "id": 768,
+        "name": "Color Control",
+        "required": true,
+        "features": [
+          "HS",
+          "EHUE",
+          "CL",
+          "XY",
+          "CT"
+        ],
+        "required_attributes": [
+          "COLOR_CONTROL_REMAINING_TIME",
+          "COLOR_CONTROL_CURRENT_X",
+          "COLOR_CONTROL_CURRENT_Y",
+          "COLOR_CONTROL_COLOR_TEMPERATURE",
+          "COLOR_CONTROL_COLOR_MODE",
+          "COLOR_CONTROL_OPTIONS",
+          "COLOR_CONTROL_NUMBER_OF_PRIMARIES",
+          "COLOR_CONTROL_ENHANCED_COLOR_MODE",
+          "COLOR_CONTROL_COLOR_CAPABILITIES",
+          "COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MIN",
+          "COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MAX",
+          "COLOR_CONTROL_TEMPERATURE_LEVEL_MIN_MIREDS",
+          "START_UP_COLOR_TEMPERATURE_MIREDS"
+        ],
+        "required_commands": [
+          "MoveToColor",
+          "MoveColor",
+          "StepColor",
+          "MoveToColorTemperature",
+          "StopMoveStep",
+          "MoveColorTemperature",
+          "StepColorTemperature"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 271,
+    "name": "mounted_on_off_control",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_commands": [
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "LT"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 272,
+    "name": "mounted_dimmable_load_control",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_commands": [
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "features": [
+          "LT"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true,
+        "features": [
+          "LT",
+          "OO"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required_commands": [
+          "CopyScene"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 304,
+    "name": "joint_fabric_administrator",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 1874,
+        "name": "Joint Fabric Datastore",
+        "required": true
+      },
+      {
+        "id": 1875,
+        "name": "Joint Fabric Administrator",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 320,
+    "name": "intercom",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 1361,
+        "name": "Camera AV Stream Management",
+        "required": true,
+        "features": [
+          "ADO",
+          "SNP",
+          "VDO"
+        ]
+      },
+      {
+        "id": 1363,
+        "name": "WebRTC Transport Provider",
+        "required": true
+      },
+      {
+        "id": 1364,
+        "name": "WebRTC Transport Requestor",
+        "required": true
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 1363,
+        "name": "WebRTC Transport Provider",
+        "required": true
+      },
+      {
+        "id": 1364,
+        "name": "WebRTC Transport Requestor",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 321,
+    "name": "audio_doorbell",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 59,
+        "name": "Switch",
+        "required": true
+      },
+      {
+        "id": 1361,
+        "name": "Camera AV Stream Management",
+        "required": true,
+        "features": [
+          "ADO",
+          "SNP",
+          "VDO"
+        ]
+      },
+      {
+        "id": 1363,
+        "name": "WebRTC Transport Provider",
+        "required": true
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 1364,
+        "name": "WebRTC Transport Requestor",
+        "required": true
+      },
+      {
+        "id": 1366,
+        "name": "Chime",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 322,
+    "name": "camera",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 1361,
+        "name": "Camera AV Stream Management",
+        "required": true,
+        "features": [
+          "ADO",
+          "SNP",
+          "VDO"
+        ]
+      },
+      {
+        "id": 1363,
+        "name": "WebRTC Transport Provider",
+        "required": true
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 1364,
+        "name": "WebRTC Transport Requestor",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 323,
+    "name": "video_doorbell",
+    "revision": 1,
+    "server_clusters": [],
+    "client_clusters": []
+  },
+  {
+    "id": 324,
+    "name": "floodlight_camera",
+    "revision": 1,
+    "server_clusters": [],
+    "client_clusters": []
+  },
+  {
+    "id": 325,
+    "name": "snapshot_camera",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 1361,
+        "name": "Camera AV Stream Management",
+        "required": true,
+        "features": [
+          "ADO",
+          "SNP",
+          "VDO"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 326,
+    "name": "chime",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 1366,
+        "name": "Chime",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 327,
+    "name": "camera_controller",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 1364,
+        "name": "WebRTC Transport Requestor",
+        "required": true
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 1363,
+        "name": "WebRTC Transport Provider",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 328,
+    "name": "doorbell",
+    "revision": null,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true
+      },
+      {
+        "id": 59,
+        "name": "Switch",
+        "required": true,
+        "features": [
+          "MS"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 1366,
+        "name": "Chime",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 336,
+    "name": "ambient_context_sensor",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 128,
+        "name": "Boolean State Configuration"
+      },
+      {
+        "id": 336,
+        "name": "Service Area",
+        "required": true
+      },
+      {
+        "id": 1030,
+        "name": "Occupancy Sensing"
+      },
+      {
+        "id": 1073,
+        "name": "Ambient Context Sensing"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 338,
+    "name": "proximity_ranger",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 1075,
+        "name": "Proximity Ranging",
+        "required": true,
+        "required_attributes": [
+          "RANGING_CAPABILITIES",
+          "SESSION_IDS"
+        ],
+        "required_commands": [
+          "StartRangingRequest",
+          "StopRangingRequest"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 514,
+    "name": "window_covering",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 258,
+        "name": "Window Covering",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 515,
+    "name": "window_covering_controller",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 258,
+        "name": "Window Covering",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 560,
+    "name": "closure",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "features": [
+          "TAGLIST"
+        ]
+      },
+      {
+        "id": 260,
+        "name": "Closure Control",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 561,
+    "name": "closure_panel",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "features": [
+          "TAGLIST"
+        ]
+      },
+      {
+        "id": 261,
+        "name": "Closure Dimension",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 574,
+    "name": "closure_controller",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 260,
+        "name": "Closure Control",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 769,
+    "name": "thermostat",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 513,
+        "name": "Thermostat",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 770,
+    "name": "temperature_sensor",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1026,
+        "name": "Temperature Measurement",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 771,
+    "name": "pump",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "required_attributes": [
+          "ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 512,
+        "name": "Pump Configuration and Control",
+        "required": true,
+        "required_attributes": [
+          "MAX_PRESSURE",
+          "MAX_SPEED",
+          "MAX_FLOW",
+          "EffectiveOperationMode",
+          "EffectiveControlMode",
+          "Capacity",
+          "OperationMode"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 772,
+    "name": "pump_controller",
+    "revision": 4,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      },
+      {
+        "id": 512,
+        "name": "Pump Configuration and Control",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 773,
+    "name": "pressure_sensor",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1027,
+        "name": "Pressure Measurement",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 774,
+    "name": "flow_sensor",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1028,
+        "name": "Flow Measurement",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 775,
+    "name": "humidity_sensor",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 1029,
+        "name": "Relative Humidity Measurement",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 777,
+    "name": "heat_pump",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "CLIENT_LIST",
+          "DEVICE_TYPE_LIST",
+          "PARTS_LIST",
+          "SERVER_LIST"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 513,
+        "name": "Thermostat",
+        "required_attributes": [
+          "CONTROL_SEQUENCE_OF_OPERATION",
+          "LOCAL_TEMPERATURE",
+          "SYSTEM_MODE"
+        ],
+        "required_commands": [
+          "SetpointRaiseLower"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 778,
+    "name": "thermostat_controller",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 3,
+        "name": "Identify"
+      },
+      {
+        "id": 4,
+        "name": "Groups"
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management"
+      },
+      {
+        "id": 513,
+        "name": "Thermostat",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 1292,
+    "name": "evse",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 153,
+        "name": "Energy EVSE",
+        "required": true
+      },
+      {
+        "id": 157,
+        "name": "Energy EVSE Mode",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1293,
+    "name": "device_energy_management",
+    "revision": 2,
+    "server_clusters": [
+      {
+        "id": 152,
+        "name": "Device Energy Management",
+        "required": true
+      },
+      {
+        "id": 159,
+        "name": "Device Energy Management Mode"
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1295,
+    "name": "water_heater",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "CLIENT_LIST",
+          "DEVICE_TYPE_LIST",
+          "PARTS_LIST",
+          "SERVER_LIST"
+        ]
+      },
+      {
+        "id": 148,
+        "name": "Water Heater Management",
+        "required": true,
+        "required_attributes": [
+          "BOOST_STATE",
+          "HEATER_TYPES",
+          "HEAT_DEMAND"
+        ],
+        "required_commands": [
+          "Boost",
+          "CancelBoost"
+        ]
+      },
+      {
+        "id": 158,
+        "name": "Water Heater Mode",
+        "required": true,
+        "required_attributes": [
+          "CURRENT_MODE",
+          "SUPPORTED_MODES"
+        ],
+        "required_commands": [
+          "ChangeToMode",
+          "ChangeToModeResponse"
+        ]
+      },
+      {
+        "id": 513,
+        "name": "Thermostat",
+        "required": true,
+        "required_attributes": [
+          "CONTROL_SEQUENCE_OF_OPERATION",
+          "LOCAL_TEMPERATURE",
+          "SYSTEM_MODE"
+        ],
+        "required_commands": [
+          "SetpointRaiseLower"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1296,
+    "name": "electrical_sensor",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 144,
+        "name": "Electrical Power Measurement"
+      },
+      {
+        "id": 145,
+        "name": "Electrical Energy Measurement"
+      },
+      {
+        "id": 156,
+        "name": "Power Topology",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1297,
+    "name": "electrical_utility_meter",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 2822,
+        "name": "Meter Identification",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1298,
+    "name": "meter_reference_point",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1299,
+    "name": "electrical_energy_tariff",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "features": [
+          "TAGLIST"
+        ],
+        "required_attributes": [
+          "TAG_LIST"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1300,
+    "name": "electrical_meter",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true
+      },
+      {
+        "id": 144,
+        "name": "Electrical Power Measurement",
+        "required": true
+      },
+      {
+        "id": 145,
+        "name": "Electrical Energy Measurement",
+        "required": true
+      },
+      {
+        "id": 2823,
+        "name": "Commodity Metering",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1302,
+    "name": "electrical_circuit_breaker",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 65,
+        "name": "User Label",
+        "required": true
+      },
+      {
+        "id": 156,
+        "name": "Power Topology",
+        "required": true,
+        "features": [
+          "CIRC"
+        ]
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 1303,
+    "name": "electrical_distribution_enclosure",
+    "revision": 1,
+    "server_clusters": [
+      {
+        "id": 156,
+        "name": "Power Topology",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 2112,
+    "name": "control_bridge",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true
+      },
+      {
+        "id": 768,
+        "name": "Color Control",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 2128,
+    "name": "on_off_sensor",
+    "revision": 3,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 4293984257,
+    "name": "orphan_clusters",
+    "revision": null,
+    "server_clusters": [
+      {
+        "id": 28,
+        "name": "Pulse Width Modulation",
+        "required": true
+      },
+      {
+        "id": 66,
+        "name": "Proxy Configuration",
+        "required": true
+      },
+      {
+        "id": 67,
+        "name": "Proxy Discovery",
+        "required": true
+      },
+      {
+        "id": 68,
+        "name": "Proxy Valid",
+        "required": true
+      }
+    ],
+    "client_clusters": []
+  },
+  {
+    "id": 4293984259,
+    "name": "all_clusters_app_server_example",
+    "revision": null,
+    "server_clusters": [
+      {
+        "id": 3,
+        "name": "Identify",
+        "required": true,
+        "required_attributes": [
+          "IDENTIFY_TIME",
+          "IDENTIFY_TYPE"
+        ],
+        "required_commands": [
+          "Identify",
+          "IdentifyQuery",
+          "TriggerEffect"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Groups",
+        "required": true,
+        "required_attributes": [
+          "GROUP_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddGroup",
+          "AddGroupResponse",
+          "ViewGroup",
+          "ViewGroupResponse",
+          "GetGroupMembership",
+          "GetGroupMembershipResponse",
+          "RemoveGroup",
+          "RemoveGroupResponse",
+          "RemoveAllGroups",
+          "AddGroupIfIdentifying"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "required_attributes": [
+          "ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true,
+        "required_attributes": [
+          "CURRENT_LEVEL"
+        ],
+        "required_commands": [
+          "MoveToLevel",
+          "Move",
+          "Step",
+          "Stop",
+          "MoveToLevelWithOnOff",
+          "MoveWithOnOff",
+          "StepWithOnOff",
+          "StopWithOnOff"
+        ]
+      },
+      {
+        "id": 29,
+        "name": "Descriptor",
+        "required": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      {
+        "id": 30,
+        "name": "Binding",
+        "required_attributes": [
+          "BINDING"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true,
+        "required_attributes": [
+          "SCENE_COUNT",
+          "CURRENT_SCENE",
+          "CURRENT_GROUP",
+          "SCENE_VALID",
+          "SCENE_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddScene",
+          "AddSceneResponse",
+          "ViewScene",
+          "ViewSceneResponse",
+          "RemoveScene",
+          "RemoveSceneResponse",
+          "RemoveAllScenes",
+          "RemoveAllScenesResponse",
+          "StoreScene",
+          "StoreSceneResponse",
+          "RecallScene",
+          "GetSceneMembership",
+          "GetSceneMembershipResponse"
+        ]
+      },
+      {
+        "id": 257,
+        "name": "Door Lock",
+        "required": true,
+        "required_commands": [
+          "LockDoor",
+          "UnlockDoor",
+          "SetUser",
+          "GetUser",
+          "GetUserResponse",
+          "ClearUser",
+          "SetCredential",
+          "SetCredentialResponse",
+          "SetCredentialStatus",
+          "SetCredentialStatusResponse",
+          "ClearCredential"
+        ]
+      },
+      {
+        "id": 768,
+        "name": "Color Control",
+        "required": true,
+        "required_attributes": [
+          "COLOR_CONTROL_CURRENT_HUE",
+          "COLOR_CONTROL_CURRENT_SATURATION",
+          "COLOR_CONTROL_REMAINING_TIME",
+          "COLOR_CONTROL_CURRENT_X",
+          "COLOR_CONTROL_CURRENT_Y",
+          "COLOR_CONTROL_DRIFT_COMPENSATION",
+          "COLOR_CONTROL_COMPENSATION_TEXT",
+          "COLOR_CONTROL_COLOR_TEMPERATURE",
+          "COLOR_CONTROL_COLOR_MODE",
+          "COLOR_CONTROL_OPTIONS",
+          "COLOR_CONTROL_NUMBER_OF_PRIMARIES",
+          "COLOR_CONTROL_PRIMARY_1_X",
+          "COLOR_CONTROL_PRIMARY_1_Y",
+          "COLOR_CONTROL_PRIMARY_1_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_2_X",
+          "COLOR_CONTROL_PRIMARY_2_Y",
+          "COLOR_CONTROL_PRIMARY_2_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_3_X",
+          "COLOR_CONTROL_PRIMARY_3_Y",
+          "COLOR_CONTROL_PRIMARY_3_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_4_X",
+          "COLOR_CONTROL_PRIMARY_4_Y",
+          "COLOR_CONTROL_PRIMARY_4_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_5_X",
+          "COLOR_CONTROL_PRIMARY_5_Y",
+          "COLOR_CONTROL_PRIMARY_5_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_6_X",
+          "COLOR_CONTROL_PRIMARY_6_Y",
+          "COLOR_CONTROL_PRIMARY_6_INTENSITY",
+          "COLOR_CONTROL_WHITE_POINT_X",
+          "COLOR_CONTROL_WHITE_POINT_Y",
+          "COLOR_CONTROL_COLOR_POINT_R_X",
+          "COLOR_CONTROL_COLOR_POINT_R_Y",
+          "COLOR_CONTROL_COLOR_POINT_R_INTENSITY",
+          "COLOR_CONTROL_COLOR_POINT_G_X",
+          "COLOR_CONTROL_COLOR_POINT_G_Y",
+          "COLOR_CONTROL_COLOR_POINT_G_INTENSITY",
+          "COLOR_CONTROL_COLOR_POINT_B_X",
+          "COLOR_CONTROL_COLOR_POINT_B_Y",
+          "COLOR_CONTROL_COLOR_POINT_B_INTENSITY",
+          "COLOR_CONTROL_TEMPERATURE_LEVEL_MIN_MIREDS",
+          "START_UP_COLOR_TEMPERATURE_MIREDS",
+          "COLOR_CONTROL_ENHANCED_CURRENT_HUE",
+          "COLOR_CONTROL_ENHANCED_COLOR_MODE",
+          "COLOR_CONTROL_COLOR_LOOP_ACTIVE",
+          "COLOR_CONTROL_COLOR_LOOP_DIRECTION",
+          "COLOR_CONTROL_COLOR_LOOP_TIME",
+          "COLOR_CONTROL_COLOR_START_ENHANCED_HUE",
+          "COLOR_CONTROL_COLOR_STORED_ENHANCED_HUE",
+          "COLOR_CONTROL_COLOR_CAPABILITIES",
+          "COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MIN",
+          "COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MAX"
+        ],
+        "required_commands": [
+          "MoveToHue",
+          "MoveHue",
+          "StepHue",
+          "MoveToSaturation",
+          "MoveSaturation",
+          "StepSaturation",
+          "MoveToHueAndSaturation",
+          "MoveToColor",
+          "MoveColor",
+          "StepColor",
+          "MoveToColorTemperature",
+          "MoveColorTemperature",
+          "StepColorTemperature",
+          "StopMoveStep"
+        ]
+      },
+      {
+        "id": 1026,
+        "name": "Temperature Measurement",
+        "required": true
+      }
+    ],
+    "client_clusters": [
+      {
+        "id": 6,
+        "name": "On/Off",
+        "required": true,
+        "required_attributes": [
+          "ON_OFF"
+        ],
+        "required_commands": [
+          "Off",
+          "On",
+          "Toggle"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Level Control",
+        "required": true,
+        "required_attributes": [
+          "CURRENT_LEVEL"
+        ],
+        "required_commands": [
+          "MoveToLevel",
+          "Move",
+          "Step",
+          "Stop",
+          "MoveToLevelWithOnOff",
+          "MoveWithOnOff",
+          "StepWithOnOff",
+          "StopWithOnOff"
+        ]
+      },
+      {
+        "id": 98,
+        "name": "Scenes Management",
+        "required": true,
+        "required_attributes": [
+          "SCENE_COUNT",
+          "CURRENT_SCENE",
+          "CURRENT_GROUP",
+          "SCENE_VALID",
+          "SCENE_NAME_SUPPORT"
+        ],
+        "required_commands": [
+          "AddScene",
+          "AddSceneResponse",
+          "ViewScene",
+          "ViewSceneResponse",
+          "RemoveScene",
+          "RemoveSceneResponse",
+          "RemoveAllScenes",
+          "RemoveAllScenesResponse",
+          "StoreScene",
+          "StoreSceneResponse",
+          "RecallScene",
+          "GetSceneMembership",
+          "GetSceneMembershipResponse"
+        ]
+      },
+      {
+        "id": 257,
+        "name": "Door Lock",
+        "required": true,
+        "required_commands": [
+          "LockDoor",
+          "UnlockDoor",
+          "SetUser",
+          "GetUser",
+          "GetUserResponse",
+          "ClearUser",
+          "SetCredential",
+          "SetCredentialResponse",
+          "SetCredentialStatus",
+          "SetCredentialStatusResponse",
+          "ClearCredential"
+        ]
+      },
+      {
+        "id": 768,
+        "name": "Color Control",
+        "required": true,
+        "required_attributes": [
+          "COLOR_CONTROL_CURRENT_HUE",
+          "COLOR_CONTROL_CURRENT_SATURATION",
+          "COLOR_CONTROL_REMAINING_TIME",
+          "COLOR_CONTROL_CURRENT_X",
+          "COLOR_CONTROL_CURRENT_Y",
+          "COLOR_CONTROL_DRIFT_COMPENSATION",
+          "COLOR_CONTROL_COMPENSATION_TEXT",
+          "COLOR_CONTROL_COLOR_TEMPERATURE",
+          "COLOR_CONTROL_COLOR_MODE",
+          "COLOR_CONTROL_OPTIONS",
+          "COLOR_CONTROL_NUMBER_OF_PRIMARIES",
+          "COLOR_CONTROL_PRIMARY_1_X",
+          "COLOR_CONTROL_PRIMARY_1_Y",
+          "COLOR_CONTROL_PRIMARY_1_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_2_X",
+          "COLOR_CONTROL_PRIMARY_2_Y",
+          "COLOR_CONTROL_PRIMARY_2_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_3_X",
+          "COLOR_CONTROL_PRIMARY_3_Y",
+          "COLOR_CONTROL_PRIMARY_3_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_4_X",
+          "COLOR_CONTROL_PRIMARY_4_Y",
+          "COLOR_CONTROL_PRIMARY_4_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_5_X",
+          "COLOR_CONTROL_PRIMARY_5_Y",
+          "COLOR_CONTROL_PRIMARY_5_INTENSITY",
+          "COLOR_CONTROL_PRIMARY_6_X",
+          "COLOR_CONTROL_PRIMARY_6_Y",
+          "COLOR_CONTROL_PRIMARY_6_INTENSITY",
+          "COLOR_CONTROL_WHITE_POINT_X",
+          "COLOR_CONTROL_WHITE_POINT_Y",
+          "COLOR_CONTROL_COLOR_POINT_R_X",
+          "COLOR_CONTROL_COLOR_POINT_R_Y",
+          "COLOR_CONTROL_COLOR_POINT_R_INTENSITY",
+          "COLOR_CONTROL_COLOR_POINT_G_X",
+          "COLOR_CONTROL_COLOR_POINT_G_Y",
+          "COLOR_CONTROL_COLOR_POINT_G_INTENSITY",
+          "COLOR_CONTROL_COLOR_POINT_B_X",
+          "COLOR_CONTROL_COLOR_POINT_B_Y",
+          "COLOR_CONTROL_COLOR_POINT_B_INTENSITY",
+          "COLOR_CONTROL_TEMPERATURE_LEVEL_MIN_MIREDS",
+          "START_UP_COLOR_TEMPERATURE_MIREDS",
+          "COLOR_CONTROL_ENHANCED_CURRENT_HUE",
+          "COLOR_CONTROL_ENHANCED_COLOR_MODE",
+          "COLOR_CONTROL_COLOR_LOOP_ACTIVE",
+          "COLOR_CONTROL_COLOR_LOOP_DIRECTION",
+          "COLOR_CONTROL_COLOR_LOOP_TIME",
+          "COLOR_CONTROL_COLOR_START_ENHANCED_HUE",
+          "COLOR_CONTROL_COLOR_STORED_ENHANCED_HUE",
+          "COLOR_CONTROL_COLOR_CAPABILITIES",
+          "COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MIN",
+          "COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MAX"
+        ],
+        "required_commands": [
+          "MoveToHue",
+          "MoveHue",
+          "StepHue",
+          "MoveToSaturation",
+          "MoveSaturation",
+          "StepSaturation",
+          "MoveToHueAndSaturation",
+          "MoveToColor",
+          "MoveColor",
+          "StepColor",
+          "MoveToColorTemperature",
+          "MoveColorTemperature",
+          "StepColorTemperature",
+          "StopMoveStep"
+        ]
+      }
+    ]
+  }
+]

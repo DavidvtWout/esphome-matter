@@ -5,10 +5,10 @@
 #include "esphome/core/log.h"
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
-#endif
+#endif // USE_SENSOR
 #ifdef USE_LIGHT
 #include "esphome/components/light/light_state.h"
-#endif
+#endif // USE_LIGHT
 
 #include <esp_matter.h>
 #include <esp_matter_cluster.h>
@@ -19,7 +19,7 @@ namespace esphome::matter {
 
 #ifdef USE_LIGHT
 class MatterLightMapping;
-#endif
+#endif // USE_LIGHT
 
 class MatterDeviceTypeRegistrationBase {
 public:
@@ -66,6 +66,53 @@ public:
   }
 };
 
+class MatterClusterRegistrationBase {
+public:
+  MatterClusterRegistrationBase(uint16_t endpoint_id, const char *cluster_name)
+      : endpoint_id_(endpoint_id), cluster_name_(cluster_name) {}
+  virtual ~MatterClusterRegistrationBase() = default;
+
+  virtual bool add_cluster(esp_matter::node_t *node) = 0;
+
+protected:
+  uint16_t endpoint_id_;
+  const char *cluster_name_;
+};
+
+template <uint32_t ClusterId, typename ConfigT,
+          esp_matter::cluster_t *(*CreateFn)(esp_matter::endpoint_t *,
+                                             ConfigT *, uint8_t)>
+class MatterClusterRegistration : public MatterClusterRegistrationBase {
+public:
+  MatterClusterRegistration(uint16_t endpoint_id, const char *cluster_name)
+      : MatterClusterRegistrationBase(endpoint_id, cluster_name) {}
+
+  bool add_cluster(esp_matter::node_t *node) override {
+    esp_matter::endpoint_t *endpoint =
+        esp_matter::endpoint::get(node, this->endpoint_id_);
+    if (endpoint == nullptr) {
+      ESP_LOGE("matter", "Cannot add %s cluster to missing endpoint %u",
+               this->cluster_name_, this->endpoint_id_);
+      return false;
+    }
+
+    if (esp_matter::cluster::get(endpoint, ClusterId) != nullptr)
+      return true;
+
+    ConfigT config{};
+    if (CreateFn(endpoint, &config, esp_matter::CLUSTER_FLAG_SERVER) ==
+        nullptr) {
+      ESP_LOGE("matter", "Failed to add %s cluster to endpoint %u",
+               this->cluster_name_, this->endpoint_id_);
+      return false;
+    }
+
+    ESP_LOGD("matter", "Added %s cluster to endpoint %u", this->cluster_name_,
+             this->endpoint_id_);
+    return true;
+  }
+};
+
 class MatterEndpointMappingBase {
 public:
   explicit MatterEndpointMappingBase(uint16_t endpoint_id)
@@ -75,7 +122,7 @@ public:
   virtual void register_callbacks() {}
 #ifdef USE_LIGHT
   virtual MatterLightMapping *as_light_mapping() { return nullptr; }
-#endif
+#endif // USE_LIGHT
 
   uint16_t endpoint_id() const { return this->endpoint_id_; }
 
@@ -102,7 +149,7 @@ public:
 protected:
   light::LightState *light_;
 };
-#endif
+#endif // USE_LIGHT
 
 #ifdef USE_SENSOR
 class MatterSensorMapping : public MatterEndpointMappingBase {
@@ -115,7 +162,7 @@ public:
 protected:
   sensor::Sensor *sensor_;
 };
-#endif
+#endif // USE_SENSOR
 
 // Common esp_matter attribute update callback, passed to node::create().
 // Routes server-cluster changes (e.g. light commands) to the ESPHome entities.

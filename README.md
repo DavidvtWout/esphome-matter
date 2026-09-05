@@ -20,7 +20,7 @@ That being said, esphome-matter is usable now so give it a try!
 
 Help is very welcome! There is a [discussion page](https://github.com/DavidvtWout/esphome-matter/discussions/47) with issues that need to be resolved before esphome-matter is considered "releasable".
 
-Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas. 
+Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas.
 
 # Supported Hardware
 
@@ -41,7 +41,7 @@ So far, `ESP32-C3`, `ESP32-C5` `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been t
 
 See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for bugs and features that are being worked on.
 
-# Compatibility with popular ecosystems 
+# Compatibility with popular ecosystems
 
 esphome-matter based devices will show up as "uncertified test devices" in the ecosystems. This is because the devices are not certified by the Connectivity Standards Alliance (CSA) and are not part of the official Matter certification program. The devices should still be functional, but the ecosystems might inform or warn the user about the device not being certified during the commissioning process.
 
@@ -83,14 +83,12 @@ Copy the `SetupQRCode` or open the link and scan the QR-code to commission the d
 
 Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers should have the option to share the device. This generates a temporary commissioning code and re-opens the commissioning window. If you loose access to the Matter controller you can do a Matter factory reset (see [Example config](#example-config)).
 
-
 ### Ecosystem specific settings
 
 - **Home Assistant / matterjs server**: Start the matterjs-server with: `matterjs-server --enable-test-net-dcl=true`. Commission the device with the `Commission existing device` option.
 - **Home Assistant Matter app (HA-OS only)**: Check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
 
 So far, **IKEA Home smart**, **Apple Home** and the **Android Matter Commissioning API** have been confirmed to accept commissioning right away.
-
 
 # Example config
 
@@ -111,27 +109,25 @@ external_components:
   - source: github://DavidvtWout/esphome-matter@main
 
 logger:
-  
+
 api:
-  
+
 network:
   enable_ipv6: true
-  
+
 # Either:
-wifi:
-  ...
+wifi: ...
 # Or:
-openthread:
-  ...
+openthread: ...
 
 matter:
   # vendor and product name can be at most 32 characters.
   # vendor_name: defaults to ESPHome
   # product_name: defaults to esphome.name
-  
+
   endpoints:
     1:
-      id: dimmer_endpoint  # The id is optional. Actions can also refer to the numerical endpoint id directly.
+      id: dimmer_endpoint # The id is optional. Actions can also refer to the numerical endpoint id directly.
       dimmer_switch:
     2:
       temperature_sensor:
@@ -216,11 +212,9 @@ button:
 
 More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
 
-
 # Actions
 
 See [docs/actions.md](./docs/actions.md) for a more complete overview of available actions.
-
 
 ### OnOff cluster
 
@@ -235,7 +229,7 @@ matter.on_off.toggle: some_id
 # Intended for motion sensors temporarily turning on a light.
 matter.on_off.on_with_timed_off:
   endpoint_id: some_id
-  on_time:  # s - How long to turn on the light.
+  on_time: # s - How long to turn on the light.
   # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
   # on_off_control: 0
 ```
@@ -250,20 +244,20 @@ The following commands also have a version without `_with_on_off`. These command
 # Move directly to a brightness level.
 matter.level_control.move_to_level_with_on_off:
   endpoint_id: some_id
-  level:  # %
+  level: # %
   # transition_time: 0s
 
 # Move continuously up or down.
 matter.level_control.move_with_on_off:
   endpoint_id: some_id
-  move_mode:  # either "up" or "down"
+  move_mode: # either "up" or "down"
   rate: # %/s
 
 # Step once by a fixed amount.
 matter.level_control.step_with_on_off:
   endpoint_id: some_id
-  step_mode:  # either "up" or "down"
-  step_size:  # %
+  step_mode: # either "up" or "down"
+  step_size: # %
   # transition_time: 0s
 
 # Stop a previous move command.
@@ -273,7 +267,6 @@ matter.level_control.stop_with_on_off: some_id
 # Current Limitations
 
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
-
 
 # See Also
 

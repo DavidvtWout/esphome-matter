@@ -63,7 +63,18 @@
       preCommitCheck = pre-commit-hooks.lib.${system}.run {
         src = ./.;
         hooks.clang-format.enable = true;
+        hooks.prettier = {
+          enable = true;
+          files = "\\.(md|yaml)$";
+        };
         hooks.nixfmt.enable = true;
+        hooks.ruff = {
+          enable = true;
+          args = [
+            "--select"
+            "I,F401"
+          ]; # Sort imports and remove unused imports
+        };
         hooks.ruff-format.enable = true;
       };
     in

@@ -1,9 +1,8 @@
 import json
-import re
 
-from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
+from esphome import automation
 from esphome.const import (
     CONF_COMMAND,
     CONF_ID,
@@ -12,14 +11,15 @@ from esphome.const import (
 from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
-from .clusters import MATTER_COMMANDS
 from .const import *
+from .data_model import CLUSTERS_BY_NAME, COMMAND_ARG_TYPES, COMMANDS, Command
 from .types import (
     MatterComponent,
     MatterEndpointRef,
     MatterFactoryResetAction,
     MatterSendCommandAction,
 )
+from .util import snake_case
 
 
 @automation.register_action(
@@ -106,28 +106,26 @@ def register_bound_command_actions():
         move_mode: 0  # up
         rate: 50      # ~20% per second
     """
-    for cluster_name, cluster in MATTER_COMMANDS.items():
-        for command_name in cluster[CONF_COMMANDS]:
-            automation.register_action(
-                f"matter.{_snake_case(cluster_name)}.{_snake_case(command_name)}",
-                MatterSendCommandAction,
-                _command_schema(cluster_name, command_name),
-                synchronous=True,
-            )(_make_send_command_to_code(cluster_name, command_name))
+    for command in COMMANDS:
+        automation.register_action(
+            f"matter.{snake_case(command.cluster_name)}.{snake_case(command.name)}",
+            MatterSendCommandAction,
+            _command_schema(command),
+            synchronous=True,
+        )(_make_send_command_to_code(command))
 
 
-def _make_send_command_to_code(cluster_name: str, command_name: str):
+def _make_send_command_to_code(command: Command):
     async def to_code(config, action_id: ID, template_arg: cg.TemplateArguments, args):
         return await _new_send_command_action(
             config,
             action_id,
             template_arg,
-            cluster_name,
-            command_name,
+            command,
         )
 
     to_code.__name__ = (
-        f"matter_{_snake_case(cluster_name)}_{_snake_case(command_name)}_to_code"
+        f"matter_{snake_case(command.cluster_name)}_{snake_case(command.name)}_to_code"
     )
     return to_code
 
@@ -136,16 +134,14 @@ async def _new_send_command_action(
     config: ConfigType,
     action_id: ID,
     template_arg: cg.TemplateArguments,
-    cluster_name: str,
-    command_name: str,
+    command: Command,
 ):
-    cluster_id, command_id = _resolve_command_id(cluster_name, command_name)
-
     var = cg.new_Pvariable(action_id, template_arg)
     cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
-    cg.add(var.set_cluster_id(cluster_id))
-    cg.add(var.set_command_id(command_id))
-    cg.add(var.set_data(_build_data(config, cluster_name, command_name)))
+    cluster = CLUSTERS_BY_NAME[command.cluster_name]
+    cg.add(var.set_cluster_id(cluster.id))
+    cg.add(var.set_command_id(command.id))
+    cg.add(var.set_data(_build_data(config, command)))
     return var
 
 
@@ -158,7 +154,7 @@ def _resolve_endpoint_id(endpoint_id: ID | int) -> int:
     raise cv.Invalid(f"Unknown Matter endpoint id '{endpoint_id}'")
 
 
-def _build_data(config, cluster_name: str, command_name: str) -> str:
+def _build_data(config, command: Command) -> str:
     """Creates a date payload that's compatible with esp_matter::client::request_handle.request_data.
 
     It's JSON formatted crap... Here's an example:
@@ -167,36 +163,10 @@ def _build_data(config, cluster_name: str, command_name: str) -> str:
 
     This means that the first field is an uint8 with a value of 0 and the second field is uint16 with value 10.
     """
-    data = {}
-
-    command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
-    for i, field in enumerate(command.get("fields", [])):
-        data[f"{i}:{field.type}"] = config[field.key]
-
-    return json.dumps(data)
+    return json.dumps({arg.data_key: config[arg.schema_key] for arg in command.args})
 
 
-def _resolve_command_id(cluster_name: str, command_name: str) -> tuple[int, int]:
-    """Resolves a cluster and command name to their numerical value.
-
-    e.g.: _resolve_command_id("LevelControl", "StopWithOnOff") -> (8, 7)
-    """
-    try:
-        cluster = MATTER_COMMANDS[cluster_name]
-    except KeyError as err:
-        raise cv.Invalid(f"Unknown Matter cluster '{cluster_name}'") from err
-
-    try:
-        command = cluster["commands"][command_name]
-    except KeyError as err:
-        raise cv.Invalid(
-            f"Unknown Matter command '{cluster_name}.{command_name}'"
-        ) from err
-
-    return cluster["id"], command["id"]
-
-
-def _command_schema(cluster_name: str, command_name: str):
+def _command_schema(command: Command):
     schema = {
         # TODO: validate endpoint id to exist
         cv.Required(CONF_ENDPOINT_ID): cv.Any(
@@ -204,19 +174,21 @@ def _command_schema(cluster_name: str, command_name: str):
         ),
     }
 
-    command = MATTER_COMMANDS[cluster_name][CONF_COMMANDS][command_name]
     has_required = False
-    for field in command.get("fields", []):
-        schema[field.schema_key] = field.validator
-        has_required |= field.required
+    for arg in command.args:
+        arg_schema = arg.schema
+        converter = (
+            COMMAND_ARG_TYPES.get(command.cluster_name, {})
+            .get(command.name, {})
+            .get(arg.name)
+        )
+        if converter is not None:
+            arg_schema = cv.All(converter, arg_schema)
+        schema[arg.schema_key] = arg_schema
+        if not arg.optional:
+            has_required = True
 
     if has_required:
         return schema
     else:
         return automation.maybe_conf(CONF_ENDPOINT_ID, schema)
-
-
-def _snake_case(name):
-    name = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
-    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
-    return name.lower()

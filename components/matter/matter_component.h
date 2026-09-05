@@ -28,9 +28,11 @@ public:
 
   void factory_reset();
 
-  // Endpoints
+  // Register Matter endpoints
   void register_endpoint(uint16_t endpoint_id);
   void register_binding(uint16_t endpoint_id);
+
+  // Register Matter device types
   template <typename ConfigT,
             esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
   void register_device_type(uint16_t endpoint_id, const char *device_type) {
@@ -38,15 +40,26 @@ public:
         new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id,
                                                          device_type));
   }
+
+  // Register additional Matter clusters
+  template <uint32_t ClusterId, typename ConfigT,
+            esp_matter::cluster_t *(*CreateFn)(esp_matter::endpoint_t *,
+                                               ConfigT *, uint8_t)>
+  void register_cluster(uint16_t endpoint_id, const char *cluster_name) {
+    this->cluster_registrations_.push_back(
+        new MatterClusterRegistration<ClusterId, ConfigT, CreateFn>(
+            endpoint_id, cluster_name));
+  }
+
+  // Register ESPHome entities
 #ifdef USE_LIGHT
   void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
-#endif
+  MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
+#endif // USE_LIGHT
 #ifdef USE_SENSOR
   void map_sensor_to_endpoint(sensor::Sensor *sensor, uint16_t endpoint_id);
-#endif
-#ifdef USE_LIGHT
-  MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
-#endif
+#endif // USE_SENSOR
+
   // Public wrapper around the protected Component scheduler; used by the
   // Matter-thread callbacks to hop onto the main loop (defer is thread-safe).
   void defer_to_main_loop(std::function<void()> &&f) {
@@ -64,6 +77,7 @@ private:
   std::vector<uint16_t> endpoint_ids_;
   std::vector<uint16_t> binding_endpoint_ids_;
   std::vector<MatterDeviceTypeRegistrationBase *> device_type_registrations_;
+  std::vector<MatterClusterRegistrationBase *> cluster_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;
 };
 
