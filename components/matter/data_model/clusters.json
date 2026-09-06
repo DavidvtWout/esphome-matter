@@ -27,6 +27,13 @@
     "id": 4,
     "name": "Groups",
     "revision": 4,
+    "features": [
+      {
+        "bit": 0,
+        "code": "GN",
+        "name": "GroupNames"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -43,6 +50,23 @@
     "id": 6,
     "name": "On/Off",
     "revision": 6,
+    "features": [
+      {
+        "bit": 0,
+        "code": "LT",
+        "name": "Lighting"
+      },
+      {
+        "bit": 1,
+        "code": "DF",
+        "name": "DeadFrontBehavior"
+      },
+      {
+        "bit": 2,
+        "code": "OFFONLY",
+        "name": "OffOnly"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -91,6 +115,23 @@
     "id": 8,
     "name": "Level Control",
     "revision": 6,
+    "features": [
+      {
+        "bit": 0,
+        "code": "OO",
+        "name": "OnOff"
+      },
+      {
+        "bit": 1,
+        "code": "LT",
+        "name": "Lighting"
+      },
+      {
+        "bit": 2,
+        "code": "FQ",
+        "name": "Frequency"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -228,6 +269,13 @@
     "id": 29,
     "name": "Descriptor",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "TAGLIST",
+        "name": "TagList"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -298,6 +346,23 @@
     "id": 31,
     "name": "Access Control",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "EXTS",
+        "name": "Extension"
+      },
+      {
+        "bit": 1,
+        "code": "MNGD",
+        "name": "ManagedDevice"
+      },
+      {
+        "bit": 2,
+        "code": "AUX",
+        "name": "Auxiliary"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -693,6 +758,13 @@
     "id": 44,
     "name": "Time Format Localization",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CALFMT",
+        "name": "CalendarFormat"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -724,6 +796,13 @@
     "id": 45,
     "name": "Unit Localization",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "TEMP",
+        "name": "TemperatureUnit"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -763,6 +842,28 @@
     "id": 47,
     "name": "Power Source",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "WIRED",
+        "name": "Wired"
+      },
+      {
+        "bit": 1,
+        "code": "BAT",
+        "name": "Battery"
+      },
+      {
+        "bit": 2,
+        "code": "RECHG",
+        "name": "Rechargeable"
+      },
+      {
+        "bit": 3,
+        "code": "REPLC",
+        "name": "Replaceable"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -1034,6 +1135,18 @@
     "id": 48,
     "name": "General Commissioning",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "TC",
+        "name": "TermsAndConditions"
+      },
+      {
+        "bit": 1,
+        "code": "NR",
+        "name": "NetworkRecovery"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -1158,6 +1271,23 @@
     "id": 49,
     "name": "Network Commissioning",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "WI",
+        "name": "WiFiNetworkInterface"
+      },
+      {
+        "bit": 1,
+        "code": "TH",
+        "name": "ThreadNetworkInterface"
+      },
+      {
+        "bit": 2,
+        "code": "ET",
+        "name": "EthernetNetworkInterface"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -1262,6 +1392,13 @@
     "id": 51,
     "name": "General Diagnostics",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "DMTEST",
+        "name": "DataModelTest"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -1350,6 +1487,13 @@
     "id": 52,
     "name": "Software Diagnostics",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "WTRMRK",
+        "name": "Watermarks"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -1389,6 +1533,28 @@
     "id": 53,
     "name": "Thread Network Diagnostics",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PKTCNT",
+        "name": "PacketCounts"
+      },
+      {
+        "bit": 1,
+        "code": "ERRCNT",
+        "name": "ErrorCounts"
+      },
+      {
+        "bit": 2,
+        "code": "MLECNT",
+        "name": "MLECounts"
+      },
+      {
+        "bit": 3,
+        "code": "MACCNT",
+        "name": "MACCounts"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -1968,6 +2134,18 @@
     "id": 54,
     "name": "Wi-Fi Network Diagnostics",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PKTCNT",
+        "name": "PacketCounts"
+      },
+      {
+        "bit": 1,
+        "code": "ERRCNT",
+        "name": "ErrorCounts"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -2093,6 +2271,18 @@
     "id": 55,
     "name": "Ethernet Network Diagnostics",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PKTCNT",
+        "name": "PacketCounts"
+      },
+      {
+        "bit": 1,
+        "code": "ERRCNT",
+        "name": "ErrorCounts"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -2180,6 +2370,28 @@
     "id": 56,
     "name": "Time Synchronization",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "TZ",
+        "name": "TimeZone"
+      },
+      {
+        "bit": 1,
+        "code": "NTPC",
+        "name": "NTPClient"
+      },
+      {
+        "bit": 2,
+        "code": "NTPS",
+        "name": "NTPServer"
+      },
+      {
+        "bit": 3,
+        "code": "TSC",
+        "name": "TimeSyncClient"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -2302,6 +2514,13 @@
     "id": 57,
     "name": "Bridged Device Basic Information",
     "revision": 6,
+    "features": [
+      {
+        "bit": 20,
+        "code": "BIS",
+        "name": "BridgedICDSupport"
+      }
+    ],
     "server_attributes": [
       {
         "id": 1,
@@ -2466,6 +2685,38 @@
     "id": 59,
     "name": "Switch",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "LS",
+        "name": "LatchingSwitch"
+      },
+      {
+        "bit": 1,
+        "code": "MS",
+        "name": "MomentarySwitch"
+      },
+      {
+        "bit": 2,
+        "code": "MSR",
+        "name": "MomentarySwitchRelease"
+      },
+      {
+        "bit": 3,
+        "code": "MSL",
+        "name": "MomentarySwitchLongPress"
+      },
+      {
+        "bit": 4,
+        "code": "MSM",
+        "name": "MomentarySwitchMultiPress"
+      },
+      {
+        "bit": 5,
+        "code": "AS",
+        "name": "ActionSwitch"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -2500,6 +2751,13 @@
     "id": 60,
     "name": "Administrator Commissioning",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "BC",
+        "name": "Basic"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -2591,6 +2849,18 @@
     "id": 63,
     "name": "Group Key Management",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CS",
+        "name": "CacheAndSync"
+      },
+      {
+        "bit": 1,
+        "code": "GCAST",
+        "name": "Groupcast"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -2686,6 +2956,13 @@
     "id": 69,
     "name": "Boolean State",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CHGEVENT",
+        "name": "ChangeEvent"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -2701,6 +2978,28 @@
     "id": 70,
     "name": "ICD Management",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CIP",
+        "name": "CheckInProtocolSupport"
+      },
+      {
+        "bit": 1,
+        "code": "UAT",
+        "name": "UserActiveModeTrigger"
+      },
+      {
+        "bit": 2,
+        "code": "LITS",
+        "name": "LongIdleTimeSupport"
+      },
+      {
+        "bit": 3,
+        "code": "DSLS",
+        "name": "DynamicSitLitSupport"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -2931,6 +3230,13 @@
     "id": 80,
     "name": "Mode Select",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "DEPONOFF",
+        "name": "OnOff"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3032,6 +3338,18 @@
     "id": 83,
     "name": "Laundry Washer Controls",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "SPIN",
+        "name": "Spin"
+      },
+      {
+        "bit": 1,
+        "code": "RINSE",
+        "name": "Rinse"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3072,6 +3390,13 @@
     "id": 84,
     "name": "RVC Run Mode",
     "revision": 4,
+    "features": [
+      {
+        "bit": 20,
+        "code": "DIRECTMODECH",
+        "name": "DirectModeChange"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3095,6 +3420,13 @@
     "id": 85,
     "name": "RVC Clean Mode",
     "revision": 5,
+    "features": [
+      {
+        "bit": 20,
+        "code": "DIRECTMODECH",
+        "name": "DirectModeChange"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3118,6 +3450,23 @@
     "id": 86,
     "name": "Temperature Control",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "TN",
+        "name": "TemperatureNumber"
+      },
+      {
+        "bit": 1,
+        "code": "TL",
+        "name": "TemperatureLevel"
+      },
+      {
+        "bit": 2,
+        "code": "STEP",
+        "name": "TemperatureStep"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3231,6 +3580,28 @@
     "id": 91,
     "name": "Air Quality",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "FAIR",
+        "name": "Fair"
+      },
+      {
+        "bit": 1,
+        "code": "MOD",
+        "name": "Moderate"
+      },
+      {
+        "bit": 2,
+        "code": "VPOOR",
+        "name": "VeryPoor"
+      },
+      {
+        "bit": 3,
+        "code": "XPOOR",
+        "name": "ExtremelyPoor"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3249,6 +3620,18 @@
     "id": 92,
     "name": "Smoke CO Alarm",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "SMOKE",
+        "name": "SmokeAlarm"
+      },
+      {
+        "bit": 1,
+        "code": "CO",
+        "name": "CO Alarm"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3379,6 +3762,13 @@
     "id": 93,
     "name": "Dishwasher Alarm",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "RESET",
+        "name": "Reset"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3453,6 +3843,23 @@
     "id": 95,
     "name": "Microwave Oven Control",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PWRNUM",
+        "name": "PowerAsNumber"
+      },
+      {
+        "bit": 1,
+        "code": "WATTS",
+        "name": "PowerInWatts"
+      },
+      {
+        "bit": 2,
+        "code": "PWRLMTS",
+        "name": "PowerNumberLimits"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3657,6 +4064,13 @@
     "id": 98,
     "name": "Scenes Management",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "SN",
+        "name": "SceneNames"
+      }
+    ],
     "server_attributes": [
       {
         "id": 1,
@@ -3681,6 +4095,23 @@
     "id": 101,
     "name": "Groupcast",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "LN",
+        "name": "Listener"
+      },
+      {
+        "bit": 1,
+        "code": "SD",
+        "name": "Sender"
+      },
+      {
+        "bit": 2,
+        "code": "PGA",
+        "name": "PerGroup"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3730,6 +4161,23 @@
     "id": 113,
     "name": "HEPA Filter Monitoring",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CON",
+        "name": "Condition"
+      },
+      {
+        "bit": 1,
+        "code": "WRN",
+        "name": "Warning"
+      },
+      {
+        "bit": 2,
+        "code": "REP",
+        "name": "ReplacementProductList"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3787,6 +4235,23 @@
     "id": 114,
     "name": "Activated Carbon Filter Monitoring",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CON",
+        "name": "Condition"
+      },
+      {
+        "bit": 1,
+        "code": "WRN",
+        "name": "Warning"
+      },
+      {
+        "bit": 2,
+        "code": "REP",
+        "name": "ReplacementProductList"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3844,6 +4309,23 @@
     "id": 121,
     "name": "Water Tank Level Monitoring",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CON",
+        "name": "Condition"
+      },
+      {
+        "bit": 1,
+        "code": "WRN",
+        "name": "Warning"
+      },
+      {
+        "bit": 2,
+        "code": "REP",
+        "name": "ReplacementProductList"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3901,6 +4383,33 @@
     "id": 128,
     "name": "Boolean State Configuration",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "VIS",
+        "name": "Visual"
+      },
+      {
+        "bit": 1,
+        "code": "AUD",
+        "name": "Audible"
+      },
+      {
+        "bit": 2,
+        "code": "SPRS",
+        "name": "AlarmSuppress"
+      },
+      {
+        "bit": 3,
+        "code": "SENSLVL",
+        "name": "SensitivityLevel"
+      },
+      {
+        "bit": 4,
+        "code": "FAULTEV",
+        "name": "FaultEvents"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -3982,6 +4491,18 @@
     "id": 129,
     "name": "Valve Configuration and Control",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "TS",
+        "name": "TimeSync"
+      },
+      {
+        "bit": 1,
+        "code": "LVL",
+        "name": "Level"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4090,6 +4611,33 @@
     "id": 144,
     "name": "Electrical Power Measurement",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "DIRC",
+        "name": "DirectCurrent"
+      },
+      {
+        "bit": 1,
+        "code": "ALTC",
+        "name": "AlternatingCurrent"
+      },
+      {
+        "bit": 2,
+        "code": "POLY",
+        "name": "PolyphasePower"
+      },
+      {
+        "bit": 3,
+        "code": "HARM",
+        "name": "Harmonics"
+      },
+      {
+        "bit": 4,
+        "code": "PWRQ",
+        "name": "PowerQuality"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4278,6 +4826,38 @@
     "id": 145,
     "name": "Electrical Energy Measurement",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "IMPE",
+        "name": "ImportedEnergy"
+      },
+      {
+        "bit": 1,
+        "code": "EXPE",
+        "name": "ExportedEnergy"
+      },
+      {
+        "bit": 2,
+        "code": "CUME",
+        "name": "CumulativeEnergy"
+      },
+      {
+        "bit": 3,
+        "code": "PERE",
+        "name": "PeriodicEnergy"
+      },
+      {
+        "bit": 4,
+        "code": "APPE",
+        "name": "ApparentEnergy"
+      },
+      {
+        "bit": 5,
+        "code": "REAE",
+        "name": "ReactiveEnergy"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4333,6 +4913,18 @@
     "id": 148,
     "name": "Water Heater Management",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "EM",
+        "name": "EnergyManagement"
+      },
+      {
+        "bit": 1,
+        "code": "TP",
+        "name": "TankPercent"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4401,6 +4993,13 @@
     "id": 149,
     "name": "Commodity Price",
     "revision": 4,
+    "features": [
+      {
+        "bit": 0,
+        "code": "FORE",
+        "name": "Forecasting"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4442,6 +5041,28 @@
     "id": 151,
     "name": "Messages",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CONF",
+        "name": "ReceivedConfirmation"
+      },
+      {
+        "bit": 1,
+        "code": "RESP",
+        "name": "ConfirmationResponse"
+      },
+      {
+        "bit": 2,
+        "code": "RPLY",
+        "name": "ConfirmationReply"
+      },
+      {
+        "bit": 3,
+        "code": "PROT",
+        "name": "ProtectedMessages"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4465,6 +5086,48 @@
     "id": 152,
     "name": "Device Energy Management",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PA",
+        "name": "PowerAdjustment"
+      },
+      {
+        "bit": 1,
+        "code": "PFR",
+        "name": "PowerForecastReporting"
+      },
+      {
+        "bit": 2,
+        "code": "SFR",
+        "name": "StateForecastReporting"
+      },
+      {
+        "bit": 3,
+        "code": "STA",
+        "name": "StartTimeAdjustment"
+      },
+      {
+        "bit": 4,
+        "code": "PAU",
+        "name": "Pausable"
+      },
+      {
+        "bit": 5,
+        "code": "FA",
+        "name": "ForecastAdjustment"
+      },
+      {
+        "bit": 6,
+        "code": "CON",
+        "name": "ConstraintBasedAdjustment"
+      },
+      {
+        "bit": 7,
+        "code": "PRA",
+        "name": "PowerRangeAdjustment"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4550,6 +5213,33 @@
     "id": 153,
     "name": "Energy EVSE",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PREF",
+        "name": "ChargingPreferences"
+      },
+      {
+        "bit": 1,
+        "code": "SOC",
+        "name": "SoCReporting"
+      },
+      {
+        "bit": 2,
+        "code": "PNC",
+        "name": "PlugAndCharge"
+      },
+      {
+        "bit": 3,
+        "code": "RFID",
+        "name": "RFID"
+      },
+      {
+        "bit": 4,
+        "code": "V2X",
+        "name": "V2X"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4762,6 +5452,18 @@
     "id": 155,
     "name": "Energy Preference",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "BALA",
+        "name": "EnergyBalance"
+      },
+      {
+        "bit": 1,
+        "code": "LPMS",
+        "name": "LowPowerModeSensitivity"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4809,6 +5511,33 @@
     "id": 156,
     "name": "Power Topology",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "NODE",
+        "name": "NodeTopology"
+      },
+      {
+        "bit": 1,
+        "code": "TREE",
+        "name": "TreeTopology"
+      },
+      {
+        "bit": 2,
+        "code": "SET",
+        "name": "SetTopology"
+      },
+      {
+        "bit": 3,
+        "code": "DYPF",
+        "name": "DynamicPowerFlow"
+      },
+      {
+        "bit": 4,
+        "code": "CIRC",
+        "name": "ElectricalCircuit"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4840,6 +5569,13 @@
     "id": 157,
     "name": "Energy EVSE Mode",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "DEPONOFF",
+        "name": "OnOff"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4863,6 +5599,13 @@
     "id": 158,
     "name": "Water Heater Mode",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "DEPONOFF",
+        "name": "OnOff"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4886,6 +5629,13 @@
     "id": 159,
     "name": "Device Energy Management Mode",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "DEPONOFF",
+        "name": "OnOff"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4909,6 +5659,13 @@
     "id": 160,
     "name": "Electrical Grid Conditions",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "FORE",
+        "name": "Forecasting"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -4940,6 +5697,68 @@
     "id": 161,
     "name": "Electrical Alarm",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "RESET",
+        "name": "Reset"
+      },
+      {
+        "bit": 20,
+        "code": "ADJUST",
+        "name": "AdjustableThresholds"
+      },
+      {
+        "bit": 21,
+        "code": "OVERVOLT",
+        "name": "OverVoltage"
+      },
+      {
+        "bit": 22,
+        "code": "UNDERVOLT",
+        "name": "UnderVoltage"
+      },
+      {
+        "bit": 23,
+        "code": "OVERFREQ",
+        "name": "OverFrequency"
+      },
+      {
+        "bit": 24,
+        "code": "UNDERFREQ",
+        "name": "UnderFrequency"
+      },
+      {
+        "bit": 25,
+        "code": "OVERPOWER",
+        "name": "OverPower"
+      },
+      {
+        "bit": 26,
+        "code": "UNDERPOWER",
+        "name": "UnderPower"
+      },
+      {
+        "bit": 27,
+        "code": "OVERCUR",
+        "name": "OverCurrent"
+      },
+      {
+        "bit": 28,
+        "code": "UNDERCUR",
+        "name": "UnderCurrent"
+      },
+      {
+        "bit": 29,
+        "code": "POWERIMP",
+        "name": "PowerImport"
+      },
+      {
+        "bit": 30,
+        "code": "POWEREXP",
+        "name": "PowerExport"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -5145,6 +5964,43 @@
     "id": 163,
     "name": "Electrical Protection Alarm",
     "revision": 1,
+    "features": [
+      {
+        "bit": 20,
+        "code": "SHORT",
+        "name": "ShortCircuit"
+      },
+      {
+        "bit": 21,
+        "code": "OL",
+        "name": "OverLoad"
+      },
+      {
+        "bit": 22,
+        "code": "OV",
+        "name": "OverVoltage"
+      },
+      {
+        "bit": 23,
+        "code": "SP",
+        "name": "SurgeProtection"
+      },
+      {
+        "bit": 24,
+        "code": "RC",
+        "name": "ResidualCurrent"
+      },
+      {
+        "bit": 25,
+        "code": "ARC",
+        "name": "ArcFault"
+      },
+      {
+        "bit": 26,
+        "code": "SELFTEST",
+        "name": "SelfTest"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -5236,6 +6092,83 @@
     "id": 257,
     "name": "Door Lock",
     "revision": 10,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PIN",
+        "name": "PIN Credential"
+      },
+      {
+        "bit": 1,
+        "code": "RID",
+        "name": "RFID Credential"
+      },
+      {
+        "bit": 10,
+        "code": "YDSCH",
+        "name": "YearDayAccessSchedules"
+      },
+      {
+        "bit": 11,
+        "code": "HDSCH",
+        "name": "HolidaySchedules"
+      },
+      {
+        "bit": 12,
+        "code": "UBOLT",
+        "name": "Unbolt"
+      },
+      {
+        "bit": 13,
+        "code": "ALIRO",
+        "name": "AliroProvisioning"
+      },
+      {
+        "bit": 14,
+        "code": "ALBU",
+        "name": "AliroBLEUWB"
+      },
+      {
+        "bit": 2,
+        "code": "FGP",
+        "name": "FingerCredentials"
+      },
+      {
+        "bit": 3,
+        "code": "LOG",
+        "name": "Logging"
+      },
+      {
+        "bit": 4,
+        "code": "WDSCH",
+        "name": "WeekDayAccessSchedules"
+      },
+      {
+        "bit": 5,
+        "code": "DPS",
+        "name": "DoorPositionSensor"
+      },
+      {
+        "bit": 6,
+        "code": "FACE",
+        "name": "FaceCredentials"
+      },
+      {
+        "bit": 7,
+        "code": "COTA",
+        "name": "CredentialsOverTheAirAccess"
+      },
+      {
+        "bit": 8,
+        "code": "USR",
+        "name": "User"
+      },
+      {
+        "bit": 9,
+        "code": "NOT",
+        "name": "Notification"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -5627,6 +6560,33 @@
     "id": 258,
     "name": "Window Covering",
     "revision": 8,
+    "features": [
+      {
+        "bit": 0,
+        "code": "LF",
+        "name": "Lift"
+      },
+      {
+        "bit": 1,
+        "code": "TL",
+        "name": "Tilt"
+      },
+      {
+        "bit": 2,
+        "code": "PA_LF",
+        "name": "PositionAwareLift"
+      },
+      {
+        "bit": 3,
+        "code": "ABS",
+        "name": "AbsolutePosition"
+      },
+      {
+        "bit": 4,
+        "code": "PA_TL",
+        "name": "PositionAwareTilt"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -5836,6 +6796,53 @@
     "id": 260,
     "name": "Closure Control",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PS",
+        "name": "Positioning"
+      },
+      {
+        "bit": 1,
+        "code": "LT",
+        "name": "MotionLatching"
+      },
+      {
+        "bit": 2,
+        "code": "IS",
+        "name": "Instantaneous"
+      },
+      {
+        "bit": 3,
+        "code": "SP",
+        "name": "Speed"
+      },
+      {
+        "bit": 4,
+        "code": "VT",
+        "name": "Ventilation"
+      },
+      {
+        "bit": 5,
+        "code": "PD",
+        "name": "Pedestrian"
+      },
+      {
+        "bit": 6,
+        "code": "CL",
+        "name": "Calibration"
+      },
+      {
+        "bit": 7,
+        "code": "PT",
+        "name": "Protection"
+      },
+      {
+        "bit": 8,
+        "code": "MO",
+        "name": "ManuallyOperable"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -5894,6 +6901,48 @@
     "id": 261,
     "name": "Closure Dimension",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PS",
+        "name": "Positioning"
+      },
+      {
+        "bit": 1,
+        "code": "LT",
+        "name": "MotionLatching"
+      },
+      {
+        "bit": 2,
+        "code": "UT",
+        "name": "Unit"
+      },
+      {
+        "bit": 3,
+        "code": "LM",
+        "name": "Limitation"
+      },
+      {
+        "bit": 4,
+        "code": "SP",
+        "name": "Speed"
+      },
+      {
+        "bit": 5,
+        "code": "TR",
+        "name": "Translation"
+      },
+      {
+        "bit": 6,
+        "code": "RO",
+        "name": "Rotation"
+      },
+      {
+        "bit": 7,
+        "code": "MD",
+        "name": "Modulation"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -6007,6 +7056,23 @@
     "id": 336,
     "name": "Service Area",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "SELRUN",
+        "name": "SelectWhileRunning"
+      },
+      {
+        "bit": 1,
+        "code": "PROG",
+        "name": "ProgressReporting"
+      },
+      {
+        "bit": 2,
+        "code": "MAPS",
+        "name": "Maps"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -6062,6 +7128,43 @@
     "id": 512,
     "name": "Pump Configuration and Control",
     "revision": 4,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PRSCONST",
+        "name": "ConstantPressure"
+      },
+      {
+        "bit": 1,
+        "code": "PRSCOMP",
+        "name": "CompensatedPressure"
+      },
+      {
+        "bit": 2,
+        "code": "FLW",
+        "name": "ConstantFlow"
+      },
+      {
+        "bit": 3,
+        "code": "SPD",
+        "name": "ConstantSpeed"
+      },
+      {
+        "bit": 4,
+        "code": "TEMP",
+        "name": "ConstantTemperature"
+      },
+      {
+        "bit": 5,
+        "code": "AUTO",
+        "name": "Automatic"
+      },
+      {
+        "bit": 6,
+        "code": "LOCAL",
+        "name": "LocalOperation"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -6270,6 +7373,63 @@
     "id": 513,
     "name": "Thermostat",
     "revision": 11,
+    "features": [
+      {
+        "bit": 0,
+        "code": "HEAT",
+        "name": "Heating"
+      },
+      {
+        "bit": 1,
+        "code": "COOL",
+        "name": "Cooling"
+      },
+      {
+        "bit": 10,
+        "code": "TSUGGEST",
+        "name": "ThermostatSuggestions"
+      },
+      {
+        "bit": 2,
+        "code": "OCC",
+        "name": "Occupancy"
+      },
+      {
+        "bit": 3,
+        "code": "SCH",
+        "name": "ScheduleConfiguration"
+      },
+      {
+        "bit": 4,
+        "code": "SB",
+        "name": "Setback"
+      },
+      {
+        "bit": 5,
+        "code": "AUTO",
+        "name": "AutoMode"
+      },
+      {
+        "bit": 6,
+        "code": "LTNE",
+        "name": "LocalTemperatureNotExposed"
+      },
+      {
+        "bit": 7,
+        "code": "MSCH",
+        "name": "MatterScheduleConfiguration"
+      },
+      {
+        "bit": 8,
+        "code": "PRES",
+        "name": "Presets"
+      },
+      {
+        "bit": 9,
+        "code": "TEVT",
+        "name": "Events"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -6858,6 +8018,38 @@
     "id": 514,
     "name": "Fan Control",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "SPD",
+        "name": "MultiSpeed"
+      },
+      {
+        "bit": 1,
+        "code": "AUT",
+        "name": "Auto"
+      },
+      {
+        "bit": 2,
+        "code": "RCK",
+        "name": "Rocking"
+      },
+      {
+        "bit": 3,
+        "code": "WND",
+        "name": "Wind"
+      },
+      {
+        "bit": 4,
+        "code": "STEP",
+        "name": "Step"
+      },
+      {
+        "bit": 5,
+        "code": "DIR",
+        "name": "AirflowDirection"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -7012,6 +8204,53 @@
     "id": 517,
     "name": "Humidistat",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "HUM",
+        "name": "Humidifier"
+      },
+      {
+        "bit": 1,
+        "code": "DEHUM",
+        "name": "Dehumidifier"
+      },
+      {
+        "bit": 2,
+        "code": "CONT",
+        "name": "Continuous"
+      },
+      {
+        "bit": 3,
+        "code": "SENSOR",
+        "name": "Sensor"
+      },
+      {
+        "bit": 4,
+        "code": "AUTO",
+        "name": "Auto"
+      },
+      {
+        "bit": 5,
+        "code": "FAN",
+        "name": "FanOnly"
+      },
+      {
+        "bit": 6,
+        "code": "OPT",
+        "name": "Optimal"
+      },
+      {
+        "bit": 7,
+        "code": "WARM",
+        "name": "WarmMist"
+      },
+      {
+        "bit": 8,
+        "code": "COLD",
+        "name": "ColdMist"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -7112,6 +8351,33 @@
     "id": 768,
     "name": "Color Control",
     "revision": 9,
+    "features": [
+      {
+        "bit": 0,
+        "code": "HS",
+        "name": "Hue And Saturation"
+      },
+      {
+        "bit": 1,
+        "code": "EHUE",
+        "name": "EnhancedHue"
+      },
+      {
+        "bit": 2,
+        "code": "CL",
+        "name": "ColorLoop"
+      },
+      {
+        "bit": 3,
+        "code": "XY",
+        "name": "XY"
+      },
+      {
+        "bit": 4,
+        "code": "CT",
+        "name": "ColorTemperature"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -7847,6 +9113,13 @@
     "id": 1027,
     "name": "Pressure Measurement",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "EXT",
+        "name": "Extended"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8029,6 +9302,58 @@
     "id": 1030,
     "name": "Occupancy Sensing",
     "revision": 7,
+    "features": [
+      {
+        "bit": 0,
+        "code": "OTHER",
+        "name": "Other"
+      },
+      {
+        "bit": 1,
+        "code": "PIR",
+        "name": "PassiveInfrared"
+      },
+      {
+        "bit": 2,
+        "code": "US",
+        "name": "Ultrasonic"
+      },
+      {
+        "bit": 3,
+        "code": "PHY",
+        "name": "PhysicalContact"
+      },
+      {
+        "bit": 4,
+        "code": "AIR",
+        "name": "ActiveInfrared"
+      },
+      {
+        "bit": 5,
+        "code": "RAD",
+        "name": "Radar"
+      },
+      {
+        "bit": 6,
+        "code": "RFS",
+        "name": "RFSensing"
+      },
+      {
+        "bit": 7,
+        "code": "VIS",
+        "name": "Vision"
+      },
+      {
+        "bit": 8,
+        "code": "PRED",
+        "name": "Prediction"
+      },
+      {
+        "bit": 9,
+        "code": "OCCEVENT",
+        "name": "OccupancyEvent"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8174,6 +9499,38 @@
     "id": 1036,
     "name": "Carbon Monoxide Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8274,6 +9631,38 @@
     "id": 1037,
     "name": "Carbon Dioxide Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8374,6 +9763,38 @@
     "id": 1043,
     "name": "Nitrogen Dioxide Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8474,6 +9895,38 @@
     "id": 1045,
     "name": "Ozone Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8574,6 +10027,38 @@
     "id": 1066,
     "name": "PM2.5 Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8674,6 +10159,38 @@
     "id": 1067,
     "name": "Formaldehyde Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8774,6 +10291,38 @@
     "id": 1068,
     "name": "PM1 Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8874,6 +10423,38 @@
     "id": 1069,
     "name": "PM10 Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -8974,6 +10555,38 @@
     "id": 1070,
     "name": "Total Volatile Organic Compounds Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9074,6 +10687,38 @@
     "id": 1071,
     "name": "Radon Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9197,6 +10842,38 @@
     "id": 1073,
     "name": "Ambient Context Sensing",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "HA",
+        "name": "HumanActivity"
+      },
+      {
+        "bit": 1,
+        "code": "OC",
+        "name": "ObjectCounting"
+      },
+      {
+        "bit": 2,
+        "code": "OI",
+        "name": "ObjectIdentification"
+      },
+      {
+        "bit": 3,
+        "code": "AUD",
+        "name": "SoundIdentification"
+      },
+      {
+        "bit": 4,
+        "code": "PRED",
+        "name": "PredictedActivity"
+      },
+      {
+        "bit": 5,
+        "code": "FUS",
+        "name": "SensorFusion"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9343,6 +11020,28 @@
     "id": 1075,
     "name": "Proximity Ranging",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "WFUSDPD",
+        "name": "Wi-Fi USD Proximity Detection"
+      },
+      {
+        "bit": 1,
+        "code": "BLTCS",
+        "name": "Bluetooth Channel Sounding"
+      },
+      {
+        "bit": 2,
+        "code": "BLERBC",
+        "name": "BLE Beacon RSSI"
+      },
+      {
+        "bit": 3,
+        "code": "UWBRNG",
+        "name": "UWB Ranging"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9408,6 +11107,38 @@
     "id": 1076,
     "name": "Smoke Concentration Measurement",
     "revision": 5,
+    "features": [
+      {
+        "bit": 0,
+        "code": "MEA",
+        "name": "NumericMeasurement"
+      },
+      {
+        "bit": 1,
+        "code": "LEV",
+        "name": "LevelIndication"
+      },
+      {
+        "bit": 2,
+        "code": "MED",
+        "name": "MediumLevel"
+      },
+      {
+        "bit": 3,
+        "code": "CRI",
+        "name": "CriticalLevel"
+      },
+      {
+        "bit": 4,
+        "code": "PEA",
+        "name": "PeakMeasurement"
+      },
+      {
+        "bit": 5,
+        "code": "AVG",
+        "name": "AverageMeasurement"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9565,6 +11296,13 @@
     "id": 1106,
     "name": "Thread Border Router Management",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PC",
+        "name": "PANChange"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9674,6 +11412,28 @@
     "id": 1284,
     "name": "Channel",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "CL",
+        "name": "ChannelList"
+      },
+      {
+        "bit": 1,
+        "code": "LI",
+        "name": "LineupInfo"
+      },
+      {
+        "bit": 2,
+        "code": "EG",
+        "name": "ElectronicGuide"
+      },
+      {
+        "bit": 3,
+        "code": "RP",
+        "name": "RecordProgram"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9729,6 +11489,33 @@
     "id": 1286,
     "name": "Media Playback",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "AS",
+        "name": "AdvancedSeek"
+      },
+      {
+        "bit": 1,
+        "code": "VS",
+        "name": "VariableSpeed"
+      },
+      {
+        "bit": 2,
+        "code": "TT",
+        "name": "TextTracks"
+      },
+      {
+        "bit": 3,
+        "code": "AT",
+        "name": "AudioTracks"
+      },
+      {
+        "bit": 4,
+        "code": "AA",
+        "name": "AudioAdvance"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9827,6 +11614,13 @@
     "id": 1287,
     "name": "Media Input",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "NU",
+        "name": "NameUpdates"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9854,7 +11648,24 @@
   {
     "id": 1289,
     "name": "Keypad Input",
-    "revision": 1
+    "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "NV",
+        "name": "NavigationKeyCodes"
+      },
+      {
+        "bit": 1,
+        "code": "LK",
+        "name": "LocationKeys"
+      },
+      {
+        "bit": 2,
+        "code": "NK",
+        "name": "NumberKeys"
+      }
+    ]
   },
   {
     "id": 1290,
@@ -9884,6 +11695,13 @@
     "id": 1291,
     "name": "Audio Output",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "NU",
+        "name": "NameUpdates"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -9907,6 +11725,13 @@
     "id": 1292,
     "name": "Application Launcher",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "AP",
+        "name": "ApplicationPlatform"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -10008,6 +11833,48 @@
     "id": 1295,
     "name": "Content Control",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "ST",
+        "name": "ScreenTime"
+      },
+      {
+        "bit": 1,
+        "code": "PM",
+        "name": "PINManagement"
+      },
+      {
+        "bit": 2,
+        "code": "BU",
+        "name": "BlockUnrated"
+      },
+      {
+        "bit": 3,
+        "code": "OCR",
+        "name": "OnDemandContentRating"
+      },
+      {
+        "bit": 4,
+        "code": "SCR",
+        "name": "ScheduledContentRating"
+      },
+      {
+        "bit": 5,
+        "code": "BC",
+        "name": "BlockChannels"
+      },
+      {
+        "bit": 6,
+        "code": "BA",
+        "name": "BlockApplications"
+      },
+      {
+        "bit": 7,
+        "code": "BTW",
+        "name": "BlockContentTimeWindow"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -10110,6 +11977,28 @@
     "id": 1360,
     "name": "Zone Management",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "TWODCART",
+        "name": "TwoDimensionalCartesianZone"
+      },
+      {
+        "bit": 1,
+        "code": "PERZONESENS",
+        "name": "PerZoneSensitivity"
+      },
+      {
+        "bit": 2,
+        "code": "USERDEFINED",
+        "name": "UserDefined"
+      },
+      {
+        "bit": 3,
+        "code": "FOCUSZONES",
+        "name": "FocusZones"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -10179,6 +12068,63 @@
     "id": 1361,
     "name": "Camera AV Stream Management",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "ADO",
+        "name": "Audio"
+      },
+      {
+        "bit": 1,
+        "code": "VDO",
+        "name": "Video"
+      },
+      {
+        "bit": 2,
+        "code": "SNP",
+        "name": "Snapshot"
+      },
+      {
+        "bit": 3,
+        "code": "PRIV",
+        "name": "Privacy"
+      },
+      {
+        "bit": 4,
+        "code": "SPKR",
+        "name": "Speaker"
+      },
+      {
+        "bit": 5,
+        "code": "ICTL",
+        "name": "ImageControl"
+      },
+      {
+        "bit": 6,
+        "code": "WMARK",
+        "name": "Watermark"
+      },
+      {
+        "bit": 7,
+        "code": "OSD",
+        "name": "OnScreenDisplay"
+      },
+      {
+        "bit": 8,
+        "code": "STOR",
+        "name": "LocalStorage"
+      },
+      {
+        "bit": 9,
+        "code": "HDR",
+        "name": "HighDynamicRange"
+      },
+      {
+        "bit": 10,
+        "code": "NV",
+        "name": "NightVision"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -10540,6 +12486,33 @@
     "id": 1362,
     "name": "Camera AV Settings User Level Management",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "DPTZ",
+        "name": "DigitalPTZ"
+      },
+      {
+        "bit": 1,
+        "code": "MPAN",
+        "name": "MechanicalPan"
+      },
+      {
+        "bit": 2,
+        "code": "MTILT",
+        "name": "MechanicalTilt"
+      },
+      {
+        "bit": 3,
+        "code": "MZOOM",
+        "name": "MechanicalZoom"
+      },
+      {
+        "bit": 4,
+        "code": "MPRESETS",
+        "name": "MechanicalPresets"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -10638,6 +12611,13 @@
     "id": 1363,
     "name": "WebRTC Transport Provider",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "METADATA",
+        "name": "Metadata"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -10668,6 +12648,18 @@
     "id": 1365,
     "name": "Push AV Stream Transport",
     "revision": 3,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PERZONESENS",
+        "name": "PerZoneSensitivity"
+      },
+      {
+        "bit": 1,
+        "code": "METADATA",
+        "name": "Metadata"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -10722,6 +12714,23 @@
     "id": 1367,
     "name": "AV Analysis",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "LCLCONDETECT",
+        "name": "LocalContextDetection"
+      },
+      {
+        "bit": 1,
+        "code": "REMCONDETECT",
+        "name": "RemoteContextDetection"
+      },
+      {
+        "bit": 2,
+        "code": "PERZONEDETECT",
+        "name": "PerZoneContextDetection"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -10777,6 +12786,38 @@
     "id": 1792,
     "name": "Commodity Tariff",
     "revision": 2,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PRICE",
+        "name": "Pricing"
+      },
+      {
+        "bit": 1,
+        "code": "FCRED",
+        "name": "FriendlyCredit"
+      },
+      {
+        "bit": 2,
+        "code": "AUXLD",
+        "name": "AuxiliaryLoad"
+      },
+      {
+        "bit": 3,
+        "code": "PEAKP",
+        "name": "PeakPeriod"
+      },
+      {
+        "bit": 4,
+        "code": "PWRTHLD",
+        "name": "PowerThreshold"
+      },
+      {
+        "bit": 5,
+        "code": "RNDM",
+        "name": "Randomization"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,
@@ -11183,6 +13224,13 @@
     "id": 2822,
     "name": "Meter Identification",
     "revision": 1,
+    "features": [
+      {
+        "bit": 0,
+        "code": "PWRTHLD",
+        "name": "PowerThreshold"
+      }
+    ],
     "server_attributes": [
       {
         "id": 0,

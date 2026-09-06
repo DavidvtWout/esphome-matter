@@ -10,6 +10,7 @@ from .data_model import (
     DEVICE_TYPES_BY_ID,
     DEVICE_TYPES_BY_NAME,
     Cluster,
+    ClusterConfig,
     Command,
     CommandArg,
     DeviceType,

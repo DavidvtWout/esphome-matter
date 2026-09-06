@@ -1,4 +1,5 @@
 import logging
+from collections import defaultdict
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -13,7 +14,7 @@ from .data_model import (
     DEVICE_TYPES,
     DEVICE_TYPES_BY_CONF_KEY,
     DEVICE_TYPES_BY_ID,
-    Cluster,
+    ClusterConfig,
     DeviceType,
 )
 from .types import MatterEndpointRef
@@ -33,28 +34,6 @@ ENDPOINT_SCHEMA = cv.All(
 )
 
 
-def _register_cluster(var, endpoint_id: int, cluster: Cluster):
-    _LOGGER.debug(
-        "[Matter] Registering cluster %s on endpoint %s",
-        cluster.name,
-        endpoint_id,
-    )
-    cluster_namespace = f"esp_matter::cluster::{cluster.namespace}"
-    cluster_config = cg.RawExpression(f"{cluster_namespace}::config_t{{}}")
-    cg.add(
-        var.register_cluster(
-            cg.TemplateArguments(
-                cluster.id,
-                cg.RawExpression(f"{cluster_namespace}::config_t"),
-                cg.RawExpression(f"{cluster_namespace}::create"),
-            ),
-            endpoint_id,
-            cluster.name,
-            cluster_config,
-        )
-    )
-
-
 def _register_device_type(var, endpoint_id: int, device_type: DeviceType):
     _LOGGER.debug(
         "[Matter] Registering device type %s on endpoint %s",
@@ -72,9 +51,10 @@ def _register_device_type(var, endpoint_id: int, device_type: DeviceType):
 
 async def _register_endpoint(var, endpoint_id, endpoint_config):
     enabled_clusters: set[str] = set()  # sdkconfig options
-    extra_clusters: dict[str, bool] = {
-        cluster_name: True for cluster_name in endpoint_config[CONF_EXTRA_CLUSTERS]
-    }
+    extra_clusters: dict[str, ClusterConfig] = defaultdict(ClusterConfig)
+    extra_clusters["Binding"] = ClusterConfig(create=False)
+    for cluster_name in endpoint_config[CONF_EXTRA_CLUSTERS]:
+        extra_clusters[cluster_name] = ClusterConfig(create=True)
 
     # Register endpoint
     cg.add(var.register_endpoint(endpoint_id))
@@ -88,24 +68,20 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
 
         for cluster in device_type.server_clusters:
             if cluster.required:
-                extra_clusters[cluster.camel_case_name] = False
+                extra_clusters[cluster.camel_case_name].create = False
             # esp_matter doesn't create the binding cluster when adding a device type to an endpoint, even when
             # the device type requires it so it must always be forcibly created when a device type needs it.
             if cluster.camel_case_name == "Binding":
-                extra_clusters["Binding"] = True
+                extra_clusters["Binding"].create = True
 
         # Find extra clusters that need to be enabled for sensor attributes
-        for (
-            cluster_name,
-            attribute_name,
-            sensor_attribute,
-        ) in device_type.sensor_attributes:
+        for cluster_name, _, sensor_attribute in device_type.sensor_attributes:
             # TODO: what if multiple device_types register the same sensor_attribute?
             sensor_id = device_config.get(sensor_attribute.conf_key)
             if sensor_id is not None:
-                extra_clusters[cluster_name] = True & extra_clusters.get(
-                    cluster_name, True
-                )
+                extra_clusters[cluster_name].create &= True
+                for feature in sensor_attribute.features:
+                    extra_clusters[cluster_name].enabled_features[feature] = True
                 # TODO: register sensor
 
         # Register device type
@@ -125,12 +101,12 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
             cg.add(var.map_light_to_endpoint(light_, endpoint_id))
 
     # Register extra clusters
-    for cluster_name, must_create in extra_clusters.items():
-        if not must_create:
+    for cluster_name, cluster_config in extra_clusters.items():
+        if not cluster_config.create:
             continue
         cluster = CLUSTERS_BY_NAME[cluster_name]
         enabled_clusters.add(cluster.sdkconfig_option)
-        _register_cluster(var, endpoint_id, cluster)
+        cluster.register(var, endpoint_id, cluster_config)
 
     return enabled_clusters
 

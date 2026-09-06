@@ -72,8 +72,8 @@
           enable = true;
           args = [
             "--select"
-            "I,F401"
-          ]; # Sort imports and remove unused imports
+            "I"
+          ]; # Sort imports
         };
         hooks.ruff-format.enable = true;
       };

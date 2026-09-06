@@ -9,6 +9,7 @@ from esphome.cpp_generator import MockObjClass
 class SensorAttribute:
     conf_key: str
     sensor_type: MockObjClass = field(default_factory=lambda: Sensor)
+    features: tuple[str, ...] = ()
     unit: str | None = None  # TODO: map to unit converters
 
 
@@ -50,33 +51,41 @@ SENSOR_ATTRIBUTES = {
         "Occupancy": SensorAttribute("occupancy", BinarySensor)
     },
     "CarbonMonoxideConcentrationMeasurement": {  # 0x040C
-        "MeasuredValue": SensorAttribute("carbon_monoxide")
+        "MeasuredValue": SensorAttribute(
+            "carbon_monoxide", features=("NumericMeasurement",)
+        )
     },
     "CarbonDioxideConcentrationMeasurement": {  # 0x040D
-        "MeasuredValue": SensorAttribute("carbon_dioxide")
+        "MeasuredValue": SensorAttribute(
+            "carbon_dioxide", features=("NumericMeasurement",)
+        )
     },
     "NitrogenDioxideConcentrationMeasurement": {  # 0x0413
-        "MeasuredValue": SensorAttribute("nitrogen_dioxide")
+        "MeasuredValue": SensorAttribute(
+            "nitrogen_dioxide", features=("NumericMeasurement",)
+        )
     },
     "OzoneConcentrationMeasurement": {  # 0x0415
-        "MeasuredValue": SensorAttribute("ozone")
+        "MeasuredValue": SensorAttribute("ozone", features=("NumericMeasurement",))
     },
-    "PM2.5ConcentrationMeasurement": {  # 0x042A
-        "MeasuredValue": SensorAttribute("pm_2_5")
+    "PM25ConcentrationMeasurement": {  # 0x042A
+        "MeasuredValue": SensorAttribute("pm_2_5", features=("NumericMeasurement",))
     },
     "FormaldehydeConcentrationMeasurement": {  # 0x042B
-        "MeasuredValue": SensorAttribute("formaldehyde")
+        "MeasuredValue": SensorAttribute(
+            "formaldehyde", features=("NumericMeasurement",)
+        )
     },
     "PM1ConcentrationMeasurement": {  # 0x042C
-        "MeasuredValue": SensorAttribute("pm_1")
+        "MeasuredValue": SensorAttribute("pm_1", features=("NumericMeasurement",))
     },
     "PM10ConcentrationMeasurement": {  # 0x042D
-        "MeasuredValue": SensorAttribute("pm_10")
+        "MeasuredValue": SensorAttribute("pm_10", features=("NumericMeasurement",))
     },
     "TotalVolatileOrganicCompoundsConcentrationMeasurement": {  # 0x042E
-        "MeasuredValue": SensorAttribute("total_voc")
+        "MeasuredValue": SensorAttribute("total_voc", features=("NumericMeasurement",))
     },
     "RadonConcentrationMeasurement": {  # 0x042F
-        "MeasuredValue": SensorAttribute("radon")
+        "MeasuredValue": SensorAttribute("radon", features=("NumericMeasurement",))
     },
 }

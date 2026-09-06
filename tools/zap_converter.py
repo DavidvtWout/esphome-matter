@@ -464,15 +464,26 @@ def post_process_commands(
 def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
     clusters = []
     for cluster in sorted(raw_clusters, key=lambda c: c.id):
-        cluster_data = {
+        cluster_data: dict[str, ...] = {
             "id": cluster.id,
             "name": cluster.name,
             "revision": cluster.revision,
         }
 
+        features = []
+        for feature in cluster.features:
+            features.append(
+                {
+                    "bit": feature.bit,
+                    "code": feature.code,
+                    "name": feature.name,
+                }
+            )
+        if features:
+            cluster_data["features"] = features
+
         server_attributes = []
         client_attributes = []
-
         for attr in cluster.attributes:
             attribute_data = filter_none(
                 {

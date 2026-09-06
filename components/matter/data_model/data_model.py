@@ -1,7 +1,9 @@
 import json
+import logging
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
+import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import automation
 from esphome.components import light
@@ -9,6 +11,9 @@ from esphome.const import CONF_LIGHT_ID
 
 from ..util import maybe_empty, snake_case
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
+
+_LOGGER = logging.getLogger(__name__)
+
 
 DATA_MODEL_DIR = Path(__file__).resolve().parent
 
@@ -172,6 +177,15 @@ class Feature:
     name: str  # CamelCase
     bit: int
 
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(code=data["code"], name=data["name"], bit=data["bit"])
+
+    @property
+    def namespace(self) -> str:
+        """esp_matter::cluster::<cluster>::feature namespace."""
+        return snake_case(self.name)
+
 
 @dataclass(frozen=True, slots=True)
 class Attribute:
@@ -196,6 +210,13 @@ class Attribute:
         )
 
 
+@dataclass
+class ClusterConfig:
+    create: bool = True
+    # Keys are feature names.
+    enabled_features: dict[str, bool] = field(default_factory=dict)
+
+
 @dataclass(frozen=True, slots=True)
 class Cluster:
     id: int
@@ -213,10 +234,11 @@ class Cluster:
         return cls(
             id=data["id"],
             name=data["name"],
-            revision=data.get(
-                "revision", 1
-            ),  # Some lack a revision. Assuming it's 1...
-            features=tuple(),  # TODO
+            # Some lack a revision. Assuming it's 1...
+            revision=data.get("revision", 1),
+            features=tuple(
+                Feature.from_dict(feature) for feature in data.get("features", ())
+            ),
             server_attributes=tuple(
                 Attribute.from_dict(a) for a in data.get("server_attributes", ())
             ),
@@ -229,6 +251,7 @@ class Cluster:
 
     @property
     def sdkconfig_option(self) -> str:
+        """sdkconfig option name to enable compilation of the cluster in esp_matter."""
         sdkconfig_name = (
             self.name.replace(" ", "_")
             .replace("/", "_")
@@ -267,6 +290,52 @@ class Cluster:
             .replace("-", "")
             .replace(".", "")
             .lower()
+        )
+
+    def _config_expression(self, config: ClusterConfig):
+        # TODO: some extra clusters don't support feature flags and need to be created with
+        #       cg.RawExpression(f"esp_matter::cluster::{self.namespace}::config_t{{}}")
+
+        lines = ["[] {", f"esp_matter::cluster::{self.namespace}::config_t config{{}};"]
+
+        feature_flags = []
+        features_by_name = {f.name: f for f in self.features}
+        for feature_name, enabled in config.enabled_features.items():
+            if not enabled:
+                continue
+            feature = features_by_name.get(feature_name)
+            if not feature:
+                raise cv.Invalid(f"Cluster {self.name} has no feature {feature_name}")
+            feature_flags.append(
+                f"esp_matter::cluster::{self.namespace}::feature::{feature.namespace}::get_id()"
+            )
+        if feature_flags:
+            lines.append(f"config.feature_flags = {' | '.join(feature_flags)};")
+
+        lines.append("return config;")
+        lines.append("}()")
+        return cg.RawExpression("\n".join(lines))
+
+    def register(self, var, endpoint_id: int, config: ClusterConfig):
+        if not config.create:
+            return
+        _LOGGER.debug(
+            "[Matter] Registering cluster %s on endpoint %s",
+            self.name,
+            endpoint_id,
+        )
+        cluster_namespace = f"esp_matter::cluster::{self.namespace}"
+        cg.add(
+            var.register_cluster(
+                cg.TemplateArguments(
+                    self.id,
+                    cg.RawExpression(f"{cluster_namespace}::config_t"),
+                    cg.RawExpression(f"{cluster_namespace}::create"),
+                ),
+                endpoint_id,
+                self.name,
+                self._config_expression(config),
+            )
         )
 
 
