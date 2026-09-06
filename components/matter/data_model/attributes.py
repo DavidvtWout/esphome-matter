@@ -35,7 +35,6 @@ class SensorAttribute:
     converter: str
     sensor_type: MockObjClass = field(default_factory=lambda: Sensor)
     features: tuple[str, ...] = ()
-    unit: str | None = None  # TODO: map to unit converters
 
     async def register(
         self,
@@ -69,22 +68,19 @@ SENSOR_ATTRIBUTES = {
         "StateValue": SensorAttribute("contact", "boolean_state", BinarySensor)
     },
     "ElectricalPowerMeasurement": {  # 0x0090
-        "Voltage": SensorAttribute("voltage", "volts_to_millivolts"),
-        "ActiveCurrent": SensorAttribute("active_current", "amperes_to_milliamperes"),
-        "ReactiveCurrent": SensorAttribute(
-            "reactive_current", "amperes_to_milliamperes"
-        ),
-        "ApparentCurrent": SensorAttribute(
-            "apparent_current", "amperes_to_milliamperes"
-        ),
-        "ActivePower": SensorAttribute("active_power", "watts_to_milliwatts"),
-        "ReactivePower": SensorAttribute("reactive_power", "watts_to_milliwatts"),
-        "ApparentPower": SensorAttribute("apparent_power", "watts_to_milliwatts"),
-        "RMSVoltage": SensorAttribute("rms_voltage", "volts_to_millivolts"),
-        "RMSCurrent": SensorAttribute("rms_current", "amperes_to_milliamperes"),
-        "RMSPower": SensorAttribute("rms_power", "watts_to_milliwatts"),
+        "Voltage": SensorAttribute("voltage", "volts"),
+        "ActiveCurrent": SensorAttribute("active_current", "ampere"),
+        "ReactiveCurrent": SensorAttribute("reactive_current", "ampere"),
+        "ApparentCurrent": SensorAttribute("apparent_current", "ampere"),
+        "ActivePower": SensorAttribute("active_power", "watts"),
+        "ReactivePower": SensorAttribute("reactive_power", "watts"),
+        "ApparentPower": SensorAttribute("apparent_power", "watts"),
+        "RMSVoltage": SensorAttribute("rms_voltage", "volts"),
+        "RMSCurrent": SensorAttribute("rms_current", "ampere"),
+        "RMSPower": SensorAttribute("rms_power", "watts"),
         "Frequency": SensorAttribute("frequency", "frequency"),
-        "PowerFactor": SensorAttribute("power_factor", "percent_to_hundredths"),
+        "PowerFactor": SensorAttribute("power_factor", "percentage"),
+        "NeutralCurrent": SensorAttribute("neutral_current", "ampere"),
     },
     "IlluminanceMeasurement": {  # 0x0400
         "MeasuredValue": SensorAttribute("illuminance", "illuminance")
@@ -99,7 +95,7 @@ SENSOR_ATTRIBUTES = {
         "MeasuredValue": SensorAttribute("flow", "flow")
     },
     "RelativeHumidityMeasurement": {  # 0x0405
-        "MeasuredValue": SensorAttribute("relative_humidity", "percent_to_hundredths")
+        "MeasuredValue": SensorAttribute("relative_humidity", "percentage")
     },
     "OccupancySensing": {  # 0x0406
         "Occupancy": SensorAttribute("occupancy", "occupancy", BinarySensor)
@@ -152,6 +148,16 @@ SENSOR_ATTRIBUTES = {
     "RadonConcentrationMeasurement": {  # 0x042F
         "MeasuredValue": SensorAttribute(
             "radon", "concentration", features=("NumericMeasurement",)
+        )
+    },
+    "SoilMeasurement": {  # 0x0430
+        "SoilMoistureMeasuredValue": SensorAttribute("soil_moisture", "percentage")
+    },
+    "SmokeConcentrationMeasurement": {  # 0x0434
+        "MeasuredValue": SensorAttribute(
+            "smoke_concentration",
+            "concentration",
+            features=("NumericMeasurement",),
         )
     },
 }

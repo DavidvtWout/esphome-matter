@@ -4,16 +4,32 @@
 #ifdef USE_MATTER
 
 #include "matter_endpoints.h"
-#include "matter_sensor_converters.h"
 
 #ifdef USE_BINARY_SENSOR
 #include "esphome/components/binary_sensor/binary_sensor.h"
-#endif
+#endif // USE_BINARY_SENSOR
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
-#endif
+#endif // USE_SENSOR
 
 namespace esphome::matter {
+
+namespace sensor_converter {
+
+esp_matter_attr_val_t ampere(float value);
+esp_matter_attr_val_t boolean_state(bool value);
+esp_matter_attr_val_t concentration(float value);
+esp_matter_attr_val_t flow(float value);
+esp_matter_attr_val_t frequency(float value);
+esp_matter_attr_val_t illuminance(float value);
+esp_matter_attr_val_t occupancy(bool value);
+esp_matter_attr_val_t percentage(float value);
+esp_matter_attr_val_t pressure(float value);
+esp_matter_attr_val_t temperature(float value);
+esp_matter_attr_val_t volts(float value);
+esp_matter_attr_val_t watts(float value);
+
+} // namespace sensor_converter
 
 using SensorValueConverter = esp_matter_attr_val_t (*)(float);
 using BinarySensorValueConverter = esp_matter_attr_val_t (*)(bool);
@@ -35,7 +51,7 @@ protected:
   uint32_t attribute_id_;
   SensorValueConverter converter_;
 };
-#endif
+#endif // USE_SENSOR
 
 #ifdef USE_BINARY_SENSOR
 class MatterBinarySensorAttributeMapping : public MatterEndpointMappingBase {
@@ -55,7 +71,7 @@ protected:
   uint32_t attribute_id_;
   BinarySensorValueConverter converter_;
 };
-#endif
+#endif // USE_BINARY_SENSOR
 
 } // namespace esphome::matter
 
