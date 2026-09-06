@@ -131,7 +131,7 @@ matter:
       dimmer_switch:
     2:
       temperature_sensor:
-        sensor_id: internal_temp
+        temperature: internal_temp
     3:
       on_off_light:
         light_id: user_led
@@ -211,6 +211,29 @@ button:
 ```
 
 More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
+
+# Sensors
+
+Many ESPHome sensors can be exposed by Matter. To expose a sensor, first create a device type that supports it and then map sensor ids to it.
+
+```yaml
+matter:
+  endpoints:
+    1:
+      temperature_sensor:  # temperature_sensor is the device type
+        temperature: sensor_id  #
+    2:
+      electrical_sensor:
+        # At least one of ElectricalPowerMeasurement or ElectricalEnergyMeasurement
+        # must be added for electrical_sensor to be valid.
+        with_clusters: ["ElectricalPowerMeasurement"]
+        # Each sensor is optional. Remove the ones that are not needed.
+        ...
+    3:
+      air_quality_sensor:
+
+
+```
 
 # Actions
 
