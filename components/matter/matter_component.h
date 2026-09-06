@@ -62,6 +62,19 @@ public:
   void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id,
                                  uint32_t cluster_id, uint32_t attribute_id,
                                  SensorValueConverter converter);
+
+  template <
+      typename ClusterT, typename ValueT,
+      CHIP_ERROR (ClusterT::*Setter)(chip::app::DataModel::Nullable<ValueT>)>
+  void register_code_driven_sensor_attribute(sensor::Sensor *sensor,
+                                             uint16_t endpoint_id,
+                                             uint32_t cluster_id,
+                                             uint32_t attribute_id,
+                                             SensorValueConverter converter) {
+    this->mappings_.push_back(new MatterSensorAttributeMapping(
+        sensor, endpoint_id, cluster_id, attribute_id, converter,
+        update_code_driven_sensor_attribute<ClusterT, ValueT, Setter>));
+  }
 #endif // USE_SENSOR
 #ifdef USE_BINARY_SENSOR
   void register_binary_sensor_attribute(binary_sensor::BinarySensor *sensor,

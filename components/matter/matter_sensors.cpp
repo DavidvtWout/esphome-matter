@@ -120,10 +120,25 @@ struct AttributeUpdate {
   uint32_t cluster_id;
   uint32_t attribute_id;
   esp_matter_attr_val_t value;
+  SensorAttributeUpdater updater;
 };
 
 void update_attribute_on_matter_thread(intptr_t context) {
   auto *update = reinterpret_cast<AttributeUpdate *>(context);
+  if (update->updater != nullptr) {
+    CHIP_ERROR err =
+        update->updater(update->endpoint_id, update->cluster_id, update->value);
+    if (err != CHIP_NO_ERROR) {
+      ESP_LOGE(TAG,
+               "Failed to update attribute 0x%08" PRIX32
+               " on cluster 0x%08" PRIX32 ", endpoint %u: %s",
+               update->attribute_id, update->cluster_id, update->endpoint_id,
+               err.AsString());
+    }
+    delete update;
+    return;
+  }
+
   esp_err_t err =
       esp_matter::attribute::update(update->endpoint_id, update->cluster_id,
                                     update->attribute_id, &update->value);
@@ -139,9 +154,10 @@ void update_attribute_on_matter_thread(intptr_t context) {
 
 void update_attribute(uint16_t endpoint_id, uint32_t cluster_id,
                       uint32_t attribute_id,
-                      esp_matter_attr_val_t attribute_value) {
+                      esp_matter_attr_val_t attribute_value,
+                      SensorAttributeUpdater updater = nullptr) {
   auto *update = new AttributeUpdate{endpoint_id, cluster_id, attribute_id,
-                                     attribute_value};
+                                     attribute_value, updater};
   CHIP_ERROR err = chip::DeviceLayer::PlatformMgr().ScheduleWork(
       update_attribute_on_matter_thread, reinterpret_cast<intptr_t>(update));
   if (err != CHIP_NO_ERROR) {
@@ -163,10 +179,11 @@ void MatterComponent::register_sensor_attribute(
 
 MatterSensorAttributeMapping::MatterSensorAttributeMapping(
     sensor::Sensor *sensor, uint16_t endpoint_id, uint32_t cluster_id,
-    uint32_t attribute_id, SensorValueConverter converter)
+    uint32_t attribute_id, SensorValueConverter converter,
+    SensorAttributeUpdater updater)
     : MatterEndpointMappingBase(endpoint_id), sensor_(sensor),
       cluster_id_(cluster_id), attribute_id_(attribute_id),
-      converter_(converter) {}
+      converter_(converter), updater_(updater) {}
 
 void MatterSensorAttributeMapping::register_callbacks() {
   if (this->sensor_ == nullptr || this->converter_ == nullptr)
@@ -179,7 +196,7 @@ void MatterSensorAttributeMapping::register_callbacks() {
 
 void MatterSensorAttributeMapping::publish_(float value) {
   update_attribute(this->endpoint_id_, this->cluster_id_, this->attribute_id_,
-                   this->converter_(value));
+                   this->converter_(value), this->updater_);
 }
 #endif // USE_SENSOR
 

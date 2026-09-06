@@ -5,6 +5,8 @@ from esphome.components.binary_sensor import BinarySensor
 from esphome.components.sensor import Sensor
 from esphome.cpp_generator import MockObjClass
 
+from ..util import snake_case
+
 
 @dataclass(frozen=True, slots=True)
 class Attribute:
@@ -35,13 +37,15 @@ class SensorAttribute:
     converter: str
     sensor_type: MockObjClass = field(default_factory=lambda: Sensor)
     features: tuple[str, ...] = ()
+    code_driven: bool = False
 
     async def register(
         self,
         var,
         endpoint_id: int,
+        cluster_name: str,
         cluster_id: int,
-        attribute_id: int,
+        attribute: Attribute,
         config: dict,
     ):
         sensor = await cg.get_variable(config[self.conf_key])
@@ -51,13 +55,37 @@ class SensorAttribute:
         if self.sensor_type is BinarySensor:
             cg.add(
                 var.register_binary_sensor_attribute(
-                    sensor, endpoint_id, cluster_id, attribute_id, converter
+                    sensor, endpoint_id, cluster_id, attribute.id, converter
                 )
             )
+        elif self.code_driven:
+            cluster_class = f"{cluster_name}Cluster"
+            cluster_path = snake_case(cluster_name).replace("_", "-")
+            cg.add_global(
+                cg.RawStatement(
+                    f"#include <app/clusters/{cluster_path}-server/{cluster_class}.h>"
+                ),
+                prepend=True,
+            )
+            cluster_type = cg.RawExpression(f"chip::app::Clusters::{cluster_class}")
+            value_type = cg.RawExpression(
+                {
+                    "int16s": "int16_t",
+                    "int16u": "uint16_t",
+                    "temperature": "int16_t",
+                }[attribute.type]
+            )
+            setter = cg.RawExpression(
+                f"&chip::app::Clusters::{cluster_class}::SetMeasuredValue"
+            )
+            register = var.register_code_driven_sensor_attribute.template(
+                cluster_type, value_type, setter
+            )
+            cg.add(register(sensor, endpoint_id, cluster_id, attribute.id, converter))
         else:
             cg.add(
                 var.register_sensor_attribute(
-                    sensor, endpoint_id, cluster_id, attribute_id, converter
+                    sensor, endpoint_id, cluster_id, attribute.id, converter
                 )
             )
 
@@ -83,19 +111,39 @@ SENSOR_ATTRIBUTES = {
         "NeutralCurrent": SensorAttribute("neutral_current", "ampere"),
     },
     "IlluminanceMeasurement": {  # 0x0400
-        "MeasuredValue": SensorAttribute("illuminance", "illuminance")
+        "MeasuredValue": SensorAttribute(
+            "illuminance",
+            "illuminance",
+            code_driven=True,
+        )
     },
     "TemperatureMeasurement": {  # 0x0402
-        "MeasuredValue": SensorAttribute("temperature", "temperature")
+        "MeasuredValue": SensorAttribute(
+            "temperature",
+            "temperature",
+            code_driven=True,
+        )
     },
     "PressureMeasurement": {  # 0x0403
-        "MeasuredValue": SensorAttribute("pressure", "pressure")
+        "MeasuredValue": SensorAttribute(
+            "pressure",
+            "pressure",
+            code_driven=True,
+        )
     },
     "FlowMeasurement": {  # 0x0404
-        "MeasuredValue": SensorAttribute("flow", "flow")
+        "MeasuredValue": SensorAttribute(
+            "flow",
+            "flow",
+            code_driven=True,
+        )
     },
     "RelativeHumidityMeasurement": {  # 0x0405
-        "MeasuredValue": SensorAttribute("relative_humidity", "percentage")
+        "MeasuredValue": SensorAttribute(
+            "relative_humidity",
+            "percentage",
+            code_driven=True,
+        )
     },
     "OccupancySensing": {  # 0x0406
         "Occupancy": SensorAttribute("occupancy", "occupancy", BinarySensor)

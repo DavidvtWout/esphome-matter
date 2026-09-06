@@ -79,8 +79,9 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
                 await sensor_attribute.register(
                     var,
                     endpoint_id,
+                    cluster_name,
                     cluster.id,
-                    attribute.id,
+                    attribute,
                     device_config,
                 )
 
