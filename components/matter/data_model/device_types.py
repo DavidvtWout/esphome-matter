@@ -11,7 +11,7 @@ from esphome.const import CONF_LIGHT_ID
 
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, Attribute, SensorAttribute
-from .clusters import CLUSTERS_BY_ID, Cluster
+from .clusters import CLUSTERS_BY_CONF_KEY, CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -139,7 +139,7 @@ class DeviceType:
     def _config_expression(self, config: dict):
         return cg.RawExpression(f"esp_matter::endpoint::{self.namespace}::config_t{{}}")
 
-    def register(self, var, endpoint_id: int, config: dict):
+    def register(self, var, endpoint_id: int, config: dict) -> set[Cluster]:
         _LOGGER.debug(
             "[Matter] Registering device type %s on endpoint %s",
             self.name,
@@ -154,6 +154,14 @@ class DeviceType:
                 endpoint_id, self.namespace, self._config_expression(config)
             )
         )
+        created_clusters = {
+            cluster for cluster in self.server_clusters if cluster.required
+        }
+        for cluster_name, _, sensor_attr in self.sensor_attributes:
+            sensor_id = config.get(sensor_attr.conf_key)
+            if sensor_id is not None:
+                created_clusters.add(CLUSTERS_BY_NAME[cluster_name])
+        return created_clusters
 
 
 class ElectricalSensor(DeviceType):
@@ -172,10 +180,26 @@ class ElectricalSensor(DeviceType):
     def _config_expression(self, config: dict):
         namespace = f"esp_matter::endpoint::{self.namespace}"
         lines = ["[] {", f"{namespace}::config_t config{{}};"]
+        lines.append(
+            "config.power_topology.feature_flags = esp_matter::cluster::power_topology::feature::node_topology::get_id();"
+        )
+        lines.append(
+            "config.electrical_power_measurement.feature_flags = esp_matter::cluster::electrical_power_measurement::feature::direct_current::get_id();"
+        )
         for cluster_name in config["with_clusters"]:
             lines.append(f"config.with_{cluster_name}();")
         lines.extend(("return config;", "}()"))
         return cg.RawExpression("\n".join(lines))
+
+    def register(self, var, endpoint_id: int, config: dict) -> set[Cluster]:
+        created_clusters = DeviceType.register(self, var, endpoint_id, config)
+        # esp_matter is written by idiots and doesn't properly guard cluster compilation...
+        for cluster_name in (
+            "electrical_power_measurement",
+            "electrical_energy_measurement",
+        ):
+            created_clusters.add(CLUSTERS_BY_CONF_KEY[cluster_name])
+        return created_clusters
 
 
 DEVICE_TYPE_OVERRIDES = {

@@ -174,3 +174,6 @@ CLUSTERS_BY_ID: dict[int, Cluster] = {cluster.id: cluster for cluster in CLUSTER
 CLUSTERS_BY_NAME: dict[str, Cluster] = {
     cluster.camel_case_name: cluster for cluster in CLUSTERS
 }
+CLUSTERS_BY_CONF_KEY: dict[str, Cluster] = {
+    snake_case(cluster.camel_case_name): cluster for cluster in CLUSTERS
+}

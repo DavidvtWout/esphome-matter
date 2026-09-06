@@ -69,12 +69,9 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
                 # TODO: register sensor
 
         # Register device type
-        device_type.register(var, endpoint_id, device_config)
-
-        # Enable clusters in esp_matter
-        for cluster in device_type.server_clusters:
-            if cluster.required:
-                enabled_clusters.add(cluster.sdkconfig_option)
+        created_clusters = device_type.register(var, endpoint_id, device_config)
+        for cluster in created_clusters:
+            enabled_clusters.add(cluster.sdkconfig_option)
 
         # Register ESPHome entities
         if CONF_SENSOR_ID in device_config:
