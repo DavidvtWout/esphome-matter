@@ -34,20 +34,22 @@ public:
   // Register Matter device types
   template <typename ConfigT,
             esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
-  void register_device_type(uint16_t endpoint_id, const char *device_type) {
+  void register_device_type(uint16_t endpoint_id, const char *device_type,
+                            const ConfigT &config = ConfigT{}) {
     this->device_type_registrations_.push_back(
         new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id,
-                                                         device_type));
+                                                         device_type, config));
   }
 
   // Register additional Matter clusters
   template <uint32_t ClusterId, typename ConfigT,
             esp_matter::cluster_t *(*CreateFn)(esp_matter::endpoint_t *,
                                                ConfigT *, uint8_t)>
-  void register_cluster(uint16_t endpoint_id, const char *cluster_name) {
+  void register_cluster(uint16_t endpoint_id, const char *cluster_name,
+                        const ConfigT &config = ConfigT{}) {
     this->cluster_registrations_.push_back(
         new MatterClusterRegistration<ClusterId, ConfigT, CreateFn>(
-            endpoint_id, cluster_name));
+            endpoint_id, cluster_name, config));
   }
 
   // Register ESPHome entities

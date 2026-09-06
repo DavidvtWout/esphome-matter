@@ -13,6 +13,8 @@ from .data_model import (
     DEVICE_TYPES,
     DEVICE_TYPES_BY_CONF_KEY,
     DEVICE_TYPES_BY_ID,
+    Cluster,
+    DeviceType,
 )
 from .types import MatterEndpointRef
 
@@ -31,6 +33,43 @@ ENDPOINT_SCHEMA = cv.All(
 )
 
 
+def _register_cluster(var, endpoint_id: int, cluster: Cluster):
+    _LOGGER.debug(
+        "[Matter] Registering cluster %s on endpoint %s",
+        cluster.name,
+        endpoint_id,
+    )
+    cluster_namespace = f"esp_matter::cluster::{cluster.namespace}"
+    cluster_config = cg.RawExpression(f"{cluster_namespace}::config_t{{}}")
+    cg.add(
+        var.register_cluster(
+            cg.TemplateArguments(
+                cluster.id,
+                cg.RawExpression(f"{cluster_namespace}::config_t"),
+                cg.RawExpression(f"{cluster_namespace}::create"),
+            ),
+            endpoint_id,
+            cluster.name,
+            cluster_config,
+        )
+    )
+
+
+def _register_device_type(var, endpoint_id: int, device_type: DeviceType):
+    _LOGGER.debug(
+        "[Matter] Registering device type %s on endpoint %s",
+        device_type.name,
+        endpoint_id,
+    )
+    device_type_namespace = f"esp_matter::endpoint::{device_type.namespace}"
+    device_type_config = cg.RawExpression(f"{device_type_namespace}::config_t{{}}")
+    register_device_type = var.register_device_type.template(
+        cg.RawExpression(f"{device_type_namespace}::config_t"),
+        cg.RawExpression(f"esp_matter::endpoint::{device_type.namespace}::add"),
+    )
+    cg.add(register_device_type(endpoint_id, device_type.namespace, device_type_config))
+
+
 async def _register_endpoint(var, endpoint_id, endpoint_config):
     enabled_clusters: set[str] = set()  # sdkconfig options
     extra_clusters: dict[str, bool] = {
@@ -41,6 +80,7 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
     cg.add(var.register_endpoint(endpoint_id))
 
     for conf_key, device_config in endpoint_config.items():
+        # Skip endpoint config options that aren't device types.
         try:
             device_type = DEVICE_TYPES_BY_CONF_KEY[conf_key]
         except KeyError:
@@ -49,9 +89,12 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
         for cluster in device_type.server_clusters:
             if cluster.required:
                 extra_clusters[cluster.camel_case_name] = False
+            # esp_matter doesn't create the binding cluster when adding a device type to an endpoint, even when
+            # the device type requires it so it must always be forcibly created when a device type needs it.
             if cluster.camel_case_name == "Binding":
                 extra_clusters["Binding"] = True
 
+        # Find extra clusters that need to be enabled for sensor attributes
         for (
             cluster_name,
             attribute_name,
@@ -66,18 +109,12 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
                 # TODO: register sensor
 
         # Register device type
-        _LOGGER.info(
-            "Registering Matter device type %s on endpoint %s",
-            device_type.name,
-            endpoint_id,
-        )
-        register_device_type = var.register_device_type.template(
-            cg.RawExpression(
-                f"esp_matter::endpoint::{device_type.namespace}::config_t"
-            ),
-            cg.RawExpression(f"esp_matter::endpoint::{device_type.namespace}::add"),
-        )
-        cg.add(register_device_type(endpoint_id, device_type.namespace))
+        _register_device_type(var, endpoint_id, device_type)
+
+        # Enable clusters in esp_matter
+        for cluster in device_type.server_clusters:
+            if cluster.required:
+                enabled_clusters.add(cluster.sdkconfig_option)
 
         # Register ESPHome entities
         if CONF_SENSOR_ID in device_config:
@@ -87,34 +124,13 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
             light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
             cg.add(var.map_light_to_endpoint(light_, endpoint_id))
 
-        # Enable clusters in esp_matter
-        for cluster in device_type.server_clusters:
-            if cluster.required:
-                enabled_clusters.add(cluster.sdkconfig_option)
-
     # Register extra clusters
     for cluster_name, must_create in extra_clusters.items():
         if not must_create:
             continue
         cluster = CLUSTERS_BY_NAME[cluster_name]
-        _LOGGER.info(
-            "Registering Matter cluster %s on endpoint %s",
-            cluster.name,
-            endpoint_id,
-        )
         enabled_clusters.add(cluster.sdkconfig_option)
-        cluster_namespace = f"esp_matter::cluster::{cluster.namespace}"
-        cg.add(
-            var.register_cluster(
-                cg.TemplateArguments(
-                    cluster.id,
-                    cg.RawExpression(f"{cluster_namespace}::config_t"),
-                    cg.RawExpression(f"{cluster_namespace}::create"),
-                ),
-                endpoint_id,
-                cluster.name,
-            )
-        )
+        _register_cluster(var, endpoint_id, cluster)
 
     return enabled_clusters
 

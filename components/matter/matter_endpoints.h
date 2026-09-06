@@ -41,11 +41,12 @@ template <typename ConfigT,
           esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
 class MatterDeviceTypeRegistration : public MatterDeviceTypeRegistrationBase {
 public:
-  MatterDeviceTypeRegistration(uint16_t endpoint_id, const char *device_type)
-      : MatterDeviceTypeRegistrationBase(endpoint_id, device_type) {}
+  MatterDeviceTypeRegistration(uint16_t endpoint_id, const char *device_type,
+                               const ConfigT &config)
+      : MatterDeviceTypeRegistrationBase(endpoint_id, device_type),
+        config_(config) {}
 
   bool add_clusters(esp_matter::node_t *node) override {
-    ConfigT config;
     esp_matter::endpoint_t *endpoint =
         esp_matter::endpoint::get(node, this->endpoint_id_);
     if (endpoint == nullptr) {
@@ -53,17 +54,18 @@ public:
                this->device_type_, this->endpoint_id_);
       return false;
     }
-
-    if (AddFn(endpoint, &config) != ESP_OK) {
+    if (AddFn(endpoint, &this->config_) != ESP_OK) {
       ESP_LOGE("matter", "Failed to add %s device type to endpoint %u",
                this->device_type_, this->endpoint_id_);
       return false;
     }
-
     ESP_LOGD("matter", "Added device type %s to endpoint %u",
              this->device_type_, this->endpoint_id_);
     return true;
   }
+
+protected:
+  ConfigT config_;
 };
 
 class MatterClusterRegistrationBase {
@@ -84,8 +86,10 @@ template <uint32_t ClusterId, typename ConfigT,
                                              ConfigT *, uint8_t)>
 class MatterClusterRegistration : public MatterClusterRegistrationBase {
 public:
-  MatterClusterRegistration(uint16_t endpoint_id, const char *cluster_name)
-      : MatterClusterRegistrationBase(endpoint_id, cluster_name) {}
+  MatterClusterRegistration(uint16_t endpoint_id, const char *cluster_name,
+                            const ConfigT &config)
+      : MatterClusterRegistrationBase(endpoint_id, cluster_name),
+        config_(config) {}
 
   bool add_cluster(esp_matter::node_t *node) override {
     esp_matter::endpoint_t *endpoint =
@@ -95,22 +99,21 @@ public:
                this->cluster_name_, this->endpoint_id_);
       return false;
     }
-
     if (esp_matter::cluster::get(endpoint, ClusterId) != nullptr)
       return true;
-
-    ConfigT config{};
-    if (CreateFn(endpoint, &config, esp_matter::CLUSTER_FLAG_SERVER) ==
+    if (CreateFn(endpoint, &this->config_, esp_matter::CLUSTER_FLAG_SERVER) ==
         nullptr) {
       ESP_LOGE("matter", "Failed to add %s cluster to endpoint %u",
                this->cluster_name_, this->endpoint_id_);
       return false;
     }
-
     ESP_LOGD("matter", "Added %s cluster to endpoint %u", this->cluster_name_,
              this->endpoint_id_);
     return true;
   }
+
+protected:
+  ConfigT config_;
 };
 
 class MatterEndpointMappingBase {
