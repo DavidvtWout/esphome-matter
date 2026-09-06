@@ -6,6 +6,7 @@
 #include "esphome/core/component.h"
 
 #include "matter_endpoints.h"
+#include "matter_sensors.h"
 
 #include <functional>
 #include <vector>
@@ -58,8 +59,17 @@ public:
   MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
 #endif // USE_LIGHT
 #ifdef USE_SENSOR
-  void map_sensor_to_endpoint(sensor::Sensor *sensor, uint16_t endpoint_id);
+  void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id,
+                                 uint32_t cluster_id, uint32_t attribute_id,
+                                 SensorValueConverter converter);
 #endif // USE_SENSOR
+#ifdef USE_BINARY_SENSOR
+  void register_binary_sensor_attribute(binary_sensor::BinarySensor *sensor,
+                                        uint16_t endpoint_id,
+                                        uint32_t cluster_id,
+                                        uint32_t attribute_id,
+                                        BinarySensorValueConverter converter);
+#endif // USE_BINARY_SENSOR
 
   // Public wrapper around the protected Component scheduler; used by the
   // Matter-thread callbacks to hop onto the main loop (defer is thread-safe).

@@ -3,9 +3,6 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 #include "esphome/core/log.h"
-#ifdef USE_SENSOR
-#include "esphome/components/sensor/sensor.h"
-#endif // USE_SENSOR
 #ifdef USE_LIGHT
 #include "esphome/components/light/light_state.h"
 #endif // USE_LIGHT
@@ -153,19 +150,6 @@ protected:
   light::LightState *light_;
 };
 #endif // USE_LIGHT
-
-#ifdef USE_SENSOR
-class MatterSensorMapping : public MatterEndpointMappingBase {
-public:
-  MatterSensorMapping(sensor::Sensor *sensor, uint16_t endpoint_id);
-
-  void register_callbacks() override;
-  void push_state_to_matter(float value);
-
-protected:
-  sensor::Sensor *sensor_;
-};
-#endif // USE_SENSOR
 
 // Common esp_matter attribute update callback, passed to node::create().
 // Routes server-cluster changes (e.g. light commands) to the ESPHome entities.

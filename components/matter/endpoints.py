@@ -4,7 +4,7 @@ from collections import defaultdict
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components.esp32 import add_idf_sdkconfig_option
-from esphome.const import CONF_LIGHT_ID, CONF_SENSOR_ID
+from esphome.const import CONF_LIGHT_ID
 from esphome.types import ConfigType
 
 from .const import *
@@ -59,14 +59,30 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
                 extra_clusters["Binding"].create = True
 
         # Find extra clusters that need to be enabled for sensor attributes
-        for cluster_name, _, sensor_attribute in device_type.sensor_attributes:
+        for (
+            cluster_name,
+            attribute_name,
+            sensor_attribute,
+        ) in device_type.sensor_attributes:
             # TODO: what if multiple device_types register the same sensor_attribute?
             sensor_id = device_config.get(sensor_attribute.conf_key)
             if sensor_id is not None:
                 extra_clusters[cluster_name].create &= True
                 for feature in sensor_attribute.features:
                     extra_clusters[cluster_name].enabled_features[feature] = True
-                # TODO: register sensor
+                cluster = CLUSTERS_BY_NAME[cluster_name]
+                attribute = next(
+                    attribute
+                    for attribute in cluster.server_attributes
+                    if attribute.name == attribute_name
+                )
+                await sensor_attribute.register(
+                    var,
+                    endpoint_id,
+                    cluster.id,
+                    attribute.id,
+                    device_config,
+                )
 
         # Register device type
         created_clusters = device_type.register(var, endpoint_id, device_config)
@@ -74,10 +90,7 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
             enabled_clusters.add(cluster.sdkconfig_option)
 
         # Register ESPHome entities
-        if CONF_SENSOR_ID in device_config:
-            sensor_ = await cg.get_variable(device_config[CONF_SENSOR_ID])
-            cg.add(var.map_sensor_to_endpoint(sensor_, endpoint_id))
-        elif CONF_LIGHT_ID in device_config:
+        if CONF_LIGHT_ID in device_config:
             light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
             cg.add(var.map_light_to_endpoint(light_, endpoint_id))
 

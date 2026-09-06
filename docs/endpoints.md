@@ -28,18 +28,43 @@ on_off_light_switch:
 dimmer_switch:
 ```
 
-##### Binding
-
-Endpoints with switch device types get the Binding cluster (id 30) by default.
-Set `enable_binding: false` on an endpoint to disable that default, or
-`enable_binding: true` to add the Binding cluster to another endpoint. Some
-Matter controllers such as matterjs-server allow binding from the UI.
-
-See [docs/actions.md](./docs/actions.md) for a list of available commands on each cluster.
-
 ### Sensors
 
+ESPHome sensors can be mapped to certain cluster attributes. For example the `TemperatureMeasurement` cluster has a `MeasuredValue` attribute that represents a temperature
+
+Most clusters are supported by multiple device types. The `TemperatureMeasurement` cluster is supported by 9 device types with the simplest being the `Temperature Sensor`.
+
 ```yaml
-temperature_sensor:
-  sensor_id: # Point to the ID of a temperature sensor
+matter:
+  endpoints:
+    1:
+      temperature_sensor:
+        temperature: sensor_id
+```
+
+##### BooleanState
+
+Device types: `contact_sensor`, ...
+
+##### ElectricalEnergyMeasurement
+
+##### ElectricalPowerMeasurement
+
+```yaml
+matter:
+  endpoints:
+    1:
+      electrical_sensor:
+        with_clusters: ["ElectricalPowerMeasurement"]
+        voltage: sensor_id
+        active_current: sensor_id
+        reactive_current: sensor_id
+```
+
+##### TemperatureMeasurement
+
+Device types: `air_quality_sensor`, `cook_surface`, `evse`, `pump`, `room_air_conditioner`, `smoke_co_alarm`, `soil_sensor`, `temperature_controlled_cabinet`, `temperature_sensor`
+
+```yaml
+
 ```
