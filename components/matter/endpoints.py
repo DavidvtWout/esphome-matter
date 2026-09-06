@@ -15,7 +15,6 @@ from .data_model import (
     DEVICE_TYPES_BY_CONF_KEY,
     DEVICE_TYPES_BY_ID,
     ClusterConfig,
-    DeviceType,
 )
 from .types import MatterEndpointRef
 
@@ -29,24 +28,9 @@ ENDPOINT_SCHEMA = cv.All(
                 cv.one_of(*(cluster.camel_case_name for cluster in CLUSTERS))
             ),
         }
-        | {device_type.schema_key: device_type.schema for device_type in DEVICE_TYPES}
+        | {device_type.schema_key: device_type.schema() for device_type in DEVICE_TYPES}
     ),
 )
-
-
-def _register_device_type(var, endpoint_id: int, device_type: DeviceType):
-    _LOGGER.debug(
-        "[Matter] Registering device type %s on endpoint %s",
-        device_type.name,
-        endpoint_id,
-    )
-    device_type_namespace = f"esp_matter::endpoint::{device_type.namespace}"
-    device_type_config = cg.RawExpression(f"{device_type_namespace}::config_t{{}}")
-    register_device_type = var.register_device_type.template(
-        cg.RawExpression(f"{device_type_namespace}::config_t"),
-        cg.RawExpression(f"esp_matter::endpoint::{device_type.namespace}::add"),
-    )
-    cg.add(register_device_type(endpoint_id, device_type.namespace, device_type_config))
 
 
 async def _register_endpoint(var, endpoint_id, endpoint_config):
@@ -85,7 +69,7 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
                 # TODO: register sensor
 
         # Register device type
-        _register_device_type(var, endpoint_id, device_type)
+        device_type.register(var, endpoint_id, device_config)
 
         # Enable clusters in esp_matter
         for cluster in device_type.server_clusters:

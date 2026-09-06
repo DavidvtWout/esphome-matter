@@ -6,6 +6,29 @@ from esphome.cpp_generator import MockObjClass
 
 
 @dataclass(frozen=True, slots=True)
+class Attribute:
+    id: int
+    name: str | None  # CamelCase
+    type: str
+    # max: int | None = None
+    define: str | None = None
+    # is_nullable: bool = False
+    writable: bool = False
+    optional: bool = False
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            id=data["id"],
+            name=data.get("name"),
+            type=data["type"],
+            define=data["define"],
+            writable=data["writable"],
+            optional=data["optional"],
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class SensorAttribute:
     conf_key: str
     sensor_type: MockObjClass = field(default_factory=lambda: Sensor)
