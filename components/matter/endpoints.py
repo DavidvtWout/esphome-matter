@@ -1,5 +1,4 @@
 import logging
-from collections import defaultdict
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -41,16 +40,11 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
     # Register endpoint
     cg.add(var.register_endpoint(endpoint_id))
 
-    enable_binding = False
     for conf_key, device_config in endpoint_config.items():
         try:
             device_type = DEVICE_TYPES_BY_CONF_KEY[conf_key]
         except KeyError:
             continue
-
-        enable_binding |= any(
-            c.camel_case_name == "Binding" for c in device_type.server_clusters
-        )
 
         for cluster in device_type.server_clusters:
             if cluster.required:
@@ -97,10 +91,6 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
         for cluster in device_type.server_clusters:
             if cluster.required:
                 enabled_clusters.add(cluster.sdkconfig_option)
-
-    # Register binding on endpoint
-    if enable_binding:
-        cg.add(var.register_binding(endpoint_id))
 
     # Register extra clusters
     for cluster_name, must_create in extra_clusters.items():

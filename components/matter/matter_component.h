@@ -30,7 +30,6 @@ public:
 
   // Register Matter endpoints
   void register_endpoint(uint16_t endpoint_id);
-  void register_binding(uint16_t endpoint_id);
 
   // Register Matter device types
   template <typename ConfigT,
@@ -75,7 +74,6 @@ private:
   uint32_t passcode_{0};
 
   std::vector<uint16_t> endpoint_ids_;
-  std::vector<uint16_t> binding_endpoint_ids_;
   std::vector<MatterDeviceTypeRegistrationBase *> device_type_registrations_;
   std::vector<MatterClusterRegistrationBase *> cluster_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;

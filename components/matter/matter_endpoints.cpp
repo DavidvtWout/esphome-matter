@@ -38,15 +38,6 @@ void MatterComponent::register_endpoint(uint16_t endpoint_id) {
   this->endpoint_ids_.push_back(endpoint_id);
 }
 
-void MatterComponent::register_binding(uint16_t endpoint_id) {
-  this->register_endpoint(endpoint_id);
-  for (uint16_t registered_endpoint_id : this->binding_endpoint_ids_) {
-    if (registered_endpoint_id == endpoint_id)
-      return;
-  }
-  this->binding_endpoint_ids_.push_back(endpoint_id);
-}
-
 #ifdef USE_LIGHT
 void MatterComponent::map_light_to_endpoint(light::LightState *light,
                                             uint16_t endpoint_id) {
@@ -226,21 +217,6 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       ESP_LOGE(TAG, "Failed to create descriptor cluster for endpoint %u",
                endpoint_id);
       return false;
-    }
-
-    // Add binding cluster
-    if (std::find(this->binding_endpoint_ids_.begin(),
-                  this->binding_endpoint_ids_.end(),
-                  endpoint_id) != this->binding_endpoint_ids_.end()) {
-      esp_matter::cluster::binding::config_t config;
-      esp_matter::cluster_t *binding_cluster =
-          esp_matter::cluster::binding::create(endpoint, &config,
-                                               esp_matter::CLUSTER_FLAG_SERVER);
-      if (binding_cluster == nullptr) {
-        ESP_LOGE(TAG, "Failed to create endpoint %u binding cluster",
-                 endpoint_id);
-        return false;
-      }
     }
 
     ESP_LOGV(TAG, "Endpoint created: id=%u", endpoint_id);
