@@ -13,6 +13,7 @@ ENDPOINT_SCHEMA = cv.All(
         {
             cv.GenerateID(): cv.declare_id(MatterEndpointRef),
             cv.Optional(CONF_ENABLE_BINDING): cv.boolean,
+            cv.Optional(CONF_NAME): cv.string_strict,
         }
         | {
             cv.Optional(dt_name): dt_config["schema"]
