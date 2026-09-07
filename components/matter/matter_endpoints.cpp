@@ -238,7 +238,7 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       esp_matter::cluster_t *binding_cluster =
           esp_matter::cluster::binding::create(endpoint, &config,
                                                esp_matter::CLUSTER_FLAG_SERVER);
-
+/*
       // 1. User Label Cluster auf dem Endpunkt erstellen
 //esp_matter::cluster::user_label::config_t ul_config;
 //esp_matter::cluster_t *ul_cluster = 
@@ -257,7 +257,7 @@ if (ul_attribute) {
     esp_matter_attr_val_t val = esp_matter_char_str((char *)endpoint_name, strlen(endpoint_name));
     esp_matter::attribute::set_val(ul_attribute, &val);
 }
-      
+ */     
       
       
       
