@@ -153,7 +153,36 @@ command_attrs = defaultdict(int)
 command_arg_attrs = defaultdict(int)
 
 
-def parse_device_type_elem(elem) -> DeviceType:
+def parse_device_type_elem(elem) -> DeviceType | None:
+    name = snake_case(elem.findtext("typeName"))
+    if name in (
+        "all_clusters_app_server_example",
+        "ambient_context_sensor",
+        "basic_video_player",
+        "camera_controller",
+        "casting_video_client",
+        "casting_video_player",
+        "content_app",
+        "door_lock_controller",
+        "electrical_circuit_breaker",
+        "electrical_distribution_enclosure",
+        "floodlight_camera",
+        "humidifier_dehumidifier",
+        "intercom",
+        "joint_fabric_administrator",
+        "meter_reference_point",
+        "network_infrastructure_manager",
+        "on_off_sensor",
+        "orphan_clusters",
+        "proximity_ranger",
+        "snapshot_camera",
+        "speaker",
+        "video_remote_control",
+        "window_covering_controller",
+    ):
+        # Not actually supported by esp_matter...
+        return None
+
     device_clusters = []
     for cluster_elem in elem.findall("./clusters/include"):
         cluster = DeviceCluster(
@@ -176,7 +205,7 @@ def parse_device_type_elem(elem) -> DeviceType:
 
     device_type = DeviceType(
         device_id=int(elem.findtext("deviceId"), 0),
-        name=snake_case(elem.findtext("typeName")),
+        name=name,
         clusters=device_clusters,
     )
     if revision_text := elem.findtext("revision"):
@@ -344,7 +373,8 @@ def parse_data_model(
         root = ElementTree.parse(xml_file).getroot()
 
         for elem in root.findall("./deviceType"):
-            device_types.append(parse_device_type_elem(elem))
+            if device_type := parse_device_type_elem(elem):
+                device_types.append(device_type)
 
         for elem in root.findall("./cluster"):
             clusters.append(parse_cluster_elem(elem))

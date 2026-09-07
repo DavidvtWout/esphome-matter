@@ -93,22 +93,10 @@ class SensorAttribute:
 # Arranged by Cluster, Attribute
 SENSOR_ATTRIBUTES = {
     "BooleanState": {  # 0x0045
-        "StateValue": SensorAttribute("contact", "boolean_state", BinarySensor)
+        "StateValue": SensorAttribute("boolean_state", "boolean_state", BinarySensor)
     },
-    "ElectricalPowerMeasurement": {  # 0x0090
-        "Voltage": SensorAttribute("voltage", "volts"),
-        "ActiveCurrent": SensorAttribute("active_current", "ampere"),
-        "ReactiveCurrent": SensorAttribute("reactive_current", "ampere"),
-        "ApparentCurrent": SensorAttribute("apparent_current", "ampere"),
-        "ActivePower": SensorAttribute("active_power", "watts"),
-        "ReactivePower": SensorAttribute("reactive_power", "watts"),
-        "ApparentPower": SensorAttribute("apparent_power", "watts"),
-        "RMSVoltage": SensorAttribute("rms_voltage", "volts"),
-        "RMSCurrent": SensorAttribute("rms_current", "ampere"),
-        "RMSPower": SensorAttribute("rms_power", "watts"),
-        "Frequency": SensorAttribute("frequency", "frequency"),
-        "PowerFactor": SensorAttribute("power_factor", "percentage"),
-        "NeutralCurrent": SensorAttribute("neutral_current", "ampere"),
+    "OccupancySensing": {  # 0x0406
+        "Occupancy": SensorAttribute("occupancy", "occupancy", BinarySensor)
     },
     "IlluminanceMeasurement": {  # 0x0400
         "MeasuredValue": SensorAttribute(
@@ -145,8 +133,20 @@ SENSOR_ATTRIBUTES = {
             code_driven=True,
         )
     },
-    "OccupancySensing": {  # 0x0406
-        "Occupancy": SensorAttribute("occupancy", "occupancy", BinarySensor)
+    "ElectricalPowerMeasurement": {  # 0x0090
+        "Voltage": SensorAttribute("voltage", "volts"),
+        "ActiveCurrent": SensorAttribute("active_current", "ampere"),
+        "ReactiveCurrent": SensorAttribute("reactive_current", "ampere"),
+        "ApparentCurrent": SensorAttribute("apparent_current", "ampere"),
+        "ActivePower": SensorAttribute("active_power", "watts"),
+        "ReactivePower": SensorAttribute("reactive_power", "watts"),
+        "ApparentPower": SensorAttribute("apparent_power", "watts"),
+        "RMSVoltage": SensorAttribute("rms_voltage", "volts"),
+        "RMSCurrent": SensorAttribute("rms_current", "ampere"),
+        "RMSPower": SensorAttribute("rms_power", "watts"),
+        "Frequency": SensorAttribute("frequency", "frequency"),
+        "PowerFactor": SensorAttribute("power_factor", "percentage"),
+        "NeutralCurrent": SensorAttribute("neutral_current", "ampere"),
     },
     "CarbonMonoxideConcentrationMeasurement": {  # 0x040C
         "MeasuredValue": SensorAttribute(
@@ -201,6 +201,7 @@ SENSOR_ATTRIBUTES = {
     "SoilMeasurement": {  # 0x0430
         "SoilMoistureMeasuredValue": SensorAttribute("soil_moisture", "percentage")
     },
+    # Not used by any device type?
     "SmokeConcentrationMeasurement": {  # 0x0434
         "MeasuredValue": SensorAttribute(
             "smoke_concentration",

@@ -24,7 +24,7 @@ matter:
         flow: flow_id
     5:
       light_sensor:
-        illuminance: temperature_id
+        illuminance: illuminance_id
     6:
       contact_sensor:
         boolean_state: bool_id
@@ -39,11 +39,6 @@ matter:
         boolean_state: bool_id
     10:
       occupancy_sensor:
-        occupancy: bool_id
-    11:
-      # This is basically the occupancy sensor with extra context such as number of objects and
-      # object types. However, These extra contexts aren't supported yet.
-      ambient_context_sensor:
         occupancy: bool_id
     12:
       soil_sensor:
@@ -113,7 +108,15 @@ sensor:
     pm_10_0:
       id: pm_10_0
 
+switch:
+  - platform: template
+    name: "Debug Switch"
+    id: debug_switch
+    optimistic: true
+
 binary_sensor:
-  - platform: gpio
-    pin: 1
+  # Only binary_sensors can be attached to binary attributes so if you have a different boolean
+  # ESPHome entity it must first be converted to binary_sensor.
+  - platform: switch
+    source_id: debug_switch
     id: bool_id

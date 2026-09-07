@@ -9,7 +9,7 @@ from esphome import automation
 from esphome.components import light
 from esphome.const import CONF_LIGHT_ID
 
-from ..util import maybe_empty
+from ..util import maybe_empty, snake_case
 from .attributes import SENSOR_ATTRIBUTES, Attribute, SensorAttribute
 from .clusters import CLUSTERS_BY_CONF_KEY, CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster
 
@@ -169,9 +169,7 @@ class ElectricalSensor(DeviceType):
         schema = DeviceType._schema(self)
         schema[cv.Required("with_clusters")] = cv.All(
             cv.ensure_list(
-                cv.one_of(
-                    "electrical_power_measurement", "electrical_energy_measurement"
-                )
+                cv.one_of("ElectricalEnergyMeasurement", "ElectricalPowerMeasurement")
             ),
             cv.Length(min=1),
         )
@@ -187,7 +185,7 @@ class ElectricalSensor(DeviceType):
             "config.electrical_power_measurement.feature_flags = esp_matter::cluster::electrical_power_measurement::feature::direct_current::get_id();"
         )
         for cluster_name in config["with_clusters"]:
-            lines.append(f"config.with_{cluster_name}();")
+            lines.append(f"config.with_{snake_case(cluster_name)}();")
         lines.extend(("return config;", "}()"))
         return cg.RawExpression("\n".join(lines))
 
@@ -195,8 +193,8 @@ class ElectricalSensor(DeviceType):
         created_clusters = DeviceType.register(self, var, endpoint_id, config)
         # esp_matter is written by idiots and doesn't properly guard cluster compilation...
         for cluster_name in (
-            "electrical_power_measurement",
             "electrical_energy_measurement",
+            "electrical_power_measurement",
         ):
             created_clusters.add(CLUSTERS_BY_CONF_KEY[cluster_name])
         return created_clusters
