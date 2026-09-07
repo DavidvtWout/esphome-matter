@@ -229,24 +229,24 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
     }
 
     // Add binding cluster
-    //fixed_label::config_t fixed_config;
-    //cluster_t *cluster = cluster::fixed_label::create(endpoint, &fixed_config, CLUSTER_FLAG_SERVER);
     if (std::find(this->binding_endpoint_ids_.begin(),
                   this->binding_endpoint_ids_.end(),
                   endpoint_id) != this->binding_endpoint_ids_.end()) {
-
-                       
-      const char *endpoint_name = "Wohnzimmer Schalter";
-
-//esp_matter::cluster::user_label::config_t ul_config;
-//esp_matter::cluster_t *ul_cluster = 
-//    esp_matter::cluster::user_label::create(endpoint, &ul_config, 
-//                                            esp_matter::CLUSTER_FLAG_SERVER);
       esp_matter::cluster::binding::config_t config;
+      
+      
       esp_matter::cluster_t *binding_cluster =
           esp_matter::cluster::binding::create(endpoint, &config,
                                                esp_matter::CLUSTER_FLAG_SERVER);
 
+      // 1. User Label Cluster auf dem Endpunkt erstellen
+//esp_matter::cluster::user_label::config_t ul_config;
+//esp_matter::cluster_t *ul_cluster = 
+//    esp_matter::cluster::user_label::create(endpoint, &ul_config, 
+//                                            esp_matter::CLUSTER_FLAG_SERVER);
+
+// 2. Den Wunschnamen für den Endpunkt definieren
+const char *endpoint_name = "Wohnzimmer Schalter";
 
 // 3. Den Namen im "UserLabel"-Attribut abspeichern
 // Hinweis: Dieser Aufruf muss erfolgen, BEVOR 'esp_matter::start()' aufgerufen wird.
@@ -257,19 +257,16 @@ if (ul_attribute) {
     esp_matter_attr_val_t val = esp_matter_char_str((char *)endpoint_name, strlen(endpoint_name));
     esp_matter::attribute::set_val(ul_attribute, &val);
 }
-
-
-
-
       
-     // esp_matter::cluster::fixed_label::config_t fl_config;
-     // esp_matter::cluster_t *fl_cluster = 
-     //     esp_matter::cluster::fixed_label::create(endpoint, &fl_config, 
-     //                                        esp_matter::CLUSTER_FLAG_SERVER);
-
-
       
-            
+      
+      
+      
+      
+      
+      
+      
+      
       if (binding_cluster == nullptr) {
         ESP_LOGE(TAG, "Failed to create endpoint %u binding cluster",
                  endpoint_id);
