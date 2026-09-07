@@ -229,6 +229,8 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
     }
 
     // Add binding cluster
+    //fixed_label::config_t fixed_config;
+    //cluster_t *cluster = cluster::fixed_label::create(endpoint, &fixed_config, CLUSTER_FLAG_SERVER);
     if (std::find(this->binding_endpoint_ids_.begin(),
                   this->binding_endpoint_ids_.end(),
                   endpoint_id) != this->binding_endpoint_ids_.end()) {
