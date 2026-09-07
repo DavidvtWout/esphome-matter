@@ -236,6 +236,35 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       esp_matter::cluster_t *binding_cluster =
           esp_matter::cluster::binding::create(endpoint, &config,
                                                esp_matter::CLUSTER_FLAG_SERVER);
+
+      
+      
+      // 1. User Label Cluster auf dem Endpunkt erstellen
+//esp_matter::cluster::user_label::config_t ul_config;
+//esp_matter::cluster_t *ul_cluster = 
+//    esp_matter::cluster::user_label::create(endpoint, &ul_config, 
+//                                            esp_matter::CLUSTER_FLAG_SERVER);
+
+// 2. Den Wunschnamen für den Endpunkt definieren
+const char *endpoint_name = "Wohnzimmer Schalter";
+
+// 3. Den Namen im "UserLabel"-Attribut abspeichern
+// Hinweis: Dieser Aufruf muss erfolgen, BEVOR 'esp_matter::start()' aufgerufen wird.
+esp_matter::attribute_t *ul_attribute = 
+    esp_matter::attribute::get(binding_cluster, chip::app::Clusters::UserLabel::Attributes::UserLabel::Id);
+
+if (ul_attribute) {
+    esp_matter_attr_val_t val = esp_matter_char_str((char *)endpoint_name, strlen(endpoint_name));
+    esp_matter::attribute::set_val(ul_attribute, &val);
+}
+      
+      
+      
+      
+      
+      
+      
+      
       if (binding_cluster == nullptr) {
         ESP_LOGE(TAG, "Failed to create endpoint %u binding cluster",
                  endpoint_id);
