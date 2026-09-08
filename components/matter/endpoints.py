@@ -58,6 +58,12 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
             if cluster.camel_case_name == "Binding":
                 extra_clusters["Binding"].create = True
 
+            for feature in cluster.all_features:
+                if feature.name in device_config.get(CONF_FEATURES, ()):
+                    extra_clusters[cluster.camel_case_name].enabled_features[
+                        feature.name
+                    ] = True
+
         # Find extra clusters that need to be enabled for sensor attributes
         for (
             cluster_name,

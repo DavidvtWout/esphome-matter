@@ -107,10 +107,15 @@ class Command:
 
 @dataclass
 class Feature:
-    bit: int
     code: str
     name: str
-    summary: str
+
+
+@dataclass
+class FeatureChoice:
+    min: int
+    max: int | None
+    features: list[Feature] = field(default_factory=list)
 
 
 @dataclass
@@ -119,7 +124,7 @@ class Cluster:
     name: str  # CamelCase
     description: str
     revision: int | None = None
-    features: list[Feature] = field(default_factory=list)
+    features: list[Feature | FeatureChoice] = field(default_factory=list)
     attributes: list[Attribute] = field(default_factory=list)
     commands: list[Command] = field(default_factory=list)
 
@@ -265,16 +270,37 @@ def parse_cluster_elem(elem) -> Cluster:
     if (rev_elem := elem.find('globalAttribute[@code="0xFFFD"]')) is not None:
         cluster.revision = int(rev_elem.attrib["value"])
 
-    features: list[Feature] = []
+    features: list[Feature | FeatureChoice] = []
+    choices: dict[str, FeatureChoice] = {}
     for feature_elem in elem.findall("./features/feature"):
-        features.append(
-            Feature(
-                bit=int(feature_elem.get("bit")),
-                code=feature_elem.get("code"),
-                name=feature_elem.get("name"),
-                summary=feature_elem.get("summary"),
-            )
+        optional_conform = feature_elem.find("./optionalConform")
+        feature = Feature(
+            code=feature_elem.get("code"),
+            name=feature_elem.get("name"),
         )
+        choice_name = (
+            optional_conform.get("choice") if optional_conform is not None else None
+        )
+        if choice_name is None:
+            features.append(feature)
+            continue
+
+        if choice_name not in choices:
+            minimum = int(optional_conform.get("min", 1))
+            maximum = optional_conform.get("max")
+            choice = FeatureChoice(
+                min=minimum,
+                max=(
+                    int(maximum)
+                    if maximum is not None
+                    else None
+                    if optional_conform.get("more") == "true"
+                    else 1
+                ),
+            )
+            choices[choice_name] = choice
+            features.append(choice)
+        choices[choice_name].features.append(feature)
     cluster.features = features
 
     attributes: list[Attribute] = []
@@ -502,13 +528,31 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
 
         features = []
         for feature in cluster.features:
-            features.append(
-                {
-                    "bit": feature.bit,
-                    "code": feature.code,
-                    "name": feature.name,
-                }
-            )
+            if isinstance(feature, FeatureChoice):
+                features.append(
+                    filter_none(
+                        {
+                            "type": "choice",
+                            "min": feature.min,
+                            "max": feature.max,
+                            "features": [
+                                {
+                                    "code": choice_feature.code,
+                                    "name": choice_feature.name,
+                                }
+                                for choice_feature in feature.features
+                            ],
+                        }
+                    )
+                )
+            else:
+                features.append(
+                    {
+                        "type": "feature",
+                        "code": feature.code,
+                        "name": feature.name,
+                    }
+                )
         if features:
             cluster_data["features"] = features
 

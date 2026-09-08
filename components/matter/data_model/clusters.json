@@ -29,7 +29,7 @@
     "revision": 4,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "GN",
         "name": "GroupNames"
       }
@@ -52,17 +52,17 @@
     "revision": 6,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "LT",
         "name": "Lighting"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "DF",
         "name": "DeadFrontBehavior"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "OFFONLY",
         "name": "OffOnly"
       }
@@ -117,17 +117,17 @@
     "revision": 6,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "OO",
         "name": "OnOff"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "LT",
         "name": "Lighting"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "FQ",
         "name": "Frequency"
       }
@@ -271,7 +271,7 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "TAGLIST",
         "name": "TagList"
       }
@@ -348,17 +348,17 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "EXTS",
         "name": "Extension"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "MNGD",
         "name": "ManagedDevice"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "AUX",
         "name": "Auxiliary"
       }
@@ -760,7 +760,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CALFMT",
         "name": "CalendarFormat"
       }
@@ -798,7 +798,7 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "TEMP",
         "name": "TemperatureUnit"
       }
@@ -844,22 +844,27 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
-        "code": "WIRED",
-        "name": "Wired"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "WIRED",
+            "name": "Wired"
+          },
+          {
+            "code": "BAT",
+            "name": "Battery"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "BAT",
-        "name": "Battery"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "RECHG",
         "name": "Rechargeable"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "REPLC",
         "name": "Replaceable"
       }
@@ -1137,12 +1142,12 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "TC",
         "name": "TermsAndConditions"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "NR",
         "name": "NetworkRecovery"
       }
@@ -1273,19 +1278,23 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
-        "code": "WI",
-        "name": "WiFiNetworkInterface"
-      },
-      {
-        "bit": 1,
-        "code": "TH",
-        "name": "ThreadNetworkInterface"
-      },
-      {
-        "bit": 2,
-        "code": "ET",
-        "name": "EthernetNetworkInterface"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "WI",
+            "name": "WiFiNetworkInterface"
+          },
+          {
+            "code": "TH",
+            "name": "ThreadNetworkInterface"
+          },
+          {
+            "code": "ET",
+            "name": "EthernetNetworkInterface"
+          }
+        ]
       }
     ],
     "server_attributes": [
@@ -1394,7 +1403,7 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "DMTEST",
         "name": "DataModelTest"
       }
@@ -1489,7 +1498,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "WTRMRK",
         "name": "Watermarks"
       }
@@ -1535,22 +1544,22 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "PKTCNT",
         "name": "PacketCounts"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "ERRCNT",
         "name": "ErrorCounts"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "MLECNT",
         "name": "MLECounts"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "MACCNT",
         "name": "MACCounts"
       }
@@ -2136,12 +2145,12 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "PKTCNT",
         "name": "PacketCounts"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "ERRCNT",
         "name": "ErrorCounts"
       }
@@ -2273,12 +2282,12 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "PKTCNT",
         "name": "PacketCounts"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "ERRCNT",
         "name": "ErrorCounts"
       }
@@ -2372,22 +2381,22 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "TZ",
         "name": "TimeZone"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "NTPC",
         "name": "NTPClient"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "NTPS",
         "name": "NTPServer"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "TSC",
         "name": "TimeSyncClient"
       }
@@ -2516,7 +2525,7 @@
     "revision": 6,
     "features": [
       {
-        "bit": 20,
+        "type": "feature",
         "code": "BIS",
         "name": "BridgedICDSupport"
       }
@@ -2687,32 +2696,37 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
-        "code": "LS",
-        "name": "LatchingSwitch"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "LS",
+            "name": "LatchingSwitch"
+          },
+          {
+            "code": "MS",
+            "name": "MomentarySwitch"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "MS",
-        "name": "MomentarySwitch"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MSR",
         "name": "MomentarySwitchRelease"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "MSL",
         "name": "MomentarySwitchLongPress"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "MSM",
         "name": "MomentarySwitchMultiPress"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AS",
         "name": "ActionSwitch"
       }
@@ -2753,7 +2767,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "BC",
         "name": "Basic"
       }
@@ -2851,12 +2865,12 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CS",
         "name": "CacheAndSync"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "GCAST",
         "name": "Groupcast"
       }
@@ -2958,7 +2972,7 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CHGEVENT",
         "name": "ChangeEvent"
       }
@@ -2980,22 +2994,22 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CIP",
         "name": "CheckInProtocolSupport"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "UAT",
         "name": "UserActiveModeTrigger"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "LITS",
         "name": "LongIdleTimeSupport"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "DSLS",
         "name": "DynamicSitLitSupport"
       }
@@ -3232,7 +3246,7 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "DEPONOFF",
         "name": "OnOff"
       }
@@ -3340,14 +3354,18 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
-        "code": "SPIN",
-        "name": "Spin"
-      },
-      {
-        "bit": 1,
-        "code": "RINSE",
-        "name": "Rinse"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "SPIN",
+            "name": "Spin"
+          },
+          {
+            "code": "RINSE",
+            "name": "Rinse"
+          }
+        ]
       }
     ],
     "server_attributes": [
@@ -3392,7 +3410,7 @@
     "revision": 4,
     "features": [
       {
-        "bit": 20,
+        "type": "feature",
         "code": "DIRECTMODECH",
         "name": "DirectModeChange"
       }
@@ -3422,7 +3440,7 @@
     "revision": 5,
     "features": [
       {
-        "bit": 20,
+        "type": "feature",
         "code": "DIRECTMODECH",
         "name": "DirectModeChange"
       }
@@ -3452,17 +3470,22 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "TN",
-        "name": "TemperatureNumber"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "TN",
+            "name": "TemperatureNumber"
+          },
+          {
+            "code": "TL",
+            "name": "TemperatureLevel"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "TL",
-        "name": "TemperatureLevel"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "STEP",
         "name": "TemperatureStep"
       }
@@ -3582,22 +3605,22 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "FAIR",
         "name": "Fair"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "MOD",
         "name": "Moderate"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "VPOOR",
         "name": "VeryPoor"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "XPOOR",
         "name": "ExtremelyPoor"
       }
@@ -3622,14 +3645,18 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
-        "code": "SMOKE",
-        "name": "SmokeAlarm"
-      },
-      {
-        "bit": 1,
-        "code": "CO",
-        "name": "CO Alarm"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "SMOKE",
+            "name": "SmokeAlarm"
+          },
+          {
+            "code": "CO",
+            "name": "CO Alarm"
+          }
+        ]
       }
     ],
     "server_attributes": [
@@ -3764,7 +3791,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "RESET",
         "name": "Reset"
       }
@@ -3845,17 +3872,23 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "PWRNUM",
-        "name": "PowerAsNumber"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "PWRNUM",
+            "name": "PowerAsNumber"
+          }
+        ]
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "WATTS",
         "name": "PowerInWatts"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "PWRLMTS",
         "name": "PowerNumberLimits"
       }
@@ -4066,7 +4099,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "SN",
         "name": "SceneNames"
       }
@@ -4097,17 +4130,17 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "LN",
         "name": "Listener"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "SD",
         "name": "Sender"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "PGA",
         "name": "PerGroup"
       }
@@ -4163,17 +4196,17 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CON",
         "name": "Condition"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "WRN",
         "name": "Warning"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "REP",
         "name": "ReplacementProductList"
       }
@@ -4237,17 +4270,17 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CON",
         "name": "Condition"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "WRN",
         "name": "Warning"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "REP",
         "name": "ReplacementProductList"
       }
@@ -4311,17 +4344,17 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CON",
         "name": "Condition"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "WRN",
         "name": "Warning"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "REP",
         "name": "ReplacementProductList"
       }
@@ -4385,27 +4418,27 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "VIS",
         "name": "Visual"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "AUD",
         "name": "Audible"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "SPRS",
         "name": "AlarmSuppress"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "SENSLVL",
         "name": "SensitivityLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "FAULTEV",
         "name": "FaultEvents"
       }
@@ -4493,12 +4526,12 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "TS",
         "name": "TimeSync"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "LVL",
         "name": "Level"
       }
@@ -4613,27 +4646,31 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
-        "code": "DIRC",
-        "name": "DirectCurrent"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "DIRC",
+            "name": "DirectCurrent"
+          },
+          {
+            "code": "ALTC",
+            "name": "AlternatingCurrent"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "ALTC",
-        "name": "AlternatingCurrent"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "POLY",
         "name": "PolyphasePower"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "HARM",
         "name": "Harmonics"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PWRQ",
         "name": "PowerQuality"
       }
@@ -4828,32 +4865,40 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
-        "code": "IMPE",
-        "name": "ImportedEnergy"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "IMPE",
+            "name": "ImportedEnergy"
+          },
+          {
+            "code": "EXPE",
+            "name": "ExportedEnergy"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "EXPE",
-        "name": "ExportedEnergy"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "CUME",
+            "name": "CumulativeEnergy"
+          },
+          {
+            "code": "PERE",
+            "name": "PeriodicEnergy"
+          }
+        ]
       },
       {
-        "bit": 2,
-        "code": "CUME",
-        "name": "CumulativeEnergy"
-      },
-      {
-        "bit": 3,
-        "code": "PERE",
-        "name": "PeriodicEnergy"
-      },
-      {
-        "bit": 4,
+        "type": "feature",
         "code": "APPE",
         "name": "ApparentEnergy"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "REAE",
         "name": "ReactiveEnergy"
       }
@@ -4915,12 +4960,12 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "EM",
         "name": "EnergyManagement"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "TP",
         "name": "TankPercent"
       }
@@ -4995,7 +5040,7 @@
     "revision": 4,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "FORE",
         "name": "Forecasting"
       }
@@ -5043,22 +5088,22 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CONF",
         "name": "ReceivedConfirmation"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "RESP",
         "name": "ConfirmationResponse"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "RPLY",
         "name": "ConfirmationReply"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "PROT",
         "name": "ProtectedMessages"
       }
@@ -5088,42 +5133,54 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "PA",
-        "name": "PowerAdjustment"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "PA",
+            "name": "PowerAdjustment"
+          }
+        ]
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "PFR",
         "name": "PowerForecastReporting"
       },
       {
-        "bit": 2,
-        "code": "SFR",
-        "name": "StateForecastReporting"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "SFR",
+            "name": "StateForecastReporting"
+          }
+        ]
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "STA",
         "name": "StartTimeAdjustment"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PAU",
         "name": "Pausable"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "FA",
         "name": "ForecastAdjustment"
       },
       {
-        "bit": 6,
+        "type": "feature",
         "code": "CON",
         "name": "ConstraintBasedAdjustment"
       },
       {
-        "bit": 7,
+        "type": "feature",
         "code": "PRA",
         "name": "PowerRangeAdjustment"
       }
@@ -5215,27 +5272,27 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "PREF",
         "name": "ChargingPreferences"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "SOC",
         "name": "SoCReporting"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "PNC",
         "name": "PlugAndCharge"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "RFID",
         "name": "RFID"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "V2X",
         "name": "V2X"
       }
@@ -5454,14 +5511,18 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "BALA",
-        "name": "EnergyBalance"
-      },
-      {
-        "bit": 1,
-        "code": "LPMS",
-        "name": "LowPowerModeSensitivity"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "BALA",
+            "name": "EnergyBalance"
+          },
+          {
+            "code": "LPMS",
+            "name": "LowPowerModeSensitivity"
+          }
+        ]
       }
     ],
     "server_attributes": [
@@ -5513,27 +5574,31 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "NODE",
-        "name": "NodeTopology"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "NODE",
+            "name": "NodeTopology"
+          },
+          {
+            "code": "TREE",
+            "name": "TreeTopology"
+          },
+          {
+            "code": "SET",
+            "name": "SetTopology"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "TREE",
-        "name": "TreeTopology"
-      },
-      {
-        "bit": 2,
-        "code": "SET",
-        "name": "SetTopology"
-      },
-      {
-        "bit": 3,
+        "type": "feature",
         "code": "DYPF",
         "name": "DynamicPowerFlow"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "CIRC",
         "name": "ElectricalCircuit"
       }
@@ -5571,7 +5636,7 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "DEPONOFF",
         "name": "OnOff"
       }
@@ -5601,7 +5666,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "DEPONOFF",
         "name": "OnOff"
       }
@@ -5631,7 +5696,7 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "DEPONOFF",
         "name": "OnOff"
       }
@@ -5661,7 +5726,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "FORE",
         "name": "Forecasting"
       }
@@ -5699,64 +5764,60 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "RESET",
         "name": "Reset"
       },
       {
-        "bit": 20,
+        "type": "feature",
         "code": "ADJUST",
         "name": "AdjustableThresholds"
       },
       {
-        "bit": 21,
-        "code": "OVERVOLT",
-        "name": "OverVoltage"
-      },
-      {
-        "bit": 22,
-        "code": "UNDERVOLT",
-        "name": "UnderVoltage"
-      },
-      {
-        "bit": 23,
-        "code": "OVERFREQ",
-        "name": "OverFrequency"
-      },
-      {
-        "bit": 24,
-        "code": "UNDERFREQ",
-        "name": "UnderFrequency"
-      },
-      {
-        "bit": 25,
-        "code": "OVERPOWER",
-        "name": "OverPower"
-      },
-      {
-        "bit": 26,
-        "code": "UNDERPOWER",
-        "name": "UnderPower"
-      },
-      {
-        "bit": 27,
-        "code": "OVERCUR",
-        "name": "OverCurrent"
-      },
-      {
-        "bit": 28,
-        "code": "UNDERCUR",
-        "name": "UnderCurrent"
-      },
-      {
-        "bit": 29,
-        "code": "POWERIMP",
-        "name": "PowerImport"
-      },
-      {
-        "bit": 30,
-        "code": "POWEREXP",
-        "name": "PowerExport"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "OVERVOLT",
+            "name": "OverVoltage"
+          },
+          {
+            "code": "UNDERVOLT",
+            "name": "UnderVoltage"
+          },
+          {
+            "code": "OVERFREQ",
+            "name": "OverFrequency"
+          },
+          {
+            "code": "UNDERFREQ",
+            "name": "UnderFrequency"
+          },
+          {
+            "code": "OVERPOWER",
+            "name": "OverPower"
+          },
+          {
+            "code": "UNDERPOWER",
+            "name": "UnderPower"
+          },
+          {
+            "code": "OVERCUR",
+            "name": "OverCurrent"
+          },
+          {
+            "code": "UNDERCUR",
+            "name": "UnderCurrent"
+          },
+          {
+            "code": "POWERIMP",
+            "name": "PowerImport"
+          },
+          {
+            "code": "POWEREXP",
+            "name": "PowerExport"
+          }
+        ]
       }
     ],
     "server_attributes": [
@@ -5966,37 +6027,37 @@
     "revision": 1,
     "features": [
       {
-        "bit": 20,
-        "code": "SHORT",
-        "name": "ShortCircuit"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "SHORT",
+            "name": "ShortCircuit"
+          },
+          {
+            "code": "OL",
+            "name": "OverLoad"
+          },
+          {
+            "code": "OV",
+            "name": "OverVoltage"
+          },
+          {
+            "code": "SP",
+            "name": "SurgeProtection"
+          },
+          {
+            "code": "RC",
+            "name": "ResidualCurrent"
+          },
+          {
+            "code": "ARC",
+            "name": "ArcFault"
+          }
+        ]
       },
       {
-        "bit": 21,
-        "code": "OL",
-        "name": "OverLoad"
-      },
-      {
-        "bit": 22,
-        "code": "OV",
-        "name": "OverVoltage"
-      },
-      {
-        "bit": 23,
-        "code": "SP",
-        "name": "SurgeProtection"
-      },
-      {
-        "bit": 24,
-        "code": "RC",
-        "name": "ResidualCurrent"
-      },
-      {
-        "bit": 25,
-        "code": "ARC",
-        "name": "ArcFault"
-      },
-      {
-        "bit": 26,
+        "type": "feature",
         "code": "SELFTEST",
         "name": "SelfTest"
       }
@@ -6094,77 +6155,77 @@
     "revision": 10,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "PIN",
         "name": "PIN Credential"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "RID",
         "name": "RFID Credential"
       },
       {
-        "bit": 10,
+        "type": "feature",
         "code": "YDSCH",
         "name": "YearDayAccessSchedules"
       },
       {
-        "bit": 11,
+        "type": "feature",
         "code": "HDSCH",
         "name": "HolidaySchedules"
       },
       {
-        "bit": 12,
+        "type": "feature",
         "code": "UBOLT",
         "name": "Unbolt"
       },
       {
-        "bit": 13,
+        "type": "feature",
         "code": "ALIRO",
         "name": "AliroProvisioning"
       },
       {
-        "bit": 14,
+        "type": "feature",
         "code": "ALBU",
         "name": "AliroBLEUWB"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "FGP",
         "name": "FingerCredentials"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "LOG",
         "name": "Logging"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "WDSCH",
         "name": "WeekDayAccessSchedules"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "DPS",
         "name": "DoorPositionSensor"
       },
       {
-        "bit": 6,
+        "type": "feature",
         "code": "FACE",
         "name": "FaceCredentials"
       },
       {
-        "bit": 7,
+        "type": "feature",
         "code": "COTA",
         "name": "CredentialsOverTheAirAccess"
       },
       {
-        "bit": 8,
+        "type": "feature",
         "code": "USR",
         "name": "User"
       },
       {
-        "bit": 9,
+        "type": "feature",
         "code": "NOT",
         "name": "Notification"
       }
@@ -6562,27 +6623,31 @@
     "revision": 8,
     "features": [
       {
-        "bit": 0,
-        "code": "LF",
-        "name": "Lift"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "LF",
+            "name": "Lift"
+          },
+          {
+            "code": "TL",
+            "name": "Tilt"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "TL",
-        "name": "Tilt"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "PA_LF",
         "name": "PositionAwareLift"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "ABS",
         "name": "AbsolutePosition"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PA_TL",
         "name": "PositionAwareTilt"
       }
@@ -6798,47 +6863,51 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "PS",
-        "name": "Positioning"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "PS",
+            "name": "Positioning"
+          },
+          {
+            "code": "LT",
+            "name": "MotionLatching"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LT",
-        "name": "MotionLatching"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "IS",
         "name": "Instantaneous"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "SP",
         "name": "Speed"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "VT",
         "name": "Ventilation"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "PD",
         "name": "Pedestrian"
       },
       {
-        "bit": 6,
+        "type": "feature",
         "code": "CL",
         "name": "Calibration"
       },
       {
-        "bit": 7,
+        "type": "feature",
         "code": "PT",
         "name": "Protection"
       },
       {
-        "bit": 8,
+        "type": "feature",
         "code": "MO",
         "name": "ManuallyOperable"
       }
@@ -6903,44 +6972,52 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "PS",
-        "name": "Positioning"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "PS",
+            "name": "Positioning"
+          },
+          {
+            "code": "LT",
+            "name": "MotionLatching"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LT",
-        "name": "MotionLatching"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "UT",
         "name": "Unit"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "LM",
         "name": "Limitation"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "SP",
         "name": "Speed"
       },
       {
-        "bit": 5,
-        "code": "TR",
-        "name": "Translation"
-      },
-      {
-        "bit": 6,
-        "code": "RO",
-        "name": "Rotation"
-      },
-      {
-        "bit": 7,
-        "code": "MD",
-        "name": "Modulation"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "TR",
+            "name": "Translation"
+          },
+          {
+            "code": "RO",
+            "name": "Rotation"
+          },
+          {
+            "code": "MD",
+            "name": "Modulation"
+          }
+        ]
       }
     ],
     "server_attributes": [
@@ -7058,17 +7135,17 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "SELRUN",
         "name": "SelectWhileRunning"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "PROG",
         "name": "ProgressReporting"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "MAPS",
         "name": "Maps"
       }
@@ -7130,37 +7207,38 @@
     "revision": 4,
     "features": [
       {
-        "bit": 0,
-        "code": "PRSCONST",
-        "name": "ConstantPressure"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "PRSCONST",
+            "name": "ConstantPressure"
+          },
+          {
+            "code": "PRSCOMP",
+            "name": "CompensatedPressure"
+          },
+          {
+            "code": "FLW",
+            "name": "ConstantFlow"
+          },
+          {
+            "code": "SPD",
+            "name": "ConstantSpeed"
+          },
+          {
+            "code": "TEMP",
+            "name": "ConstantTemperature"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "PRSCOMP",
-        "name": "CompensatedPressure"
-      },
-      {
-        "bit": 2,
-        "code": "FLW",
-        "name": "ConstantFlow"
-      },
-      {
-        "bit": 3,
-        "code": "SPD",
-        "name": "ConstantSpeed"
-      },
-      {
-        "bit": 4,
-        "code": "TEMP",
-        "name": "ConstantTemperature"
-      },
-      {
-        "bit": 5,
+        "type": "feature",
         "code": "AUTO",
         "name": "Automatic"
       },
       {
-        "bit": 6,
+        "type": "feature",
         "code": "LOCAL",
         "name": "LocalOperation"
       }
@@ -7375,57 +7453,57 @@
     "revision": 11,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "HEAT",
         "name": "Heating"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "COOL",
         "name": "Cooling"
       },
       {
-        "bit": 10,
+        "type": "feature",
         "code": "TSUGGEST",
         "name": "ThermostatSuggestions"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "OCC",
         "name": "Occupancy"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "SCH",
         "name": "ScheduleConfiguration"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "SB",
         "name": "Setback"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AUTO",
         "name": "AutoMode"
       },
       {
-        "bit": 6,
+        "type": "feature",
         "code": "LTNE",
         "name": "LocalTemperatureNotExposed"
       },
       {
-        "bit": 7,
+        "type": "feature",
         "code": "MSCH",
         "name": "MatterScheduleConfiguration"
       },
       {
-        "bit": 8,
+        "type": "feature",
         "code": "PRES",
         "name": "Presets"
       },
       {
-        "bit": 9,
+        "type": "feature",
         "code": "TEVT",
         "name": "Events"
       }
@@ -8020,32 +8098,32 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "SPD",
         "name": "MultiSpeed"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "AUT",
         "name": "Auto"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "RCK",
         "name": "Rocking"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "WND",
         "name": "Wind"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "STEP",
         "name": "Step"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "DIR",
         "name": "AirflowDirection"
       }
@@ -8206,49 +8284,61 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "HUM",
-        "name": "Humidifier"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "HUM",
+            "name": "Humidifier"
+          },
+          {
+            "code": "DEHUM",
+            "name": "Dehumidifier"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "DEHUM",
-        "name": "Dehumidifier"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "CONT",
+            "name": "Continuous"
+          },
+          {
+            "code": "SENSOR",
+            "name": "Sensor"
+          }
+        ]
       },
       {
-        "bit": 2,
-        "code": "CONT",
-        "name": "Continuous"
-      },
-      {
-        "bit": 3,
-        "code": "SENSOR",
-        "name": "Sensor"
-      },
-      {
-        "bit": 4,
+        "type": "feature",
         "code": "AUTO",
         "name": "Auto"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "FAN",
         "name": "FanOnly"
       },
       {
-        "bit": 6,
+        "type": "feature",
         "code": "OPT",
         "name": "Optimal"
       },
       {
-        "bit": 7,
-        "code": "WARM",
-        "name": "WarmMist"
-      },
-      {
-        "bit": 8,
-        "code": "COLD",
-        "name": "ColdMist"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "WARM",
+            "name": "WarmMist"
+          },
+          {
+            "code": "COLD",
+            "name": "ColdMist"
+          }
+        ]
       }
     ],
     "server_attributes": [
@@ -8353,27 +8443,27 @@
     "revision": 9,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "HS",
         "name": "Hue And Saturation"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "EHUE",
         "name": "EnhancedHue"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "CL",
         "name": "ColorLoop"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "XY",
         "name": "XY"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "CT",
         "name": "ColorTemperature"
       }
@@ -9115,7 +9205,7 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "EXT",
         "name": "Extended"
       }
@@ -9304,52 +9394,50 @@
     "revision": 7,
     "features": [
       {
-        "bit": 0,
-        "code": "OTHER",
-        "name": "Other"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "OTHER",
+            "name": "Other"
+          },
+          {
+            "code": "PIR",
+            "name": "PassiveInfrared"
+          },
+          {
+            "code": "US",
+            "name": "Ultrasonic"
+          },
+          {
+            "code": "PHY",
+            "name": "PhysicalContact"
+          },
+          {
+            "code": "AIR",
+            "name": "ActiveInfrared"
+          },
+          {
+            "code": "RAD",
+            "name": "Radar"
+          },
+          {
+            "code": "RFS",
+            "name": "RFSensing"
+          },
+          {
+            "code": "VIS",
+            "name": "Vision"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "PIR",
-        "name": "PassiveInfrared"
-      },
-      {
-        "bit": 2,
-        "code": "US",
-        "name": "Ultrasonic"
-      },
-      {
-        "bit": 3,
-        "code": "PHY",
-        "name": "PhysicalContact"
-      },
-      {
-        "bit": 4,
-        "code": "AIR",
-        "name": "ActiveInfrared"
-      },
-      {
-        "bit": 5,
-        "code": "RAD",
-        "name": "Radar"
-      },
-      {
-        "bit": 6,
-        "code": "RFS",
-        "name": "RFSensing"
-      },
-      {
-        "bit": 7,
-        "code": "VIS",
-        "name": "Vision"
-      },
-      {
-        "bit": 8,
+        "type": "feature",
         "code": "PRED",
         "name": "Prediction"
       },
       {
-        "bit": 9,
+        "type": "feature",
         "code": "OCCEVENT",
         "name": "OccupancyEvent"
       }
@@ -9501,32 +9589,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -9633,32 +9725,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -9765,32 +9861,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -9897,32 +9997,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -10029,32 +10133,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -10161,32 +10269,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -10293,32 +10405,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -10425,32 +10541,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -10557,32 +10677,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -10689,32 +10813,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -10844,32 +10972,32 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "HA",
         "name": "HumanActivity"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "OC",
         "name": "ObjectCounting"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "OI",
         "name": "ObjectIdentification"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "AUD",
         "name": "SoundIdentification"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PRED",
         "name": "PredictedActivity"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "FUS",
         "name": "SensorFusion"
       }
@@ -11022,22 +11150,25 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "WFUSDPD",
-        "name": "Wi-Fi USD Proximity Detection"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "WFUSDPD",
+            "name": "Wi-Fi USD Proximity Detection"
+          },
+          {
+            "code": "BLTCS",
+            "name": "Bluetooth Channel Sounding"
+          },
+          {
+            "code": "BLERBC",
+            "name": "BLE Beacon RSSI"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "BLTCS",
-        "name": "Bluetooth Channel Sounding"
-      },
-      {
-        "bit": 2,
-        "code": "BLERBC",
-        "name": "BLE Beacon RSSI"
-      },
-      {
-        "bit": 3,
+        "type": "feature",
         "code": "UWBRNG",
         "name": "UWB Ranging"
       }
@@ -11109,32 +11240,36 @@
     "revision": 5,
     "features": [
       {
-        "bit": 0,
-        "code": "MEA",
-        "name": "NumericMeasurement"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "MEA",
+            "name": "NumericMeasurement"
+          },
+          {
+            "code": "LEV",
+            "name": "LevelIndication"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "LEV",
-        "name": "LevelIndication"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "MED",
         "name": "MediumLevel"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "CRI",
         "name": "CriticalLevel"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PEA",
         "name": "PeakMeasurement"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "AVG",
         "name": "AverageMeasurement"
       }
@@ -11298,7 +11433,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "PC",
         "name": "PANChange"
       }
@@ -11414,22 +11549,22 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "CL",
         "name": "ChannelList"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "LI",
         "name": "LineupInfo"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "EG",
         "name": "ElectronicGuide"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "RP",
         "name": "RecordProgram"
       }
@@ -11491,27 +11626,27 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "AS",
         "name": "AdvancedSeek"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "VS",
         "name": "VariableSpeed"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "TT",
         "name": "TextTracks"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "AT",
         "name": "AudioTracks"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "AA",
         "name": "AudioAdvance"
       }
@@ -11616,7 +11751,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "NU",
         "name": "NameUpdates"
       }
@@ -11651,17 +11786,17 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "NV",
         "name": "NavigationKeyCodes"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "LK",
         "name": "LocationKeys"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "NK",
         "name": "NumberKeys"
       }
@@ -11697,7 +11832,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "NU",
         "name": "NameUpdates"
       }
@@ -11727,7 +11862,7 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "AP",
         "name": "ApplicationPlatform"
       }
@@ -11835,42 +11970,42 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "ST",
         "name": "ScreenTime"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "PM",
         "name": "PINManagement"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "BU",
         "name": "BlockUnrated"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "OCR",
         "name": "OnDemandContentRating"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "SCR",
         "name": "ScheduledContentRating"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "BC",
         "name": "BlockChannels"
       },
       {
-        "bit": 6,
+        "type": "feature",
         "code": "BA",
         "name": "BlockApplications"
       },
       {
-        "bit": 7,
+        "type": "feature",
         "code": "BTW",
         "name": "BlockContentTimeWindow"
       }
@@ -11979,22 +12114,22 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "TWODCART",
         "name": "TwoDimensionalCartesianZone"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "PERZONESENS",
         "name": "PerZoneSensitivity"
       },
       {
-        "bit": 2,
+        "type": "feature",
         "code": "USERDEFINED",
         "name": "UserDefined"
       },
       {
-        "bit": 3,
+        "type": "feature",
         "code": "FOCUSZONES",
         "name": "FocusZones"
       }
@@ -12070,57 +12205,60 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
-        "code": "ADO",
-        "name": "Audio"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "ADO",
+            "name": "Audio"
+          },
+          {
+            "code": "VDO",
+            "name": "Video"
+          },
+          {
+            "code": "SNP",
+            "name": "Snapshot"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "VDO",
-        "name": "Video"
-      },
-      {
-        "bit": 2,
-        "code": "SNP",
-        "name": "Snapshot"
-      },
-      {
-        "bit": 3,
+        "type": "feature",
         "code": "PRIV",
         "name": "Privacy"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "SPKR",
         "name": "Speaker"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "ICTL",
         "name": "ImageControl"
       },
       {
-        "bit": 6,
+        "type": "feature",
         "code": "WMARK",
         "name": "Watermark"
       },
       {
-        "bit": 7,
+        "type": "feature",
         "code": "OSD",
         "name": "OnScreenDisplay"
       },
       {
-        "bit": 8,
+        "type": "feature",
         "code": "STOR",
         "name": "LocalStorage"
       },
       {
-        "bit": 9,
+        "type": "feature",
         "code": "HDR",
         "name": "HighDynamicRange"
       },
       {
-        "bit": 10,
+        "type": "feature",
         "code": "NV",
         "name": "NightVision"
       }
@@ -12488,27 +12626,29 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "DPTZ",
-        "name": "DigitalPTZ"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "DPTZ",
+            "name": "DigitalPTZ"
+          },
+          {
+            "code": "MPAN",
+            "name": "MechanicalPan"
+          },
+          {
+            "code": "MTILT",
+            "name": "MechanicalTilt"
+          },
+          {
+            "code": "MZOOM",
+            "name": "MechanicalZoom"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "MPAN",
-        "name": "MechanicalPan"
-      },
-      {
-        "bit": 2,
-        "code": "MTILT",
-        "name": "MechanicalTilt"
-      },
-      {
-        "bit": 3,
-        "code": "MZOOM",
-        "name": "MechanicalZoom"
-      },
-      {
-        "bit": 4,
+        "type": "feature",
         "code": "MPRESETS",
         "name": "MechanicalPresets"
       }
@@ -12613,7 +12753,7 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "METADATA",
         "name": "Metadata"
       }
@@ -12650,12 +12790,12 @@
     "revision": 3,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "PERZONESENS",
         "name": "PerZoneSensitivity"
       },
       {
-        "bit": 1,
+        "type": "feature",
         "code": "METADATA",
         "name": "Metadata"
       }
@@ -12716,17 +12856,22 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
-        "code": "LCLCONDETECT",
-        "name": "LocalContextDetection"
+        "type": "choice",
+        "min": 1,
+        "max": 1,
+        "features": [
+          {
+            "code": "LCLCONDETECT",
+            "name": "LocalContextDetection"
+          },
+          {
+            "code": "REMCONDETECT",
+            "name": "RemoteContextDetection"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "REMCONDETECT",
-        "name": "RemoteContextDetection"
-      },
-      {
-        "bit": 2,
+        "type": "feature",
         "code": "PERZONEDETECT",
         "name": "PerZoneContextDetection"
       }
@@ -12788,32 +12933,35 @@
     "revision": 2,
     "features": [
       {
-        "bit": 0,
-        "code": "PRICE",
-        "name": "Pricing"
+        "type": "choice",
+        "min": 1,
+        "features": [
+          {
+            "code": "PRICE",
+            "name": "Pricing"
+          },
+          {
+            "code": "FCRED",
+            "name": "FriendlyCredit"
+          },
+          {
+            "code": "AUXLD",
+            "name": "AuxiliaryLoad"
+          }
+        ]
       },
       {
-        "bit": 1,
-        "code": "FCRED",
-        "name": "FriendlyCredit"
-      },
-      {
-        "bit": 2,
-        "code": "AUXLD",
-        "name": "AuxiliaryLoad"
-      },
-      {
-        "bit": 3,
+        "type": "feature",
         "code": "PEAKP",
         "name": "PeakPeriod"
       },
       {
-        "bit": 4,
+        "type": "feature",
         "code": "PWRTHLD",
         "name": "PowerThreshold"
       },
       {
-        "bit": 5,
+        "type": "feature",
         "code": "RNDM",
         "name": "Randomization"
       }
@@ -13226,7 +13374,7 @@
     "revision": 1,
     "features": [
       {
-        "bit": 0,
+        "type": "feature",
         "code": "PWRTHLD",
         "name": "PowerThreshold"
       }

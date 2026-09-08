@@ -17,16 +17,30 @@ _LOGGER = logging.getLogger(__name__)
 class Feature:
     code: str
     name: str  # CamelCase
-    bit: int
 
     @classmethod
     def from_dict(cls, data: dict):
-        return cls(code=data["code"], name=data["name"], bit=data["bit"])
+        return cls(code=data["code"], name=data["name"])
 
     @property
     def namespace(self) -> str:
         """esp_matter::cluster::<cluster>::feature namespace."""
         return snake_case(self.name)
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureChoice:
+    min: int
+    max: int | None
+    features: tuple[Feature, ...]
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            min=data["min"],
+            max=data.get("max"),
+            features=tuple(Feature.from_dict(feature) for feature in data["features"]),
+        )
 
 
 @dataclass
@@ -42,11 +56,21 @@ class Cluster:
     name: str  # Name with spaces and special characters such as "/"
     revision: int
     required: bool = False
-    features: tuple[Feature, ...] = ()
+    features: tuple[Feature | FeatureChoice, ...] = ()
     server_attributes: tuple[Attribute, ...] = ()
     client_attributes: tuple[Attribute, ...] = ()
     commands: tuple[Command, ...] = ()
     responses: tuple[Command, ...] = ()
+
+    @property
+    def all_features(self) -> tuple[Feature, ...]:
+        return tuple(
+            feature
+            for item in self.features
+            for feature in (
+                item.features if isinstance(item, FeatureChoice) else (item,)
+            )
+        )
 
     @classmethod
     def from_dict(cls, data: dict):
@@ -56,7 +80,10 @@ class Cluster:
             # Some lack a revision. Assuming it's 1...
             revision=data.get("revision", 1),
             features=tuple(
-                Feature.from_dict(feature) for feature in data.get("features", ())
+                FeatureChoice.from_dict(feature)
+                if feature.get("type") == "choice"
+                else Feature.from_dict(feature)
+                for feature in data.get("features", ())
             ),
             server_attributes=tuple(
                 Attribute.from_dict(a) for a in data.get("server_attributes", ())
@@ -118,7 +145,7 @@ class Cluster:
         lines = ["[] {", f"esp_matter::cluster::{self.namespace}::config_t config{{}};"]
 
         feature_flags = []
-        features_by_name = {f.name: f for f in self.features}
+        features_by_name = {feature.name: feature for feature in self.all_features}
         for feature_name, enabled in config.enabled_features.items():
             if not enabled:
                 continue

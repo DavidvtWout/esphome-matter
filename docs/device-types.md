@@ -2,6 +2,67 @@ Almost all device type can be created in esphome-matter. But some require extra 
 
 Here is a list of all device types that are currently known to work and what functionality is supported.
 
+# Simple sensor device types
+
+### Temperature Sensor
+
+```
+RelativeHumidityMeasurement
+  attributes
+  - MeasuredValue
+  - MinMeasuredValue
+  - MaxMeasuredValue
+  # Optional:
+  - Tolerance
+```
+
+### Humidity Sensor
+
+### Light Sensor
+
+```
+IlluminanceMeasurement
+  attributes:
+  - MeasuredValue
+  - MinMeasuredValue
+  - MaxMeasuredValue
+  # Optional:
+  - Tolerance
+  - LightSensorType: LightSensorTypeEnum (Photodiode or CMOS)
+```
+
+### Pressure Sensor
+
+```
+PressureMeasurement
+  features:
+  - Extended
+  attributes:
+  - MeasuredValue
+  - MinMeasuredValue
+  - MaxMeasuredValue
+  # Optional:
+  - Tolerance
+  - ScaledValue
+  -
+```
+
+### Flow Sensor
+
+### Contact Sensor
+
+```
+BooleanState
+  features
+  - ChangeEvent
+  attibutes
+  - StateValue
+```
+
+# Other sensor device types
+
+###
+
 # Tested
 
 - root_node
