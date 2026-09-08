@@ -148,11 +148,10 @@ async def to_code(config: ConfigType):
         for endpoint_id, endpoint_config in config.get(CONF_ENDPOINTS, {}).items()
     }
 
-    add_idf_component(
-        #name="davidvtwout/esp_matter",
-        name="creepystefan/esp_matter",
-        ref="1.6.0~2",
-    )
+    #add_idf_component(
+    #    name="davidvtwout/esp_matter",
+    #    ref="1.6.0~2",
+    #)
 
     cg.add_define("USE_MATTER")
 
