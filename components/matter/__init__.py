@@ -149,7 +149,8 @@ async def to_code(config: ConfigType):
     }
 
     add_idf_component(
-        name="davidvtwout/esp_matter",
+        #name="davidvtwout/esp_matter",
+        name="creepystefan/esp_matter",
         ref="1.6.0~2",
     )
 
