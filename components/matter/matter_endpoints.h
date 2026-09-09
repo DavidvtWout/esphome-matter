@@ -78,6 +78,40 @@ protected:
   const char *cluster_name_;
 };
 
+using MatterFeatureAddFn = esp_err_t (*)(esp_matter::cluster_t *);
+
+inline esp_err_t add_feature(esp_matter::cluster_t *cluster,
+                             MatterFeatureAddFn add_fn) {
+  return add_fn(cluster);
+}
+
+template <typename ConfigT>
+esp_err_t add_feature(esp_matter::cluster_t *cluster,
+                      esp_err_t (*add_fn)(esp_matter::cluster_t *, ConfigT *)) {
+  ConfigT config{};
+  return add_fn(cluster, &config);
+}
+
+class MatterFeatureRegistration {
+public:
+  MatterFeatureRegistration(uint16_t endpoint_id, uint32_t cluster_id,
+                            const char *cluster_name, uint32_t feature_id,
+                            const char *feature_name, MatterFeatureAddFn add_fn)
+      : endpoint_id_(endpoint_id), cluster_id_(cluster_id),
+        cluster_name_(cluster_name), feature_id_(feature_id),
+        feature_name_(feature_name), add_fn_(add_fn) {}
+
+  bool add_feature(esp_matter::node_t *node);
+
+protected:
+  uint16_t endpoint_id_;
+  uint32_t cluster_id_;
+  const char *cluster_name_;
+  uint32_t feature_id_;
+  const char *feature_name_;
+  MatterFeatureAddFn add_fn_;
+};
+
 template <uint32_t ClusterId, typename ConfigT,
           esp_matter::cluster_t *(*CreateFn)(esp_matter::endpoint_t *,
                                              ConfigT *, uint8_t)>

@@ -72,6 +72,15 @@ class Cluster:
             )
         )
 
+    @property
+    def choice_features(self) -> tuple[Feature, ...]:
+        return tuple(
+            feature
+            for item in self.features
+            if isinstance(item, FeatureChoice)
+            for feature in item.features
+        )
+
     @classmethod
     def from_dict(cls, data: dict):
         return cls(

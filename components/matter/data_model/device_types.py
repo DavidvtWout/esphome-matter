@@ -137,6 +137,9 @@ class DeviceType:
                 clusters.add(CLUSTERS_BY_NAME[cluster_name])
         return clusters
 
+    def device_type_config_clusters(self, config: dict) -> set[Cluster]:
+        return {cluster for cluster in self.server_clusters if cluster.required}
+
     def implicit_features(self, config: dict) -> set[str]:
         features = set()
         configured_cluster_ids = {
@@ -219,10 +222,10 @@ class DeviceType:
     def _feature_config_lines(self, config: dict) -> list[str]:
         enabled_features = frozenset(config.get(CONF_FEATURES, ()))
         lines = []
-        for cluster in self.server_clusters:
+        for cluster in self.device_type_config_clusters(config):
             features = [
                 feature
-                for feature in cluster.all_features
+                for feature in cluster.choice_features
                 if feature.name in enabled_features
             ]
             if not features:
@@ -292,6 +295,12 @@ class ElectricalSensor(DeviceType):
             CLUSTERS_BY_NAME[cluster_name] for cluster_name in config["with_clusters"]
         )
         return clusters
+
+    def device_type_config_clusters(self, config: dict) -> set[Cluster]:
+        return {
+            *DeviceType.device_type_config_clusters(self, config),
+            *(CLUSTERS_BY_NAME[name] for name in config["with_clusters"]),
+        }
 
     def register(self, var, endpoint_id: int, config: dict) -> set[Cluster]:
         created_clusters = DeviceType.register(self, var, endpoint_id, config)

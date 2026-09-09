@@ -64,6 +64,28 @@ async def _register_endpoint(var, endpoint_id, endpoint_config):
                         feature.name
                     ] = True
 
+            for feature in cluster.all_features:
+                if feature.name not in device_config.get(CONF_FEATURES, ()):
+                    continue
+                feature_namespace = (
+                    f"esp_matter::cluster::{cluster.namespace}::feature::"
+                    f"{feature.namespace}"
+                )
+                cg.add(
+                    var.register_feature(
+                        endpoint_id,
+                        cluster.id,
+                        cluster.name,
+                        cg.RawExpression(f"{feature_namespace}::get_id()"),
+                        feature.name,
+                        cg.RawExpression(
+                            "[](esp_matter::cluster_t *cluster) { "
+                            f"return esphome::matter::add_feature(cluster, &{feature_namespace}::add); "
+                            "}"
+                        ),
+                    )
+                )
+
         # Find extra clusters that need to be enabled for sensor attributes
         for (
             cluster_name,

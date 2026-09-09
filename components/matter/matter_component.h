@@ -53,6 +53,14 @@ public:
             endpoint_id, cluster_name, config));
   }
 
+  void register_feature(uint16_t endpoint_id, uint32_t cluster_id,
+                        const char *cluster_name, uint32_t feature_id,
+                        const char *feature_name, MatterFeatureAddFn add_fn) {
+    this->feature_registrations_.push_back(
+        new MatterFeatureRegistration(endpoint_id, cluster_id, cluster_name,
+                                      feature_id, feature_name, add_fn));
+  }
+
   // Register ESPHome entities
 #ifdef USE_LIGHT
   void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
@@ -101,6 +109,7 @@ private:
   std::vector<uint16_t> endpoint_ids_;
   std::vector<MatterDeviceTypeRegistrationBase *> device_type_registrations_;
   std::vector<MatterClusterRegistrationBase *> cluster_registrations_;
+  std::vector<MatterFeatureRegistration *> feature_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;
 };
 

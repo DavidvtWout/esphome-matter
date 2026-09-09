@@ -174,8 +174,50 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       return false;
   }
 
+  // Add features which were not needed in the cluster config during creation.
+  for (auto *feature_registration : this->feature_registrations_) {
+    if (!feature_registration->add_feature(node))
+      return false;
+  }
+
   register_client_request_callbacks();
 
+  return true;
+}
+
+bool MatterFeatureRegistration::add_feature(esp_matter::node_t *node) {
+  esp_matter::endpoint_t *endpoint =
+      esp_matter::endpoint::get(node, this->endpoint_id_);
+  if (endpoint == nullptr) {
+    ESP_LOGE(TAG, "Cannot add %s feature for missing endpoint %u",
+             this->feature_name_, this->endpoint_id_);
+    return false;
+  }
+
+  esp_matter::cluster_t *cluster =
+      esp_matter::cluster::get(endpoint, this->cluster_id_);
+  // Device-level feature names apply only to clusters which are actually
+  // created for the endpoint.
+  if (cluster == nullptr)
+    return true;
+
+  esp_matter_attr_val_t feature_map;
+  if (esp_matter::attribute::get_val(this->endpoint_id_, this->cluster_id_,
+                                     0xFFFC, &feature_map) != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to read FeatureMap for %s cluster on endpoint %u",
+             this->cluster_name_, this->endpoint_id_);
+    return false;
+  }
+  if (feature_map.val.u32 & this->feature_id_)
+    return true;
+
+  if (this->add_fn_(cluster) != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to add %s feature to %s cluster on endpoint %u",
+             this->feature_name_, this->cluster_name_, this->endpoint_id_);
+    return false;
+  }
+  ESP_LOGD(TAG, "Added %s feature to %s cluster on endpoint %u",
+           this->feature_name_, this->cluster_name_, this->endpoint_id_);
   return true;
 }
 
