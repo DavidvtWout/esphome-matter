@@ -1,14 +1,10 @@
 import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-
-import esphome.codegen as cg
-import esphome.config_validation as cv
 
 from ..util import snake_case
 from .attributes import Attribute
-from .commands import Command
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,7 +20,7 @@ class Feature:
 
     @property
     def namespace(self) -> str:
-        """esp_matter::cluster::<cluster>::feature namespace."""
+        """Feature name in esp_matter::cluster::<cluster>::feature::<feature> namespace."""
         return snake_case(self.name)
 
 
@@ -43,13 +39,6 @@ class FeatureChoice:
         )
 
 
-@dataclass
-class ClusterConfig:
-    create: bool = True
-    # Keys are feature names.
-    enabled_features: dict[str, bool] = field(default_factory=dict)
-
-
 @dataclass(frozen=True, slots=True)
 class Cluster:
     id: int
@@ -58,9 +47,30 @@ class Cluster:
     required: bool = False
     features: tuple[Feature | FeatureChoice, ...] = ()
     server_attributes: tuple[Attribute, ...] = ()
-    client_attributes: tuple[Attribute, ...] = ()
-    commands: tuple[Command, ...] = ()
-    responses: tuple[Command, ...] = ()
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            id=data["id"],
+            name=data["name"],
+            # Some lack a revision. Assuming it's 1...
+            revision=data.get("revision", 1),
+            features=tuple(
+                FeatureChoice.from_dict(feature)
+                if feature.get("type") == "choice"
+                else Feature.from_dict(feature)
+                for feature in data.get("features", ())
+            ),
+            server_attributes=tuple(
+                Attribute.from_dict(a) for a in data.get("server_attributes", ())
+            ),
+        )
+
+    def get_attribute(self, name: str) -> Attribute:
+        for attribute in self.server_attributes:
+            if attribute.name == name:
+                return attribute
+        raise KeyError(f"Cluster {self.camel_case_name} has no attribute {name}")
 
     @property
     def all_features(self) -> tuple[Feature, ...]:
@@ -79,29 +89,6 @@ class Cluster:
             for item in self.features
             if isinstance(item, FeatureChoice)
             for feature in item.features
-        )
-
-    @classmethod
-    def from_dict(cls, data: dict):
-        return cls(
-            id=data["id"],
-            name=data["name"],
-            # Some lack a revision. Assuming it's 1...
-            revision=data.get("revision", 1),
-            features=tuple(
-                FeatureChoice.from_dict(feature)
-                if feature.get("type") == "choice"
-                else Feature.from_dict(feature)
-                for feature in data.get("features", ())
-            ),
-            server_attributes=tuple(
-                Attribute.from_dict(a) for a in data.get("server_attributes", ())
-            ),
-            client_attributes=tuple(
-                Attribute.from_dict(a) for a in data.get("client_attributes", ())
-            ),
-            commands=tuple(),  # TODO
-            responses=tuple(),  # TODO
         )
 
     @property
@@ -138,59 +125,13 @@ class Cluster:
 
     @property
     def namespace(self) -> str:
-        """esp_matter::cluster:: namespace"""
+        """esp_matter::cluster::<cluster_name> namespace"""
         return (
             self.name.replace("/", "_")
             .replace(" ", "_")
             .replace("-", "")
             .replace(".", "")
             .lower()
-        )
-
-    def _config_expression(self, config: ClusterConfig):
-        # TODO: some extra clusters don't support feature flags and need to be created with
-        #       cg.RawExpression(f"esp_matter::cluster::{self.namespace}::config_t{{}}")
-
-        lines = ["[] {", f"esp_matter::cluster::{self.namespace}::config_t config{{}};"]
-
-        feature_flags = []
-        features_by_name = {feature.name: feature for feature in self.all_features}
-        for feature_name, enabled in config.enabled_features.items():
-            if not enabled:
-                continue
-            feature = features_by_name.get(feature_name)
-            if not feature:
-                raise cv.Invalid(f"Cluster {self.name} has no feature {feature_name}")
-            feature_flags.append(
-                f"esp_matter::cluster::{self.namespace}::feature::{feature.namespace}::get_id()"
-            )
-        if feature_flags:
-            lines.append(f"config.feature_flags = {' | '.join(feature_flags)};")
-
-        lines.append("return config;")
-        lines.append("}()")
-        return cg.RawExpression("\n".join(lines))
-
-    def register(self, var, endpoint_id: int, config: ClusterConfig):
-        if not config.create:
-            return
-        _LOGGER.debug(
-            "[Matter] Registering cluster %s on endpoint %s",
-            self.name,
-            endpoint_id,
-        )
-        cluster_namespace = f"esp_matter::cluster::{self.namespace}"
-        cg.add(
-            var.register_cluster(
-                cg.TemplateArguments(
-                    self.id,
-                    cg.RawExpression(f"{cluster_namespace}::config_t"),
-                    cg.RawExpression(f"{cluster_namespace}::create"),
-                ),
-                endpoint_id,
-                self.name,
-                self._config_expression(config),
-            )
         )
 
 

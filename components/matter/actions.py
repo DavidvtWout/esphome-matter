@@ -12,7 +12,8 @@ from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model import CLUSTERS_BY_NAME, COMMAND_ARG_TYPES, COMMANDS, Command
+from .data_model.clusters import CLUSTERS_BY_NAME
+from .data_model.commands import COMMAND_ARG_TYPES, COMMANDS, Command
 from .types import (
     MatterComponent,
     MatterEndpointRef,

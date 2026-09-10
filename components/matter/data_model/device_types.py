@@ -3,20 +3,19 @@ import logging
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import automation
 from esphome.components import light
 from esphome.const import CONF_LIGHT_ID
 
 from ..const import CONF_FEATURES
-from ..util import maybe_empty, snake_case
-from .attributes import SENSOR_ATTRIBUTES, Attribute, SensorAttribute
+from ..util import maybe_empty
+from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
 from .clusters import (
-    CLUSTERS_BY_CONF_KEY,
     CLUSTERS_BY_ID,
     CLUSTERS_BY_NAME,
     Cluster,
+    Feature,
     FeatureChoice,
 )
 
@@ -47,98 +46,65 @@ class _ClusterInclude:
         # TODO: also update feature, attribute, command info
         return replace(self.included_cluster, required=self.required)
 
-    @property
-    def server_attributes(self) -> tuple[Attribute, ...]:
-        attrs = []
-        for attr in self.cluster.server_attributes:
-            if attr.optional and attr.define in self.required_attribute_names:
-                attrs.append(replace(attr, optional=False))
-            else:
-                attrs.append(attr)
-        return tuple(attrs)
-
-    @property
-    def client_attributes(self) -> tuple[Attribute, ...]:
-        attrs = []
-        for attr in self.cluster.client_attributes:
-            if attr.optional and attr.define in self.required_attribute_names:
-                attrs.append(replace(attr, optional=False))
-            else:
-                attrs.append(attr)
-        return tuple(attrs)
-
 
 @dataclass(frozen=True, slots=True)
 class DeviceType:
     id: int
     name: str  # snake_case
-    revision: int
     _server_cluster_includes: tuple[_ClusterInclude, ...] = ()
-    _client_cluster_includes: tuple[_ClusterInclude, ...] = ()
+    server_clusters: tuple[Cluster, ...] = ()
+    sensor_attributes: tuple[SensorAttribute, ...] = ()
 
     @classmethod
     def from_dict(cls, data: dict):
+        server_cluster_includes = tuple(
+            [_ClusterInclude.from_dict(c) for c in data["server_clusters"]]
+        )
+        server_clusters = tuple(include.cluster for include in server_cluster_includes)
+
+        sensor_attributes = []
+        for cluster in server_clusters:
+            for attribute_name, sensor_attribute in SENSOR_ATTRIBUTES.get(
+                cluster.camel_case_name, {}
+            ).items():
+                sensor_attributes.append(
+                    replace(
+                        sensor_attribute,
+                        cluster=cluster,
+                        attribute=cluster.get_attribute(attribute_name),
+                    )
+                )
+
         return cls(
             name=data["name"],
             id=data["id"],
-            revision=data["revision"],
-            _server_cluster_includes=tuple(
-                [_ClusterInclude.from_dict(c) for c in data["server_clusters"]]
-            ),
-            _client_cluster_includes=tuple(
-                [_ClusterInclude.from_dict(c) for c in data["client_clusters"]]
-            ),
+            _server_cluster_includes=server_cluster_includes,
+            server_clusters=server_clusters,
+            sensor_attributes=tuple(sensor_attributes),
         )
 
     @property
-    def server_clusters(self) -> tuple[Cluster, ...]:
-        return tuple(include.cluster for include in self._server_cluster_includes)
-
-    @property
-    def client_clusters(self) -> tuple[Cluster, ...]:
-        return tuple(include.cluster for include in self._client_cluster_includes)
-
-    @property
     def namespace(self) -> str:
+        """esp_matter::endpoints::<device_type>"""
         return self.name
 
     @property
     def conf_key(self) -> str:
         return self.name
 
-    @property
-    def sensor_attributes(self) -> tuple[tuple[str, str, SensorAttribute], ...]:
-        sensor_attributes = []
+    def get_features(self) -> set[Feature]:
+        """Get all features that the clusters of this device type supports."""
+        features = set()
         for cluster in self.server_clusters:
-            for attribute_name, sensor_attribute in SENSOR_ATTRIBUTES.get(
-                cluster.camel_case_name, {}
-            ).items():
-                sensor_attributes.append(
-                    (cluster.camel_case_name, attribute_name, sensor_attribute)
-                )
-        return tuple(sensor_attributes)
-
-    @property
-    def available_feature_names(self) -> tuple[str, ...]:
-        return tuple(
-            sorted(
-                {
-                    feature.name
-                    for cluster in self.server_clusters
-                    for feature in cluster.all_features
-                }
-            )
-        )
+            features.update(cluster.all_features)
+        return features
 
     def configured_server_clusters(self, config: dict) -> set[Cluster]:
         clusters = {cluster for cluster in self.server_clusters if cluster.required}
-        for cluster_name, _, sensor_attribute in self.sensor_attributes:
+        for sensor_attribute in self.sensor_attributes:
             if config.get(sensor_attribute.conf_key) is not None:
-                clusters.add(CLUSTERS_BY_NAME[cluster_name])
+                clusters.add(CLUSTERS_BY_NAME[sensor_attribute.cluster.camel_case_name])
         return clusters
-
-    def device_type_config_clusters(self, config: dict) -> set[Cluster]:
-        return {cluster for cluster in self.server_clusters if cluster.required}
 
     def implicit_features(self, config: dict) -> set[str]:
         features = set()
@@ -153,7 +119,7 @@ class DeviceType:
                 for feature in include.included_cluster.all_features
                 if feature.code in include.feature_codes
             )
-        for cluster_name, _, sensor_attribute in self.sensor_attributes:
+        for sensor_attribute in self.sensor_attributes:
             if config.get(sensor_attribute.conf_key) is not None:
                 features.update(sensor_attribute.features)
         return features
@@ -195,7 +161,7 @@ class DeviceType:
 
     def _schema(self):
         sensor_attributes: dict[str, SensorAttribute] = {}
-        for _, _, sensor_attribute in self.sensor_attributes:
+        for sensor_attribute in self.sensor_attributes:
             sensor_attributes[sensor_attribute.conf_key] = sensor_attribute
 
         schema = {
@@ -203,118 +169,70 @@ class DeviceType:
             for conf_key, sensor_attribute in sensor_attributes.items()
         }
 
-        if feature_names := self.available_feature_names:
+        if features := self.get_features():
             schema[cv.Optional(CONF_FEATURES)] = cv.ensure_list(
-                cv.one_of(*feature_names)
+                cv.one_of(*(feature.name for feature in features))
             )
 
         # TODO: replace with something better
         if self.name.endswith("light"):
             schema[cv.Optional(CONF_LIGHT_ID)] = cv.use_id(light.LightState)
 
-        if len(sensor_attributes) == 1:
+        # If a device type is a simple sensor with only a single sensor attribute the config may be simplified from;
+        #   temperature_sensor:
+        #     temperature: sensor_id
+        # to;
+        #   temperature_sensor: sensor_id
+        if len(sensor_attributes) == 1 and len(schema) == 1:
             schema = automation.maybe_conf(next(iter(sensor_attributes)), schema)
+
         return schema
 
     def schema(self):
+        # TODO: only maybe_empty if there are no clusters or features for which a mandatory choice must be made.
         return cv.All(maybe_empty(self._schema()), self._validate_features)
 
-    def _feature_config_lines(self, config: dict) -> list[str]:
-        enabled_features = frozenset(config.get(CONF_FEATURES, ()))
-        lines = []
-        for cluster in self.device_type_config_clusters(config):
-            features = [
-                feature
-                for feature in cluster.choice_features
-                if feature.name in enabled_features
-            ]
-            if not features:
-                continue
-            feature_flags = " | ".join(
-                f"esp_matter::cluster::{cluster.namespace}::feature::{feature.namespace}::get_id()"
-                for feature in features
-            )
-            lines.append(f"config.{cluster.namespace}.feature_flags = {feature_flags};")
-        return lines
 
-    def _config_expression(self, config: dict):
-        namespace = f"esp_matter::endpoint::{self.namespace}"
-        lines = ["[] {", f"{namespace}::config_t config{{}};"]
-        lines.extend(self._feature_config_lines(config))
-        lines.extend(("return config;", "}()"))
-        return cg.RawExpression("\n".join(lines))
-
-    def register(self, var, endpoint_id: int, config: dict) -> set[Cluster]:
-        _LOGGER.debug(
-            "[Matter] Registering device type %s on endpoint %s",
-            self.name,
-            endpoint_id,
-        )
-        register_device_type = var.register_device_type.template(
-            cg.RawExpression(f"esp_matter::endpoint::{self.namespace}::config_t"),
-            cg.RawExpression(f"esp_matter::endpoint::{self.namespace}::add"),
-        )
-        cg.add(
-            register_device_type(
-                endpoint_id, self.namespace, self._config_expression(config)
-            )
-        )
-        created_clusters = {
-            cluster for cluster in self.server_clusters if cluster.required
-        }
-        for cluster_name, _, sensor_attr in self.sensor_attributes:
-            sensor_id = config.get(sensor_attr.conf_key)
-            if sensor_id is not None:
-                created_clusters.add(CLUSTERS_BY_NAME[cluster_name])
-        return created_clusters
-
-
-class ElectricalSensor(DeviceType):
-    def _schema(self):
-        schema = DeviceType._schema(self)
-        schema[cv.Required("with_clusters")] = cv.All(
-            cv.ensure_list(
-                cv.one_of("ElectricalEnergyMeasurement", "ElectricalPowerMeasurement")
-            ),
-            cv.Length(min=1),
-        )
-        return schema
-
-    def _config_expression(self, config: dict):
-        namespace = f"esp_matter::endpoint::{self.namespace}"
-        lines = ["[] {", f"{namespace}::config_t config{{}};"]
-        lines.extend(self._feature_config_lines(config))
-        for cluster_name in config["with_clusters"]:
-            lines.append(f"config.with_{snake_case(cluster_name)}();")
-        lines.extend(("return config;", "}()"))
-        return cg.RawExpression("\n".join(lines))
-
-    def configured_server_clusters(self, config: dict) -> set[Cluster]:
-        clusters = DeviceType.configured_server_clusters(self, config)
-        clusters.update(
-            CLUSTERS_BY_NAME[cluster_name] for cluster_name in config["with_clusters"]
-        )
-        return clusters
-
-    def device_type_config_clusters(self, config: dict) -> set[Cluster]:
-        return {
-            *DeviceType.device_type_config_clusters(self, config),
-            *(CLUSTERS_BY_NAME[name] for name in config["with_clusters"]),
-        }
-
-    def register(self, var, endpoint_id: int, config: dict) -> set[Cluster]:
-        created_clusters = DeviceType.register(self, var, endpoint_id, config)
-        # esp_matter is written by idiots and doesn't properly guard cluster compilation...
-        for cluster_name in (
-            "electrical_energy_measurement",
-            "electrical_power_measurement",
-        ):
-            created_clusters.add(CLUSTERS_BY_CONF_KEY[cluster_name])
-        return created_clusters
+# class ElectricalSensor(DeviceType):
+#     def _schema(self):
+#         schema = DeviceType._schema(self)
+#         schema[cv.Required("with_clusters")] = cv.All(
+#             cv.ensure_list(
+#                 cv.one_of("ElectricalEnergyMeasurement", "ElectricalPowerMeasurement")
+#             ),
+#             cv.Length(min=1),
+#         )
+#         return schema
+#
+#     def _config_expression(self, config: dict):
+#         namespace = f"esp_matter::endpoint::{self.namespace}"
+#         lines = ["[] {", f"{namespace}::config_t config{{}};"]
+#         lines.extend(self._feature_config_lines(config))
+#         for cluster_name in config["with_clusters"]:
+#             lines.append(f"config.with_{snake_case(cluster_name)}();")
+#         lines.extend(("return config;", "}()"))
+#         return cg.RawExpression("\n".join(lines))
+#
+#     def configured_server_clusters(self, config: dict) -> set[Cluster]:
+#         clusters = DeviceType.configured_server_clusters(self, config)
+#         clusters.update(
+#             CLUSTERS_BY_NAME[cluster_name] for cluster_name in config["with_clusters"]
+#         )
+#         return clusters
+#
+#     def register(self, var, endpoint_id: int, config: dict) -> set[Cluster]:
+#         created_clusters = DeviceType.register(self, var, endpoint_id, config)
+#         # esp_matter is written by idiots and doesn't properly guard cluster compilation...
+#         for cluster_name in (
+#             "electrical_energy_measurement",
+#             "electrical_power_measurement",
+#         ):
+#             created_clusters.add(CLUSTERS_BY_CONF_KEY[cluster_name])
+#         return created_clusters
 
 
 DEVICE_TYPE_OVERRIDES = {
-    "electrical_sensor": ElectricalSensor,
+    # "electrical_sensor": ElectricalSensor,
 }
 
 
@@ -335,11 +253,7 @@ def _load_device_types(
     return tuple(device_types)
 
 
-# Device types
 DEVICE_TYPES: tuple[DeviceType, ...] = _load_device_types()
-DEVICE_TYPES_BY_NAME: dict[str, DeviceType] = {
-    device_type.name: device_type for device_type in DEVICE_TYPES
-}
 DEVICE_TYPES_BY_ID: dict[int, DeviceType] = {
     device_type.id: device_type for device_type in DEVICE_TYPES
 }

@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
-import esphome.codegen as cg
 from esphome.components.binary_sensor import BinarySensor
 from esphome.components.sensor import Sensor
 from esphome.cpp_generator import MockObjClass
 
-from ..util import snake_case
+if TYPE_CHECKING:
+    from .clusters import Cluster
 
 
 @dataclass(frozen=True, slots=True)
@@ -14,7 +15,6 @@ class Attribute:
     name: str | None  # CamelCase
     type: str
     # max: int | None = None
-    define: str | None = None
     # is_nullable: bool = False
     writable: bool = False
     optional: bool = False
@@ -25,7 +25,6 @@ class Attribute:
             id=data["id"],
             name=data.get("name"),
             type=data["type"],
-            define=data["define"],
             writable=data["writable"],
             optional=data["optional"],
         )
@@ -38,56 +37,9 @@ class SensorAttribute:
     sensor_type: MockObjClass = field(default_factory=lambda: Sensor)
     features: tuple[str, ...] = ()
     code_driven: bool = False
-
-    async def register(
-        self,
-        var,
-        endpoint_id: int,
-        cluster_name: str,
-        cluster_id: int,
-        attribute: Attribute,
-        config: dict,
-    ):
-        sensor = await cg.get_variable(config[self.conf_key])
-        converter = cg.RawExpression(
-            f"esphome::matter::sensor_converter::{self.converter}"
-        )
-        if self.sensor_type is BinarySensor:
-            cg.add(
-                var.register_binary_sensor_attribute(
-                    sensor, endpoint_id, cluster_id, attribute.id, converter
-                )
-            )
-        elif self.code_driven:
-            cluster_class = f"{cluster_name}Cluster"
-            cluster_path = snake_case(cluster_name).replace("_", "-")
-            cg.add_global(
-                cg.RawStatement(
-                    f"#include <app/clusters/{cluster_path}-server/{cluster_class}.h>"
-                ),
-                prepend=True,
-            )
-            cluster_type = cg.RawExpression(f"chip::app::Clusters::{cluster_class}")
-            value_type = cg.RawExpression(
-                {
-                    "int16s": "int16_t",
-                    "int16u": "uint16_t",
-                    "temperature": "int16_t",
-                }[attribute.type]
-            )
-            setter = cg.RawExpression(
-                f"&chip::app::Clusters::{cluster_class}::SetMeasuredValue"
-            )
-            register = var.register_code_driven_sensor_attribute.template(
-                cluster_type, value_type, setter
-            )
-            cg.add(register(sensor, endpoint_id, cluster_id, attribute.id, converter))
-        else:
-            cg.add(
-                var.register_sensor_attribute(
-                    sensor, endpoint_id, cluster_id, attribute.id, converter
-                )
-            )
+    # Set by DeviceType:
+    cluster: "Cluster | None" = None
+    attribute: Attribute | None = None
 
 
 # Arranged by Cluster, Attribute
