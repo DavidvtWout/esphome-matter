@@ -1,0 +1,122 @@
+esphome:
+  name: all-sensor-devices
+
+external_components:
+  - source: github://DavidvtWout/esphome-matter@main
+
+# ESPHome sensors are "attached" to Matter device types that support them. Below is a collection of matter
+# device types that can expose a sensor value to one or more of their cluster attributes.
+matter:
+  endpoints:
+    1:
+      # The temperature sensor is also supported by many other device types such as "temperature_controlled_cabinet"
+      # or "cook_surface" but since these device types have no right to exist these are not include in this list.
+      temperature_sensor:
+        temperature: temperature_id
+    2:
+      humidity_sensor:
+        relative_humidity: humidity_id
+    3:
+      pressure_sensor:
+        pressure: pressure_id
+    4:
+      flow_sensor:
+        flow: flow_id
+    5:
+      light_sensor:
+        illuminance: illuminance_id
+    6:
+      contact_sensor:
+        boolean_state: bool_id
+    7:
+      water_leak_detector:
+        boolean_state: bool_id
+    8:
+      water_freeze_detector:
+        boolean_state: bool_id
+    9:
+      rain_sensor:
+        boolean_state: bool_id
+    10:
+      occupancy_sensor:
+        occupancy: bool_id
+    12:
+      soil_sensor:
+        temperature: temperature_id
+        soil_moisture: percentage_id
+    13:
+      # The pump can do a lot more than just reporting sensor values but that isn't supported yet.
+      pump:
+        pressure: pressure_id
+        flow: flow_id
+    14:
+      air_quality_sensor:
+        temperature: temperature_id
+        relative_humidity: humidity_id
+        carbon_monoxide: co_ppm
+        carbon_dioxide: co2_ppm
+        nitrogen_dioxide: no2_ppm
+        ozone: o3_ppm
+        formaldehyde: ch2o_ppm
+        radon: co2_ppm
+        pm_1: pm_1_0
+        pm_2_5: pm_2_5
+        pm_10: pm_10_0
+        total_voc: co2_ppm
+    15:
+      smoke_co_alarm:
+        temperature: temperature_id
+        relative_humidity: humidity_id
+        carbon_monoxide: co_ppm
+    16:
+      electrical_sensor:
+        # At least one of ElectricalPowerMeasurement or ElectricalEnergyMeasurement
+        # must be enabled for electrical_sensor to be valid.
+        with_clusters:
+          ["ElectricalEnergyMeasurement", "ElectricalPowerMeasurement"]
+        # Energy measurements are reported as structs with additional information such as timestamps. This is
+        # not supported by esphome-matter yet but is a planned feature.
+        # Power:
+        voltage: voltage_id
+        active_current: current_id
+        reactive_current: current_id
+        apparent_current: current_id
+        active_power: power_id
+        reactive_power: power_id
+        apparent_power: power_id
+        rms_voltage: voltage_id
+        rms_current: current_id
+        rms_power: power_id
+        frequency: frequency_id
+        power_factor: power_factor_id
+        neutral_current: current_id
+
+# Just an example of how to obtain sensor ids. Not all of the sensor IDs used above are defined below.
+sensor:
+  - platform: scd30
+    co2:
+      id: co2_ppm
+    temperature:
+      id: temperature_id
+    humidity:
+      id: humidity_id
+  - platform: sps30
+    pm_1_0:
+      id: pm_1_0
+    pm_2_5:
+      id: pm_2_5
+    pm_10_0:
+      id: pm_10_0
+
+switch:
+  - platform: template
+    name: "Debug Switch"
+    id: debug_switch
+    optimistic: true
+
+binary_sensor:
+  # Only binary_sensors can be attached to binary attributes so if you have a different boolean
+  # ESPHome entity it must first be converted to binary_sensor.
+  - platform: switch
+    source_id: debug_switch
+    id: bool_id

@@ -21,7 +21,7 @@
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/ThreadStackManagerImpl.h>
-#endif
+#endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <lib/support/Base64.h>
 #ifdef USE_OPENTHREAD
 #include <openthread/ip6.h>
@@ -87,7 +87,7 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator,
   discriminator = MATTER_DISCRIMINATOR;
 #else
   discriminator = (uint16_t)(esp_random() & 0x0FFFu);
-#endif
+#endif // MATTER_DISCRIMINATOR
 
 #ifdef MATTER_PASSCODE
   passcode = MATTER_PASSCODE;
@@ -95,7 +95,7 @@ static bool load_or_generate_commissioning_data(uint16_t &discriminator,
   do {
     passcode = (esp_random() % 99999998u) + 1u;
   } while (!is_valid_passcode(passcode));
-#endif
+#endif // MATTER_PASSCODE
 
   // Generate random salt using the ESP32 hardware RNG.
   uint8_t salt[SPAKE2P_SALT_LENGTH];
@@ -383,7 +383,7 @@ void MatterComponent::dump_config() {
       chip::RendezvousInformationFlag::kOnNetwork);
 #else
   payload.rendezvousInformation.SetValue(chip::RendezvousInformationFlag::kBLE);
-#endif
+#endif // defined(USE_OPENTHREAD) || defined(USE_WIFI) || defined(USE_ETHERNET)
   payload.discriminator.SetLongValue(this->discriminator_);
   payload.setUpPINCode = this->passcode_;
 

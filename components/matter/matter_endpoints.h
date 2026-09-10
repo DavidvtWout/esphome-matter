@@ -3,12 +3,9 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 #include "esphome/core/log.h"
-#ifdef USE_SENSOR
-#include "esphome/components/sensor/sensor.h"
-#endif
 #ifdef USE_LIGHT
 #include "esphome/components/light/light_state.h"
-#endif
+#endif // USE_LIGHT
 
 #include <esp_matter.h>
 #include <esp_matter_cluster.h>
@@ -19,7 +16,7 @@ namespace esphome::matter {
 
 #ifdef USE_LIGHT
 class MatterLightMapping;
-#endif
+#endif // USE_LIGHT
 
 class MatterDeviceTypeRegistrationBase {
 public:
@@ -41,11 +38,12 @@ template <typename ConfigT,
           esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
 class MatterDeviceTypeRegistration : public MatterDeviceTypeRegistrationBase {
 public:
-  MatterDeviceTypeRegistration(uint16_t endpoint_id, const char *device_type)
-      : MatterDeviceTypeRegistrationBase(endpoint_id, device_type) {}
+  MatterDeviceTypeRegistration(uint16_t endpoint_id, const char *device_type,
+                               const ConfigT &config)
+      : MatterDeviceTypeRegistrationBase(endpoint_id, device_type),
+        config_(config) {}
 
   bool add_clusters(esp_matter::node_t *node) override {
-    ConfigT config;
     esp_matter::endpoint_t *endpoint =
         esp_matter::endpoint::get(node, this->endpoint_id_);
     if (endpoint == nullptr) {
@@ -53,17 +51,100 @@ public:
                this->device_type_, this->endpoint_id_);
       return false;
     }
-
-    if (AddFn(endpoint, &config) != ESP_OK) {
+    if (AddFn(endpoint, &this->config_) != ESP_OK) {
       ESP_LOGE("matter", "Failed to add %s device type to endpoint %u",
                this->device_type_, this->endpoint_id_);
       return false;
     }
-
     ESP_LOGD("matter", "Added device type %s to endpoint %u",
              this->device_type_, this->endpoint_id_);
     return true;
   }
+
+protected:
+  ConfigT config_;
+};
+
+class MatterClusterRegistrationBase {
+public:
+  MatterClusterRegistrationBase(uint16_t endpoint_id, const char *cluster_name)
+      : endpoint_id_(endpoint_id), cluster_name_(cluster_name) {}
+  virtual ~MatterClusterRegistrationBase() = default;
+
+  virtual bool add_cluster(esp_matter::node_t *node) = 0;
+
+protected:
+  uint16_t endpoint_id_;
+  const char *cluster_name_;
+};
+
+using MatterFeatureAddFn = esp_err_t (*)(esp_matter::cluster_t *);
+
+inline esp_err_t add_feature(esp_matter::cluster_t *cluster,
+                             MatterFeatureAddFn add_fn) {
+  return add_fn(cluster);
+}
+
+template <typename ConfigT>
+esp_err_t add_feature(esp_matter::cluster_t *cluster,
+                      esp_err_t (*add_fn)(esp_matter::cluster_t *, ConfigT *)) {
+  ConfigT config{};
+  return add_fn(cluster, &config);
+}
+
+class MatterFeatureRegistration {
+public:
+  MatterFeatureRegistration(uint16_t endpoint_id, uint32_t cluster_id,
+                            const char *cluster_name, uint32_t feature_id,
+                            const char *feature_name, MatterFeatureAddFn add_fn)
+      : endpoint_id_(endpoint_id), cluster_id_(cluster_id),
+        cluster_name_(cluster_name), feature_id_(feature_id),
+        feature_name_(feature_name), add_fn_(add_fn) {}
+
+  bool add_feature(esp_matter::node_t *node);
+
+protected:
+  uint16_t endpoint_id_;
+  uint32_t cluster_id_;
+  const char *cluster_name_;
+  uint32_t feature_id_;
+  const char *feature_name_;
+  MatterFeatureAddFn add_fn_;
+};
+
+template <uint32_t ClusterId, typename ConfigT,
+          esp_matter::cluster_t *(*CreateFn)(esp_matter::endpoint_t *,
+                                             ConfigT *, uint8_t)>
+class MatterClusterRegistration : public MatterClusterRegistrationBase {
+public:
+  MatterClusterRegistration(uint16_t endpoint_id, const char *cluster_name,
+                            const ConfigT &config)
+      : MatterClusterRegistrationBase(endpoint_id, cluster_name),
+        config_(config) {}
+
+  bool add_cluster(esp_matter::node_t *node) override {
+    esp_matter::endpoint_t *endpoint =
+        esp_matter::endpoint::get(node, this->endpoint_id_);
+    if (endpoint == nullptr) {
+      ESP_LOGE("matter", "Cannot add %s cluster to missing endpoint %u",
+               this->cluster_name_, this->endpoint_id_);
+      return false;
+    }
+    if (esp_matter::cluster::get(endpoint, ClusterId) != nullptr)
+      return true;
+    if (CreateFn(endpoint, &this->config_, esp_matter::CLUSTER_FLAG_SERVER) ==
+        nullptr) {
+      ESP_LOGE("matter", "Failed to add %s cluster to endpoint %u",
+               this->cluster_name_, this->endpoint_id_);
+      return false;
+    }
+    ESP_LOGD("matter", "Added %s cluster to endpoint %u", this->cluster_name_,
+             this->endpoint_id_);
+    return true;
+  }
+
+protected:
+  ConfigT config_;
 };
 
 class MatterEndpointMappingBase {
@@ -75,7 +156,7 @@ public:
   virtual void register_callbacks() {}
 #ifdef USE_LIGHT
   virtual MatterLightMapping *as_light_mapping() { return nullptr; }
-#endif
+#endif // USE_LIGHT
 
   uint16_t endpoint_id() const { return this->endpoint_id_; }
 
@@ -102,20 +183,7 @@ public:
 protected:
   light::LightState *light_;
 };
-#endif
-
-#ifdef USE_SENSOR
-class MatterSensorMapping : public MatterEndpointMappingBase {
-public:
-  MatterSensorMapping(sensor::Sensor *sensor, uint16_t endpoint_id);
-
-  void register_callbacks() override;
-  void push_state_to_matter(float value);
-
-protected:
-  sensor::Sensor *sensor_;
-};
-#endif
+#endif // USE_LIGHT
 
 // Common esp_matter attribute update callback, passed to node::create().
 // Routes server-cluster changes (e.g. light commands) to the ESPHome entities.

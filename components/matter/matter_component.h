@@ -6,6 +6,7 @@
 #include "esphome/core/component.h"
 
 #include "matter_endpoints.h"
+#include "matter_sensors.h"
 
 #include <functional>
 #include <vector>
@@ -28,25 +29,69 @@ public:
 
   void factory_reset();
 
-  // Endpoints
+  // Register Matter endpoints
   void register_endpoint(uint16_t endpoint_id);
-  void register_binding(uint16_t endpoint_id);
+
+  // Register Matter device types
   template <typename ConfigT,
             esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
-  void register_device_type(uint16_t endpoint_id, const char *device_type) {
+  void register_device_type(uint16_t endpoint_id, const char *device_type,
+                            const ConfigT &config = ConfigT{}) {
     this->device_type_registrations_.push_back(
         new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id,
-                                                         device_type));
+                                                         device_type, config));
   }
+
+  // Register additional Matter clusters
+  template <uint32_t ClusterId, typename ConfigT,
+            esp_matter::cluster_t *(*CreateFn)(esp_matter::endpoint_t *,
+                                               ConfigT *, uint8_t)>
+  void register_cluster(uint16_t endpoint_id, const char *cluster_name,
+                        const ConfigT &config = ConfigT{}) {
+    this->cluster_registrations_.push_back(
+        new MatterClusterRegistration<ClusterId, ConfigT, CreateFn>(
+            endpoint_id, cluster_name, config));
+  }
+
+  void register_feature(uint16_t endpoint_id, uint32_t cluster_id,
+                        const char *cluster_name, uint32_t feature_id,
+                        const char *feature_name, MatterFeatureAddFn add_fn) {
+    this->feature_registrations_.push_back(
+        new MatterFeatureRegistration(endpoint_id, cluster_id, cluster_name,
+                                      feature_id, feature_name, add_fn));
+  }
+
+  // Register ESPHome entities
 #ifdef USE_LIGHT
   void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
-#endif
-#ifdef USE_SENSOR
-  void map_sensor_to_endpoint(sensor::Sensor *sensor, uint16_t endpoint_id);
-#endif
-#ifdef USE_LIGHT
   MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
-#endif
+#endif // USE_LIGHT
+#ifdef USE_SENSOR
+  void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id,
+                                 uint32_t cluster_id, uint32_t attribute_id,
+                                 SensorValueConverter converter);
+
+  template <
+      typename ClusterT, typename ValueT,
+      CHIP_ERROR (ClusterT::*Setter)(chip::app::DataModel::Nullable<ValueT>)>
+  void register_code_driven_sensor_attribute(sensor::Sensor *sensor,
+                                             uint16_t endpoint_id,
+                                             uint32_t cluster_id,
+                                             uint32_t attribute_id,
+                                             SensorValueConverter converter) {
+    this->mappings_.push_back(new MatterSensorAttributeMapping(
+        sensor, endpoint_id, cluster_id, attribute_id, converter,
+        update_code_driven_sensor_attribute<ClusterT, ValueT, Setter>));
+  }
+#endif // USE_SENSOR
+#ifdef USE_BINARY_SENSOR
+  void register_binary_sensor_attribute(binary_sensor::BinarySensor *sensor,
+                                        uint16_t endpoint_id,
+                                        uint32_t cluster_id,
+                                        uint32_t attribute_id,
+                                        BinarySensorValueConverter converter);
+#endif // USE_BINARY_SENSOR
+
   // Public wrapper around the protected Component scheduler; used by the
   // Matter-thread callbacks to hop onto the main loop (defer is thread-safe).
   void defer_to_main_loop(std::function<void()> &&f) {
@@ -62,8 +107,9 @@ private:
   uint32_t passcode_{0};
 
   std::vector<uint16_t> endpoint_ids_;
-  std::vector<uint16_t> binding_endpoint_ids_;
   std::vector<MatterDeviceTypeRegistrationBase *> device_type_registrations_;
+  std::vector<MatterClusterRegistrationBase *> cluster_registrations_;
+  std::vector<MatterFeatureRegistration *> feature_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;
 };
 
