@@ -1,7 +1,6 @@
 import logging
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import cast
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -102,11 +101,11 @@ class Endpoint:
 
         # Register extra features
         for enabled_feature in device_config.get(CONF_FEATURES, ()):
+            print(enabled_feature)
             for cluster in device_type.server_clusters:
+                cluster_config = self._cluster_configs[cluster.name]
                 if enabled_feature in (f.name for f in cluster.features):
-                    self._cluster_configs[cluster.name].enabled_features[
-                        enabled_feature
-                    ] = True
+                    cluster_config.enabled_features[enabled_feature] = True
 
         # Send device type registration to codegen
         register_device_type = self._var.register_device_type.template(
@@ -132,19 +131,18 @@ class Endpoint:
         for cluster in device_type.server_clusters:
             if not cluster.required:
                 continue  # Non-required clusters must be created after the device_type
-            enabled_features = []
             cluster_config = self._cluster_configs[cluster.name]
+            features_by_name = {f.name: f for f in cluster.features}
+            feature_flags = []
             for feature_name, enabled in cluster_config.enabled_features.items():
-                if enabled:
-                    enabled_features.append(feature_name)
-            if enabled_features:
-                features_by_name = {f.name: f for f in cluster.features}
-                feature_flags = []
-                for feature_name in enabled_features:
-                    feature = features_by_name[feature_name]
+                if not enabled:
+                    continue
+                feature = features_by_name[feature_name]
+                if cluster.is_choice_feature(feature):
                     feature_flags.append(
                         f"esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::get_id()"
                     )
+            if feature_flags:
                 lines.append(
                     f"config.{cluster.espm_namespace}.feature_flags = {' | '.join(feature_flags)};"
                 )
@@ -210,9 +208,8 @@ class Endpoint:
         lines = ["[] {", f"{cluster_ns}::config_t config{{}};"]
         feature_flags = []
         features_by_name = {feature.name: feature for feature in cluster.features}
-        for feature_name, enabled in self._cluster_configs[
-            cluster.name
-        ].enabled_features.items():
+        cluster_config = self._cluster_configs[cluster.name]
+        for feature_name, enabled in cluster_config.enabled_features.items():
             if not enabled:
                 continue
             feature = features_by_name.get(feature_name)

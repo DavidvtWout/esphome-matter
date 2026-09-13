@@ -13,6 +13,8 @@ _LOGGER = logging.getLogger(__name__)
 class Feature:
     code: str
     name: str  # CamelCase
+    # Can be set to True by DeviceType config
+    enabled: bool = False
 
     @classmethod
     def from_dict(cls, data: dict):
@@ -135,6 +137,13 @@ class Cluster:
             if attribute.name == name:
                 return attribute
         raise KeyError(f"Cluster {self.name} has no attribute {name}")
+
+    def is_choice_feature(self, feature: Feature) -> bool:
+        for choice in self.choice_features:
+            for f in choice.features:
+                if f.name == feature.name:
+                    return True
+        return False
 
 
 def _sdkconfig_option(name: str) -> str:

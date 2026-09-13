@@ -11,57 +11,57 @@ from esphome.const import CONF_LIGHT_ID
 from ..const import CONF_FEATURES
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
-from .clusters import (
-    CLUSTERS_BY_ID,
-    CLUSTERS_BY_NAME,
-    Cluster,
-    Feature,
-    FeatureChoice,
-)
+from .clusters import CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster, Feature
 
 _LOGGER = logging.getLogger(__name__)
 
 
-@dataclass
-class _ClusterInclude:
-    included_cluster: Cluster
-    required: bool
-    feature_codes: tuple[str, ...] = ()
-    required_attribute_names: tuple[str, ...] = ()  # By "define" value
-    required_command_names: tuple[str, ...] = ()  # By CamelCase name
+def _parse_cluster_include(data: dict) -> Cluster:
+    cluster = CLUSTERS_BY_ID[data["id"]]
+    required = data.get("required", False)
+    enabled_features = data.get("features", ())
 
-    @classmethod
-    def from_dict(cls, data: dict):
-        cluster = CLUSTERS_BY_ID[data["id"]]
-        return cls(
-            included_cluster=cluster,
-            required=data.get("required", False),
-            feature_codes=data.get("features", ()),
-            required_attribute_names=data.get("required_attributes", ()),
-            required_command_names=data.get("required_commands", ()),
-        )
+    features = []
+    choice_features = []
+    for feature in cluster.features:
+        if feature.code in enabled_features:
+            feature = replace(feature, enabled=True)
+        features.append(feature)
+    for choice in cluster.choice_features:
+        new_choice_features = []
+        for feature in choice.features:
+            if feature.code in enabled_features:
+                feature = replace(feature, enabled=True)
+            new_choice_features.append(feature)
+        # Remove choice features if device type already solves the choice by enabling any of the choice features.
+        if choice.max != 1 or not any(
+            feature.enabled for feature in new_choice_features
+        ):
+            choice_features.append(replace(choice, features=tuple(new_choice_features)))
+        else:
+            features.extend(new_choice_features)
 
-    @property
-    def cluster(self) -> Cluster:
-        # TODO: also update feature, attribute, command info
-        return replace(self.included_cluster, required=self.required)
+    # TODO: also update attribute and command info
+    return replace(
+        cluster,
+        required=required,
+        features=tuple(features),
+        choice_features=tuple(choice_features),
+    )
 
 
 @dataclass(frozen=True, slots=True)
 class DeviceType:
     id: int
     name: str  # snake_case
-    _server_cluster_includes: tuple[_ClusterInclude, ...] = ()
     server_clusters: tuple[Cluster, ...] = ()
     sensor_attributes: tuple[SensorAttribute, ...] = ()
 
     @classmethod
     def from_dict(cls, data: dict):
-        server_cluster_includes = tuple(
-            [_ClusterInclude.from_dict(c) for c in data["server_clusters"]]
+        server_clusters = tuple(
+            [_parse_cluster_include(c) for c in data["server_clusters"]]
         )
-        server_clusters = tuple(include.cluster for include in server_cluster_includes)
-
         sensor_attributes = []
         for cluster in server_clusters:
             for attribute_name, sensor_attribute in SENSOR_ATTRIBUTES.get(
@@ -78,7 +78,6 @@ class DeviceType:
         return cls(
             name=data["name"],
             id=data["id"],
-            _server_cluster_includes=server_cluster_includes,
             server_clusters=server_clusters,
             sensor_attributes=tuple(sensor_attributes),
         )
@@ -106,53 +105,54 @@ class DeviceType:
                 clusters.add(CLUSTERS_BY_NAME[sensor_attribute.cluster.name])
         return clusters
 
-    def implicit_features(self, config: dict) -> set[str]:
-        features = set()
-        configured_cluster_ids = {
-            cluster.id for cluster in self.configured_server_clusters(config)
-        }
-        for include in self._server_cluster_includes:
-            if include.included_cluster.id not in configured_cluster_ids:
-                continue
-            features.update(
-                feature.name
-                for feature in include.included_cluster.features
-                if feature.code in include.feature_codes
-            )
-        for sensor_attribute in self.sensor_attributes:
-            if config.get(sensor_attribute.conf_key) is not None:
-                features.update(sensor_attribute.features)
-        return features
+    # TODO: fix this mess...
+    # def implicit_features(self, config: dict) -> set[str]:
+    #     features = set()
+    #     configured_cluster_ids = {
+    #         cluster.id for cluster in self.configured_server_clusters(config)
+    #     }
+    #     for cluster in self.server_clusters:
+    #         if cluster.id not in configured_cluster_ids:
+    #             continue
+    #         features.update(
+    #             feature.name
+    #             for feature in cluster.features
+    #             if feature.code in cluster.enabled_features
+    #         )
+    #     for sensor_attribute in self.sensor_attributes:
+    #         if config.get(sensor_attribute.conf_key) is not None:
+    #             features.update(sensor_attribute.features)
+    #     return features
 
     def _validate_features(self, config: dict) -> dict:
-        enabled_features = list(config.get(CONF_FEATURES, ()))
-        for feature in sorted(self.implicit_features(config)):
-            if feature not in enabled_features:
-                enabled_features.append(feature)
+        # enabled_features = list(config.get(CONF_FEATURES, ()))
+        # for feature in sorted(self.implicit_features(config)):
+        #     if feature not in enabled_features:
+        #         enabled_features.append(feature)
+        #
+        # enabled_feature_set = frozenset(enabled_features)
+        # for cluster in self.configured_server_clusters(config):
+        #     for item in cluster.features:
+        #         if not isinstance(item, FeatureChoice):
+        #             continue
+        #         selected = enabled_feature_set.intersection(
+        #             feature.name for feature in item.features
+        #         )
+        #         if len(selected) < item.min:
+        #             choices = ", ".join(feature.name for feature in item.features)
+        #             raise cv.Invalid(
+        #                 f"Cluster {cluster.name} requires at least {item.min} of "
+        #                 f"these features: {choices}"
+        #             )
+        #         if item.max is not None and len(selected) > item.max:
+        #             choices = ", ".join(feature.name for feature in item.features)
+        #             raise cv.Invalid(
+        #                 f"Cluster {cluster.name} allows at most {item.max} of "
+        #                 f"these features: {choices}"
+        #             )
 
-        enabled_feature_set = frozenset(enabled_features)
-        for cluster in self.configured_server_clusters(config):
-            for item in cluster.features:
-                if not isinstance(item, FeatureChoice):
-                    continue
-                selected = enabled_feature_set.intersection(
-                    feature.name for feature in item.features
-                )
-                if len(selected) < item.min:
-                    choices = ", ".join(feature.name for feature in item.features)
-                    raise cv.Invalid(
-                        f"Cluster {cluster.name} requires at least {item.min} of "
-                        f"these features: {choices}"
-                    )
-                if item.max is not None and len(selected) > item.max:
-                    choices = ", ".join(feature.name for feature in item.features)
-                    raise cv.Invalid(
-                        f"Cluster {cluster.name} allows at most {item.max} of "
-                        f"these features: {choices}"
-                    )
-
-        if enabled_features:
-            config[CONF_FEATURES] = enabled_features
+        # if enabled_features:
+        #     config[CONF_FEATURES] = enabled_features
         return config
 
     @property
