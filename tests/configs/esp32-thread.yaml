@@ -33,7 +33,7 @@ matter:
       dimmer_switch:
     2:
       temperature_sensor:
-        sensor_id: internal_temp
+        temperature: internal_temp
 
 binary_sensor:
   - id: button_up

@@ -181,7 +181,7 @@ class DeviceType:
         #     temperature: sensor_id
         # to;
         #   temperature_sensor: sensor_id
-        if len(self.sensor_attributes) == 1 and len(schema) == 1:
+        if len(self.sensor_attributes) == 1:
             sensor_attribute = self.sensor_attributes[0]
             schema = automation.maybe_conf(sensor_attribute.conf_key, schema)
 
