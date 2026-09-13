@@ -1,6 +1,7 @@
 import logging
 from collections import defaultdict
 from dataclasses import dataclass, field
+from typing import cast
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -8,10 +9,11 @@ from esphome.components.binary_sensor import BinarySensor
 from esphome.components.esp32 import add_idf_sdkconfig_option
 from esphome.components.sensor import Sensor
 from esphome.const import CONF_LIGHT_ID
+from esphome.core import ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model.attributes import Attribute, SensorAttribute
+from .data_model.attributes import SensorAttribute
 from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME, Cluster
 from .data_model.device_types import (
     DEVICE_TYPES,
@@ -20,7 +22,6 @@ from .data_model.device_types import (
     DeviceType,
 )
 from .types import MatterEndpointRef
-from .util import snake_case
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ ENDPOINT_SCHEMA = cv.All(
         {
             cv.GenerateID(): cv.declare_id(MatterEndpointRef),
             cv.Optional(CONF_EXTRA_CLUSTERS, default=list): cv.ensure_list(
-                cv.one_of(*(cluster.camel_case_name for cluster in CLUSTERS))
+                cv.one_of(*(cluster.name for cluster in CLUSTERS))
             ),
         }
         | {device_type.schema_key: device_type.schema() for device_type in DEVICE_TYPES}
@@ -51,7 +52,8 @@ class Endpoint:
         self._endpoint_id = endpoint_id
         self._config = config
 
-        self.enabled_sdkconfig_options = set()
+        self.enabled_sdkconfig_options: set[str] = set()
+        self.global_includes: set[str] = set()
 
         self._cluster_configs: defaultdict[str, _ClusterConfig] = defaultdict(
             _ClusterConfig
@@ -82,7 +84,7 @@ class Endpoint:
             # Enable all clusters and not only the enabled ones because esp_matter doesn't correctly guard endpoint compilation...
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
             if cluster.required:
-                self._cluster_configs[cluster.camel_case_name].created = True
+                self._cluster_configs[cluster.name].created = True
                 if cluster.name == "Binding":
                     # esp_matter doesn't create the binding cluster when adding a device type to an endpoint, even when
                     # the device type requires it so it must always be forcibly created when a device type needs it.
@@ -91,15 +93,7 @@ class Endpoint:
         # Register sensor attributes
         for sensor_attr in device_type.sensor_attributes:
             if sensor_id := device_config.get(sensor_attr.conf_key):
-                cluster_name = sensor_attr.cluster.camel_case_name
-                self._cluster_configs[cluster_name].created |= False
-                for feature_name in sensor_attr.features:
-                    self._cluster_configs[cluster_name].enabled_features[
-                        feature_name
-                    ] = True
-                await self._register_sensor_attribute(
-                    sensor_id, sensor_attr, cluster, sensor_attr.attribute
-                )
+                await self._register_sensor_attribute(sensor_id, sensor_attr)
 
         # Register ESPHome entities
         if CONF_LIGHT_ID in device_config:
@@ -109,8 +103,8 @@ class Endpoint:
         # Register extra features
         for enabled_feature in device_config.get(CONF_FEATURES, ()):
             for cluster in device_type.server_clusters:
-                if enabled_feature in (f.name for f in cluster.all_features):
-                    self._cluster_configs[cluster.camel_case_name].enabled_features[
+                if enabled_feature in (f.name for f in cluster.features):
+                    self._cluster_configs[cluster.name].enabled_features[
                         enabled_feature
                     ] = True
 
@@ -140,33 +134,38 @@ class Endpoint:
                 continue  # Cluster must be created after the device_type
             enabled_features = []
             for feature_name, enabled in self._cluster_configs[
-                cluster.camel_case_name
+                cluster.name
             ].enabled_features.items():
                 if enabled:
                     enabled_features.append(enabled_features)
             if enabled_features:
-                features_by_name = {f.name: f for f in cluster.all_features}
+                features_by_name = {f.name: f for f in cluster.features}
                 feature_flags = []
                 for feature_name in enabled_features:
                     feature = features_by_name[feature_name]
                     feature_flags.append(
-                        f"esp_matter::cluster::{cluster.namespace}::feature::{feature.namespace}::get_id()"
+                        f"esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::get_id()"
                     )
                 lines.append(
-                    f"config.{cluster.namespace}.feature_flags = {' | '.join(feature_flags)};"
+                    f"config.{cluster.espm_namespace}.feature_flags = {' | '.join(feature_flags)};"
                 )
 
         lines.extend(("return config;", "}()"))
         return cg.RawExpression("\n".join(lines))
 
     async def _register_sensor_attribute(
-        self,
-        sensor_id,
-        sensor_attribute: SensorAttribute,
-        cluster: Cluster,
-        attribute: Attribute,
+        self, sensor_id: ID, sensor_attribute: SensorAttribute
     ):
-        cluster = CLUSTERS_BY_NAME[cluster.camel_case_name]
+        cluster = sensor_attribute.cluster
+        attribute = sensor_attribute.attribute
+        if cluster is None or attribute is None:
+            raise cv.Invalid(
+                f"sensor_attribute {sensor_attribute.conf_key} is not initialized"
+            )
+
+        self._cluster_configs[cluster.name].created |= False
+        for feature_name in sensor_attribute.features:
+            self._cluster_configs[cluster.name].enabled_features[feature_name] = True
 
         sensor = await cg.get_variable(sensor_id)
         converter = cg.RawExpression(
@@ -180,15 +179,8 @@ class Endpoint:
             )
             cg.add(register_binary_sensor_attribute)
         elif sensor_attribute.code_driven:
-            cluster_class = f"{cluster.camel_case_name}Cluster"
-            cluster_path = snake_case(cluster.camel_case_name).replace("_", "-")
-            cg.add_global(
-                cg.RawStatement(
-                    f"#include <app/clusters/{cluster_path}-server/{cluster_class}.h>"
-                ),
-                prepend=True,
-            )
-            cluster_type = cg.RawExpression(f"chip::app::Clusters::{cluster_class}")
+            self.global_includes.add(cluster.chip_include)
+            cluster_type = cg.RawExpression(cluster.chip_fqn)
             value_type = cg.RawExpression(
                 {
                     "int16s": "int16_t",
@@ -196,9 +188,7 @@ class Endpoint:
                     "temperature": "int16_t",
                 }[attribute.type]
             )
-            setter = cg.RawExpression(
-                f"&chip::app::Clusters::{cluster_class}::SetMeasuredValue"
-            )
+            setter = cg.RawExpression(f"&{cluster.chip_fqn}::SetMeasuredValue")
             register = self._var.register_code_driven_sensor_attribute.template(
                 cluster_type, value_type, setter
             )
@@ -215,14 +205,14 @@ class Endpoint:
         """Most clusters are already created when adding a device type to an endpoint. _register_cluster should
         only be used for clusters that are optional to a device type and aren't already created.
         """
-        cluster_ns = f"esp_matter::cluster::{cluster.namespace}"
+        cluster_ns = f"esp_matter::cluster::{cluster.espm_namespace}"
 
         # Make cluster config expression
         lines = ["[] {", f"{cluster_ns}::config_t config{{}};"]
         feature_flags = []
-        features_by_name = {feature.name: feature for feature in cluster.all_features}
+        features_by_name = {feature.name: feature for feature in cluster.features}
         for feature_name, enabled in self._cluster_configs[
-            cluster.camel_case_name
+            cluster.name
         ].enabled_features.items():
             if not enabled:
                 continue
@@ -256,6 +246,7 @@ class Endpoint:
 
 async def register_endpoints(var, config: ConfigType):
     root_node = DEVICE_TYPES_BY_ID[22]
+    global_includes = set()
     enabled_sdkconfig_clusters = {
         cluster.sdkconfig_option
         for cluster in root_node.server_clusters
@@ -275,6 +266,7 @@ async def register_endpoints(var, config: ConfigType):
     for endpoint_id, endpoint_config in config[CONF_ENDPOINTS].items():
         endpoint = Endpoint(var, endpoint_id, endpoint_config)
         await endpoint.register(var)
+        global_includes.update(endpoint.global_includes)
         enabled_sdkconfig_clusters.update(endpoint.enabled_sdkconfig_options)
 
     # Set sdkconfig options to compile the correct clusters.
@@ -283,3 +275,6 @@ async def register_endpoints(var, config: ConfigType):
         add_idf_sdkconfig_option(
             sdkconfig_option, sdkconfig_option in enabled_sdkconfig_clusters
         )
+
+    for global_include in global_includes:
+        cg.add_global(cg.RawStatement(global_include), prepend=True)

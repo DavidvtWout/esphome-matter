@@ -65,7 +65,7 @@ class DeviceType:
         sensor_attributes = []
         for cluster in server_clusters:
             for attribute_name, sensor_attribute in SENSOR_ATTRIBUTES.get(
-                cluster.camel_case_name, {}
+                cluster.name, {}
             ).items():
                 sensor_attributes.append(
                     replace(
@@ -96,14 +96,14 @@ class DeviceType:
         """Get all features that the clusters of this device type supports."""
         features = set()
         for cluster in self.server_clusters:
-            features.update(cluster.all_features)
+            features.update(cluster.features)
         return features
 
     def configured_server_clusters(self, config: dict) -> set[Cluster]:
         clusters = {cluster for cluster in self.server_clusters if cluster.required}
         for sensor_attribute in self.sensor_attributes:
             if config.get(sensor_attribute.conf_key) is not None:
-                clusters.add(CLUSTERS_BY_NAME[sensor_attribute.cluster.camel_case_name])
+                clusters.add(CLUSTERS_BY_NAME[sensor_attribute.cluster.name])
         return clusters
 
     def implicit_features(self, config: dict) -> set[str]:
@@ -116,7 +116,7 @@ class DeviceType:
                 continue
             features.update(
                 feature.name
-                for feature in include.included_cluster.all_features
+                for feature in include.included_cluster.features
                 if feature.code in include.feature_codes
             )
         for sensor_attribute in self.sensor_attributes:
