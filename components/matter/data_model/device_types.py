@@ -160,13 +160,11 @@ class DeviceType:
         return cv.Optional(self.conf_key)
 
     def _schema(self):
-        sensor_attributes: dict[str, SensorAttribute] = {}
-        for sensor_attribute in self.sensor_attributes:
-            sensor_attributes[sensor_attribute.conf_key] = sensor_attribute
-
         schema = {
-            cv.Optional(conf_key): cv.use_id(sensor_attribute.sensor_type)
-            for conf_key, sensor_attribute in sensor_attributes.items()
+            cv.Optional(sensor_attribute.conf_key): cv.use_id(
+                sensor_attribute.sensor_type
+            )
+            for sensor_attribute in self.sensor_attributes
         }
 
         if features := self.get_features():
@@ -183,8 +181,9 @@ class DeviceType:
         #     temperature: sensor_id
         # to;
         #   temperature_sensor: sensor_id
-        if len(sensor_attributes) == 1 and len(schema) == 1:
-            schema = automation.maybe_conf(next(iter(sensor_attributes)), schema)
+        if len(self.sensor_attributes) == 1 and len(schema) == 1:
+            sensor_attribute = self.sensor_attributes[0]
+            schema = automation.maybe_conf(sensor_attribute.conf_key, schema)
 
         return schema
 

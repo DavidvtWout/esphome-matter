@@ -131,13 +131,12 @@ class Endpoint:
         # Configure cluster features
         for cluster in device_type.server_clusters:
             if not cluster.required:
-                continue  # Cluster must be created after the device_type
+                continue  # Non-required clusters must be created after the device_type
             enabled_features = []
-            for feature_name, enabled in self._cluster_configs[
-                cluster.name
-            ].enabled_features.items():
+            cluster_config = self._cluster_configs[cluster.name]
+            for feature_name, enabled in cluster_config.enabled_features.items():
                 if enabled:
-                    enabled_features.append(enabled_features)
+                    enabled_features.append(feature_name)
             if enabled_features:
                 features_by_name = {f.name: f for f in cluster.features}
                 feature_flags = []
