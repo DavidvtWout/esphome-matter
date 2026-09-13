@@ -85,11 +85,12 @@ public:
   }
 #endif // USE_SENSOR
 #ifdef USE_BINARY_SENSOR
-  void register_binary_sensor_attribute(binary_sensor::BinarySensor *sensor,
-                                        uint16_t endpoint_id,
-                                        uint32_t cluster_id,
-                                        uint32_t attribute_id,
-                                        BinarySensorValueConverter converter);
+  void
+  register_binary_sensor_attribute(binary_sensor::BinarySensor *sensor,
+                                   uint16_t endpoint_id, uint32_t cluster_id,
+                                   uint32_t attribute_id,
+                                   BinarySensorValueConverter converter,
+                                   SensorAttributeUpdater updater = nullptr);
 #endif // USE_BINARY_SENSOR
 
   // Public wrapper around the protected Component scheduler; used by the

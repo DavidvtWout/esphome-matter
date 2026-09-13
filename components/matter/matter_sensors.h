@@ -10,9 +10,10 @@
 #endif // USE_BINARY_SENSOR
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
+#endif // USE_SENSOR
+
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <type_traits>
-#endif // USE_SENSOR
 
 namespace esphome::matter {
 
@@ -35,11 +36,10 @@ esp_matter_attr_val_t watts(float value);
 
 using SensorValueConverter = esp_matter_attr_val_t (*)(float);
 using BinarySensorValueConverter = esp_matter_attr_val_t (*)(bool);
-
-#ifdef USE_SENSOR
 using SensorAttributeUpdater = CHIP_ERROR (*)(uint16_t, uint32_t,
                                               esp_matter_attr_val_t);
 
+#ifdef USE_SENSOR
 template <
     typename ClusterT, typename ValueT,
     CHIP_ERROR (ClusterT::*Setter)(chip::app::DataModel::Nullable<ValueT>)>
@@ -83,12 +83,17 @@ protected:
 #endif // USE_SENSOR
 
 #ifdef USE_BINARY_SENSOR
+CHIP_ERROR update_boolean_state_attribute(uint16_t endpoint_id,
+                                          uint32_t cluster_id,
+                                          esp_matter_attr_val_t value);
+
 class MatterBinarySensorAttributeMapping : public MatterEndpointMappingBase {
 public:
   MatterBinarySensorAttributeMapping(binary_sensor::BinarySensor *sensor,
                                      uint16_t endpoint_id, uint32_t cluster_id,
                                      uint32_t attribute_id,
-                                     BinarySensorValueConverter converter);
+                                     BinarySensorValueConverter converter,
+                                     SensorAttributeUpdater updater = nullptr);
 
   void register_callbacks() override;
 
@@ -99,6 +104,7 @@ protected:
   uint32_t cluster_id_;
   uint32_t attribute_id_;
   BinarySensorValueConverter converter_;
+  SensorAttributeUpdater updater_;
 };
 #endif // USE_BINARY_SENSOR
 

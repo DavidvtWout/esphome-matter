@@ -5,6 +5,7 @@
 #include "esphome/core/log.h"
 #include "matter_component.h"
 
+#include <app/clusters/boolean-state-server/BooleanStateCluster.h>
 #include <platform/CHIPDeviceLayer.h>
 
 #include <algorithm>
@@ -201,21 +202,35 @@ void MatterSensorAttributeMapping::publish_(float value) {
 #endif // USE_SENSOR
 
 #ifdef USE_BINARY_SENSOR
+CHIP_ERROR update_boolean_state_attribute(uint16_t endpoint_id,
+                                          uint32_t cluster_id,
+                                          esp_matter_attr_val_t value) {
+  auto *server =
+      esp_matter::data_model::provider::get_instance().registry().Get(
+          {endpoint_id, cluster_id});
+  if (server == nullptr)
+    return CHIP_ERROR_NOT_FOUND;
+
+  static_cast<chip::app::Clusters::BooleanStateCluster *>(server)
+      ->SetStateValue(value.val.b);
+  return CHIP_NO_ERROR;
+}
+
 void MatterComponent::register_binary_sensor_attribute(
     binary_sensor::BinarySensor *sensor, uint16_t endpoint_id,
     uint32_t cluster_id, uint32_t attribute_id,
-    BinarySensorValueConverter converter) {
+    BinarySensorValueConverter converter, SensorAttributeUpdater updater) {
   this->mappings_.push_back(new MatterBinarySensorAttributeMapping(
-      sensor, endpoint_id, cluster_id, attribute_id, converter));
+      sensor, endpoint_id, cluster_id, attribute_id, converter, updater));
 }
 
 MatterBinarySensorAttributeMapping::MatterBinarySensorAttributeMapping(
     binary_sensor::BinarySensor *sensor, uint16_t endpoint_id,
     uint32_t cluster_id, uint32_t attribute_id,
-    BinarySensorValueConverter converter)
+    BinarySensorValueConverter converter, SensorAttributeUpdater updater)
     : MatterEndpointMappingBase(endpoint_id), sensor_(sensor),
       cluster_id_(cluster_id), attribute_id_(attribute_id),
-      converter_(converter) {}
+      converter_(converter), updater_(updater) {}
 
 void MatterBinarySensorAttributeMapping::register_callbacks() {
   if (this->sensor_ == nullptr || this->converter_ == nullptr)
@@ -228,7 +243,7 @@ void MatterBinarySensorAttributeMapping::register_callbacks() {
 
 void MatterBinarySensorAttributeMapping::publish_(bool value) {
   update_attribute(this->endpoint_id_, this->cluster_id_, this->attribute_id_,
-                   this->converter_(value));
+                   this->converter_(value), this->updater_);
 }
 #endif // USE_BINARY_SENSOR
 

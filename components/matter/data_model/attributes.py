@@ -45,7 +45,9 @@ class SensorAttribute:
 # Arranged by Cluster, Attribute
 SENSOR_ATTRIBUTES = {
     "BooleanState": {  # 0x0045
-        "StateValue": SensorAttribute("boolean_state", "boolean_state", BinarySensor)
+        "StateValue": SensorAttribute(
+            "boolean_state", "boolean_state", BinarySensor, code_driven=True
+        )
     },
     "OccupancySensing": {  # 0x0406
         "Occupancy": SensorAttribute("occupancy", "occupancy", BinarySensor)

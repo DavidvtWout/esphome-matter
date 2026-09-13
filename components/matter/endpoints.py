@@ -169,12 +169,13 @@ class Endpoint:
             f"esphome::matter::sensor_converter::{sensor_attribute.converter}"
         )
         if sensor_attribute.sensor_type is BinarySensor:
-            register_binary_sensor_attribute = (
-                self._var.register_binary_sensor_attribute(
-                    sensor, self._endpoint_id, cluster.id, attribute.id, converter
+            args = [sensor, self._endpoint_id, cluster.id, attribute.id, converter]
+            if sensor_attribute.code_driven:
+                self.global_includes.add(cluster.chip_include)
+                args.append(
+                    cg.RawExpression("esphome::matter::update_boolean_state_attribute")
                 )
-            )
-            cg.add(register_binary_sensor_attribute)
+            cg.add(self._var.register_binary_sensor_attribute(*args))
         elif sensor_attribute.code_driven:
             self.global_includes.add(cluster.chip_include)
             cluster_type = cg.RawExpression(cluster.chip_fqn)
