@@ -30,36 +30,7 @@ public:
   void factory_reset();
 
   // Register Matter endpoints
-  void register_endpoint(uint16_t endpoint_id);
-
-  // Register Matter device types
-  template <typename ConfigT,
-            esp_err_t (*AddFn)(esp_matter::endpoint_t *, ConfigT *)>
-  void register_device_type(uint16_t endpoint_id, const char *device_type,
-                            const ConfigT &config = ConfigT{}) {
-    this->device_type_registrations_.push_back(
-        new MatterDeviceTypeRegistration<ConfigT, AddFn>(endpoint_id,
-                                                         device_type, config));
-  }
-
-  // Register additional Matter clusters
-  template <uint32_t ClusterId, typename ConfigT,
-            esp_matter::cluster_t *(*CreateFn)(esp_matter::endpoint_t *,
-                                               ConfigT *, uint8_t)>
-  void register_cluster(uint16_t endpoint_id, const char *cluster_name,
-                        const ConfigT &config = ConfigT{}) {
-    this->cluster_registrations_.push_back(
-        new MatterClusterRegistration<ClusterId, ConfigT, CreateFn>(
-            endpoint_id, cluster_name, config));
-  }
-
-  void register_feature(uint16_t endpoint_id, uint32_t cluster_id,
-                        const char *cluster_name, uint32_t feature_id,
-                        const char *feature_name, MatterFeatureAddFn add_fn) {
-    this->feature_registrations_.push_back(
-        new MatterFeatureRegistration(endpoint_id, cluster_id, cluster_name,
-                                      feature_id, feature_name, add_fn));
-  }
+  void register_endpoint(uint16_t endpoint_id, MatterEndpointBuildFn build_fn);
 
   // Register ESPHome entities
 #ifdef USE_LIGHT
@@ -107,10 +78,7 @@ private:
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
 
-  std::vector<uint16_t> endpoint_ids_;
-  std::vector<MatterDeviceTypeRegistrationBase *> device_type_registrations_;
-  std::vector<MatterClusterRegistrationBase *> cluster_registrations_;
-  std::vector<MatterFeatureRegistration *> feature_registrations_;
+  std::vector<MatterEndpointRegistration> endpoint_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;
 };
 

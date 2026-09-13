@@ -25,12 +25,13 @@ struct EspMatterNodeHeader {
 
 } // namespace
 
-void MatterComponent::register_endpoint(uint16_t endpoint_id) {
-  for (uint16_t registered_endpoint_id : this->endpoint_ids_) {
-    if (registered_endpoint_id == endpoint_id)
+void MatterComponent::register_endpoint(uint16_t endpoint_id,
+                                        MatterEndpointBuildFn build_fn) {
+  for (const auto &registration : this->endpoint_registrations_) {
+    if (registration.endpoint_id == endpoint_id)
       return;
   }
-  this->endpoint_ids_.push_back(endpoint_id);
+  this->endpoint_registrations_.push_back({endpoint_id, build_fn});
 }
 
 #ifdef USE_LIGHT
@@ -122,20 +123,26 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
 #endif // USE_LIGHT
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
-  if (!this->endpoint_ids_.empty()) {
+  if (!this->endpoint_registrations_.empty()) {
     // esp-matter only resumes endpoint IDs below its private
     // min_unused_endpoint_id. ESPHome creates all static endpoints before
     // esp_matter::start(), so advance the single node's allocator watermark
     // once before resuming them.
-    uint16_t max_endpoint_id = *std::max_element(this->endpoint_ids_.begin(),
-                                                 this->endpoint_ids_.end());
+    auto max_registration =
+        std::max_element(this->endpoint_registrations_.begin(),
+                         this->endpoint_registrations_.end(),
+                         [](const auto &lhs, const auto &rhs) {
+                           return lhs.endpoint_id < rhs.endpoint_id;
+                         });
+    uint16_t max_endpoint_id = max_registration->endpoint_id;
     auto *node_header = reinterpret_cast<EspMatterNodeHeader *>(node);
     if (node_header->min_unused_endpoint_id <= max_endpoint_id)
       node_header->min_unused_endpoint_id = max_endpoint_id + 1;
   }
 
   // Create endpoints
-  for (uint16_t endpoint_id : this->endpoint_ids_) {
+  for (const auto &registration : this->endpoint_registrations_) {
+    uint16_t endpoint_id = registration.endpoint_id;
     if (esp_matter::endpoint::get(node, endpoint_id) != nullptr) {
       ESP_LOGE(TAG, "Matter endpoint id %u is already in use", endpoint_id);
       return false;
@@ -159,65 +166,16 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       return false;
     }
 
-    ESP_LOGV(TAG, "Endpoint created: id=%u", endpoint_id);
-  }
-
-  // Add device types to endpoints
-  for (auto *device_type_registration : this->device_type_registrations_) {
-    if (!device_type_registration->add_clusters(node))
+    if (registration.build_fn == nullptr || !registration.build_fn(endpoint)) {
+      ESP_LOGE(TAG, "Failed to build endpoint %u", endpoint_id);
       return false;
-  }
+    }
 
-  // Add extra optional clusters
-  for (auto *cluster_registration : this->cluster_registrations_) {
-    if (!cluster_registration->add_cluster(node))
-      return false;
-  }
-
-  // Add features which were not needed in the cluster config during creation.
-  for (auto *feature_registration : this->feature_registrations_) {
-    if (!feature_registration->add_feature(node))
-      return false;
+    ESP_LOGD(TAG, "Endpoint created: id=%u", endpoint_id);
   }
 
   register_client_request_callbacks();
 
-  return true;
-}
-
-bool MatterFeatureRegistration::add_feature(esp_matter::node_t *node) {
-  esp_matter::endpoint_t *endpoint =
-      esp_matter::endpoint::get(node, this->endpoint_id_);
-  if (endpoint == nullptr) {
-    ESP_LOGE(TAG, "Cannot add %s feature for missing endpoint %u",
-             this->feature_name_, this->endpoint_id_);
-    return false;
-  }
-
-  esp_matter::cluster_t *cluster =
-      esp_matter::cluster::get(endpoint, this->cluster_id_);
-  // Device-level feature names apply only to clusters which are actually
-  // created for the endpoint.
-  if (cluster == nullptr)
-    return true;
-
-  esp_matter_attr_val_t feature_map;
-  if (esp_matter::attribute::get_val(this->endpoint_id_, this->cluster_id_,
-                                     0xFFFC, &feature_map) != ESP_OK) {
-    ESP_LOGE(TAG, "Failed to read FeatureMap for %s cluster on endpoint %u",
-             this->cluster_name_, this->endpoint_id_);
-    return false;
-  }
-  if (feature_map.val.u32 & this->feature_id_)
-    return true;
-
-  if (this->add_fn_(cluster) != ESP_OK) {
-    ESP_LOGE(TAG, "Failed to add %s feature to %s cluster on endpoint %u",
-             this->feature_name_, this->cluster_name_, this->endpoint_id_);
-    return false;
-  }
-  ESP_LOGD(TAG, "Added %s feature to %s cluster on endpoint %u",
-           this->feature_name_, this->cluster_name_, this->endpoint_id_);
   return true;
 }
 
