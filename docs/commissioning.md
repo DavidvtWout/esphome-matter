@@ -1,4 +1,4 @@
-Because ESPHome already provides Wi-Fi or matter credentials, commissioning works in a different way than you're probably used to with other matter devices.
+Because ESPHome already provides Wi-Fi or Thread credentials, commissioning works differently from most Matter devices.
 
 After flashing the device, a commission code is generated and shown (SetupQRCode). Copy this code or click the link and scan the QR-code.
 
@@ -33,7 +33,7 @@ Accepts the dev DAC without any problems. But python-matter-server is discontinu
 
 In the IKEA Home smart app, add the device by opening the QR url and scanning the code.
 
-The IKEA system doesn't like it when a device has multiple endpoints. With the example config where a button, temperature sensor and light are configured, only the temperature sensor is shown in the app. If only the light endpoint is configured it is detected correctly as a light.
+The IKEA system doesn't like it when a device has multiple endpoints. With the example config where a button, temperature sensor and light are configured, only the temperature sensor is shown in the app. If only the light endpoint is configured, it is detected correctly as a light.
 
 # Persistence
 
@@ -43,7 +43,7 @@ The fabric data is also stored on flash (nvs partition) and also survives ota up
 
 # Multiple fabrics
 
-Up to 5 fabrics are supported by default but if needed this can be increased with the `CONFIG_MAX_FABRICS` sdkconfig option:
+Up to 5 fabrics are supported by default, but if needed, this can be increased with the `CONFIG_MAX_FABRICS` sdkconfig option:
 
 ```yaml
 esp32:

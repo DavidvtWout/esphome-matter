@@ -2,9 +2,9 @@ Matter devices are controlled through clusters. A cluster groups related behavio
 
 In esphome-matter, these actions work like a Matter switch or remote control. You first bind one of the ESPHome Matter endpoints to another Matter device, such as a light, in your Matter controller. After that, an ESPHome automation can call actions like `matter.on_off.toggle` or `matter.level_control.move_with_on_off`, and the command is sent to the device that was bound to that endpoint.
 
-Bound actions require the endpoint to include the Binding cluster. In esphome-matter, endpoints with `on_off_light_switch` or `dimmer_switch` get it by default. You can override that per endpoint with `enable_binding: false`, or add it to another endpoint with `enable_binding: true`.
+Bound actions require the endpoint to include the Binding cluster. Device types such as `on_off_light_switch` and `dimmer_switch` include it as required by Matter.
 
-First define an endpoint that supports binding and give it an `id`:
+First define a device type that supports binding and give it an `id`:
 
 ```yaml
 matter:
@@ -21,7 +21,7 @@ binary_sensor:
 
 After the endpoint has been bound in your Matter controller, automations can call the command actions below using that endpoint id.
 
-Field values use the raw Matter units for now. Units like percentage or seconds will be added later. Required fields are shown uncommented. Optional fields are commented out and show the default value used when you omit them.
+Command fields accept raw Matter integer values. Common LevelControl and timing fields also accept explicit units such as percentages, `%/s`, and seconds. Required fields are shown uncommented. Optional fields are commented out and show the default value used when you omit them.
 
 ### Units
 
@@ -61,9 +61,9 @@ Take for example the `days_mask`. Each day is represented by a bit. `sunday:1`, 
 # A single mask can be applied directly;
 days_mask: monday
 # The following command args are all equivalent;
-days_mask: [ "saterday", "sunday" ]
+days_mask: ["saturday", "sunday"]
 days_mask:
-  - saterday
+  - saturday
   - sunday
 days_mask: 65
 ```
@@ -117,7 +117,7 @@ matter.on_off.on_with_timed_off:
 
 ### LevelControl cluster
 
-LevelControl commands are used for dimming. Levels are raw Matter brightness levels, normally `0` to `254`.
+LevelControl commands are used for dimming. Levels can be percentages or raw Matter brightness levels, normally `0` to `254`.
 
 The commands with `_with_on_off` also affect the OnOff state, which is usually what you want. For example, moving to a non-zero level may turn the light on, and moving to level `0` may turn it off. The commands without `_with_on_off` only change the level and do not directly change the OnOff state.
 

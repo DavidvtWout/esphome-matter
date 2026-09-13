@@ -10,22 +10,15 @@ ESPHome external component adding Matter 1.6 support.
 > matter-over-wifi and matter-over-thread are now working. It's possible to commission a
 > device to a matter controller, but many features are still missing.
 >
-> Treat this component as an experimental preview. It is usable for testing, but the public
-> YAML interface is not stable yet: action, cluster, attribute, and endpoint names may still
-> change and break existing configurations.
+> It is usable for testing, but the public YAML interface is not stable yet. The config schema
+> may still change and break existing configurations.
 
-That being said, esphome-matter is usable now so give it a try!
-
-# Contributing
-
-Help is very welcome! There is a [discussion page](https://github.com/DavidvtWout/esphome-matter/discussions/47) with issues that need to be resolved before esphome-matter is considered "releasable".
-
-Even if you have no experience with any of these: just building the project and confirming (or reporting) whether it works on your setup is genuinely useful. [Open an issue](https://github.com/DavidvtWout/esphome-matter/issues) if something doesn't work or create or join a [discussion](https://github.com/DavidvtWout/esphome-matter/discussions) if you have feature requests or ideas.
+That being said, esphome-matter is usable now, so give it a try!
 
 # Supported Hardware
 
 The component only supports `ESP32` targets built with the **ESP-IDF** framework; the Arduino framework is not
-supported. It further requires the `platformio` toolchain (`esp32.toolchain: platformio`).
+supported.
 
 Connectivity depends on which ESPHome networking components are configured:
 
@@ -33,11 +26,11 @@ Connectivity depends on which ESPHome networking components are configured:
   on the network.
 - **Matter-over-Thread**: Requires the `openthread` component and ESPHome **2026.6.0** or newer.
 - **Matter-over-Ethernet**: Isn't supported yet and isn't actively being worked on. Feel free to implement it ;)
-- **BLE commissioning**: Currently broken but this is something that I want to work on. The idea is that esphome-matter falls back to BLE commissioning (the default for most matter devices) when no `wifi`, `openthread`, or `ethernet` component is configured.
+- **BLE commissioning**: Currently broken, but this is something that I want to work on. The idea is that esphome-matter falls back to BLE commissioning (the default for most matter devices) when no `wifi`, `openthread`, or `ethernet` component is configured.
 
-Binding (for example a button to a light) is working for matter-over-thread. For matter-over-wifi it also works but might be less stable because the CASE session is sometimes dropped.
+Binding (for example, a button to a light) is working for matter-over-thread. For matter-over-wifi it also works but might be less stable because the CASE session is sometimes dropped.
 
-So far, `ESP32-C3`, `ESP32-C5` `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been tested and confirmed to work!
+So far, `ESP32-C3`, `ESP32-C5`, `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been tested and confirmed to work!
 
 See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for bugs and features that are being worked on.
 
@@ -81,7 +74,7 @@ After flashing, the device prints a setup code (`SetupQRCode`) to the logs on ev
 
 Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device. Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
 
-Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers should have the option to share the device. This generates a temporary commissioning code and re-opens the commissioning window. If you loose access to the Matter controller you can do a Matter factory reset (see [Example config](#example-config)).
+Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers should have the option to share the device. This generates a temporary commissioning code and re-opens the commissioning window. If you lose access to the Matter controller, you can do a Matter factory reset (see [Example config](#example-config)).
 
 ### Ecosystem specific settings
 
@@ -214,17 +207,9 @@ More information about endpoints and a full list of supported device types can b
 
 # Sensors
 
-Many ESPHome sensors can be exposed by Matter. To expose a sensor, first create a device type that supports it and then map sensor ids to it.
+Matter can expose many ESPHome sensor values. To expose a sensor, first create a device type that supports it and then map sensor ids to it. The supported sensor device types include `temperature_sensor`, `humidity_sensor`, `light_sensor`, `pressure_sensor`, `flow_sensor`, `contact_sensor`, `occupancy_sensor`, and `air_quality_sensor`. See [docs/device-types.md](docs/device-types.md) for a more complete overview of how to configure these sensors.
 
-```yaml
-matter:
-  endpoints:
-    1:
-      temperature_sensor: # temperature_sensor is the device type
-        temperature: sensor_id #
-    3:
-      air_quality_sensor:
-```
+The [all-sensors example](examples/all-sensors.yaml) also shows how to expose all supported sensors.
 
 # Actions
 
@@ -250,7 +235,7 @@ matter.on_off.on_with_timed_off:
 
 ### LevelControl cluster
 
-LevelControl commands are used for dimming. Levels are raw Matter brightness levels, normally `0` to `254`.
+LevelControl commands are used for dimming. YAML values can be percentages or raw Matter brightness levels, normally `0` to `254`.
 
 The following commands also have a version without `_with_on_off`. These commands don't turn on or off the light.
 
