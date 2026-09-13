@@ -22,6 +22,31 @@ _INTEGER_RANGES = {
     "bitmap64": (0, 0xFFFFFFFFFFFFFFFF),
 }
 
+_ESP_MATTER_JSON_TYPES = {
+    "int8s": "I8",
+    "int16s": "I16",
+    "int32s": "I32",
+    "int64s": "I64",
+    "int8u": "U8",
+    "int16u": "U16",
+    "int32u": "U32",
+    "int64u": "U64",
+    "enum8": "U8",
+    "enum16": "U16",
+    "bitmap8": "U8",
+    "bitmap16": "U16",
+    "bitmap32": "U32",
+    "bitmap64": "U64",
+    "boolean": "BOOL",
+    "single": "FP",
+    "double": "DFP",
+    "char_string": "STR",
+    "long_char_string": "STR",
+    "octet_string": "BYT",
+    "long_octet_string": "BYT",
+    "struct": "OBJ",
+}
+
 
 @dataclass(frozen=True, slots=True)
 class CommandArg:
@@ -66,7 +91,7 @@ class CommandArg:
     @property
     def data_key(self) -> str:
         """Key for esp_matter JSON data."""
-        return f"{self.id}:{self.type}"
+        return f"{self.id}:{_ESP_MATTER_JSON_TYPES[self.type]}"
 
     @property
     def schema_key(self) -> str:
