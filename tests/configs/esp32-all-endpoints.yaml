@@ -1,5 +1,13 @@
 esphome:
   name: matter-ci-all-endpoints
+  on_boot:
+    priority: -100
+    then:
+      - matter.set_attribute:
+          endpoint: 4
+          cluster: on_off
+          attribute: on_off
+          value: true
 
 esp32:
   toolchain: platformio

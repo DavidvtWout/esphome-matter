@@ -4,6 +4,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import automation
 from esphome.const import (
+    CONF_ATTRIBUTE,
     CONF_COMMAND,
     CONF_ID,
     CONF_VALUE,
@@ -12,13 +13,15 @@ from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model.clusters import CLUSTERS_BY_NAME
+from .data_model.attributes import attribute_value_type
+from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME
 from .data_model.commands import COMMAND_ARG_TYPES, COMMANDS, Command
 from .types import (
     MatterComponent,
     MatterEndpointRef,
     MatterFactoryResetAction,
     MatterSendCommandAction,
+    MatterSetAttributeAction,
 )
 from .util import snake_case
 
@@ -32,6 +35,65 @@ from .util import snake_case
 async def matter_factory_reset_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
+    return var
+
+
+def _find_attribute(config):
+    cluster_key = config[CONF_CLUSTER]
+    attribute_key = config[CONF_ATTRIBUTE]
+    for cluster in CLUSTERS:
+        if snake_case(cluster.name) != cluster_key:
+            continue
+        for attribute in cluster.server_attributes:
+            if (
+                attribute.name is not None
+                and snake_case(attribute.name) == attribute_key
+            ):
+                return cluster, attribute
+        break
+    raise cv.Invalid(f"Unknown Matter attribute {cluster_key}.{attribute_key}")
+
+
+def _validate_set_attribute(config):
+    _, attribute = _find_attribute(config)
+    if attribute_value_type(attribute) is None:
+        raise cv.Invalid(
+            f"Matter attribute {config[CONF_CLUSTER]}.{config[CONF_ATTRIBUTE]} "
+            "does not have a supported scalar type"
+        )
+    return config
+
+
+@automation.register_action(
+    "matter.set_attribute",
+    MatterSetAttributeAction,
+    cv.All(
+        cv.Schema(
+            {
+                cv.Required(CONF_ENDPOINT): cv.Any(
+                    cv.use_id(MatterEndpointRef), cv.uint16_t
+                ),
+                cv.Required(CONF_CLUSTER): cv.string_strict,
+                cv.Required(CONF_ATTRIBUTE): cv.string_strict,
+                cv.Required(CONF_VALUE): cv.templatable(lambda value: value),
+            }
+        ),
+        _validate_set_attribute,
+    ),
+    synchronous=True,
+)
+async def matter_set_attribute_to_code(
+    config: ConfigType, action_id: ID, template_arg, args
+):
+    cluster, attribute = _find_attribute(config)
+    value_type = attribute_value_type(attribute)
+    action_template_arg = cg.TemplateArguments(value_type, *template_arg)
+    var = cg.new_Pvariable(action_id, action_template_arg)
+    cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT])))
+    cg.add(var.set_cluster_id(cluster.id))
+    cg.add(var.set_attribute_id(attribute.id))
+    value = await cg.templatable(config[CONF_VALUE], args, value_type)
+    cg.add(var.set_value(value))
     return var
 
 

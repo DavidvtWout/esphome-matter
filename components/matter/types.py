@@ -9,4 +9,7 @@ MatterFactoryResetAction = matter_ns.class_(
 )
 MatterEndpointRef = matter_ns.class_("MatterEndpointRef")
 MatterAttributeTrigger = matter_ns.class_("MatterAttributeTrigger", automation.Trigger)
+MatterSetAttributeAction = matter_ns.class_(
+    "MatterSetAttributeAction", automation.Action
+)
 MatterSendCommandAction = matter_ns.class_("MatterSendCommandAction", automation.Action)

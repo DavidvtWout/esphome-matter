@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+import esphome.codegen as cg
 from esphome.components.binary_sensor import BinarySensor
 from esphome.components.sensor import Sensor
 from esphome.cpp_generator import MockObjClass
@@ -28,6 +29,55 @@ class Attribute:
             writable=data["writable"],
             optional=data["optional"],
         )
+
+
+def attribute_value_type(attribute: Attribute):
+    type_name = attribute.type
+    if type_name == "boolean":
+        return cg.bool_
+    if type_name == "single":
+        return cg.float_
+    if type_name in ("char_string", "long_char_string"):
+        return cg.std_string
+    if type_name in (
+        "int8s",
+        "int16s",
+        "int32s",
+        "int64s",
+        "temperature",
+        "amperage_ma",
+        "energy_mwh",
+        "power_mva",
+        "power_mvar",
+        "power_mw",
+        "voltage_mv",
+    ):
+        return cg.int64
+    if (
+        type_name
+        in (
+            "int8u",
+            "int16u",
+            "int24u",
+            "int32u",
+            "int64u",
+            "enum8",
+            "enum16",
+            "bitmap16",
+            "elapsed_s",
+            "epoch_s",
+            "epoch_us",
+            "fabric_idx",
+            "node_id",
+            "percent",
+            "percent100ths",
+            "vendor_id",
+        )
+        or type_name.endswith("Enum")
+        or type_name.endswith("Bitmap")
+    ):
+        return cg.uint64
+    return None
 
 
 @dataclass(frozen=True, slots=True)

@@ -13,7 +13,7 @@ from esphome.core import ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model.attributes import SensorAttribute
+from .data_model.attributes import SensorAttribute, attribute_value_type
 from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME, Cluster
 from .data_model.device_types import (
     DEVICE_TYPES,
@@ -27,50 +27,6 @@ from .util import snake_case
 _LOGGER = logging.getLogger(__name__)
 
 
-def _attribute_value_type(attribute):
-    type_name = attribute.type
-    if type_name == "boolean":
-        return cg.bool_
-    if type_name == "single":
-        return cg.float_
-    if type_name in ("char_string", "long_char_string"):
-        return cg.std_string
-    if type_name in ("int8s", "int16s", "int32s", "int64s"):
-        return cg.int64
-    if (
-        type_name
-        in (
-            "int8u",
-            "int16u",
-            "int24u",
-            "int32u",
-            "int64u",
-            "enum8",
-            "enum16",
-            "bitmap16",
-            "elapsed_s",
-            "epoch_s",
-            "epoch_us",
-            "fabric_idx",
-            "node_id",
-            "percent",
-            "percent100ths",
-            "temperature",
-            "vendor_id",
-            "amperage_ma",
-            "energy_mwh",
-            "power_mva",
-            "power_mvar",
-            "power_mw",
-            "voltage_mv",
-        )
-        or type_name.endswith("Enum")
-        or type_name.endswith("Bitmap")
-    ):
-        return cg.uint64
-    return None
-
-
 def _on_attribute_schema():
     options = {}
     for cluster in CLUSTERS:
@@ -78,7 +34,7 @@ def _on_attribute_schema():
         for attribute in cluster.server_attributes:
             if attribute.name is None:
                 continue
-            value_type = _attribute_value_type(attribute)
+            value_type = attribute_value_type(attribute)
             trigger_schema = {}
             if value_type is not None:
                 trigger_schema[cv.GenerateID(CONF_TRIGGER_ID)] = cv.declare_id(
@@ -182,7 +138,7 @@ class Endpoint:
             for attribute in cluster.server_attributes:
                 if attribute.name is None:
                     continue
-                value_type = _attribute_value_type(attribute)
+                value_type = attribute_value_type(attribute)
                 if value_type is None:
                     continue
                 attribute_key = snake_case(attribute.name)

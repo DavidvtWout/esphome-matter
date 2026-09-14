@@ -23,6 +23,17 @@ bool convert_attribute_value(const esp_matter_attr_val_t &value, uint64_t &out);
 bool convert_attribute_value(const esp_matter_attr_val_t &value,
                              std::string &out);
 
+void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
+                         uint32_t attribute_id, bool value);
+void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
+                         uint32_t attribute_id, float value);
+void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
+                         uint32_t attribute_id, int64_t value);
+void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
+                         uint32_t attribute_id, uint64_t value);
+void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
+                         uint32_t attribute_id, const std::string &value);
+
 class MatterAttributeTriggerBase {
 public:
   MatterAttributeTriggerBase(uint16_t endpoint_id, uint32_t cluster_id,
