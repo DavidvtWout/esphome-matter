@@ -4,9 +4,7 @@ esphome:
     priority: -100
     then:
       - matter.set_attribute:
-          endpoint: 4
-          cluster: on_off
-          attribute: on_off
+          path: 4.on_off.on_off
           value: true
 
 esp32:

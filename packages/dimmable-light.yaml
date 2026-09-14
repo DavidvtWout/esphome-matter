@@ -5,14 +5,10 @@ esphome:
     priority: -100
     then:
       - matter.set_attribute:
-          endpoint: ${endpoint_id}
-          cluster: on_off
-          attribute: on_off
+          path: ${endpoint_id}.on_off.on_off
           value: !lambda return id(${light_id}).remote_values.is_on();
       - matter.set_attribute:
-          endpoint: ${endpoint_id}
-          cluster: level_control
-          attribute: current_level
+          path: ${endpoint_id}.level_control.current_level
           value: !lambda |-
             return static_cast<uint64_t>(std::lroundf(
                 id(${light_id}).remote_values.get_brightness() * 253.0f)) + 1;
@@ -49,14 +45,10 @@ light:
     on_state:
       then:
         - matter.set_attribute:
-            endpoint: ${endpoint_id}
-            cluster: on_off
-            attribute: on_off
+            path: ${endpoint_id}.on_off.on_off
             value: !lambda return id(${light_id}).remote_values.is_on();
         - matter.set_attribute:
-            endpoint: ${endpoint_id}
-            cluster: level_control
-            attribute: current_level
+            path: ${endpoint_id}.level_control.current_level
             value: !lambda |-
               return static_cast<uint64_t>(std::lroundf(
                   id(${light_id}).remote_values.get_brightness() * 253.0f)) + 1;

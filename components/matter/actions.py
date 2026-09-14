@@ -7,6 +7,7 @@ from esphome.const import (
     CONF_ATTRIBUTE,
     CONF_COMMAND,
     CONF_ID,
+    CONF_PATH,
     CONF_VALUE,
 )
 from esphome.core import CORE, ID
@@ -64,20 +65,40 @@ def _validate_set_attribute(config):
     return config
 
 
+def _normalize_set_attribute(config):
+    if CONF_PATH in config:
+        parts = config.pop(CONF_PATH).split(".")
+        if len(parts) != 3 or not all(parts):
+            raise cv.Invalid(
+                "Matter set_attribute path must use the form endpoint.cluster.attribute"
+            )
+        endpoint, config[CONF_CLUSTER], config[CONF_ATTRIBUTE] = parts
+        try:
+            config[CONF_ENDPOINT] = cv.uint16_t(endpoint)
+        except cv.Invalid:
+            config[CONF_ENDPOINT] = cv.use_id(MatterEndpointRef)(endpoint)
+    return config
+
+
 @automation.register_action(
     "matter.set_attribute",
     MatterSetAttributeAction,
     cv.All(
         cv.Schema(
             {
-                cv.Required(CONF_ENDPOINT): cv.Any(
+                cv.Inclusive(CONF_ENDPOINT, "explicit_attribute_path"): cv.Any(
                     cv.use_id(MatterEndpointRef), cv.uint16_t
                 ),
-                cv.Required(CONF_CLUSTER): cv.string_strict,
-                cv.Required(CONF_ATTRIBUTE): cv.string_strict,
+                cv.Inclusive(CONF_CLUSTER, "explicit_attribute_path"): cv.string_strict,
+                cv.Inclusive(
+                    CONF_ATTRIBUTE, "explicit_attribute_path"
+                ): cv.string_strict,
+                cv.Optional(CONF_PATH): cv.string_strict,
                 cv.Required(CONF_VALUE): cv.templatable(lambda value: value),
             }
         ),
+        cv.has_exactly_one_key(CONF_PATH, CONF_ENDPOINT),
+        _normalize_set_attribute,
         _validate_set_attribute,
     ),
     synchronous=True,
