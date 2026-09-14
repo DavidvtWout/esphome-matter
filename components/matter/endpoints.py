@@ -72,7 +72,7 @@ def _attribute_value_type(attribute):
 
 
 def _on_attribute_schema():
-    clusters = {}
+    options = {}
     for cluster in CLUSTERS:
         attributes = {}
         for attribute in cluster.server_attributes:
@@ -84,12 +84,33 @@ def _on_attribute_schema():
                 trigger_schema[cv.GenerateID(CONF_TRIGGER_ID)] = cv.declare_id(
                     MatterAttributeTrigger.template(value_type)
                 )
-            attributes[cv.Optional(snake_case(attribute.name))] = (
-                automation.validate_automation(trigger_schema)
+            attribute_key = snake_case(attribute.name)
+            automation_schema = automation.validate_automation(trigger_schema)
+            attributes[cv.Optional(attribute_key)] = automation_schema
+            options[cv.Optional(f"{snake_case(cluster.name)}.{attribute_key}")] = (
+                automation_schema
             )
         if attributes:
-            clusters[cv.Optional(snake_case(cluster.name))] = cv.Schema(attributes)
-    return cv.Schema(clusters)
+            options[cv.Optional(snake_case(cluster.name))] = cv.Schema(attributes)
+    return cv.Schema(options)
+
+
+def _validate_on_attribute_forms(config):
+    configured = config.get(CONF_ON_ATTRIBUTE, {})
+    for cluster in CLUSTERS:
+        cluster_key = snake_case(cluster.name)
+        nested = configured.get(cluster_key, {})
+        for attribute in cluster.server_attributes:
+            if attribute.name is None:
+                continue
+            attribute_key = snake_case(attribute.name)
+            short_key = f"{cluster_key}.{attribute_key}"
+            if attribute_key in nested and short_key in configured:
+                raise cv.Invalid(
+                    f"Matter attribute {short_key} cannot be configured in both "
+                    "nested and short form"
+                )
+    return config
 
 
 ON_ATTRIBUTE_SCHEMA = _on_attribute_schema()
@@ -106,6 +127,7 @@ ENDPOINT_SCHEMA = cv.All(
         }
         | {device_type.schema_key: device_type.schema() for device_type in DEVICE_TYPES}
     ),
+    _validate_on_attribute_forms,
 )
 
 
@@ -163,7 +185,14 @@ class Endpoint:
                 value_type = _attribute_value_type(attribute)
                 if value_type is None:
                     continue
-                for conf in cluster_config.get(snake_case(attribute.name), []):
+                attribute_key = snake_case(attribute.name)
+                configurations = [
+                    *cluster_config.get(attribute_key, []),
+                    *configured_clusters.get(
+                        f"{snake_case(cluster.name)}.{attribute_key}", []
+                    ),
+                ]
+                for conf in configurations:
                     trigger = cg.new_Pvariable(
                         conf[CONF_TRIGGER_ID],
                         self._var,

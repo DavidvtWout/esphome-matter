@@ -31,11 +31,6 @@ matter:
     4:
       dimmable_light:
         light_id: dimmable_status_light
-      on_attribute:
-        level_control:
-          current_level:
-            then:
-              - logger.log: Matter level changed
     100:
       temperature_sensor:
         temperature: internal_temp
