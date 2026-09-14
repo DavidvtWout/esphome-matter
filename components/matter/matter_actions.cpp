@@ -10,6 +10,7 @@
 #include <app/CommandPathParams.h>
 #include <app/DeviceProxy.h>
 #include <app/clusters/bindings/binding-table.h>
+#include <credentials/GroupDataProvider.h>
 #include <deque>
 #include <inttypes.h>
 #include <vector>
@@ -151,6 +152,96 @@ static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
       chip::NullOptional);
 }
 
+// Sending to a group needs two things in this device's group data provider, and
+// a binding entry supplies neither:
+//   * a group key: a GroupKeySet plus the GroupKeyMap entry that maps the group
+//     to it. Only the controller can write those, over the GroupKeyManagement
+//     cluster.
+//   * an entry in the group table, which is what CHIP uses to work out the
+//     multicast address to send to. A device with a Groups server cluster gets
+//     one when the controller sends Groups::AddGroup, but the switch device
+//     types carry Groups as a *client* cluster only, so there is nothing for
+//     the controller to address and the entry has to be created here.
+// CHIP looks both up in SessionManager::PrepareMessage and esp-matter reports
+// either one missing as a bare ESP_FAIL, so this runs after a failed send: it
+// names the half that is the controller's to provide and fills in the half that
+// is ours.
+//
+// Returns true if it changed something, meaning the send is worth retrying.
+// Must be called with the CHIP stack lock held.
+static bool repair_group_state_(uint8_t fabric_index, chip::GroupId group_id) {
+  auto *groups = chip::Credentials::GetGroupDataProvider();
+  if (groups == nullptr) {
+    return false;
+  }
+
+  // GetKeyContext hands out a reference that has to be given back.
+  chip::Crypto::SymmetricKeyContext *key =
+      groups->GetKeyContext(fabric_index, group_id);
+  if (key == nullptr) {
+    ESP_LOGW(TAG,
+             "No group key for group=0x%04x on fabric %u. The controller has to "
+             "write a GroupKeySet (GroupKeyManagement KeySetWrite) and a "
+             "GroupKeyMap entry for the group to this device before it can send "
+             "to the group.",
+             static_cast<unsigned>(group_id),
+             static_cast<unsigned>(fabric_index));
+    return false;
+  }
+  key->Release();
+
+  chip::Credentials::GroupDataProvider::GroupInfo info;
+  if (groups->GetGroupInfo(fabric_index, group_id, info) == CHIP_NO_ERROR) {
+    // Both halves are in place, so the send failed on something else. esp-matter
+    // logs the underlying CHIP error itself, under its own tag.
+    return false;
+  }
+
+  // The entry Groups::AddGroup would have created, minus the endpoint mapping:
+  // no endpoint of this device joins the group, so group commands that arrive
+  // here are dispatched to nothing. (Server::RejoinExistingMulticastGroups
+  // iterates the group table, so the device does start listening on the group's
+  // multicast address after the next reconnect; it just ignores what arrives.)
+  // The default flags select the per-group multicast address, which is what
+  // AddGroup leaves the receiving devices listening on too.
+  CHIP_ERROR err = groups->SetGroupInfo(
+      fabric_index,
+      chip::Credentials::GroupDataProvider::GroupInfo(group_id, nullptr));
+  if (err != CHIP_NO_ERROR) {
+    ESP_LOGW(TAG,
+             "Failed to add group=0x%04x to the group table: %" CHIP_ERROR_FORMAT,
+             static_cast<unsigned>(group_id), err.Format());
+    return false;
+  }
+  ESP_LOGI(TAG, "Added group=0x%04x on fabric %u to the group table",
+           static_cast<unsigned>(group_id),
+           static_cast<unsigned>(fabric_index));
+  return true;
+}
+
+// Sends one command to one group. Must be called with the CHIP stack lock held.
+static void send_group_command_(uint8_t fabric_index,
+                                const chip::app::CommandPathParams &path,
+                                const char *data) {
+  esp_err_t err = esp_matter::client::interaction::invoke::send_group_request(
+      fabric_index, path, data);
+  if (err != ESP_OK && repair_group_state_(fabric_index, path.mGroupId)) {
+    err = esp_matter::client::interaction::invoke::send_group_request(
+        fabric_index, path, data);
+  }
+  if (err != ESP_OK) {
+    ESP_LOGW(TAG, "Group request for group=0x%04x failed: %s",
+             static_cast<unsigned>(path.mGroupId), esp_err_to_name(err));
+    return;
+  }
+  ESP_LOGD(TAG,
+           "Sent group command: group=0x%04x cluster=0x%04" PRIx32
+           " command=0x%04" PRIx32 " data=%s",
+           static_cast<unsigned>(path.mGroupId),
+           static_cast<uint32_t>(path.mClusterId),
+           static_cast<uint32_t>(path.mCommandId), data);
+}
+
 static void
 client_group_invoke_cb(uint8_t fabric_index,
                        esp_matter::client::request_handle_t *req_handle,
@@ -167,13 +258,7 @@ client_group_invoke_cb(uint8_t fabric_index,
           ? static_cast<const char *>(req_handle->request_data)
           : "{}";
   ESP_LOGV(TAG, "Sending group request");
-  esp_err_t err = esp_matter::client::interaction::invoke::send_group_request(
-      fabric_index, req_handle->command_path, cmd_data);
-  if (err != ESP_OK) {
-    ESP_LOGW(TAG, "Group request for group=0x%04x failed: %s",
-             static_cast<unsigned>(req_handle->command_path.mGroupId),
-             esp_err_to_name(err));
-  }
+  send_group_command_(fabric_index, req_handle->command_path, cmd_data);
 }
 
 void register_client_request_callbacks() {
@@ -213,19 +298,7 @@ static void send_to_group_bindings_(uint16_t endpoint_id,
         0, entry.groupId, cluster, command,
         chip::BitFlags<chip::app::CommandPathFlags>(
             chip::app::CommandPathFlags::kGroupIdValid));
-    esp_err_t err = esp_matter::client::interaction::invoke::send_group_request(
-        entry.fabricIndex, path, data);
-    if (err != ESP_OK) {
-      ESP_LOGW(TAG, "Group request for group=0x%04x failed: %s",
-               static_cast<unsigned>(entry.groupId), esp_err_to_name(err));
-    } else {
-      ESP_LOGD(TAG,
-               "Sent group command: group=0x%04x cluster=0x%04" PRIx32
-               " command=0x%04" PRIx32 " data=%s",
-               static_cast<unsigned>(entry.groupId),
-               static_cast<uint32_t>(cluster), static_cast<uint32_t>(command),
-               data);
-    }
+    send_group_command_(entry.fabricIndex, path, data);
   }
 }
 

@@ -216,3 +216,26 @@ order and every one of them is sent, because dropping or reordering one would le
 out of sync. Note that this makes `toggle` a poor fit for group bindings for the same reason: a
 single lost multicast leaves that device inverted for good. Track the state in ESPHome and send
 `on` or `off` instead.
+
+### What a group binding needs on the device
+
+A group binding is only the destination; the device also needs the group's security material
+before it can send anything to it. The controller has to write two things to *this* device
+(not just to the lights in the group):
+
+- a group key set, with `GroupKeyManagement`'s `KeySetWrite` command, and
+- a `GroupKeyMap` entry mapping the group id to that key set.
+
+Without them every group command fails with `Group request for group=0x00xx failed: ESP_FAIL`,
+and the log then says `No group key for group=...`. With chip-tool, `tests TestGroupDemoConfig
+--nodeId <node>` writes both, and it has to be run against the esphome-matter device as well as
+against the devices being controlled. Its last step adds the node to the group with
+`Groups::AddGroup`, which fails on a device that has no `Groups` server cluster (see below); the
+keys it wrote before that are still in place, so the binding works anyway.
+
+The group also needs an entry in the device's group table, which is normally created by
+`Groups::AddGroup`. The switch device types have `Groups` as a client cluster only, so there is no
+`Groups` server for a controller to address; esphome-matter therefore creates that entry itself
+the first time a group command is sent. That entry lists the group but none of this device's
+endpoints, so nothing here acts on commands sent to the group: the device sends to the group
+without being controlled by it.
