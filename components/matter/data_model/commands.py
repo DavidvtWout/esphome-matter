@@ -303,3 +303,27 @@ COMMAND_ARG_TYPES = {
         "StepColorTemperature": {"TransitionTime": _seconds(multiplier=10)},
     },
 }
+
+
+"""
+Whether a command is "absolute" is also missing from the parsed data model. An absolute command
+fully determines the state of the (single) axis its cluster controls, so a newer one makes an
+older one that has not been sent yet redundant. The outbound command queue uses this to drop
+superseded commands instead of sending both (see matter_actions.cpp). Relative commands (Toggle,
+Move, Step, ...) must never be dropped: their effect depends on the state they are applied to, so
+losing or reordering one desynchronises the device.
+
+Only OnOff and LevelControl are marked. ColorControl is deliberately left relative even for its
+MoveTo* commands: hue, saturation, xy and colour temperature are orthogonal axes, so a newer
+MoveToHue does not supersede a pending MoveToColorTemperature.
+"""
+
+# Arranged by Cluster, Command
+ABSOLUTE_COMMANDS: dict[str, frozenset[str]] = {
+    "OnOff": frozenset({"Off", "On"}),  # 0x0006
+    "LevelControl": frozenset({"MoveToLevel", "MoveToLevelWithOnOff"}),  # 0x0008
+}
+
+
+def is_absolute(command: Command) -> bool:
+    return command.name in ABSOLUTE_COMMANDS.get(command.cluster_name, frozenset())
