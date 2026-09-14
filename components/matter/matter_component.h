@@ -5,6 +5,7 @@
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
 
+#include "matter_attributes.h"
 #include "matter_endpoints.h"
 #include "matter_sensors.h"
 
@@ -31,6 +32,12 @@ public:
 
   // Register Matter endpoints
   void register_endpoint(uint16_t endpoint_id, MatterEndpointBuildFn build_fn);
+
+  // Register attribute update actions
+  void register_attribute_trigger(MatterAttributeTriggerBase *trigger) {
+    this->attribute_triggers_.push_back(trigger);
+  }
+  std::vector<MatterAttributeTriggerBase *> attribute_triggers_;
 
   // Register ESPHome entities
 #ifdef USE_LIGHT

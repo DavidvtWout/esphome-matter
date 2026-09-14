@@ -77,14 +77,6 @@ protected:
 };
 #endif // USE_LIGHT
 
-// Common esp_matter attribute update callback, passed to node::create().
-// Routes server-cluster changes (e.g. light commands) to the ESPHome entities.
-esp_err_t
-endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
-                             uint16_t endpoint_id, uint32_t cluster_id,
-                             uint32_t attribute_id, esp_matter_attr_val_t *val,
-                             void *priv_data);
-
 } // namespace esphome::matter
 
 #endif // USE_MATTER

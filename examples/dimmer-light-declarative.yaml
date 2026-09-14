@@ -1,0 +1,32 @@
+esphome:
+  name: matter-dimmer-light
+
+esp32:
+  toolchain: platformio
+  variant: # Set to your variant
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: github://DavidvtWout/esphome-matter@main
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+openthread:
+  tlv: !secret thread_tlv
+
+matter:
+  endpoints:
+    1:
+      dimmer_light:
+      on_attribute:
+        on_off.on_off:
+          light.control: { id: dimmable_light, state: !lambda return value; }
+        level_control.current_level:
+          light.control:
+            { id: dimmable_light, brightness: !lambda return value / 254.0f; }

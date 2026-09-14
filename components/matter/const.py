@@ -6,6 +6,7 @@ CONF_ENDPOINTS = "endpoints"
 # device_types.json and don't have a CONF key configured here.
 CONF_EXTRA_CLUSTERS = "extra_clusters"
 CONF_FEATURES = "features"
+CONF_ON_ATTRIBUTE = "on_attribute"
 CONF_VENDOR_NAME = "vendor_name"
 CONF_PRODUCT_NAME = "product_name"
 

@@ -4,10 +4,11 @@ from dataclasses import dataclass, field
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
+from esphome import automation
 from esphome.components.binary_sensor import BinarySensor
 from esphome.components.esp32 import add_idf_sdkconfig_option
 from esphome.components.sensor import Sensor
-from esphome.const import CONF_LIGHT_ID
+from esphome.const import CONF_LIGHT_ID, CONF_TRIGGER_ID
 from esphome.core import ID
 from esphome.types import ConfigType
 
@@ -20,9 +21,79 @@ from .data_model.device_types import (
     DEVICE_TYPES_BY_ID,
     DeviceType,
 )
-from .types import MatterEndpointRef
+from .types import MatterAttributeTrigger, MatterEndpointRef
+from .util import snake_case
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _attribute_value_type(attribute):
+    type_name = attribute.type
+    if type_name == "boolean":
+        return cg.bool_
+    if type_name == "single":
+        return cg.float_
+    if type_name in ("char_string", "long_char_string"):
+        return cg.std_string
+    if type_name in ("int8s", "int16s", "int32s", "int64s"):
+        return cg.int64
+    if (
+        type_name
+        in (
+            "int8u",
+            "int16u",
+            "int24u",
+            "int32u",
+            "int64u",
+            "enum8",
+            "enum16",
+            "bitmap16",
+            "elapsed_s",
+            "epoch_s",
+            "epoch_us",
+            "fabric_idx",
+            "node_id",
+            "percent",
+            "percent100ths",
+            "temperature",
+            "vendor_id",
+            "amperage_ma",
+            "energy_mwh",
+            "power_mva",
+            "power_mvar",
+            "power_mw",
+            "voltage_mv",
+        )
+        or type_name.endswith("Enum")
+        or type_name.endswith("Bitmap")
+    ):
+        return cg.uint64
+    return None
+
+
+def _on_attribute_schema():
+    clusters = {}
+    for cluster in CLUSTERS:
+        attributes = {}
+        for attribute in cluster.server_attributes:
+            if attribute.name is None:
+                continue
+            value_type = _attribute_value_type(attribute)
+            trigger_schema = {}
+            if value_type is not None:
+                trigger_schema[cv.GenerateID(CONF_TRIGGER_ID)] = cv.declare_id(
+                    MatterAttributeTrigger.template(value_type)
+                )
+            attributes[cv.Optional(snake_case(attribute.name))] = (
+                automation.validate_automation(trigger_schema)
+            )
+        if attributes:
+            clusters[cv.Optional(snake_case(cluster.name))] = cv.Schema(attributes)
+    return cv.Schema(clusters)
+
+
+ON_ATTRIBUTE_SCHEMA = _on_attribute_schema()
+
 
 ENDPOINT_SCHEMA = cv.All(
     cv.Schema(
@@ -31,6 +102,7 @@ ENDPOINT_SCHEMA = cv.All(
             cv.Optional(CONF_EXTRA_CLUSTERS, default=list): cv.ensure_list(
                 cv.one_of(*(cluster.name for cluster in CLUSTERS))
             ),
+            cv.Optional(CONF_ON_ATTRIBUTE): ON_ATTRIBUTE_SCHEMA,
         }
         | {device_type.schema_key: device_type.schema() for device_type in DEVICE_TYPES}
     ),
@@ -71,11 +143,38 @@ class Endpoint:
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
             self._cluster_configs.setdefault(cluster_name, _ClusterConfig())
 
+        await self._register_attribute_automations()
+
         cg.add(
             var.register_endpoint(
                 self._endpoint_id, cg.RawExpression(self._make_build_callback())
             )
         )
+
+    async def _register_attribute_automations(self):
+        configured_clusters = self._config.get(CONF_ON_ATTRIBUTE, {})
+        for cluster in CLUSTERS:
+            cluster_config = configured_clusters.get(snake_case(cluster.name), {})
+            if not cluster_config:
+                continue
+            for attribute in cluster.server_attributes:
+                if attribute.name is None:
+                    continue
+                value_type = _attribute_value_type(attribute)
+                if value_type is None:
+                    continue
+                for conf in cluster_config.get(snake_case(attribute.name), []):
+                    trigger = cg.new_Pvariable(
+                        conf[CONF_TRIGGER_ID],
+                        self._var,
+                        self._endpoint_id,
+                        cluster.id,
+                        attribute.id,
+                    )
+                    cg.add(self._var.register_attribute_trigger(trigger))
+                    await automation.build_automation(
+                        trigger, [(value_type, "value")], conf
+                    )
 
     async def _configure_device_type(
         self, device_type: DeviceType, device_config: dict

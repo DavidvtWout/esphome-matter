@@ -193,30 +193,6 @@ MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
 }
 #endif // USE_LIGHT
 
-esp_err_t
-endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
-                             uint16_t endpoint_id, uint32_t cluster_id,
-                             uint32_t attribute_id, esp_matter_attr_val_t *val,
-                             void *priv_data) {
-#ifdef USE_LIGHT
-  if (type != esp_matter::attribute::POST_UPDATE ||
-      global_matter_component == nullptr)
-    return ESP_OK;
-  MatterLightMapping *ml =
-      global_matter_component->get_light_mapping_by_endpoint(endpoint_id);
-  if (ml == nullptr)
-    return ESP_OK;
-  // This callback runs in the Matter thread; ESPHome entities are main-loop
-  // only.
-  esp_matter_attr_val_t val_copy = *val;
-  global_matter_component->defer_to_main_loop(
-      [ml, cluster_id, attribute_id, val_copy]() {
-        ml->apply_matter_update(cluster_id, attribute_id, val_copy);
-      });
-#endif // USE_LIGHT
-  return ESP_OK;
-}
-
 // Wires ESPHome entities to Matter attributes. Must run after
 // esp_matter::start().
 void MatterComponent::register_endpoint_callbacks_() {
