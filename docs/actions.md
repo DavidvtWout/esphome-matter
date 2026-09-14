@@ -2,9 +2,9 @@ Matter devices are controlled through clusters. A cluster groups related behavio
 
 In esphome-matter, these actions work like a Matter switch or remote control. You first bind one of the ESPHome Matter endpoints to another Matter device, such as a light, in your Matter controller. After that, an ESPHome automation can call actions like `matter.on_off.toggle` or `matter.level_control.move_with_on_off`, and the command is sent to the device that was bound to that endpoint.
 
-Bound actions require the endpoint to include the Binding cluster. In esphome-matter, endpoints with `on_off_light_switch` or `dimmer_switch` get it by default. You can override that per endpoint with `enable_binding: false`, or add it to another endpoint with `enable_binding: true`.
+Bound actions require the endpoint to include the Binding cluster. Device types such as `on_off_light_switch` and `dimmer_switch` include it as required by Matter.
 
-First define an endpoint that supports binding and give it an `id`:
+First define a device type that supports binding and give it an `id`:
 
 ```yaml
 matter:
@@ -16,13 +16,12 @@ matter:
 binary_sensor:
   - name: "Some button"
     on_click:
-      matter.on_off.toggle: dimmer_endpoint  # 1 is also accepted
+      matter.on_off.toggle: dimmer_endpoint # 1 is also accepted
 ```
 
 After the endpoint has been bound in your Matter controller, automations can call the command actions below using that endpoint id.
 
-Field values use the raw Matter units for now. Units like percentage or seconds will be added later. Required fields are shown uncommented. Optional fields are commented out and show the default value used when you omit them.
-
+Command fields accept raw Matter integer values. Common LevelControl and timing fields also accept explicit units such as percentages, `%/s`, and seconds. Required fields are shown uncommented. Optional fields are commented out and show the default value used when you omit them.
 
 ### Units
 
@@ -48,6 +47,27 @@ matter.level_control.step:
   transition_time: 20
 ```
 
+### enums
+
+Some command arguments are "enums". These are actually integers but with names mapped to specific values. One such example is the `move_mode` argument in some of the `level_control` commands. This is an integer with a value of either 0 or 1 where 0 means "up" and 1 means "down". In the commands below, the supported values are mentioned in the comment behind the argument. esphome-matter supports either the name in snake_case format or the integer value.
+
+### bitmasks
+
+Arguments can also be of the "bitmask" type. Just like the enum, internally this is just an integer.
+
+Take for example the `days_mask`. Each day is represented by a bit. `sunday:1`, `monday:2`, `tuesday:4`, `wednesday:8` etc... The value is the sum of all active options.
+
+```yaml
+# A single mask can be applied directly;
+days_mask: monday
+# The following command args are all equivalent;
+days_mask: ["saturday", "sunday"]
+days_mask:
+  - saturday
+  - sunday
+days_mask: 65
+```
+
 # Cluster commands
 
 ### Identify cluster
@@ -58,12 +78,12 @@ Identify commands make a bound device identify itself. This is mostly useful whi
 # Ask the device to identify itself for a number of seconds.
 matter.identify.identify:
   endpoint_id:
-  identify_time:  # s - Use 0s to stop identifying
+  identify_time: # s - Use 0s to stop identifying
 
 # Trigger a specific identify effect, if the bound device supports it.
 matter.identify.trigger_effect:
   endpoint_id:
-  effect_identifier:  # Either blink, breathe, okay, channel_effect, finish_effect or stop_effect
+  effect_identifier: # Either blink, breathe, okay, channel_effect, finish_effect or stop_effect
   # effect_variant: 0
 ```
 
@@ -81,7 +101,7 @@ matter.on_off.toggle: some_id
 # Common effect_identifier values are 0=delayed all off and 1=dying light.
 matter.on_off.off_with_effect:
   endpoint_id:
-  effect_identifier:  # Either delayed_all_off or dying_light
+  effect_identifier: # Either delayed_all_off or dying_light
   # effect_variant: 0
 
 # Turn on and recall the device's global scene, if the device supports scenes.
@@ -90,14 +110,14 @@ matter.on_off.on_with_recall_global_scene: some_id
 # Intended for motion sensors temporarily turning on a light.
 matter.on_off.on_with_timed_off:
   endpoint_id:
-  on_time:  # s
+  on_time: # s
   # on_off_control: 0  # No idea what this does. You'll have to figure that out yourself.
   # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
 ```
 
 ### LevelControl cluster
 
-LevelControl commands are used for dimming. Levels are raw Matter brightness levels, normally `0` to `254`.
+LevelControl commands are used for dimming. Levels can be percentages or raw Matter brightness levels, normally `0` to `254`.
 
 The commands with `_with_on_off` also affect the OnOff state, which is usually what you want. For example, moving to a non-zero level may turn the light on, and moving to level `0` may turn it off. The commands without `_with_on_off` only change the level and do not directly change the OnOff state.
 
@@ -105,21 +125,21 @@ The commands with `_with_on_off` also affect the OnOff state, which is usually w
 # Move directly to a brightness level.
 matter.level_control.move_to_level:
   endpoint_id:
-  level:  # %
+  level: # %
   # transition_time: 0s
 
 # Move continuously up or down until a stop command is sent or the device
 # reaches its minimum/maximum level.
 matter.level_control.move:
   endpoint_id:
-  move_mode:  # Either up or down.
-  rate:  # %/s
+  move_mode: # Either up or down.
+  rate: # %/s
 
 # Step once by a fixed amount.
 matter.level_control.step:
   endpoint_id:
-  step_mode:  # Either up or down
-  step_size:  # %
+  step_mode: # Either up or down
+  step_size: # %
   # transition_time: 0s
 
 # Stop a previous move command.
@@ -128,20 +148,20 @@ matter.level_control.stop: some_id
 # Move directly to a brightness level and allow the device to update OnOff state.
 matter.level_control.move_to_level_with_on_off:
   endpoint_id:
-  level:  # %
+  level: # %
   # transition_time: 0s
 
 # Move continuously up or down and allow the device to update OnOff state.
 matter.level_control.move_with_on_off:
   endpoint_id:
-  move_mode:  # Either up or down
-  rate:  # %/s
+  move_mode: # Either up or down
+  rate: # %/s
 
 # Step once by a fixed amount and allow the device to update OnOff state.
 matter.level_control.step_with_on_off:
   endpoint_id:
-  step_mode:  # Either up or down
-  step_size:  # %
+  step_mode: # Either up or down
+  step_size: # %
   # transition_time: 0s
 
 # Stop a previous move-with-on-off command.

@@ -1,9 +1,8 @@
 # This example involved a pre-configured openthread network. This way, the api is immediately available, even before
 # matter is commissioned.
 # After commissioning, the binding cluster (0x1e or 31) of the dimmer switch endpoint needs to be configured to point
-# to the node id and cluster id of a matter light. The frontend of the python-matter-server has "Binding" button
-# when you go to the binding cluster. This also adds the node id of the esphome device to the ACL of the light
-# to make it accept the commands that the esphome device will send after binding.
+# to the node ID and cluster ID of a Matter light. Configure this through the Binding cluster in your Matter
+# controller. The controller must also grant this device access to the light through the light's ACL.
 
 esphome:
   name: matter-device
@@ -65,9 +64,9 @@ binary_sensor:
     on_click:
       matter.on_off.off: dimmer_endpoint
     on_press:
-      matter.level_control.move_with_on_off:
+      matter.level_control.move:
         endpoint_id: dimmer_endpoint
         move_mode: down
         rate: 20 %/s
     on_release:
-      matter.level_control.stop_with_on_off: dimmer_endpoint
+      matter.level_control.stop: dimmer_endpoint

@@ -5,15 +5,10 @@
 #include "matter_actions.h"
 #include "matter_component.h"
 
-#include <platform/CHIPDeviceLayer.h>
-#ifdef USE_SENSOR
-#include <app/clusters/temperature-measurement-server/TemperatureMeasurementCluster.h>
-#include <data_model_provider/esp_matter_data_model_provider.h>
-#endif // USE_SENSOR
-
 #include <algorithm>
 #include <cmath>
 #include <esp_matter_cluster.h>
+#include <platform/CHIPDeviceLayer.h>
 
 static const char *const TAG = "matter";
 
@@ -38,28 +33,12 @@ void MatterComponent::register_endpoint(uint16_t endpoint_id) {
   this->endpoint_ids_.push_back(endpoint_id);
 }
 
-void MatterComponent::register_binding(uint16_t endpoint_id) {
-  this->register_endpoint(endpoint_id);
-  for (uint16_t registered_endpoint_id : this->binding_endpoint_ids_) {
-    if (registered_endpoint_id == endpoint_id)
-      return;
-  }
-  this->binding_endpoint_ids_.push_back(endpoint_id);
-}
-
 #ifdef USE_LIGHT
 void MatterComponent::map_light_to_endpoint(light::LightState *light,
                                             uint16_t endpoint_id) {
   this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
 }
 #endif // USE_LIGHT
-
-#ifdef USE_SENSOR
-void MatterComponent::map_sensor_to_endpoint(sensor::Sensor *sensor,
-                                             uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterSensorMapping(sensor, endpoint_id));
-}
-#endif // USE_SENSOR
 
 bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
   auto *endpoint = esp_matter::endpoint::get(this->endpoint_id());
@@ -142,54 +121,6 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
 }
 #endif // USE_LIGHT
 
-#ifdef USE_SENSOR
-MatterSensorMapping::MatterSensorMapping(sensor::Sensor *sensor,
-                                         uint16_t endpoint_id)
-    : MatterEndpointMappingBase(endpoint_id), sensor_(sensor) {}
-
-void MatterSensorMapping::register_callbacks() {
-  if (this->sensor_ == nullptr)
-    return;
-  this->sensor_->add_on_state_callback(
-      [this](float value) { this->push_state_to_matter(value); });
-  if (this->sensor_->has_state())
-    this->push_state_to_matter(this->sensor_->state);
-}
-
-void MatterSensorMapping::push_state_to_matter(float value) {
-  using namespace chip::app::Clusters;
-  uint16_t eid = this->endpoint_id();
-  if (this->has_server_cluster(TemperatureMeasurement::Id)) {
-    bool is_null = std::isnan(value) || value < -273.15f || value > 327.67f;
-    int16_t raw = is_null ? 0 : static_cast<int16_t>(lroundf(value * 100.0f));
-    chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, raw, is_null]() {
-      chip::app::DataModel::Nullable<int16_t> measured_value;
-      if (!is_null)
-        measured_value.SetNonNull(raw);
-
-      auto *server =
-          esp_matter::data_model::provider::get_instance().registry().Get(
-              {eid, TemperatureMeasurement::Id});
-      if (server == nullptr) {
-        ESP_LOGE(TAG, "Temperature cluster missing on endpoint %u", eid);
-        return;
-      }
-
-      auto *temperature_cluster =
-          static_cast<chip::app::Clusters::TemperatureMeasurementCluster *>(
-              server);
-      CHIP_ERROR err = temperature_cluster->SetMeasuredValue(measured_value);
-      if (err != CHIP_NO_ERROR) {
-        ESP_LOGE(
-            TAG,
-            "Failed to update temperature on endpoint %u: %" CHIP_ERROR_FORMAT,
-            eid, err.Format());
-      }
-    });
-  }
-}
-#endif // USE_SENSOR
-
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   if (!this->endpoint_ids_.empty()) {
     // esp-matter only resumes endpoint IDs below its private
@@ -228,21 +159,6 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       return false;
     }
 
-    // Add binding cluster
-    if (std::find(this->binding_endpoint_ids_.begin(),
-                  this->binding_endpoint_ids_.end(),
-                  endpoint_id) != this->binding_endpoint_ids_.end()) {
-      esp_matter::cluster::binding::config_t config;
-      esp_matter::cluster_t *binding_cluster =
-          esp_matter::cluster::binding::create(endpoint, &config,
-                                               esp_matter::CLUSTER_FLAG_SERVER);
-      if (binding_cluster == nullptr) {
-        ESP_LOGE(TAG, "Failed to create endpoint %u binding cluster",
-                 endpoint_id);
-        return false;
-      }
-    }
-
     ESP_LOGV(TAG, "Endpoint created: id=%u", endpoint_id);
   }
 
@@ -252,8 +168,56 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       return false;
   }
 
+  // Add extra optional clusters
+  for (auto *cluster_registration : this->cluster_registrations_) {
+    if (!cluster_registration->add_cluster(node))
+      return false;
+  }
+
+  // Add features which were not needed in the cluster config during creation.
+  for (auto *feature_registration : this->feature_registrations_) {
+    if (!feature_registration->add_feature(node))
+      return false;
+  }
+
   register_client_request_callbacks();
 
+  return true;
+}
+
+bool MatterFeatureRegistration::add_feature(esp_matter::node_t *node) {
+  esp_matter::endpoint_t *endpoint =
+      esp_matter::endpoint::get(node, this->endpoint_id_);
+  if (endpoint == nullptr) {
+    ESP_LOGE(TAG, "Cannot add %s feature for missing endpoint %u",
+             this->feature_name_, this->endpoint_id_);
+    return false;
+  }
+
+  esp_matter::cluster_t *cluster =
+      esp_matter::cluster::get(endpoint, this->cluster_id_);
+  // Device-level feature names apply only to clusters which are actually
+  // created for the endpoint.
+  if (cluster == nullptr)
+    return true;
+
+  esp_matter_attr_val_t feature_map;
+  if (esp_matter::attribute::get_val(this->endpoint_id_, this->cluster_id_,
+                                     0xFFFC, &feature_map) != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to read FeatureMap for %s cluster on endpoint %u",
+             this->cluster_name_, this->endpoint_id_);
+    return false;
+  }
+  if (feature_map.val.u32 & this->feature_id_)
+    return true;
+
+  if (this->add_fn_(cluster) != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to add %s feature to %s cluster on endpoint %u",
+             this->feature_name_, this->cluster_name_, this->endpoint_id_);
+    return false;
+  }
+  ESP_LOGD(TAG, "Added %s feature to %s cluster on endpoint %u",
+           this->feature_name_, this->cluster_name_, this->endpoint_id_);
   return true;
 }
 
