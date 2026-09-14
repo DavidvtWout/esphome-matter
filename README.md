@@ -140,15 +140,18 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.on_off.on: dimmer_endpoint
+      matter.send_command:
+        path: dimmer_endpoint.on_off.on
     on_press:
       # Pressing up can turn on a light
-      matter.level_control.move_with_on_off:
-        endpoint_id: dimmer_endpoint
-        move_mode: up
-        rate: 20%/s
+      matter.send_command:
+        path: dimmer_endpoint.level_control.move_with_on_off
+        arguments:
+          move_mode: up
+          rate: 20%/s
     on_release:
-      matter.level_control.stop_with_on_off: dimmer_endpoint
+      matter.send_command:
+        path: dimmer_endpoint.level_control.stop_with_on_off
   - name: "Button down"
     id: button_down
     platform: gpio
@@ -159,15 +162,18 @@ binary_sensor:
         input: true
       inverted: true
     on_click:
-      matter.on_off.off: dimmer_endpoint
+      matter.send_command:
+        path: dimmer_endpoint.on_off.off
     on_press:
       # Pressing down dims to lowest brightness but doesn't turn off
-      matter.level_control.move:
-        endpoint_id: dimmer_endpoint
-        move_mode: down
-        rate: 20%/s
+      matter.send_command:
+        path: dimmer_endpoint.level_control.move
+        arguments:
+          move_mode: down
+          rate: 20%/s
     on_release:
-      matter.level_control.stop: dimmer_endpoint
+      matter.send_command:
+        path: dimmer_endpoint.level_control.stop
 
 sensor:
   - platform: internal_temperature
@@ -221,16 +227,17 @@ OnOff commands are used for simple binary devices such as lights, plugs and rela
 
 ```yaml
 # Turn off, turn on, or toggle a bound device.
-matter.on_off.off: some_id
-matter.on_off.on: some_id
-matter.on_off.toggle: some_id
+matter.send_command: some_endpoint.on_off.on
+matter.send_command: some_endpoint.on_off.on
+matter.send_command: some_endpoint.on_off.toggle
 
 # Intended for motion sensors temporarily turning on a light.
-matter.on_off.on_with_timed_off:
-  endpoint_id: some_id
-  on_time: # s - How long to turn on the light.
-  # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
-  # on_off_control: 0
+matter.send_command:
+  path: some_endpoint.on_off.on_with_timed_off
+  arguments:
+    on_time: # s - How long to turn on the light.
+    # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
+    # on_off_control: 0
 ```
 
 ### LevelControl cluster
@@ -241,26 +248,29 @@ The following commands also have a version without `_with_on_off`. These command
 
 ```yaml
 # Move directly to a brightness level.
-matter.level_control.move_to_level_with_on_off:
-  endpoint_id: some_id
-  level: # %
-  # transition_time: 0s
+matter.send_command:
+  path: some_endpoint.level_control.move_to_level_with_on_off
+  arguments:
+    level: # %
+    # transition_time: 0s
 
 # Move continuously up or down.
-matter.level_control.move_with_on_off:
-  endpoint_id: some_id
-  move_mode: # either "up" or "down"
-  rate: # %/s
+matter.send_command:
+  path: some_endpoint.level_control.move_with_on_off
+  arguments:
+    move_mode: # either "up" or "down"
+    rate: # %/s
 
 # Step once by a fixed amount.
-matter.level_control.step_with_on_off:
-  endpoint_id: some_id
-  step_mode: # either "up" or "down"
-  step_size: # %
-  # transition_time: 0s
+matter.send_command:
+  path: some_endpoint.level_control.step_with_on_off
+  arguments:
+    step_mode: # either "up" or "down"
+    step_size: # %
+    # transition_time: 0s
 
 # Stop a previous move command.
-matter.level_control.stop_with_on_off: some_id
+matter.send_command: some_endpoint.level_control.stop_with_on_off
 ```
 
 # Current Limitations

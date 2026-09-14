@@ -43,14 +43,15 @@ matter:
 switch:
   - name: "Up Button"
     on_click:
-      matter.on_off.on: dimmer_endpoint
+      matter.send_command: dimmer_endpoint.on_off.on
     on_press:
-      matter.level_control.move_with_on_off:
-        endpoint_id: dimmer_endpoint
-        move_mode: up
-        rate: 20%/s
+      matter.send_command:
+        path: dimmer_endpoint.level_control.move_with_on_off
+        arguments:
+          move_mode: up
+          rate: 20%/s
     on_release:
-      matter.level_control.stop_with_on_off: dimmer_endpoint
+      matter.send_command: dimmer_endpoint.level_control.stop_with_on_off
 ```
 
 For a complete overview of supported actions, see the documentation on [actions](actions.md).

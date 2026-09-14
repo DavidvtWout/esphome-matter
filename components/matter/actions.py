@@ -1,4 +1,5 @@
 import json
+import logging
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -25,6 +26,8 @@ from .types import (
     MatterSetAttributeAction,
 )
 from .util import snake_case
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @automation.register_action(
@@ -123,6 +126,103 @@ async def matter_set_attribute_to_code(
 # ------------------------------------------------ #
 
 
+def _parse_endpoint(value):
+    try:
+        return cv.uint16_t(value)
+    except cv.Invalid:
+        return cv.use_id(MatterEndpointRef)(value)
+
+
+def _validate_command_name(value):
+    # YAML 1.1 parses unquoted "on" and "off" as booleans.
+    if isinstance(value, bool):
+        return "on" if value else "off"
+    return cv.string_strict(value)
+
+
+def _find_command(config):
+    cluster_key = config[CONF_CLUSTER]
+    command_key = config[CONF_COMMAND]
+    for command in COMMANDS:
+        if (
+            snake_case(command.cluster_name) == cluster_key
+            and snake_case(command.name) == command_key
+        ):
+            return command
+    raise cv.Invalid(f"Unknown Matter command {cluster_key}.{command_key}")
+
+
+def _normalize_send_command(config):
+    if CONF_PATH in config:
+        parts = config.pop(CONF_PATH).split(".")
+        if len(parts) != 3 or not all(parts):
+            raise cv.Invalid(
+                "Matter send_command path must use the form endpoint.cluster.command"
+            )
+        endpoint, config[CONF_CLUSTER], config[CONF_COMMAND] = parts
+        config[CONF_ENDPOINT] = _parse_endpoint(endpoint)
+    return config
+
+
+def _validate_send_command(config):
+    command = _find_command(config)
+    schema = {}
+    for arg in command.args:
+        arg_schema = arg.schema
+        converter = (
+            COMMAND_ARG_TYPES.get(command.cluster_name, {})
+            .get(command.name, {})
+            .get(arg.name)
+        )
+        if converter is not None:
+            arg_schema = cv.All(converter, arg_schema)
+        schema[arg.schema_key] = arg_schema
+    config[CONF_ARGUMENTS] = cv.Schema(schema)(config[CONF_ARGUMENTS])
+    return config
+
+
+SEND_COMMAND_SCHEMA = automation.maybe_conf(
+    CONF_PATH,
+    cv.All(
+        cv.Schema(
+            {
+                cv.Inclusive(CONF_ENDPOINT, "explicit_command_path"): cv.Any(
+                    cv.use_id(MatterEndpointRef), cv.uint16_t
+                ),
+                cv.Inclusive(CONF_CLUSTER, "explicit_command_path"): cv.string_strict,
+                cv.Inclusive(
+                    CONF_COMMAND, "explicit_command_path"
+                ): _validate_command_name,
+                cv.Optional(CONF_PATH): cv.string_strict,
+                cv.Optional(CONF_ARGUMENTS, default={}): dict,
+            }
+        ),
+        cv.has_exactly_one_key(CONF_PATH, CONF_ENDPOINT),
+        _normalize_send_command,
+        _validate_send_command,
+    ),
+)
+
+
+@automation.register_action(
+    "matter.send_command",
+    MatterSendCommandAction,
+    SEND_COMMAND_SCHEMA,
+    synchronous=True,
+)
+async def matter_send_command_to_code(
+    config: ConfigType, action_id: ID, template_arg, args
+):
+    command = _find_command(config)
+    var = cg.new_Pvariable(action_id, template_arg)
+    cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT])))
+    cluster = CLUSTERS_BY_NAME[command.cluster_name]
+    cg.add(var.set_cluster_id(cluster.id))
+    cg.add(var.set_command_id(command.id))
+    cg.add(var.set_data(_build_data(config[CONF_ARGUMENTS], command)))
+    return var
+
+
 @automation.register_action(
     "matter._send_command",
     MatterSendCommandAction,
@@ -139,7 +239,7 @@ async def matter_set_attribute_to_code(
     ),
     synchronous=True,
 )
-async def matter_send_command_to_code(
+async def matter_raw_send_command_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
     """The matter._send_command action is an escape hatch to send arbitrary commands that have not
@@ -173,28 +273,16 @@ async def matter_send_command_to_code(
 
 
 def register_bound_command_actions():
-    """Registers all commands from MATTER_COMMANDS as esphome actions.
+    """Registers deprecated per-command compatibility actions.
 
-    Actions are named after the snake_case cluster and command names:
+    Legacy actions are named after the snake_case cluster and command names:
       matter.cluster_name.command_name
-
-    Commands that have no mandatory fields may be called with only the endpoint_id:
-      matter.on_off.on: some_endpoint
-    or
-      matter.on_off.on:
-        endpoint_id: some_endpoint
-
-    Commands that do have mandatory fields must be called like this:
-      matter.level_control.move_with_on_off:
-        endpoint_id: some_endpoint
-        move_mode: 0  # up
-        rate: 50      # ~20% per second
     """
     for command in COMMANDS:
         automation.register_action(
             f"matter.{snake_case(command.cluster_name)}.{snake_case(command.name)}",
             MatterSendCommandAction,
-            _command_schema(command),
+            cv.All(_command_schema(command), _warn_deprecated_command(command)),
             synchronous=True,
         )(_make_send_command_to_code(command))
 
@@ -212,6 +300,22 @@ def _make_send_command_to_code(command: Command):
         f"matter_{snake_case(command.cluster_name)}_{snake_case(command.name)}_to_code"
     )
     return to_code
+
+
+def _warn_deprecated_command(command: Command):
+    old_name = f"matter.{snake_case(command.cluster_name)}.{snake_case(command.name)}"
+    new_path = f"{snake_case(command.cluster_name)}.{snake_case(command.name)}"
+
+    def validator(config):
+        _LOGGER.warning(
+            "The '%s' action is deprecated; use 'matter.send_command' with "
+            "cluster/command or path ending in '%s' instead.",
+            old_name,
+            new_path,
+        )
+        return config
+
+    return validator
 
 
 async def _new_send_command_action(
@@ -238,7 +342,7 @@ def _resolve_endpoint_id(endpoint_id: ID | int) -> int:
     raise cv.Invalid(f"Unknown Matter endpoint id '{endpoint_id}'")
 
 
-def _build_data(config, command: Command) -> str:
+def _build_data(arguments, command: Command) -> str:
     """Creates a date payload that's compatible with esp_matter::client::request_handle.request_data.
 
     It's JSON formatted crap... Here's an example:
@@ -247,7 +351,7 @@ def _build_data(config, command: Command) -> str:
 
     This means that the first field is an uint8 with a value of 0 and the second field is uint16 with value 10.
     """
-    return json.dumps({arg.data_key: config[arg.schema_key] for arg in command.args})
+    return json.dumps({arg.data_key: arguments[arg.schema_key] for arg in command.args})
 
 
 def _command_schema(command: Command):
