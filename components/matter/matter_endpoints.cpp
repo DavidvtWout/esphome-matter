@@ -34,13 +34,6 @@ void MatterComponent::register_endpoint(uint16_t endpoint_id,
   this->endpoint_registrations_.push_back({endpoint_id, build_fn});
 }
 
-#ifdef USE_LIGHT
-void MatterComponent::map_light_to_endpoint(light::LightState *light,
-                                            uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
-}
-#endif // USE_LIGHT
-
 bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
   auto *endpoint = esp_matter::endpoint::get(this->endpoint_id());
   if (endpoint == nullptr)
@@ -51,11 +44,18 @@ bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
 }
 
 #ifdef USE_LIGHT
+void MatterComponent::map_light_to_endpoint(light::LightState *light,
+                                            uint16_t endpoint_id) {
+  this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
+}
+
 MatterLightMapping::MatterLightMapping(light::LightState *light,
                                        uint16_t endpoint_id)
     : MatterEndpointMappingBase(endpoint_id), light_(light) {}
 
 void MatterLightMapping::on_light_remote_values_update() {
+  if (this->synchronizing_from_matter_)
+    return;
   this->push_state_to_matter();
 }
 
@@ -63,7 +63,7 @@ void MatterLightMapping::register_callbacks() {
   if (this->light_ == nullptr)
     return;
   this->light_->add_remote_values_listener(this);
-  this->push_state_to_matter();
+  this->sync_state_from_matter();
 }
 
 MatterLightMapping *MatterLightMapping::as_light_mapping() { return this; }
@@ -89,6 +89,48 @@ void MatterLightMapping::push_state_to_matter() {
                                     LevelControl::Attributes::CurrentLevel::Id,
                                     &level_val);
     }
+  });
+}
+
+void MatterLightMapping::sync_state_from_matter() {
+  uint16_t eid = this->endpoint_id();
+  bool has_level =
+      this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
+  chip::DeviceLayer::SystemLayer().ScheduleLambda([this, eid, has_level]() {
+    using namespace chip::app::Clusters;
+    esp_matter_attr_val_t on_value;
+    if (esp_matter::attribute::get_val(eid, OnOff::Id,
+                                       OnOff::Attributes::OnOff::Id,
+                                       &on_value) != ESP_OK ||
+        on_value.is_null())
+      return;
+
+    bool on = on_value.val.b;
+    bool has_valid_level = false;
+    uint8_t level = 0;
+    if (has_level) {
+      esp_matter_attr_val_t level_value;
+      if (esp_matter::attribute::get_val(
+              eid, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id,
+              &level_value) == ESP_OK &&
+          !level_value.is_null() && level_value.val.u8 >= 1 &&
+          level_value.val.u8 <= 254) {
+        has_valid_level = true;
+        level = level_value.val.u8;
+      }
+    }
+
+    global_matter_component->defer_to_main_loop(
+        [this, on, has_valid_level, level]() {
+          this->synchronizing_from_matter_ = true;
+          auto call = this->light_->make_call();
+          call.set_state(on);
+          if (has_valid_level)
+            call.set_brightness(level / 254.0f);
+          call.set_transition_length(0);
+          call.perform();
+          this->synchronizing_from_matter_ = false;
+        });
   });
 }
 
@@ -119,6 +161,18 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     call.set_transition_length(0);
     call.perform();
   }
+}
+
+MatterLightMapping *
+MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
+  for (auto *mapping : this->mappings_) {
+    auto *light_mapping = mapping->as_light_mapping();
+    if (light_mapping != nullptr &&
+        light_mapping->endpoint_id() == endpoint_id) {
+      return light_mapping;
+    }
+  }
+  return nullptr;
 }
 #endif // USE_LIGHT
 
@@ -178,20 +232,6 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
 
   return true;
 }
-
-#ifdef USE_LIGHT
-MatterLightMapping *
-MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
-  for (auto *mapping : this->mappings_) {
-    auto *light_mapping = mapping->as_light_mapping();
-    if (light_mapping != nullptr &&
-        light_mapping->endpoint_id() == endpoint_id) {
-      return light_mapping;
-    }
-  }
-  return nullptr;
-}
-#endif // USE_LIGHT
 
 // Wires ESPHome entities to Matter attributes. Must run after
 // esp_matter::start().

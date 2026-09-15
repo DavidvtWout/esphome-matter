@@ -69,11 +69,13 @@ public:
   MatterLightMapping *as_light_mapping() override;
 
   void push_state_to_matter();
+  void sync_state_from_matter();
   void apply_matter_update(uint32_t cluster_id, uint32_t attribute_id,
                            esp_matter_attr_val_t val);
 
 protected:
   light::LightState *light_;
+  bool synchronizing_from_matter_{false};
 };
 #endif // USE_LIGHT
 

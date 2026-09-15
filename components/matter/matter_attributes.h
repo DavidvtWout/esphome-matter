@@ -33,6 +33,7 @@ void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
                          uint32_t attribute_id, uint64_t value);
 void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
                          uint32_t attribute_id, const std::string &value);
+void replay_attribute_triggers(MatterComponent *component);
 
 class MatterAttributeTriggerBase {
 public:
@@ -48,6 +49,9 @@ public:
            this->cluster_id_ == cluster_id &&
            this->attribute_id_ == attribute_id;
   }
+  uint16_t endpoint_id() const { return this->endpoint_id_; }
+  uint32_t cluster_id() const { return this->cluster_id_; }
+  uint32_t attribute_id() const { return this->attribute_id_; }
   virtual void dispatch(const esp_matter_attr_val_t &value) = 0;
 
 protected:

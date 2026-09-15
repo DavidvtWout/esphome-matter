@@ -254,6 +254,19 @@ void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
   schedule_attribute_value(endpoint_id, cluster_id, attribute_id, value);
 }
 
+void replay_attribute_triggers(MatterComponent *component) {
+  chip::DeviceLayer::SystemLayer().ScheduleLambda([component]() {
+    for (auto *trigger : component->attribute_triggers_) {
+      esp_matter_attr_val_t value;
+      esp_err_t err = esp_matter::attribute::get_val(
+          trigger->endpoint_id(), trigger->cluster_id(),
+          trigger->attribute_id(), &value);
+      if (err == ESP_OK)
+        trigger->dispatch(value);
+    }
+  });
+}
+
 esp_err_t
 endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
                              uint16_t endpoint_id, uint32_t cluster_id,
