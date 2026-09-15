@@ -6,9 +6,7 @@
 #include "matter_component.h"
 
 #include <algorithm>
-#include <cmath>
 #include <esp_matter_cluster.h>
-#include <platform/CHIPDeviceLayer.h>
 
 static const char *const TAG = "matter";
 
@@ -42,139 +40,6 @@ bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
   return cluster != nullptr && (esp_matter::cluster::get_flags(cluster) &
                                 esp_matter::CLUSTER_FLAG_SERVER);
 }
-
-#ifdef USE_LIGHT
-void MatterComponent::map_light_to_endpoint(light::LightState *light,
-                                            uint16_t endpoint_id) {
-  this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
-}
-
-MatterLightMapping::MatterLightMapping(light::LightState *light,
-                                       uint16_t endpoint_id)
-    : MatterEndpointMappingBase(endpoint_id), light_(light) {}
-
-void MatterLightMapping::on_light_remote_values_update() {
-  if (this->synchronizing_from_matter_)
-    return;
-  this->push_state_to_matter();
-}
-
-void MatterLightMapping::register_callbacks() {
-  if (this->light_ == nullptr)
-    return;
-  this->light_->add_remote_values_listener(this);
-  this->sync_state_from_matter();
-}
-
-MatterLightMapping *MatterLightMapping::as_light_mapping() { return this; }
-
-void MatterLightMapping::push_state_to_matter() {
-  uint16_t eid = this->endpoint_id();
-  bool has_level =
-      this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
-  bool on = this->light_->remote_values.is_on();
-  float brightness = this->light_->remote_values.get_brightness();
-  auto level = static_cast<uint8_t>(std::lroundf(brightness * 254.0f));
-  level = level < 1 ? 1 : level;
-  chip::DeviceLayer::SystemLayer().ScheduleLambda([eid, has_level, on,
-                                                   level]() {
-    using namespace chip::app::Clusters;
-    esp_matter_attr_val_t on_val = esp_matter_bool(on);
-    esp_matter::attribute::update(eid, OnOff::Id, OnOff::Attributes::OnOff::Id,
-                                  &on_val);
-    if (has_level) {
-      esp_matter_attr_val_t level_val =
-          esp_matter_nullable_uint8(nullable<uint8_t>(level));
-      esp_matter::attribute::update(eid, LevelControl::Id,
-                                    LevelControl::Attributes::CurrentLevel::Id,
-                                    &level_val);
-    }
-  });
-}
-
-void MatterLightMapping::sync_state_from_matter() {
-  uint16_t eid = this->endpoint_id();
-  bool has_level =
-      this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
-  chip::DeviceLayer::SystemLayer().ScheduleLambda([this, eid, has_level]() {
-    using namespace chip::app::Clusters;
-    esp_matter_attr_val_t on_value;
-    if (esp_matter::attribute::get_val(eid, OnOff::Id,
-                                       OnOff::Attributes::OnOff::Id,
-                                       &on_value) != ESP_OK ||
-        on_value.is_null())
-      return;
-
-    bool on = on_value.val.b;
-    bool has_valid_level = false;
-    uint8_t level = 0;
-    if (has_level) {
-      esp_matter_attr_val_t level_value;
-      if (esp_matter::attribute::get_val(
-              eid, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id,
-              &level_value) == ESP_OK &&
-          !level_value.is_null() && level_value.val.u8 >= 1 &&
-          level_value.val.u8 <= 254) {
-        has_valid_level = true;
-        level = level_value.val.u8;
-      }
-    }
-
-    global_matter_component->defer_to_main_loop(
-        [this, on, has_valid_level, level]() {
-          this->synchronizing_from_matter_ = true;
-          auto call = this->light_->make_call();
-          call.set_state(on);
-          if (has_valid_level)
-            call.set_brightness(level / 254.0f);
-          call.set_transition_length(0);
-          call.perform();
-          this->synchronizing_from_matter_ = false;
-        });
-  });
-}
-
-void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
-                                             uint32_t attribute_id,
-                                             esp_matter_attr_val_t val) {
-  using namespace chip::app::Clusters;
-  if (cluster_id == OnOff::Id && attribute_id == OnOff::Attributes::OnOff::Id) {
-    bool on = val.val.b;
-    if (this->light_->remote_values.is_on() == on)
-      return;
-    auto call = this->light_->make_call();
-    call.set_state(on);
-    call.set_transition_length(0);
-    call.perform();
-  } else if (this->has_server_cluster(LevelControl::Id) &&
-             cluster_id == LevelControl::Id &&
-             attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
-    uint8_t level = val.val.u8;
-    if (level < 1 || level > 254)
-      return;
-    float brightness = level / 254.0f;
-    if (std::fabs(this->light_->remote_values.get_brightness() - brightness) <
-        (0.5f / 254.0f))
-      return;
-    auto call = this->light_->make_call();
-    call.set_brightness(brightness);
-    call.set_transition_length(0);
-    call.perform();
-  }
-}
-
-MatterLightMapping *
-MatterComponent::get_light_mapping_by_endpoint(uint16_t endpoint_id) {
-  for (auto *mapping : this->mappings_) {
-    auto *light_mapping = mapping->as_light_mapping();
-    if (light_mapping != nullptr &&
-        light_mapping->endpoint_id() == endpoint_id) {
-      return light_mapping;
-    }
-  }
-  return nullptr;
-}
-#endif // USE_LIGHT
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
   if (!this->endpoint_registrations_.empty()) {

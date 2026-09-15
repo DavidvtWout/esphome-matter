@@ -1,3 +1,12 @@
+# This is just an example of how to implement a device type by only updating attributes and responding
+# to attribute updates. It recommended to use the light_id mapping instead:
+#
+# matter:
+#   endpoints:
+#     1:
+#       dimmable_light:
+#         light_id: light_id
+
 # Variables: endpoint_id, light_id
 
 matter:

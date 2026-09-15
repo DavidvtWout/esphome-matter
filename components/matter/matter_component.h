@@ -7,6 +7,7 @@
 
 #include "matter_attributes.h"
 #include "matter_endpoints.h"
+#include "matter_lights.h"
 #include "matter_sensors.h"
 
 #include <functional>

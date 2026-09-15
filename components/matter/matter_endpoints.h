@@ -3,9 +3,6 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 #include "esphome/core/log.h"
-#ifdef USE_LIGHT
-#include "esphome/components/light/light_state.h"
-#endif // USE_LIGHT
 
 #include <esp_matter.h>
 #include <esp_matter_cluster.h>
@@ -14,9 +11,7 @@
 
 namespace esphome::matter {
 
-#ifdef USE_LIGHT
 class MatterLightMapping;
-#endif // USE_LIGHT
 
 using MatterEndpointBuildFn = bool (*)(esp_matter::endpoint_t *);
 
@@ -46,9 +41,7 @@ public:
   virtual ~MatterEndpointMappingBase() = default;
 
   virtual void register_callbacks() {}
-#ifdef USE_LIGHT
   virtual MatterLightMapping *as_light_mapping() { return nullptr; }
-#endif // USE_LIGHT
 
   uint16_t endpoint_id() const { return this->endpoint_id_; }
 
@@ -57,27 +50,6 @@ protected:
 
   uint16_t endpoint_id_;
 };
-
-#ifdef USE_LIGHT
-class MatterLightMapping : public MatterEndpointMappingBase,
-                           public light::LightRemoteValuesListener {
-public:
-  MatterLightMapping(light::LightState *light, uint16_t endpoint_id);
-
-  void on_light_remote_values_update() override;
-  void register_callbacks() override;
-  MatterLightMapping *as_light_mapping() override;
-
-  void push_state_to_matter();
-  void sync_state_from_matter();
-  void apply_matter_update(uint32_t cluster_id, uint32_t attribute_id,
-                           esp_matter_attr_val_t val);
-
-protected:
-  light::LightState *light_;
-  bool synchronizing_from_matter_{false};
-};
-#endif // USE_LIGHT
 
 } // namespace esphome::matter
 
