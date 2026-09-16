@@ -59,14 +59,24 @@ commission on the local network, as described in the main README.
 
 ## Development validation
 
-The hardware observations below were recorded before the driver-source and
-SDK-target build changes. Those changes require a fresh hardware regression run.
+The earlier hardware observations below predate the driver-source and SDK-target
+build changes. The revised firmware has also passed the deployment checks listed
+here; controller operation and cable recovery still need a fresh regression run.
 
 - Revised firmware: ESP32-P4 Ethernet-only and ESP32-S3 Wi-Fi plus W5500 builds
   compile and link with ESPHome 2026.8.2. Build checks verify that the adapter and
   DNS-SD backend each compile once in the SDK target, the original Ethernet driver
   is excluded, and the SDK archive and final ELF contain one Ethernet `Init`.
 - Wi-Fi, Thread, and all-endpoint regression fixtures validate and generate code.
+- Firmware from commit `584e681` was flashed over USB on 2026-09-15 to the
+  ESP32-P4 revision-1 board, with upload hash verification. A subsequent reset
+  reached `Matter started successfully` and `Server ready!`, retained both stored
+  fabrics, and kept the commissioning window closed.
+- Ethernet negotiated 100 Mbps full duplex and acquired IPv4 and IPv6 connectivity.
+  LAN ping passed with no packet loss, and macOS resolved an operational Matter
+  service on port 5540.
+- Two saved-peer DNS-SD lookups logged error `2f` during startup. Apple Home
+  operation and cable recovery were not rechecked with this firmware.
 
 Earlier hardware validation:
 
