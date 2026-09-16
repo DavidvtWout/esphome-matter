@@ -113,6 +113,13 @@ def _final_validate(_):
     if CORE.using_toolchain_esp_idf:
         cv.validate_esphome_version(MIN_ESPHOME_IDF_TOOLCHAIN_VERSION)
 
+    ethernet_config = full_config.get("ethernet")
+    if ethernet_config is not None and not ethernet_config.get("enable_on_boot", True):
+        raise cv.Invalid(
+            "Matter requires ethernet.enable_on_boot: true. Delayed Ethernet startup "
+            "is not supported because the commissioning driver is initialized at setup."
+        )
+
     network_config = full_config.get("network", {})
     if not network_config.get(CONF_ENABLE_IPV6, False):
         raise cv.Invalid(

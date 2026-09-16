@@ -2,6 +2,7 @@
 #if defined(USE_MATTER) && defined(USE_ETHERNET)
 
 #include <esp_event.h>
+#include <esp_netif.h>
 #include <platform/PlatformManager.h>
 
 // The bundled SDK copies STA_GOT_IP data but omits ETH_GOT_IP data. Preserve

@@ -114,14 +114,11 @@ jobs:
       #      CCACHE_DIR: ${{ github.workspace }}/.ccache
       #    run: ccache -s
 
-  ethernet:
-    name: Ethernet (${{ matrix.config }})
+  validate-ethernet:
+    name: Validate Ethernet and regression configurations
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        config:
-          - tests/configs/esp32-ethernet.yaml
-          - tests/configs/esp32-wifi-ethernet.yaml
+    needs: validate
+    if: github.ref != 'refs/heads/main'
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -131,12 +128,38 @@ jobs:
         run: |
           python -m venv .venv
           .venv/bin/python -m pip install "esphome==${ETHERNET_ESPHOME_VERSION}"
-      - name: Validate configuration and regression fixtures
+      - name: Validate configurations
         run: |
-          .venv/bin/esphome config "${{ matrix.config }}"
+          .venv/bin/esphome config tests/configs/esp32-ethernet.yaml
+          .venv/bin/esphome config tests/configs/esp32-wifi-ethernet.yaml
+          .venv/bin/esphome config tests/configs/esp32-thread-ethernet.yaml
           .venv/bin/esphome config tests/configs/esp32-wifi.yaml
           .venv/bin/esphome config tests/configs/esp32-thread.yaml
           .venv/bin/esphome config tests/configs/esp32-all-endpoints.yaml
+      - name: Check Ethernet failure handling and SDK adaptation
+        run: .venv/bin/python tests/test_ethernet_regressions.py
+
+  ethernet:
+    name: Ethernet (${{ matrix.config }})
+    runs-on: ubuntu-24.04
+    needs: validate-ethernet
+    if: github.ref != 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - tests/configs/esp32-ethernet.yaml
+          - tests/configs/esp32-wifi-ethernet.yaml
+          - tests/configs/esp32-thread-ethernet.yaml
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Install ESPHome
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install "esphome==${ETHERNET_ESPHOME_VERSION}"
       - uses: actions/cache@v6
         with:
           path: ~/.platformio

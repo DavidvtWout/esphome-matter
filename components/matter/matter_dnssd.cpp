@@ -352,11 +352,11 @@ CHIP_ERROR ChipDnssdResolve(DnssdService *service,
   resolve_context->type[sizeof(resolve_context->type) - 1] = '\0';
   resolve_context->protocol = service->mProtocol;
 
+  // Match the Thread-first backend selection used by init, publish, and browse.
 #ifdef USE_OPENTHREAD
   CHIP_ERROR error = OpenThreadDnssdResolve(service, interface,
                                             resolve_callback, resolve_context);
-#endif // USE_OPENTHREAD
-#if defined(USE_WIFI) || defined(USE_ETHERNET)
+#elif defined(USE_WIFI) || defined(USE_ETHERNET)
   CHIP_ERROR error =
       EspDnssdResolve(service, interface, resolve_callback, resolve_context);
 #endif // USE_WIFI || USE_ETHERNET

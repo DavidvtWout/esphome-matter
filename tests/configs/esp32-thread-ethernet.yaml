@@ -1,0 +1,42 @@
+# Compile-only fixture: ESP32-H2 OpenThread with a W5500 SPI Ethernet interface.
+esphome:
+  min_version: 2026.8.2
+  name: matter-ci-thread-ethernet
+
+esp32:
+  toolchain: platformio
+  variant: ESP32H2
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+
+network:
+  enable_ipv6: true
+
+openthread:
+  network_key: 0xdfd34f0f05cad978ec4e32b0413038ff
+  network_name: matter-ci-thread
+  pan_id: 0x1234
+  channel: 15
+
+ethernet:
+  type: W5500
+  clk_pin: GPIO6
+  mosi_pin: GPIO7
+  miso_pin: GPIO2
+  cs_pin: GPIO10
+  interrupt_pin: GPIO3
+
+matter:
+  endpoints:
+    1:
+      temperature_sensor:
+        temperature: internal_temp
+
+sensor:
+  - platform: internal_temperature
+    id: internal_temp

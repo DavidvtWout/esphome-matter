@@ -295,11 +295,16 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
 void MatterComponent::setup() {
   global_matter_component = this;
 #ifdef USE_ETHERNET
-  // Check before creating the node: the SDK may only log driver Init failures.
+  // ESPHome creates ETH_DEF with esp_netif_new(ESP_NETIF_DEFAULT_ETH()) in
+  // EthernetComponent::ethernet_lazy_init_(). Check before creating the node.
   if (esp_netif_get_handle_from_ifkey("ETH_DEF") == nullptr) {
+#ifdef USE_WIFI
+    ESP_LOGW(TAG, "Ethernet interface is unavailable; continuing Matter with Wi-Fi");
+#else
     ESP_LOGE(TAG, "ESPHome Ethernet interface is not initialized");
     this->mark_failed();
     return;
+#endif
   }
 #endif
   uint16_t discriminator;

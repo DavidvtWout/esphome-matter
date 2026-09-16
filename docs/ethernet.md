@@ -20,11 +20,18 @@ one definition of `ESPEthernetDriver::Init`. A linker wrapper alone is insuffici
 the SDK emits the vtable and `Init` in the same translation unit, so that reference
 is not interposed. Source replacement also permits SPI-only Ethernet targets.
 
-The bundled SDK's inline `EthernetNetworkIterator` still reports an empty
-NetworkID. This is a known SDK limitation that needs a source-level SDK fix;
-linker wrapping cannot reliably replace an inline method. Ethernet support is
-not certification-ready. The component checks for ESPHome's Ethernet interface
-before creating the Matter node and marks itself failed if it is missing.
+The bundled SDK's inline Ethernet iterator reports an empty NetworkID. A derived
+`ESPHomeEthernetDriver` supplies a non-empty, stable interface key and reports the
+interface's link state. If the interface is missing, it enumerates no Ethernet
+network. A build-local copy of the SDK's commissioning integration selects this
+driver; the original SDK header and cached sources remain unchanged. CMake checks
+the expected source and factory call before adapting them. This is an SDK-specific
+workaround, not a claim of Matter certification.
+
+Matter requires `ethernet.enable_on_boot: true`; delayed startup is rejected during
+configuration validation. If the Ethernet interface is missing at setup, a
+device without Wi-Fi marks Matter failed. A Wi-Fi plus Ethernet device instead
+logs a warning and allows Matter to continue over Wi-Fi.
 
 Ethernet builds reserve six IPv6 address slots. This adds capacity for multiple
 IPv6 addresses; it has not been shown to resolve the boot-time errors below.
@@ -62,12 +69,19 @@ commission on the local network, as described in the main README.
 The earlier hardware observations below predate the driver-source and SDK-target
 build changes. The revised firmware has also passed the deployment checks listed
 here; controller operation and cable recovery still need a fresh regression run.
+The subsequent startup-failure and NetworkID changes have build and host-test
+coverage only; the deployment results below refer specifically to `584e681`.
 
-- Revised firmware: ESP32-P4 Ethernet-only and ESP32-S3 Wi-Fi plus W5500 builds
-  compile and link with ESPHome 2026.8.2. Build checks verify that the adapter and
-  DNS-SD backend each compile once in the SDK target, the original Ethernet driver
-  is excluded, and the SDK archive and final ELF contain one Ethernet `Init`.
+- Revised firmware: ESP32-P4 Ethernet-only, ESP32-S3 Wi-Fi plus W5500, and ESP32-H2
+  OpenThread plus W5500 builds compile and link with ESPHome 2026.8.2. Build checks
+  verify that the adapter and DNS-SD backend each compile once in the SDK target,
+  the original Ethernet driver and commissioning factory are excluded, and the
+  archive and ELF contain the adapter's `Init` and `GetNetworks()` implementations.
+  The checker also passes with ccache-prefixed command and argument records.
 - Wi-Fi, Thread, and all-endpoint regression fixtures validate and generate code.
+- Host regression tests cover rejected delayed startup, Ethernet initialization
+  failure with and without Wi-Fi, absent/disconnected/connected interface enumeration,
+  non-empty stable NetworkIDs, and SDK source selection through symlinked paths.
 - Firmware from commit `584e681` was flashed over USB on 2026-09-15 to the
   ESP32-P4 revision-1 board, with upload hash verification. A subsequent reset
   reached `Matter started successfully` and `Server ready!`, retained both stored
@@ -123,8 +137,16 @@ Verify:
 - Boot without a cable, then connect it and commission or control the device.
 - Matter factory reset and recommissioning.
 
-CI validates and compiles Ethernet-only and Wi-Fi plus Ethernet configurations
-using `ETHERNET_ESPHOME_VERSION` in the workflow. The combined configuration is
-a compile fixture, not a claim of hardware validation. Wi-Fi and Thread retain
-their separate build coverage. A successful build does not establish
-hardware support; add actual device results here when available.
+Pull-request CI validates fixtures once, then independently compiles Ethernet-only,
+Wi-Fi plus Ethernet, and OpenThread plus Ethernet configurations using
+`ETHERNET_ESPHOME_VERSION`. The combined fixtures are compile coverage, not claims
+of hardware validation. The Thread fixture uses ESP32-H2; the bundled SDK's Ethernet
+Kconfig lacks an ESP32-C6 GPIO range. DNS-SD retains the existing Thread-first backend
+selection when Thread is configured; this does not establish multi-interface
+runtime support. Wi-Fi and Thread retain their separate build coverage.
+
+The build checker verifies the adapted driver factory and the out-of-line
+`GetNetworks()` implementation in addition to source ownership and `Init`. If a
+local incremental build retains removed SDK archive members, clean its build
+artifacts and rebuild. A successful build does not establish hardware support;
+add actual device results here when available.
