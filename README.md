@@ -25,7 +25,7 @@ Connectivity depends on which ESPHome networking components are configured:
 - **Matter-over-Wi-Fi**: If `wifi` is configured, Matter announces itself over mDNS and can be commissioned
   on the network.
 - **Matter-over-Thread**: Requires the `openthread` component and ESPHome **2026.6.0** or newer.
-- **Matter-over-Ethernet**: Experimental support using ESPHome’s `ethernet` component and on-network commissioning. See [Ethernet development and testing](docs/ethernet.md); Apple Home commissioning and temperature data delivery are verified on a Waveshare ESP32-P4; reboot and cable recovery tests are pending.
+- **Matter-over-Ethernet**: Experimental support using ESPHome’s `ethernet` component and on-network commissioning. See [Ethernet development and testing](docs/ethernet.md); Apple Home commissioning and temperature data delivery are verified on a Waveshare ESP32-P4; fabric persistence after reboot and recovery after cable reconnection are also verified, with Apple Home responsiveness verified on hardware.
 - **BLE commissioning**: Currently broken, but this is something that I want to work on. The idea is that esphome-matter falls back to BLE commissioning (the default for most matter devices) when no `wifi`, `openthread`, or `ethernet` component is configured.
 
 Binding (for example, a button to a light) is working for matter-over-thread. For matter-over-wifi it also works but might be less stable because the CASE session is sometimes dropped.

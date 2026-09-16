@@ -14,6 +14,9 @@
 #include <cstring>
 #include <esp_matter_client.h>
 #include <esp_random.h>
+#ifdef USE_ETHERNET
+#include <esp_netif.h>
+#endif
 #include <nvs.h>
 #include <string>
 
@@ -291,6 +294,14 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
 
 void MatterComponent::setup() {
   global_matter_component = this;
+#ifdef USE_ETHERNET
+  // Check before creating the node: the SDK may only log driver Init failures.
+  if (esp_netif_get_handle_from_ifkey("ETH_DEF") == nullptr) {
+    ESP_LOGE(TAG, "ESPHome Ethernet interface is not initialized");
+    this->mark_failed();
+    return;
+  }
+#endif
   uint16_t discriminator;
   uint32_t passcode;
   if (!load_or_generate_commissioning_data(discriminator, passcode)) {

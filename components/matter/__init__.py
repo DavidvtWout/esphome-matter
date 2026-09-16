@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components.esp32 import (
@@ -198,7 +200,7 @@ async def to_code(config: ConfigType):
     if use_openthread:
         # Prevent esp-matter from trying to initialize another openthread stack.
         add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False)
-    if use_openthread or not has_connectivity:
+    if use_openthread or use_ethernet or not has_connectivity:
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
 
     if has_connectivity:
@@ -223,6 +225,12 @@ async def to_code(config: ConfigType):
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_ND6_ROUTE_INFO_OPTION_SUPPORT", True)
 
     if use_ethernet:
+        # Adapt the SDK's Ethernet driver and DNS-SD backend in its own target.
+        # esphome_matter_ethernet/CMakeLists.txt follows the SDK's CONFIG_ENABLE_WIFI_* selection.
+        add_idf_component(
+            name="esphome_matter_ethernet",
+            path=str(Path(__file__).parent / "esphome_matter_ethernet"),
+        )
         # Preserve Ethernet IPv4 event payloads in the bundled SDK.
         cg.add_build_flag(
             "-Wl,--wrap=_ZN4chip11DeviceLayer19PlatformManagerImpl20HandleESPSystemEventEPvPKclS2_"

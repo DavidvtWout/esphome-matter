@@ -1,0 +1,43 @@
+# Compile-only fixture: ESP32-S3 Wi-Fi with a W5500 SPI Ethernet interface.
+esphome:
+  min_version: 2026.8.2
+  name: matter-ci-wifi-ethernet
+
+esp32:
+  toolchain: platformio
+  variant: ESP32S3
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+
+network:
+  enable_ipv6: true
+  priority:
+    - ethernet
+    - wifi
+
+wifi:
+  ssid: ci-test-network
+  password: ci-test-password
+
+ethernet:
+  type: W5500
+  clk_pin: GPIO12
+  mosi_pin: GPIO11
+  miso_pin: GPIO13
+  cs_pin: GPIO10
+  interrupt_pin: GPIO9
+
+matter:
+  endpoints:
+    1:
+      temperature_sensor:
+        temperature: internal_temp
+
+sensor:
+  - platform: internal_temperature
+    id: internal_temp

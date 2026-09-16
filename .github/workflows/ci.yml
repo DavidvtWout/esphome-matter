@@ -20,6 +20,7 @@ permissions:
 
 env:
   DEFAULT_PYTHON: "3.12"  # Same as ESPHome
+  ETHERNET_ESPHOME_VERSION: "2026.8.2"
 
 jobs:
   validate:
@@ -30,7 +31,6 @@ jobs:
         esphome-version:
           - 2026.6.0
           - 2026.7.4
-          - 2026.8.2
 
     steps:
       - name: Check out repository
@@ -52,10 +52,6 @@ jobs:
       - name: Check tests/configs/esp32-wifi.yaml
         run: .venv/bin/esphome config tests/configs/esp32-wifi.yaml
 
-      - name: Check tests/configs/esp32-ethernet.yaml
-        if: matrix.esphome-version == '2026.8.2'
-        run: .venv/bin/esphome config tests/configs/esp32-ethernet.yaml
-
   compile:
     name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})
     runs-on: ubuntu-24.04
@@ -69,9 +65,6 @@ jobs:
         esphome-version:
           # - 2026.6.0
           - 2026.7.4
-        include:
-          - config: tests/configs/esp32-ethernet.yaml
-            esphome-version: 2026.8.2
 
     steps:
       - name: Check out repository
@@ -120,6 +113,38 @@ jobs:
       #    env:
       #      CCACHE_DIR: ${{ github.workspace }}/.ccache
       #    run: ccache -s
+
+  ethernet:
+    name: Ethernet (${{ matrix.config }})
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        config:
+          - tests/configs/esp32-ethernet.yaml
+          - tests/configs/esp32-wifi-ethernet.yaml
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Install ESPHome
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install "esphome==${ETHERNET_ESPHOME_VERSION}"
+      - name: Validate configuration and regression fixtures
+        run: |
+          .venv/bin/esphome config "${{ matrix.config }}"
+          .venv/bin/esphome config tests/configs/esp32-wifi.yaml
+          .venv/bin/esphome config tests/configs/esp32-thread.yaml
+          .venv/bin/esphome config tests/configs/esp32-all-endpoints.yaml
+      - uses: actions/cache@v6
+        with:
+          path: ~/.platformio
+          key: ${{ runner.os }}-platformio-${{ env.ETHERNET_ESPHOME_VERSION }}-${{ matrix.config }}
+      - name: Compile configuration
+        run: .venv/bin/esphome compile "${{ matrix.config }}"
+      - name: Verify SDK source ownership and linked driver
+        run: .venv/bin/python tests/check_ethernet_build.py "${{ matrix.config }}"
 
   compile-all-wifi-variants:
     name: Compile matter-over-wifi ${{ matrix.esp32-variant }} (ESPHome ${{ matrix.esphome-version }})
