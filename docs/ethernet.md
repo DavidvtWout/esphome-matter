@@ -69,8 +69,8 @@ commission on the local network, as described in the main README.
 The earlier hardware observations below predate the driver-source and SDK-target
 build changes. The revised firmware has also passed the deployment checks listed
 here; controller operation and cable recovery still need a fresh regression run.
-The subsequent startup-failure and NetworkID changes have build and host-test
-coverage only; the deployment results below refer specifically to `584e681`.
+The startup-failure and NetworkID changes were subsequently deployed as `954f4b0`.
+The deployment checks below identify the firmware revision for each observation.
 
 - Revised firmware: ESP32-P4 Ethernet-only, ESP32-S3 Wi-Fi plus W5500, and ESP32-H2
   OpenThread plus W5500 builds compile and link with ESPHome 2026.8.2. Build checks
@@ -91,6 +91,18 @@ coverage only; the deployment results below refer specifically to `584e681`.
   service on port 5540.
 - Two saved-peer DNS-SD lookups logged error `2f` during startup. Apple Home
   operation and cable recovery were not rechecked with this firmware.
+
+Latest deployment (`954f4b0`, 2026-09-15):
+
+- USB flashing passed hash verification on the ESP32-P4 revision-1 board.
+- After a reset, Matter reached `Server ready!`; both fabrics were retained and
+  commissioning remained closed. Ethernet reconnected and operational Matter
+  services were republished.
+- LAN ping passed with no packet loss, and macOS resolved the operational Matter
+  service on port 5540.
+- One saved-peer DNS-SD lookup logged error `2f` during the startup capture.
+- Apple Home operation, cable recovery, and a controller read of the revised
+  Network Commissioning Networks attribute still require validation.
 
 Earlier hardware validation:
 
