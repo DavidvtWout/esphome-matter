@@ -1,5 +1,5 @@
 #include "esphome/core/defines.h"
-#if defined(USE_MATTER) && (defined(USE_OPENTHREAD) || defined(USE_WIFI))
+#if defined(USE_MATTER) && (defined(USE_OPENTHREAD) || defined(USE_WIFI) || defined(USE_ETHERNET))
 
 #ifdef USE_OPENTHREAD
 #include "esphome/components/openthread/openthread.h"
@@ -15,9 +15,9 @@
 #include <openthread/srp_client.h>
 #include <platform/OpenThread/OpenThreadDnssdImpl.h>
 #endif // USE_OPENTHREAD
-#ifdef USE_WIFI
+#if defined(USE_WIFI) || defined(USE_ETHERNET)
 #include <platform/ESP32/ESP32DnssdImpl.h>
-#endif // USE_WIFI
+#endif // USE_WIFI || USE_ETHERNET
 
 #include <cstring>
 #include <memory>
@@ -215,9 +215,9 @@ CHIP_ERROR ChipDnssdInit(DnssdAsyncReturnCallback init_callback,
   }
   return CHIP_NO_ERROR;
 #endif // USE_OPENTHREAD
-#ifdef USE_WIFI
+#if defined(USE_WIFI) || defined(USE_ETHERNET)
   return EspDnssdInit(init_callback, error_callback, context);
-#endif // USE_WIFI
+#endif // USE_WIFI || USE_ETHERNET
 }
 
 void ChipDnssdShutdown() { ESP_LOGV(TAG, "ChipDnssdShutdown"); }
@@ -267,9 +267,9 @@ CHIP_ERROR ChipDnssdPublishService(const DnssdService *service,
   }
   return chip_error;
 #endif // USE_OPENTHREAD
-#ifdef USE_WIFI
+#if defined(USE_WIFI) || defined(USE_ETHERNET)
   return EspDnssdPublishService(service, callback, context);
-#endif // USE_WIFI
+#endif // USE_WIFI || USE_ETHERNET
 }
 
 CHIP_ERROR ChipDnssdRemoveServices() {
@@ -285,9 +285,9 @@ CHIP_ERROR ChipDnssdRemoveServices() {
   }
   return CHIP_NO_ERROR;
 #endif // USE_OPENTHREAD
-#ifdef USE_WIFI
+#if defined(USE_WIFI) || defined(USE_ETHERNET)
   return EspDnssdRemoveServices();
-#endif // USE_WIFI
+#endif // USE_WIFI || USE_ETHERNET
 }
 
 CHIP_ERROR ChipDnssdFinalizeServiceUpdate() {
@@ -322,10 +322,10 @@ CHIP_ERROR ChipDnssdBrowse(const char *type, DnssdServiceProtocol protocol,
   return OpenThreadDnssdBrowse(type, protocol, address_type, interface,
                                callback, context, browse_identifier);
 #endif // USE_OPENTHREAD
-#ifdef USE_WIFI
+#if defined(USE_WIFI) || defined(USE_ETHERNET)
   return EspDnssdBrowse(type, protocol, address_type, interface, callback,
                         context, browse_identifier);
-#endif // USE_WIFI
+#endif // USE_WIFI || USE_ETHERNET
 }
 
 CHIP_ERROR ChipDnssdStopBrowse(intptr_t) { return CHIP_ERROR_NOT_IMPLEMENTED; }
@@ -356,10 +356,10 @@ CHIP_ERROR ChipDnssdResolve(DnssdService *service,
   CHIP_ERROR error = OpenThreadDnssdResolve(service, interface,
                                             resolve_callback, resolve_context);
 #endif // USE_OPENTHREAD
-#ifdef USE_WIFI
+#if defined(USE_WIFI) || defined(USE_ETHERNET)
   CHIP_ERROR error =
       EspDnssdResolve(service, interface, resolve_callback, resolve_context);
-#endif // USE_WIFI
+#endif // USE_WIFI || USE_ETHERNET
   if (error != CHIP_NO_ERROR) {
     ESP_LOGW(TAG, "Resolve start failed: %" CHIP_ERROR_FORMAT, error.Format());
     chip::Platform::Delete(resolve_context);
@@ -377,4 +377,4 @@ CHIP_ERROR ChipDnssdReconfirmRecord(const char *hostname, chip::Inet::IPAddress,
 } // namespace Dnssd
 } // namespace chip
 
-#endif // USE_MATTER && (USE_OPENTHREAD || USE_WIFI)
+#endif // USE_MATTER && (USE_OPENTHREAD || USE_WIFI || USE_ETHERNET)

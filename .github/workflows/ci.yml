@@ -30,6 +30,7 @@ jobs:
         esphome-version:
           - 2026.6.0
           - 2026.7.4
+          - 2026.8.2
 
     steps:
       - name: Check out repository
@@ -51,6 +52,10 @@ jobs:
       - name: Check tests/configs/esp32-wifi.yaml
         run: .venv/bin/esphome config tests/configs/esp32-wifi.yaml
 
+      - name: Check tests/configs/esp32-ethernet.yaml
+        if: matrix.esphome-version == '2026.8.2'
+        run: .venv/bin/esphome config tests/configs/esp32-ethernet.yaml
+
   compile:
     name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})
     runs-on: ubuntu-24.04
@@ -64,6 +69,9 @@ jobs:
         esphome-version:
           # - 2026.6.0
           - 2026.7.4
+        include:
+          - config: tests/configs/esp32-ethernet.yaml
+            esphome-version: 2026.8.2
 
     steps:
       - name: Check out repository

@@ -186,7 +186,7 @@ async def to_code(config: ConfigType):
     use_wifi = "wifi" in CORE.loaded_integrations
     use_ethernet = "ethernet" in CORE.loaded_integrations
     # has_connectivity determines whether the device should be commissioned over BLE or not.
-    has_connectivity = use_openthread or use_wifi  # or use_ethernet
+    has_connectivity = use_openthread or use_wifi or use_ethernet
 
     # CONFIG_USE_MINIMAL_MDNS=n makes connectedhomeip use the espressif/mdns component.
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)
@@ -201,7 +201,7 @@ async def to_code(config: ConfigType):
     if use_openthread or not has_connectivity:
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
 
-    if use_openthread or use_wifi:
+    if has_connectivity:
         # Force the Matter DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
         # component sources that the static-link step still discards unless an exported symbol is referenced.
         cg.add_build_flag("-Wl,-u,esphome_matter_link_dnssd")
@@ -221,6 +221,12 @@ async def to_code(config: ConfigType):
     if use_wifi or use_ethernet:
         # lwIP must add the route to the thread network via the border router to its routing table.
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_ND6_ROUTE_INFO_OPTION_SUPPORT", True)
+
+    if use_ethernet:
+        # Preserve Ethernet IPv4 event payloads in the bundled SDK.
+        cg.add_build_flag(
+            "-Wl,--wrap=_ZN4chip11DeviceLayer19PlatformManagerImpl20HandleESPSystemEventEPvPKclS2_"
+        )
 
     # Has nothing to do with telemetry... But this is how connectedhomeip names the option that enables ethernet.
     add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", use_ethernet)

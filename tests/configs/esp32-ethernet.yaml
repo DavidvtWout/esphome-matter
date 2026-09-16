@@ -1,0 +1,44 @@
+# Waveshare ESP32-P4-Module-DEV-KIT: onboard IP101 Ethernet.
+esphome:
+  min_version: 2026.8.2
+  name: matter-ci-ethernet
+
+esp32:
+  toolchain: platformio
+  variant: ESP32P4
+  engineering_sample: true  # Connected board: chip revision v1.0
+  flash_size: 16MB
+  cpu_frequency: 360MHz
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+
+api:
+  reboot_timeout: 0s  # Matter operation does not require an ESPHome API client.
+
+network:
+  enable_ipv6: true
+
+ethernet:
+  type: IP101
+  mdc_pin: GPIO31
+  mdio_pin: GPIO52
+  power_pin: GPIO51
+  clk:
+    mode: CLK_EXT_IN
+    pin: GPIO50
+  phy_addr: 1
+
+matter:
+  endpoints:
+    1:
+      temperature_sensor:
+        temperature: internal_temp
+
+sensor:
+  - platform: internal_temperature
+    id: internal_temp
