@@ -5,10 +5,12 @@ from dataclasses import dataclass, field
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import automation
+from esphome.components import light
 from esphome.components.binary_sensor import BinarySensor
 from esphome.components.esp32 import add_idf_sdkconfig_option
 from esphome.components.sensor import Sensor
-from esphome.const import CONF_LIGHT_ID, CONF_TRIGGER_ID
+from esphome.config import Config
+from esphome.const import CONF_LIGHT_ID, CONF_RESTORE_MODE, CONF_TRIGGER_ID
 from esphome.core import ID
 from esphome.types import ConfigType
 
@@ -25,6 +27,29 @@ from .types import MatterAttributeTrigger, MatterEndpointRef
 from .util import snake_case
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def light_restore_warning(matter_config: dict, full_config: Config):
+    for endpoint_config in matter_config.get(CONF_ENDPOINTS, {}).values():
+        for conf_key, device_config in endpoint_config.items():
+            if not isinstance(device_config, dict):
+                continue
+            light_id = device_config.get(CONF_LIGHT_ID)
+            if light_id is None:
+                continue
+            try:
+                light_path = full_config.get_path_for_id(light_id)[:-1]
+                light_config = full_config.get_config_for_path(light_path)
+            except KeyError:
+                continue
+            restore_mode = light_config[CONF_RESTORE_MODE]
+            if restore_mode != "ALWAYS_OFF":
+                _LOGGER.warning(
+                    "Light '%s' is exposed through Matter with restore mode %s and should use "
+                    "restore_mode: ALWAYS_OFF so Matter can restore its power-on state",
+                    light_id,
+                    restore_mode,
+                )
 
 
 def _on_attribute_schema():

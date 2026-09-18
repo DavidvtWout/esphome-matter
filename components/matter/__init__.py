@@ -1,5 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
+import esphome.final_validate as fv
 from esphome.components.esp32 import (
     add_idf_component,
     add_idf_sdkconfig_option,
@@ -9,18 +10,22 @@ from esphome.const import (
     CONF_ENABLE_IPV6,
     CONF_ID,
     Framework,
+)
+from esphome.const import (
     __version__ as ESPHOME_VERSION,
 )
 from esphome.core import CORE
 from esphome.coroutine import CoroPriority, coroutine_with_priority
-import esphome.final_validate as fv
 from esphome.types import ConfigType
 
 from .actions import register_bound_command_actions
-from .endpoints import ENDPOINT_SCHEMA, register_endpoints
-from .types import MatterComponent
-
 from .const import *
+from .endpoints import (
+    ENDPOINT_SCHEMA,
+    light_restore_warning,
+    register_endpoints,
+)
+from .types import MatterComponent
 
 register_bound_command_actions()
 
@@ -104,7 +109,7 @@ CONFIG_SCHEMA = cv.All(
 )
 
 
-def _final_validate(_):
+def _final_validate(config: dict):
     full_config = fv.full_config.get()
     if "openthread" in full_config:
         cv.validate_esphome_version(MIN_ESPHOME_THREAD_VERSION)
@@ -117,6 +122,8 @@ def _final_validate(_):
             "Matter requires IPv6 to be enabled in the network component. "
             "Please set `enable_ipv6: true` in the `network` configuration."
         )
+
+    light_restore_warning(config, full_config)
 
 
 FINAL_VALIDATE_SCHEMA = _final_validate
