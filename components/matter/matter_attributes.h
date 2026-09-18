@@ -2,6 +2,7 @@
 
 #include "esphome/core/automation.h"
 #include "esphome/core/defines.h"
+#include "esphome/core/helpers.h"
 #ifdef USE_MATTER
 
 #include <esp_matter.h>
@@ -9,6 +10,7 @@
 #include <cstdint>
 #include <functional>
 #include <string>
+#include <utility>
 
 namespace esphome::matter {
 
@@ -75,12 +77,31 @@ public:
     T converted{};
     if (!convert_attribute_value(value, converted))
       return;
-    defer_to_main_loop(this->parent_,
-                       [this, converted]() { this->trigger(converted); });
+
+    {
+      LockGuard guard(this->pending_mutex_);
+      this->pending_value_ = std::move(converted);
+      if (this->dispatch_pending_)
+        return;
+      this->dispatch_pending_ = true;
+    }
+
+    defer_to_main_loop(this->parent_, [this]() {
+      T pending_value;
+      {
+        LockGuard guard(this->pending_mutex_);
+        pending_value = this->pending_value_;
+        this->dispatch_pending_ = false;
+      }
+      this->trigger(pending_value);
+    });
   }
 
 protected:
   MatterComponent *parent_;
+  Mutex pending_mutex_;
+  T pending_value_{};
+  bool dispatch_pending_{false};
 };
 
 esp_err_t

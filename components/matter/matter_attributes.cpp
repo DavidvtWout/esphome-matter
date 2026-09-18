@@ -318,17 +318,15 @@ endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
                              uint16_t endpoint_id, uint32_t cluster_id,
                              uint32_t attribute_id, esp_matter_attr_val_t *val,
                              void *priv_data) {
-  if (type == esp_matter::attribute::PRE_UPDATE && val != nullptr) {
-    const std::string value = format_attribute_value(*val);
-    ESP_LOGV(TAG,
-             "Attribute update: endpoint=%u, cluster=0x%08" PRIx32
-             ", attribute=0x%08" PRIx32 ", value=%s",
-             endpoint_id, cluster_id, attribute_id, value.c_str());
-  }
-
   if (type != esp_matter::attribute::POST_UPDATE ||
       global_matter_component == nullptr || val == nullptr)
     return ESP_OK;
+
+  const std::string value = format_attribute_value(*val);
+  ESP_LOGV(TAG,
+           "Attribute update: endpoint=%u, cluster=0x%08" PRIx32
+           ", attribute=0x%08" PRIx32 ", value=%s",
+           endpoint_id, cluster_id, attribute_id, value.c_str());
 
   for (auto *trigger : global_matter_component->attribute_triggers_) {
     if (trigger->matches(endpoint_id, cluster_id, attribute_id))
