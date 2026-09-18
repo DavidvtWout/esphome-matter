@@ -1,0 +1,33 @@
+# This is just an example of how to implement a device type by only updating attributes and responding to attribute
+# updates. It recommended to use the light_id mapping instead unless you want to implement non-standard behaviour:
+#
+# matter:
+#   endpoints:
+#     1:
+#       on_off_light:
+#         light_id: light_id
+
+# Variables: endpoint_id, light_id
+
+matter:
+  endpoints:
+    ${endpoint_id}:
+      on_off_light:
+      on_attribute:
+        on_off.on_off:
+          if:
+            condition:
+              lambda: return id(${light_id}).remote_values.is_on() != value;
+            then:
+              light.control:
+                id: ${light_id}
+                state: !lambda return value;
+                transition_length: 0s
+
+light:
+  - id: !extend ${light_id}
+    on_state:
+      then:
+        - matter.set_attribute:
+            path: ${endpoint_id}.on_off.on_off
+            value: !lambda return id(${light_id}).remote_values.is_on();

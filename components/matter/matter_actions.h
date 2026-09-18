@@ -3,6 +3,7 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 #include "esphome/core/automation.h"
+#include "matter_attributes.h"
 
 #include <esp_matter.h>
 
@@ -19,6 +20,30 @@ void register_client_request_callbacks();
 void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
                          chip::CommandId command,
                          const char *command_data = "{}");
+
+template <typename T, typename... Ts>
+class MatterSetAttributeAction : public Action<Ts...> {
+public:
+  void set_endpoint_id(uint16_t endpoint_id) {
+    this->endpoint_id_ = endpoint_id;
+  }
+  void set_cluster_id(uint32_t cluster_id) { this->cluster_id_ = cluster_id; }
+  void set_attribute_id(uint32_t attribute_id) {
+    this->attribute_id_ = attribute_id;
+  }
+  void set_value(TemplatableValue<T, Ts...> value) { this->value_ = value; }
+
+  void play(Ts... x) override {
+    set_attribute_value(this->endpoint_id_, this->cluster_id_,
+                        this->attribute_id_, this->value_.value(x...));
+  }
+
+protected:
+  uint16_t endpoint_id_{0};
+  uint32_t cluster_id_{0};
+  uint32_t attribute_id_{0};
+  TemplatableValue<T, Ts...> value_;
+};
 
 template <typename... Ts> class MatterSendCommandAction : public Action<Ts...> {
 public:

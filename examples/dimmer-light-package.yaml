@@ -1,0 +1,42 @@
+esphome:
+  name: matter-dimmer-light-package
+
+esp32:
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: github://DavidvtWout/esphome-matter@main
+
+packages:
+  matter_devices:
+    url: https://github.com/DavidvtWout/esphome-matter
+    ref: main
+    files:
+      - path: packages/dimmable-light.yaml
+        vars:
+          endpoint_id: 1
+          light_id: dimmable_light
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+openthread:
+  tlv: !secret thread_tlv
+
+output:
+  - platform: ledc
+    id: dimmable_light_output
+    pin: GPIO8
+
+light:
+  - platform: monochromatic
+    id: dimmable_light
+    name: Dimmable Light
+    output: dimmable_light_output
+    restore_mode: ALWAYS_OFF

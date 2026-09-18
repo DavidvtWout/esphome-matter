@@ -4,15 +4,18 @@ from dataclasses import dataclass, field
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
+from esphome import automation
+from esphome.components import light
 from esphome.components.binary_sensor import BinarySensor
 from esphome.components.esp32 import add_idf_sdkconfig_option
 from esphome.components.sensor import Sensor
-from esphome.const import CONF_LIGHT_ID
+from esphome.config import Config
+from esphome.const import CONF_LIGHT_ID, CONF_RESTORE_MODE, CONF_TRIGGER_ID
 from esphome.core import ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model.attributes import SensorAttribute
+from .data_model.attributes import SensorAttribute, attribute_value_type
 from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME, Cluster
 from .data_model.device_types import (
     DEVICE_TYPES,
@@ -20,9 +23,79 @@ from .data_model.device_types import (
     DEVICE_TYPES_BY_ID,
     DeviceType,
 )
-from .types import MatterEndpointRef
+from .types import MatterAttributeTrigger, MatterEndpointRef
+from .util import snake_case
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def light_restore_warning(matter_config: dict, full_config: Config):
+    for endpoint_config in matter_config.get(CONF_ENDPOINTS, {}).values():
+        for conf_key, device_config in endpoint_config.items():
+            if not isinstance(device_config, dict):
+                continue
+            light_id = device_config.get(CONF_LIGHT_ID)
+            if light_id is None:
+                continue
+            try:
+                light_path = full_config.get_path_for_id(light_id)[:-1]
+                light_config = full_config.get_config_for_path(light_path)
+            except KeyError:
+                continue
+            restore_mode = light_config[CONF_RESTORE_MODE]
+            if restore_mode != "ALWAYS_OFF":
+                _LOGGER.warning(
+                    "Light '%s' is exposed through Matter with restore mode %s and should use "
+                    "restore_mode: ALWAYS_OFF so Matter can restore its power-on state",
+                    light_id,
+                    restore_mode,
+                )
+
+
+def _on_attribute_schema():
+    options = {}
+    for cluster in CLUSTERS:
+        attributes = {}
+        for attribute in cluster.server_attributes:
+            if attribute.name is None:
+                continue
+            value_type = attribute_value_type(attribute)
+            trigger_schema = {}
+            if value_type is not None:
+                trigger_schema[cv.GenerateID(CONF_TRIGGER_ID)] = cv.declare_id(
+                    MatterAttributeTrigger.template(value_type)
+                )
+            attribute_key = snake_case(attribute.name)
+            automation_schema = automation.validate_automation(trigger_schema)
+            attributes[cv.Optional(attribute_key)] = automation_schema
+            options[cv.Optional(f"{snake_case(cluster.name)}.{attribute_key}")] = (
+                automation_schema
+            )
+        if attributes:
+            options[cv.Optional(snake_case(cluster.name))] = cv.Schema(attributes)
+    return cv.Schema(options)
+
+
+def _validate_on_attribute_forms(config):
+    configured = config.get(CONF_ON_ATTRIBUTE, {})
+    for cluster in CLUSTERS:
+        cluster_key = snake_case(cluster.name)
+        nested = configured.get(cluster_key, {})
+        for attribute in cluster.server_attributes:
+            if attribute.name is None:
+                continue
+            attribute_key = snake_case(attribute.name)
+            short_key = f"{cluster_key}.{attribute_key}"
+            if attribute_key in nested and short_key in configured:
+                raise cv.Invalid(
+                    f"Matter attribute {short_key} cannot be configured in both "
+                    "nested and short form"
+                )
+    return config
+
+
+ON_ATTRIBUTE_SCHEMA = _on_attribute_schema()
+
 
 ENDPOINT_SCHEMA = cv.All(
     cv.Schema(
@@ -31,9 +104,11 @@ ENDPOINT_SCHEMA = cv.All(
             cv.Optional(CONF_EXTRA_CLUSTERS, default=list): cv.ensure_list(
                 cv.one_of(*(cluster.name for cluster in CLUSTERS))
             ),
+            cv.Optional(CONF_ON_ATTRIBUTE): ON_ATTRIBUTE_SCHEMA,
         }
         | {device_type.schema_key: device_type.schema() for device_type in DEVICE_TYPES}
     ),
+    _validate_on_attribute_forms,
 )
 
 
@@ -57,28 +132,63 @@ class Endpoint:
         self._cluster_configs: defaultdict[str, _ClusterConfig] = defaultdict(
             _ClusterConfig
         )
+        self._device_types: list[DeviceType] = []
 
     async def register(self, var):
-        cg.add(var.register_endpoint(self._endpoint_id))
-
-        # Register device types.
+        # Collect the complete endpoint structure before emitting its build callback.
         for conf_key, device_config in self._config.items():
             device_type = DEVICE_TYPES_BY_CONF_KEY.get(conf_key)
             if device_type:
-                await self._register_device_type(device_type, device_config)
+                await self._configure_device_type(device_type, device_config)
 
-        # Register clusters that haven't already been created by device type registration.
-        for cluster_name, cluster_config in self._cluster_configs.items():
-            if not cluster_config.created:
-                cluster = CLUSTERS_BY_NAME[cluster_name]
-                self._register_cluster(cluster)
+        for cluster_name in self._config[CONF_EXTRA_CLUSTERS]:
+            cluster = CLUSTERS_BY_NAME[cluster_name]
+            self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
+            self._cluster_configs.setdefault(cluster_name, _ClusterConfig())
 
-        # TODO: Register features that haven't already been enabled by cluster registration.
+        await self._register_attribute_automations()
 
-        # TODO: Register attributes that haven't already been created by cluster registration.
+        cg.add(
+            var.register_endpoint(
+                self._endpoint_id, cg.RawExpression(self._make_build_callback())
+            )
+        )
 
-    async def _register_device_type(self, device_type: DeviceType, device_config: dict):
-        """Registers a device type via the register_device_type method."""
+    async def _register_attribute_automations(self):
+        configured_clusters = self._config.get(CONF_ON_ATTRIBUTE, {})
+        for cluster in CLUSTERS:
+            cluster_key = snake_case(cluster.name)
+            cluster_config = configured_clusters.get(cluster_key, {})
+            for attribute in cluster.server_attributes:
+                if attribute.name is None:
+                    continue
+                value_type = attribute_value_type(attribute)
+                if value_type is None:
+                    continue
+                attribute_key = snake_case(attribute.name)
+                configurations = [
+                    *cluster_config.get(attribute_key, []),
+                    *configured_clusters.get(f"{cluster_key}.{attribute_key}", []),
+                ]
+                for conf in configurations:
+                    trigger = cg.new_Pvariable(
+                        conf[CONF_TRIGGER_ID],
+                        self._var,
+                        self._endpoint_id,
+                        cluster.id,
+                        attribute.id,
+                    )
+                    cg.add(self._var.register_attribute_trigger(trigger))
+                    await automation.build_automation(
+                        trigger, [(value_type, "value")], conf
+                    )
+
+    async def _configure_device_type(
+        self, device_type: DeviceType, device_config: dict
+    ):
+        """Collect the endpoint structure and register its runtime entity mappings."""
+        self._device_types.append(device_type)
+
         for cluster in device_type.server_clusters:
             # Enable all clusters and not only the enabled ones because esp_matter doesn't correctly guard endpoint compilation...
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
@@ -101,30 +211,15 @@ class Endpoint:
 
         # Register extra features
         for enabled_feature in device_config.get(CONF_FEATURES, ()):
-            print(enabled_feature)
             for cluster in device_type.server_clusters:
                 cluster_config = self._cluster_configs[cluster.name]
                 if enabled_feature in (f.name for f in cluster.features):
                     cluster_config.enabled_features[enabled_feature] = True
 
-        # Send device type registration to codegen
-        register_device_type = self._var.register_device_type.template(
-            cg.RawExpression(
-                f"esp_matter::endpoint::{device_type.namespace}::config_t"
-            ),
-            cg.RawExpression(f"esp_matter::endpoint::{device_type.namespace}::add"),
-        )
-        device_type_config = self._make_device_type_config(device_type)
-        cg.add(
-            register_device_type(
-                self._endpoint_id, device_type.namespace, device_type_config
-            )
-        )
-
-    def _make_device_type_config(self, device_type: DeviceType):
+    def _make_device_type_lines(self, device_type: DeviceType, index: int):
+        config_var = f"device_config_{index}"
         lines = [
-            "[] {",
-            f"esp_matter::endpoint::{device_type.namespace}::config_t config{{}};",
+            f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{}};"
         ]
 
         # Configure cluster features
@@ -144,11 +239,16 @@ class Endpoint:
                     )
             if feature_flags:
                 lines.append(
-                    f"config.{cluster.espm_namespace}.feature_flags = {' | '.join(feature_flags)};"
+                    f"{config_var}.{cluster.espm_namespace}.feature_flags = {' | '.join(feature_flags)};"
                 )
 
-        lines.extend(("return config;", "}()"))
-        return cg.RawExpression("\n".join(lines))
+        lines.extend(
+            (
+                f"if (esp_matter::endpoint::{device_type.namespace}::add(endpoint, &{config_var}) != ESP_OK)",
+                "  return false;",
+            )
+        )
+        return lines
 
     async def _register_sensor_attribute(
         self, sensor_id: ID, sensor_attribute: SensorAttribute
@@ -199,14 +299,12 @@ class Endpoint:
             )
             cg.add(register_sensor_attribute)
 
-    def _register_cluster(self, cluster: Cluster):
-        """Most clusters are already created when adding a device type to an endpoint. _register_cluster should
-        only be used for clusters that are optional to a device type and aren't already created.
-        """
+    def _make_cluster_lines(self, cluster: Cluster):
+        """Build lines for a cluster not created by a device type."""
         cluster_ns = f"esp_matter::cluster::{cluster.espm_namespace}"
 
-        # Make cluster config expression
-        lines = ["[] {", f"{cluster_ns}::config_t config{{}};"]
+        config_var = f"{cluster.espm_namespace}_config"
+        lines = [f"{cluster_ns}::config_t {config_var}{{}};"]
         feature_flags = []
         features_by_name = {feature.name: feature for feature in cluster.features}
         cluster_config = self._cluster_configs[cluster.name]
@@ -222,23 +320,64 @@ class Endpoint:
                 f"{cluster_ns}::feature::{feature.namespace}::get_id()"
             )
         if feature_flags:
-            lines.append(f"config.feature_flags = {' | '.join(feature_flags)};")
-        lines.append("return config;")
-        lines.append("}()")
-        config_expression = cg.RawExpression("\n".join(lines))
-
-        cg.add(
-            self._var.register_cluster(
-                cg.TemplateArguments(
-                    cluster.id,
-                    cg.RawExpression(f"{cluster_ns}::config_t"),
-                    cg.RawExpression(f"{cluster_ns}::create"),
-                ),
-                self._endpoint_id,
-                cluster.name,
-                config_expression,
+            lines.append(f"{config_var}.feature_flags = {' | '.join(feature_flags)};")
+        lines.extend(
+            (
+                f"if ({cluster_ns}::create(endpoint, &{config_var}, esp_matter::CLUSTER_FLAG_SERVER) == nullptr)",
+                "  return false;",
             )
         )
+        return lines
+
+    def _make_build_callback(self) -> str:
+        lines = ["[](esp_matter::endpoint_t *endpoint) -> bool {"]
+
+        for index, device_type in enumerate(self._device_types):
+            lines.extend(self._make_device_type_lines(device_type, index))
+
+        extra_clusters = [
+            CLUSTERS_BY_NAME[cluster_name]
+            for cluster_name, cluster_config in self._cluster_configs.items()
+            if not cluster_config.created
+        ]
+        for cluster in extra_clusters:
+            lines.extend(self._make_cluster_lines(cluster))
+
+        # Choice features must be present in the config used to create their
+        # cluster. Other features on device-type-created clusters are added
+        # directly after the device type has created the cluster.
+        for cluster_name, cluster_config in self._cluster_configs.items():
+            if not cluster_config.created:
+                continue
+            cluster = CLUSTERS_BY_NAME[cluster_name]
+            features_by_name = {feature.name: feature for feature in cluster.features}
+            direct_features = [
+                features_by_name[feature_name]
+                for feature_name, enabled in cluster_config.enabled_features.items()
+                if enabled
+                and feature_name in features_by_name
+                and not cluster.is_choice_feature(features_by_name[feature_name])
+            ]
+            if not direct_features:
+                continue
+            cluster_var = f"{cluster.espm_namespace}_cluster"
+            lines.extend(
+                (
+                    f"auto *{cluster_var} = esp_matter::cluster::get(endpoint, {cluster.id});",
+                    f"if ({cluster_var} == nullptr)",
+                    "  return false;",
+                )
+            )
+            for feature in direct_features:
+                lines.extend(
+                    (
+                        f"if (esphome::matter::add_feature({cluster_var}, esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::add) != ESP_OK)",
+                        "  return false;",
+                    )
+                )
+
+        lines.extend(("return true;", "}"))
+        return "\n".join(lines)
 
 
 async def register_endpoints(var, config: ConfigType):

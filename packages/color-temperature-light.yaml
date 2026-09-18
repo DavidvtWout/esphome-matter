@@ -1,0 +1,75 @@
+# Variables: endpoint_id, light_id
+
+esphome:
+  on_boot:
+    priority: -100
+    then:
+      - matter.set_attribute:
+          path: ${endpoint_id}.color_control.color_temp_physical_min_mireds
+          value: !lambda |-
+            return static_cast<uint64_t>(std::lroundf(
+                id(${light_id}).get_traits().get_min_mireds()));
+      - matter.set_attribute:
+          path: ${endpoint_id}.color_control.color_temp_physical_max_mireds
+          value: !lambda |-
+            return static_cast<uint64_t>(std::lroundf(
+                id(${light_id}).get_traits().get_max_mireds()));
+
+matter:
+  endpoints:
+    ${endpoint_id}:
+      color_temperature_light:
+      on_attribute:
+        on_off.on_off:
+          if:
+            condition:
+              lambda: return id(${light_id}).remote_values.is_on() != value;
+            then:
+              light.control:
+                id: ${light_id}
+                state: !lambda return value;
+                transition_length: 0s
+        level_control.current_level:
+          if:
+            condition:
+              lambda: |-
+                return value >= 1 && value <= 254 &&
+                       std::fabs(id(${light_id}).remote_values.get_brightness() -
+                                 value / 254.0f) >= 0.5f / 254.0f;
+            then:
+              light.control:
+                id: ${light_id}
+                brightness: !lambda return value / 254.0f;
+                transition_length: 0s
+        color_control.color_temperature_mireds:
+          if:
+            condition:
+              lambda: |-
+                return std::fabs(
+                           id(${light_id}).remote_values.get_color_temperature() -
+                           value) >= 0.5f;
+            then:
+              light.control:
+                id: ${light_id}
+                color_temperature: !lambda return value;
+                transition_length: 0s
+
+light:
+  - id: !extend ${light_id}
+    on_state:
+      then:
+        - matter.set_attribute:
+            path: ${endpoint_id}.on_off.on_off
+            value: !lambda return id(${light_id}).remote_values.is_on();
+        - matter.set_attribute:
+            path: ${endpoint_id}.level_control.current_level
+            value: !lambda |-
+              return std::max<uint64_t>(
+                  static_cast<uint64_t>(std::lroundf(
+                      id(${light_id}).remote_values.get_brightness() * 254.0f)),
+                  1);
+        - matter.set_attribute:
+            path: ${endpoint_id}.color_control.color_temperature_mireds
+            value: !lambda |-
+              return static_cast<uint64_t>(std::lroundf(
+                  id(${light_id}).remote_values.get_color_temperature()));
