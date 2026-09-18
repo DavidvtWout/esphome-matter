@@ -88,6 +88,23 @@ bool convert_attribute_value(const esp_matter_attr_val_t &value,
 
 namespace {
 
+struct ActiveAttributeDispatch {
+  bool active{false};
+  uint16_t endpoint_id{0};
+  uint32_t cluster_id{0};
+  uint32_t attribute_id{0};
+};
+
+ActiveAttributeDispatch active_attribute_dispatch;
+
+bool is_attribute_update_echo(uint16_t endpoint_id, uint32_t cluster_id,
+                              uint32_t attribute_id) {
+  return active_attribute_dispatch.active &&
+         active_attribute_dispatch.endpoint_id == endpoint_id &&
+         active_attribute_dispatch.cluster_id == cluster_id &&
+         active_attribute_dispatch.attribute_id == attribute_id;
+}
+
 using AttributeActionValue =
     std::variant<bool, float, int64_t, uint64_t, std::string>;
 
@@ -260,6 +277,9 @@ void update_attribute_action_on_matter_thread(intptr_t context) {
 template <typename T>
 void schedule_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
                               uint32_t attribute_id, T value) {
+  if (is_attribute_update_echo(endpoint_id, cluster_id, attribute_id))
+    return;
+
   auto *update =
       new AttributeActionUpdate{endpoint_id, cluster_id, attribute_id,
                                 AttributeActionValue(std::move(value))};
@@ -274,6 +294,21 @@ void schedule_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
 }
 
 } // namespace
+
+MatterAttributeDispatchGuard::MatterAttributeDispatchGuard(
+    uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
+    : previous_active_(active_attribute_dispatch.active),
+      previous_endpoint_id_(active_attribute_dispatch.endpoint_id),
+      previous_cluster_id_(active_attribute_dispatch.cluster_id),
+      previous_attribute_id_(active_attribute_dispatch.attribute_id) {
+  active_attribute_dispatch = {true, endpoint_id, cluster_id, attribute_id};
+}
+
+MatterAttributeDispatchGuard::~MatterAttributeDispatchGuard() {
+  active_attribute_dispatch = {
+      this->previous_active_, this->previous_endpoint_id_,
+      this->previous_cluster_id_, this->previous_attribute_id_};
+}
 
 void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
                          uint32_t attribute_id, bool value) {

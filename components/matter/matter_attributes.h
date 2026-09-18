@@ -37,6 +37,19 @@ void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
                          uint32_t attribute_id, const std::string &value);
 void replay_attribute_triggers(MatterComponent *component);
 
+class MatterAttributeDispatchGuard {
+public:
+  MatterAttributeDispatchGuard(uint16_t endpoint_id, uint32_t cluster_id,
+                               uint32_t attribute_id);
+  ~MatterAttributeDispatchGuard();
+
+protected:
+  bool previous_active_;
+  uint16_t previous_endpoint_id_;
+  uint32_t previous_cluster_id_;
+  uint32_t previous_attribute_id_;
+};
+
 class MatterAttributeTriggerBase {
 public:
   MatterAttributeTriggerBase(uint16_t endpoint_id, uint32_t cluster_id,
@@ -93,6 +106,8 @@ public:
         pending_value = this->pending_value_;
         this->dispatch_pending_ = false;
       }
+      MatterAttributeDispatchGuard dispatch_guard(
+          this->endpoint_id_, this->cluster_id_, this->attribute_id_);
       this->trigger(pending_value);
     });
   }
