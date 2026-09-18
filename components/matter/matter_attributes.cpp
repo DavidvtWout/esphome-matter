@@ -91,6 +91,52 @@ namespace {
 using AttributeActionValue =
     std::variant<bool, float, int64_t, uint64_t, std::string>;
 
+std::string format_attribute_value(const esp_matter_attr_val_t &value) {
+  if (value.is_null())
+    return "null";
+
+  switch (value.get_base_type()) {
+  case ESP_MATTER_VAL_TYPE_BOOLEAN:
+    return value.val.b ? "true" : "false";
+  case ESP_MATTER_VAL_TYPE_FLOAT:
+    return std::to_string(value.val.f);
+  case ESP_MATTER_VAL_TYPE_INT8:
+    return std::to_string(value.val.i8);
+  case ESP_MATTER_VAL_TYPE_INT16:
+    return std::to_string(value.val.i16);
+  case ESP_MATTER_VAL_TYPE_INT32:
+    return std::to_string(value.val.i32);
+  case ESP_MATTER_VAL_TYPE_INT64:
+    return std::to_string(value.val.i64);
+  case ESP_MATTER_VAL_TYPE_UINT8:
+  case ESP_MATTER_VAL_TYPE_ENUM8:
+  case ESP_MATTER_VAL_TYPE_BITMAP8:
+    return std::to_string(value.val.u8);
+  case ESP_MATTER_VAL_TYPE_UINT16:
+  case ESP_MATTER_VAL_TYPE_ENUM16:
+  case ESP_MATTER_VAL_TYPE_BITMAP16:
+    return std::to_string(value.val.u16);
+  case ESP_MATTER_VAL_TYPE_UINT32:
+  case ESP_MATTER_VAL_TYPE_BITMAP32:
+    return std::to_string(value.val.u32);
+  case ESP_MATTER_VAL_TYPE_UINT64:
+    return std::to_string(value.val.u64);
+  case ESP_MATTER_VAL_TYPE_CHAR_STRING:
+  case ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING:
+    return '"' +
+           std::string(reinterpret_cast<const char *>(value.val.a.b),
+                       value.val.a.s) +
+           '"';
+  case ESP_MATTER_VAL_TYPE_ARRAY:
+    return "<array, " + std::to_string(value.val.a.s) + " bytes>";
+  case ESP_MATTER_VAL_TYPE_OCTET_STRING:
+  case ESP_MATTER_VAL_TYPE_LONG_OCTET_STRING:
+    return "<octet string, " + std::to_string(value.val.a.s) + " bytes>";
+  default:
+    return "<unsupported>";
+  }
+}
+
 struct AttributeActionUpdate {
   uint16_t endpoint_id;
   uint32_t cluster_id;
@@ -272,10 +318,13 @@ endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
                              uint16_t endpoint_id, uint32_t cluster_id,
                              uint32_t attribute_id, esp_matter_attr_val_t *val,
                              void *priv_data) {
-  ESP_LOGV(TAG,
-           "Attribute update: type=%u, endpoint=%u, cluster=0x%08" PRIx32
-           ", attribute=0x%08" PRIx32,
-           static_cast<unsigned>(type), endpoint_id, cluster_id, attribute_id);
+  if (type == esp_matter::attribute::PRE_UPDATE && val != nullptr) {
+    const std::string value = format_attribute_value(*val);
+    ESP_LOGV(TAG,
+             "Attribute update: endpoint=%u, cluster=0x%08" PRIx32
+             ", attribute=0x%08" PRIx32 ", value=%s",
+             endpoint_id, cluster_id, attribute_id, value.c_str());
+  }
 
   if (type != esp_matter::attribute::POST_UPDATE ||
       global_matter_component == nullptr || val == nullptr)

@@ -132,9 +132,8 @@ class Endpoint:
     async def _register_attribute_automations(self):
         configured_clusters = self._config.get(CONF_ON_ATTRIBUTE, {})
         for cluster in CLUSTERS:
-            cluster_config = configured_clusters.get(snake_case(cluster.name), {})
-            if not cluster_config:
-                continue
+            cluster_key = snake_case(cluster.name)
+            cluster_config = configured_clusters.get(cluster_key, {})
             for attribute in cluster.server_attributes:
                 if attribute.name is None:
                     continue
@@ -144,9 +143,7 @@ class Endpoint:
                 attribute_key = snake_case(attribute.name)
                 configurations = [
                     *cluster_config.get(attribute_key, []),
-                    *configured_clusters.get(
-                        f"{snake_case(cluster.name)}.{attribute_key}", []
-                    ),
+                    *configured_clusters.get(f"{cluster_key}.{attribute_key}", []),
                 ]
                 for conf in configurations:
                     trigger = cg.new_Pvariable(
