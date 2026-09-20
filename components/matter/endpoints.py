@@ -266,7 +266,7 @@ class Endpoint:
 
         sensor = await cg.get_variable(sensor_id)
         converter = cg.RawExpression(
-            f"esphome::matter::sensor_converter::{sensor_attribute.converter}"
+            f"esphome::matter::conversion::{sensor_attribute.converter}"
         )
         if sensor_attribute.sensor_type is BinarySensor:
             args = [sensor, self._endpoint_id, cluster.id, attribute.id, converter]

@@ -5,6 +5,8 @@
 #include "esphome/core/helpers.h"
 #ifdef USE_MATTER
 
+#include "matter_conversions.h"
+
 #include <esp_matter.h>
 
 #include <cstdint>
@@ -17,13 +19,6 @@ namespace esphome::matter {
 class MatterComponent;
 
 void defer_to_main_loop(MatterComponent *component, std::function<void()> &&f);
-
-bool convert_attribute_value(const esp_matter_attr_val_t &value, bool &out);
-bool convert_attribute_value(const esp_matter_attr_val_t &value, float &out);
-bool convert_attribute_value(const esp_matter_attr_val_t &value, int64_t &out);
-bool convert_attribute_value(const esp_matter_attr_val_t &value, uint64_t &out);
-bool convert_attribute_value(const esp_matter_attr_val_t &value,
-                             std::string &out);
 
 void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
                          uint32_t attribute_id, bool value);
@@ -88,7 +83,7 @@ public:
     if (value.is_null())
       return;
     T converted{};
-    if (!convert_attribute_value(value, converted))
+    if (!conversion::convert_attribute_value(value, converted))
       return;
 
     {

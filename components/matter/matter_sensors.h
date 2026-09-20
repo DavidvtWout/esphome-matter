@@ -3,6 +3,7 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 
+#include "matter_conversions.h"
 #include "matter_endpoints.h"
 
 #ifdef USE_BINARY_SENSOR
@@ -16,23 +17,6 @@
 #include <type_traits>
 
 namespace esphome::matter {
-
-namespace sensor_converter {
-
-esp_matter_attr_val_t ampere(float value);
-esp_matter_attr_val_t boolean_state(bool value);
-esp_matter_attr_val_t concentration(float value);
-esp_matter_attr_val_t flow(float value);
-esp_matter_attr_val_t frequency(float value);
-esp_matter_attr_val_t illuminance(float value);
-esp_matter_attr_val_t occupancy(bool value);
-esp_matter_attr_val_t percentage(float value);
-esp_matter_attr_val_t pressure(float value);
-esp_matter_attr_val_t temperature(float value);
-esp_matter_attr_val_t volts(float value);
-esp_matter_attr_val_t watts(float value);
-
-} // namespace sensor_converter
 
 using SensorValueConverter = esp_matter_attr_val_t (*)(float);
 using BinarySensorValueConverter = esp_matter_attr_val_t (*)(bool);

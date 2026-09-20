@@ -2,6 +2,7 @@
 #if defined(USE_MATTER) && defined(USE_LIGHT)
 
 #include "matter_component.h"
+#include "matter_conversions.h"
 #include "matter_lights.h"
 
 #include <algorithm>
@@ -45,10 +46,9 @@ void MatterLightMapping::push_state_to_matter() {
           light::ColorCapability::COLOR_TEMPERATURE);
   bool on = this->light_->remote_values.is_on();
   float brightness = this->light_->remote_values.get_brightness();
-  auto level = static_cast<uint8_t>(std::lroundf(brightness * 254.0f));
-  level = level < 1 ? 1 : level;
-  auto color_temperature = static_cast<uint16_t>(std::lroundf(std::clamp(
-      this->light_->remote_values.get_color_temperature(), 1.0f, 65279.0f)));
+  auto level = conversion::brightness_to_level(brightness);
+  auto color_temperature = conversion::color_temperature_to_mireds(
+      this->light_->remote_values.get_color_temperature());
   chip::DeviceLayer::SystemLayer().ScheduleLambda(
       [eid, has_level, has_color_temperature, on, level, color_temperature]() {
         using namespace chip::app::Clusters;
@@ -82,10 +82,10 @@ void MatterLightMapping::sync_state_from_matter() {
       this->has_server_cluster(chip::app::Clusters::ColorControl::Id) &&
       traits.supports_color_capability(
           light::ColorCapability::COLOR_TEMPERATURE);
-  auto min_mireds = static_cast<uint16_t>(
-      std::lroundf(std::clamp(traits.get_min_mireds(), 1.0f, 65279.0f)));
-  auto max_mireds = static_cast<uint16_t>(
-      std::lroundf(std::clamp(traits.get_max_mireds(), 1.0f, 65279.0f)));
+  auto min_mireds =
+      conversion::color_temperature_to_mireds(traits.get_min_mireds());
+  auto max_mireds =
+      conversion::color_temperature_to_mireds(traits.get_max_mireds());
   chip::DeviceLayer::SystemLayer().ScheduleLambda([this, eid, has_level,
                                                    has_color_temperature,
                                                    min_mireds, max_mireds]() {
@@ -150,7 +150,7 @@ void MatterLightMapping::sync_state_from_matter() {
           auto call = this->light_->make_call();
           call.set_state(on);
           if (has_valid_level)
-            call.set_brightness(level / 254.0f);
+            call.set_brightness(conversion::level_to_brightness(level));
           if (has_valid_color_temperature)
             call.set_color_temperature(color_temperature);
           call.set_transition_length(0);
@@ -178,7 +178,7 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     uint8_t level = val.val.u8;
     if (level < 1 || level > 254)
       return;
-    float brightness = level / 254.0f;
+    float brightness = conversion::level_to_brightness(level);
     if (std::fabs(this->light_->remote_values.get_brightness() - brightness) <
         (0.5f / 254.0f))
       return;
