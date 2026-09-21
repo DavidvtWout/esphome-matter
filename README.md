@@ -143,7 +143,7 @@ binary_sensor:
       matter.send_command:
         path: dimmer_endpoint.on_off.on
     on_press:
-      # Pressing up can turn on a light
+      # Pressing up can turn on a light. If you don't want this, remove "_with_on_off".
       matter.send_command:
         path: dimmer_endpoint.level_control.move_with_on_off
         arguments:
@@ -194,10 +194,6 @@ light:
     name: "User LED"
     output: user_led_pin
     id: user_led
-    # It's recommended to set `internal: true` for lights, since this hides the entity from
-    # Home Assistant. Without it, both HA and matter try to own the light's state. If both
-    # issue a command at nearly the same time, they enter a feedback loop and the light
-    # toggles on/off indefinitely.
     internal: true
 
 # A Matter factory reset wipes all fabrics and re-opens the commissioning window.

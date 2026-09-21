@@ -131,6 +131,31 @@ class Endpoint:
         self._device_types: list[DeviceType] = []
 
     async def register(self, var):
+        """Registers an endpoint using the register_endpoint function in matter_component.h.
+
+        Using ESPHome codegen, a function is build and registered that adds device types and clusters to an endpoint.
+        These functions are called just before Matter is started.
+
+        Sadly, device type and cluster creation is quite complicated and not easily generalizable for all device types.
+        For example, most optional clusters must be created after the device type has been created. However, the
+        Electrical Sensor is an exception to this rule. The matter spec defines that this device type must of at least
+        one of the "ElectricalEnergyMeasurement" or "ElectricalPowerMeasurement" clusters. esp-matter enforces this
+        by adding a "with_clusters" argument to the electrical_sensor config.
+
+        Cluster creation also often requires a custom config to be created successfully. This config is either passed
+        directly to the create function of the cluster or to the device type config if the cluster is mandatory.
+
+        Because of all of these complications, the endpoint creation process is a bit of a mess now. The mandatory
+        clusters of a device type are always created by esp-matter (except for the binding cluster...).
+        The same is true for cluster attributes. Mandatory attributes are always created, some optional attributes are
+        created through config options and some are created after the cluster.
+        This whole process could have easily been made more generalizable by esp-matter, but they decided not to...
+
+        In the future I might bypass esp-matter entirely for endpoint creation and use connectedhomeip directly.
+        However, this also brings challenges and isn't entirely generalizable either. For example, the concentration
+        measurement clusters use a different namespace naming than most other clusters.
+        """
+
         # Collect the complete endpoint structure before emitting its build callback.
         for conf_key, device_config in self._config.items():
             device_type = DEVICE_TYPES_BY_CONF_KEY.get(conf_key)
