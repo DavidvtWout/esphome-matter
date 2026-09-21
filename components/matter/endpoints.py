@@ -94,9 +94,6 @@ def _validate_on_attribute_forms(config):
     return config
 
 
-ON_ATTRIBUTE_SCHEMA = _on_attribute_schema()
-
-
 ENDPOINT_SCHEMA = cv.All(
     cv.Schema(
         {
@@ -104,7 +101,7 @@ ENDPOINT_SCHEMA = cv.All(
             cv.Optional(CONF_EXTRA_CLUSTERS, default=list): cv.ensure_list(
                 cv.one_of(*(cluster.name for cluster in CLUSTERS))
             ),
-            cv.Optional(CONF_ON_ATTRIBUTE): ON_ATTRIBUTE_SCHEMA,
+            cv.Optional(CONF_ON_ATTRIBUTE): _on_attribute_schema(),
         }
         | {device_type.schema_key: device_type.schema() for device_type in DEVICE_TYPES}
     ),
@@ -121,8 +118,7 @@ class _ClusterConfig:
 
 
 class Endpoint:
-    def __init__(self, var, endpoint_id: int, config: dict):
-        self._var = var
+    def __init__(self, endpoint_id: int, config: dict):
         self._endpoint_id = endpoint_id
         self._config = config
 
@@ -139,22 +135,19 @@ class Endpoint:
         for conf_key, device_config in self._config.items():
             device_type = DEVICE_TYPES_BY_CONF_KEY.get(conf_key)
             if device_type:
-                await self._configure_device_type(device_type, device_config)
+                await self._configure_device_type(var, device_type, device_config)
 
         for cluster_name in self._config[CONF_EXTRA_CLUSTERS]:
             cluster = CLUSTERS_BY_NAME[cluster_name]
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
             self._cluster_configs.setdefault(cluster_name, _ClusterConfig())
 
-        await self._register_attribute_automations()
+        await self._register_attribute_automations(var)
 
-        cg.add(
-            var.register_endpoint(
-                self._endpoint_id, cg.RawExpression(self._make_build_callback())
-            )
-        )
+        build_fn = cg.RawExpression(self._make_build_callback())
+        cg.add(var.register_endpoint(self._endpoint_id, build_fn))
 
-    async def _register_attribute_automations(self):
+    async def _register_attribute_automations(self, var):
         configured_clusters = self._config.get(CONF_ON_ATTRIBUTE, {})
         for cluster in CLUSTERS:
             cluster_key = snake_case(cluster.name)
@@ -173,18 +166,18 @@ class Endpoint:
                 for conf in configurations:
                     trigger = cg.new_Pvariable(
                         conf[CONF_TRIGGER_ID],
-                        self._var,
+                        var,
                         self._endpoint_id,
                         cluster.id,
                         attribute.id,
                     )
-                    cg.add(self._var.register_attribute_trigger(trigger))
+                    cg.add(var.register_attribute_trigger(trigger))
                     await automation.build_automation(
                         trigger, [(value_type, "value")], conf
                     )
 
     async def _configure_device_type(
-        self, device_type: DeviceType, device_config: dict
+        self, var, device_type: DeviceType, device_config: dict
     ):
         """Collect the endpoint structure and register its runtime entity mappings."""
         self._device_types.append(device_type)
@@ -202,12 +195,12 @@ class Endpoint:
         # Register sensor attributes
         for sensor_attr in device_type.sensor_attributes:
             if sensor_id := device_config.get(sensor_attr.conf_key):
-                await self._register_sensor_attribute(sensor_id, sensor_attr)
+                await self._register_sensor_attribute(var, sensor_id, sensor_attr)
 
         # Register ESPHome entities
         if CONF_LIGHT_ID in device_config:
             light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
-            cg.add(self._var.map_light_to_endpoint(light_, self._endpoint_id))
+            cg.add(var.map_light_to_endpoint(light_, self._endpoint_id))
 
         # Register extra features
         for enabled_feature in device_config.get(CONF_FEATURES, ()):
@@ -251,7 +244,7 @@ class Endpoint:
         return lines
 
     async def _register_sensor_attribute(
-        self, sensor_id: ID, sensor_attribute: SensorAttribute
+        self, var, sensor_id: ID, sensor_attribute: SensorAttribute
     ):
         cluster = sensor_attribute.cluster
         attribute = sensor_attribute.attribute
@@ -275,7 +268,7 @@ class Endpoint:
                 args.append(
                     cg.RawExpression("esphome::matter::update_boolean_state_attribute")
                 )
-            cg.add(self._var.register_binary_sensor_attribute(*args))
+            cg.add(var.register_binary_sensor_attribute(*args))
         elif sensor_attribute.code_driven:
             self.global_includes.add(cluster.chip_include)
             cluster_type = cg.RawExpression(cluster.chip_fqn)
@@ -287,14 +280,14 @@ class Endpoint:
                 }[attribute.type]
             )
             setter = cg.RawExpression(f"&{cluster.chip_fqn}::SetMeasuredValue")
-            register = self._var.register_code_driven_sensor_attribute.template(
+            register = var.register_code_driven_sensor_attribute.template(
                 cluster_type, value_type, setter
             )
             cg.add(
                 register(sensor, self._endpoint_id, cluster.id, attribute.id, converter)
             )
         else:
-            register_sensor_attribute = self._var.register_sensor_attribute(
+            register_sensor_attribute = var.register_sensor_attribute(
                 sensor, self._endpoint_id, cluster.id, attribute.id, converter
             )
             cg.add(register_sensor_attribute)
@@ -330,6 +323,7 @@ class Endpoint:
         return lines
 
     def _make_build_callback(self) -> str:
+        """ """
         lines = ["[](esp_matter::endpoint_t *endpoint) -> bool {"]
 
         for index, device_type in enumerate(self._device_types):
@@ -400,7 +394,7 @@ async def register_endpoints(var, config: ConfigType):
     )
 
     for endpoint_id, endpoint_config in config[CONF_ENDPOINTS].items():
-        endpoint = Endpoint(var, endpoint_id, endpoint_config)
+        endpoint = Endpoint(endpoint_id, endpoint_config)
         await endpoint.register(var)
         global_includes.update(endpoint.global_includes)
         enabled_sdkconfig_clusters.update(endpoint.enabled_sdkconfig_options)
