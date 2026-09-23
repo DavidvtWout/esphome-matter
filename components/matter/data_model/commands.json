@@ -186,7 +186,8 @@
           "name": "Level",
           "type": "int8u",
           "max": 254,
-          "unit": "percentage"
+          "unit": "percentage",
+          "multiplier": 254
         },
         {
           "id": 1,
@@ -235,7 +236,8 @@
           "id": 1,
           "name": "Rate",
           "type": "int8u",
-          "unit": "percentage_rate"
+          "unit": "percentage_rate",
+          "multiplier": 254
         },
         {
           "id": 2,
@@ -276,7 +278,8 @@
           "id": 1,
           "name": "StepSize",
           "type": "int8u",
-          "unit": "percentage"
+          "unit": "percentage",
+          "multiplier": 254
         },
         {
           "id": 2,
@@ -341,7 +344,8 @@
           "name": "Level",
           "type": "int8u",
           "max": 254,
-          "unit": "percentage"
+          "unit": "percentage",
+          "multiplier": 254
         },
         {
           "id": 1,
@@ -390,7 +394,8 @@
           "id": 1,
           "name": "Rate",
           "type": "int8u",
-          "unit": "percentage_rate"
+          "unit": "percentage_rate",
+          "multiplier": 254
         },
         {
           "id": 2,
@@ -431,7 +436,8 @@
           "id": 1,
           "name": "StepSize",
           "type": "int8u",
-          "unit": "percentage"
+          "unit": "percentage",
+          "multiplier": 254
         },
         {
           "id": 2,
@@ -4320,7 +4326,8 @@
           "id": 1,
           "name": "Rate",
           "type": "int8u",
-          "unit": "saturation_rate"
+          "unit": "saturation_rate",
+          "multiplier": 254
         },
         {
           "id": 2,
@@ -4445,13 +4452,17 @@
           "id": 0,
           "name": "ColorX",
           "type": "int16u",
-          "max": 65279
+          "max": 65279,
+          "unit": "xy_colour",
+          "multiplier": 65536
         },
         {
           "id": 1,
           "name": "ColorY",
           "type": "int16u",
-          "max": 65279
+          "max": 65279,
+          "unit": "xy_colour",
+          "multiplier": 65536
         },
         {
           "id": 2,
@@ -4488,12 +4499,16 @@
         {
           "id": 0,
           "name": "RateX",
-          "type": "int16s"
+          "type": "int16s",
+          "unit": "xy_colour_rate",
+          "multiplier": 65536
         },
         {
           "id": 1,
           "name": "RateY",
-          "type": "int16s"
+          "type": "int16s",
+          "unit": "xy_colour_rate",
+          "multiplier": 65536
         },
         {
           "id": 2,
@@ -4521,12 +4536,16 @@
         {
           "id": 0,
           "name": "StepX",
-          "type": "int16s"
+          "type": "int16s",
+          "unit": "xy_colour",
+          "multiplier": 65536
         },
         {
           "id": 1,
           "name": "StepY",
-          "type": "int16s"
+          "type": "int16s",
+          "unit": "xy_colour",
+          "multiplier": 65536
         },
         {
           "id": 2,
@@ -4622,7 +4641,9 @@
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4710,7 +4731,9 @@
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4755,7 +4778,9 @@
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,

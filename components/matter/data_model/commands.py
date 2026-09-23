@@ -9,47 +9,6 @@ from ..util import snake_case
 
 _LOGGER = logging.getLogger(__name__)
 
-_INTEGER_RANGES = {
-    "int8u": (0, 0xFF),
-    "int16u": (0, 0xFFFF),
-    "int32u": (0, 0xFFFFFFFF),
-    "int64u": (0, 0xFFFFFFFFFFFFFFFF),
-    "int8s": (-0x80, 0x7F),
-    "int16s": (-0x8000, 0x7FFF),
-    "int32s": (-0x80000000, 0x7FFFFFFF),
-    "int64s": (-0x8000000000000000, 0x7FFFFFFFFFFFFFFF),
-    "enum8": (0, 0xFF),
-    "bitmap8": (0, 0xFF),
-    "bitmap16": (0, 0xFFFF),
-    "bitmap32": (0, 0xFFFFFFFF),
-    "bitmap64": (0, 0xFFFFFFFFFFFFFFFF),
-}
-
-_ESP_MATTER_JSON_TYPES = {
-    "int8s": "I8",
-    "int16s": "I16",
-    "int32s": "I32",
-    "int64s": "I64",
-    "int8u": "U8",
-    "int16u": "U16",
-    "int32u": "U32",
-    "int64u": "U64",
-    "enum8": "U8",
-    "enum16": "U16",
-    "bitmap8": "U8",
-    "bitmap16": "U16",
-    "bitmap32": "U32",
-    "bitmap64": "U64",
-    "boolean": "BOOL",
-    "single": "FP",
-    "double": "DFP",
-    "char_string": "STR",
-    "long_char_string": "STR",
-    "octet_string": "BYT",
-    "long_octet_string": "BYT",
-    "struct": "OBJ",
-}
-
 
 def _seconds(multiplier=1):
     def _validate(value):
@@ -107,6 +66,40 @@ def _saturation(multiplier=254):
     return _validate
 
 
+def _xy_colour(multiplier=65536):
+    def _validate(value):
+        if isinstance(value, int):
+            _LOGGER.warning(
+                "Integer XY colour value %s is interpreted as a raw Matter value. A float is recommended",
+                value,
+            )
+            return value
+        if isinstance(value, float):
+            if not 0.0 <= value <= 1.0:
+                raise cv.Invalid("XY colour value must be in the range [0.0, 1.0]")
+            return round(value * multiplier)
+        raise cv.Invalid("XY colour value should be a float")
+
+    return _validate
+
+
+def _xy_colour_rate(multiplier=65536):
+    def _validate(value):
+        if isinstance(value, int):
+            _LOGGER.warning(
+                "Integer XY colour value %s is interpreted as a raw Matter value. A float is recommended",
+                value,
+            )
+            return value
+        if isinstance(value, float):
+            if not -0.5 <= value < 0.5:
+                raise cv.Invalid("XY colour rate must be in the range [-0.5, 0.5)")
+            return round(value * multiplier)
+        raise cv.Invalid("XY colour rate should be a float")
+
+    return _validate
+
+
 def _rate(validator_factory):
     def _factory(multiplier=None):
         def _validate(value):
@@ -130,6 +123,50 @@ _UNIT_VALIDATORS = {
     "hue_rate": _rate(_hue),
     "saturation": _saturation,
     "saturation_rate": _saturation,  # Unitless so no rate.
+    "xy_colour": _xy_colour,
+    "xy_colour_rate": _xy_colour_rate,
+}
+
+
+_INTEGER_RANGES = {
+    "int8u": (0, 0xFF),
+    "int16u": (0, 0xFFFF),
+    "int32u": (0, 0xFFFFFFFF),
+    "int64u": (0, 0xFFFFFFFFFFFFFFFF),
+    "int8s": (-0x80, 0x7F),
+    "int16s": (-0x8000, 0x7FFF),
+    "int32s": (-0x80000000, 0x7FFFFFFF),
+    "int64s": (-0x8000000000000000, 0x7FFFFFFFFFFFFFFF),
+    "enum8": (0, 0xFF),
+    "bitmap8": (0, 0xFF),
+    "bitmap16": (0, 0xFFFF),
+    "bitmap32": (0, 0xFFFFFFFF),
+    "bitmap64": (0, 0xFFFFFFFFFFFFFFFF),
+}
+
+_ESP_MATTER_JSON_TYPES = {
+    "int8s": "I8",
+    "int16s": "I16",
+    "int32s": "I32",
+    "int64s": "I64",
+    "int8u": "U8",
+    "int16u": "U16",
+    "int32u": "U32",
+    "int64u": "U64",
+    "enum8": "U8",
+    "enum16": "U16",
+    "bitmap8": "U8",
+    "bitmap16": "U16",
+    "bitmap32": "U32",
+    "bitmap64": "U64",
+    "boolean": "BOOL",
+    "single": "FP",
+    "double": "DFP",
+    "char_string": "STR",
+    "long_char_string": "STR",
+    "octet_string": "BYT",
+    "long_octet_string": "BYT",
+    "struct": "OBJ",
 }
 
 

@@ -30,7 +30,8 @@
       "args": [
         {
           "name": "Level",
-          "unit": "percentage"
+          "unit": "percentage",
+          "multiplier": 254
         },
         {
           "name": "TransitionTime",
@@ -44,7 +45,8 @@
       "args": [
         {
           "name": "Rate",
-          "unit": "percentage_rate"
+          "unit": "percentage_rate",
+          "multiplier": 254
         }
       ]
     },
@@ -52,7 +54,8 @@
       "args": [
         {
           "name": "StepSize",
-          "unit": "percentage"
+          "unit": "percentage",
+          "multiplier": 254
         },
         {
           "name": "TransitionTime",
@@ -66,7 +69,8 @@
       "args": [
         {
           "name": "Level",
-          "unit": "percentage"
+          "unit": "percentage",
+          "multiplier": 254
         },
         {
           "name": "TransitionTime",
@@ -80,7 +84,8 @@
       "args": [
         {
           "name": "Rate",
-          "unit": "percentage_rate"
+          "unit": "percentage_rate",
+          "multiplier": 254
         }
       ]
     },
@@ -88,7 +93,8 @@
       "args": [
         {
           "name": "StepSize",
-          "unit": "percentage"
+          "unit": "percentage",
+          "multiplier": 254
         },
         {
           "name": "TransitionTime",
@@ -158,7 +164,8 @@
       "args": [
         {
           "name": "Rate",
-          "unit": "saturation_rate"
+          "unit": "saturation_rate",
+          "multiplier": 254
         }
       ]
     },
@@ -200,6 +207,16 @@
     "MoveToColor": {
       "args": [
         {
+          "name": "ColorX",
+          "unit": "xy_colour",
+          "multiplier": 65536
+        },
+        {
+          "name": "ColorY",
+          "unit": "xy_colour",
+          "multiplier": 65536
+        },
+        {
           "name": "TransitionTime",
           "default": 0,
           "unit": "seconds",
@@ -207,8 +224,32 @@
         }
       ]
     },
+    "MoveColor": {
+      "args": [
+        {
+          "name": "RateX",
+          "unit": "xy_colour_rate",
+          "multiplier": 65536
+        },
+        {
+          "name": "RateY",
+          "unit": "xy_colour_rate",
+          "multiplier": 65536
+        }
+      ]
+    },
     "StepColor": {
       "args": [
+        {
+          "name": "StepX",
+          "unit": "xy_colour",
+          "multiplier": 65536
+        },
+        {
+          "name": "StepY",
+          "unit": "xy_colour",
+          "multiplier": 65536
+        },
         {
           "name": "TransitionTime",
           "default": 0,
@@ -249,7 +290,9 @@
         },
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },
@@ -271,7 +314,9 @@
         },
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },
@@ -289,7 +334,9 @@
         },
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },

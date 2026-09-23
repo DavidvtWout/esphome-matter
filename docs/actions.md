@@ -301,6 +301,8 @@ matter.send_command: some_endpoint.color_control.stop_move_step
 
 ##### Colour
 
+Matter uses the CIE 1931 colour space to specify colours using their X and Y coordinates. Values should between 0.0 and 1.0 except for the rates, which should be between -0.5 and 0.5.
+
 ```yaml
 # This command will move the device to the requested color using a transition.
 matter.send_command:
