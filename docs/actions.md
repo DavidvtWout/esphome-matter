@@ -1,32 +1,22 @@
 Matter devices are controlled through clusters. A cluster groups related behavior, and commands are the operations sent to that cluster. For example, the OnOff cluster has commands such as `on`, `off`, and `toggle`, while the LevelControl cluster has commands for dimming.
 
-In esphome-matter, these actions work like a Matter switch or remote control. You first bind one of the ESPHome Matter endpoints to another Matter device, such as a light, in your Matter controller. After that, an ESPHome automation can call `matter.send_command`, and the command is sent to the device that was bound to that endpoint.
-
-Bound actions require the endpoint to include the Binding cluster. Device types such as `on_off_light_switch` and `dimmer_switch` include it as required by Matter.
+Before a command can be sent, a client device (for example a button) must be [bound](./binding.md) to a server device (for example a light).
 
 Commands can use a complete Matter command path:
 
 ```yaml
 matter.send_command:
-  path: switch_endpoint.level_control.move
-  arguments:
-    move_mode: up
-    rate: 20%/s
+  path: some_endpoint.on_off.toggle
 ```
 
 Or the endpoint, cluster, and command can be written separately:
 
 ```yaml
 matter.send_command:
-  endpoint: switch_endpoint
-  cluster: level_control
-  command: move
-  arguments:
-    move_mode: up
-    rate: 20%/s
+  endpoint: some_endpoint
+  cluster: on_off
+  command: toggle
 ```
-
-The older `matter.<cluster>.<command>` actions remain available for compatibility but are deprecated.
 
 First define a device type that supports binding and give it an `id`:
 
@@ -35,17 +25,18 @@ matter:
   endpoints:
     1:
       id: dimmer_endpoint
+      # A dimmer_switch doesn't need specific configuration to be created so you can keep it "bare".
       dimmer_switch:
+```
 
+After the endpoint has been bound in your Matter controller, automations can call the command actions that are listed below using that endpoint id:
+
+```yaml
 binary_sensor:
   - name: "Some button"
     on_click:
-      matter.send_command: dimmer_endpoint.on_off.toggle # 1 is also accepted
+      matter.send_command: dimmer_endpoint.on_off.toggle # 1.on_off.toggle is also accepted
 ```
-
-After the endpoint has been bound in your Matter controller, automations can call the command actions below using that endpoint id.
-
-Command fields accept raw Matter integer values. Common LevelControl and timing fields also accept explicit units such as percentages, `%/s`, and seconds. Required fields are shown uncommented. Optional fields are commented out and show the default value used when you omit them.
 
 ### Units
 
@@ -63,16 +54,14 @@ matter.send_command:
   arguments:
     step_mode: down
     step_size: 50%
-    transition_time: 2s
+    transition_time: 1.5s
 
 matter.send_command:
-  endpoint: 1  # Assuming some_endpoint is attached to endpoint 1.
-  cluster: level_control
-  command: step
+  path: some_endpoint.level_control.step
   arguments:
     step_mode: 1
     step_size: 127
-    transition_time: 20
+    transition_time: 15
 ```
 
 ### enums
@@ -100,7 +89,7 @@ days_mask: 65
 
 ### Identify cluster
 
-Identify commands make a bound device identify itself. This is mostly useful while commissioning or debugging, so you can confirm which physical device is receiving commands.
+Identify commands make a device identify itself. This is mostly useful while commissioning or debugging, so you can confirm which physical device is receiving commands.
 
 ```yaml
 # Ask the device to identify itself for a number of seconds.
@@ -114,7 +103,7 @@ matter.send_command:
   path: some_endpoint.identify.trigger_effect
   arguments:
     effect_identifier: # Either blink, breathe, okay, channel_effect, finish_effect or stop_effect
-    # effect_variant: 0
+    # effect_variant: 0 - Depends on the specific device what options are supported.
 ```
 
 ### OnOff cluster
@@ -122,7 +111,7 @@ matter.send_command:
 OnOff commands are used for simple binary devices such as lights, plugs and relays.
 
 ```yaml
-# Turn off, turn on, or toggle a bound device.
+# Turn off, turn on, or toggle a bound device. These have no arguments so the shorthand notation is possible.
 matter.send_command: some_endpoint.on_off.on
 matter.send_command: some_endpoint.on_off.on
 matter.send_command: some_endpoint.on_off.toggle
@@ -135,15 +124,18 @@ matter.send_command:
     effect_identifier: # Either delayed_all_off or dying_light
     # effect_variant: 0
 
-# Turn on and recall the device's global scene, if the device supports scenes.
+# This command allows the recall of the settings when the device was turned off.
 matter.send_command: some_endpoint.on_off.on_with_recall_global_scene
 
 # Intended for motion sensors temporarily turning on a light.
+# Official description: This command allows devices to be turned on for a specific duration with a
+#  guarded off duration so that SHOULD the device be subsequently turned off, further OnWithTimedOff
+#  commands, received during this time, are prevented from turning the devices back on.
 matter.send_command:
   path: some_endpoint.on_off.on_with_timed_off
   arguments:
     on_time: # s
-    # on_off_control: 0  # No idea what this does. You'll have to figure that out yourself.
+    # on_off_control: []  # Bitmap option: accept_only_when_on
     # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
 ```
 
