@@ -185,7 +185,8 @@
         {
           "id": 1,
           "name": "TransitionTime",
-          "type": "int16u"
+          "type": "int16u",
+          "default": 0
         },
         {
           "id": 2,
@@ -270,7 +271,8 @@
         {
           "id": 2,
           "name": "TransitionTime",
-          "type": "int16u"
+          "type": "int16u",
+          "default": 0
         },
         {
           "id": 3,
@@ -331,7 +333,8 @@
         {
           "id": 1,
           "name": "TransitionTime",
-          "type": "int16u"
+          "type": "int16u",
+          "default": 0
         },
         {
           "id": 2,
@@ -416,7 +419,8 @@
         {
           "id": 2,
           "name": "TransitionTime",
-          "type": "int16u"
+          "type": "int16u",
+          "default": 0
         },
         {
           "id": 3,
@@ -4123,7 +4127,8 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 3,
@@ -4205,7 +4210,8 @@
         {
           "id": 2,
           "name": "TransitionTime",
-          "type": "int8u"
+          "type": "int8u",
+          "default": 0
         },
         {
           "id": 3,
@@ -4240,7 +4246,8 @@
           "id": 1,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 2,
@@ -4322,7 +4329,8 @@
         {
           "id": 2,
           "name": "TransitionTime",
-          "type": "int8u"
+          "type": "int8u",
+          "default": 0
         },
         {
           "id": 3,
@@ -4363,7 +4371,8 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 3,
@@ -4404,7 +4413,8 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 3,
@@ -4476,7 +4486,8 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 3,
@@ -4511,7 +4522,8 @@
           "id": 1,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 2,
@@ -4557,7 +4569,8 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 3,
@@ -4640,7 +4653,8 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 3,
@@ -4680,7 +4694,8 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 3,
@@ -4814,13 +4829,15 @@
           "id": 2,
           "name": "ColorTemperatureMinimumMireds",
           "type": "int16u",
-          "max": 65279
+          "max": 65279,
+          "default": 0
         },
         {
           "id": 3,
           "name": "ColorTemperatureMaximumMireds",
           "type": "int16u",
-          "max": 65279
+          "max": 65279,
+          "default": 0
         },
         {
           "id": 4,
@@ -4864,19 +4881,22 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "default": 0
         },
         {
           "id": 3,
           "name": "ColorTemperatureMinimumMireds",
           "type": "int16u",
-          "max": 65279
+          "max": 65279,
+          "default": 0
         },
         {
           "id": 4,
           "name": "ColorTemperatureMaximumMireds",
           "type": "int16u",
-          "max": 65279
+          "max": 65279,
+          "default": 0
         },
         {
           "id": 5,

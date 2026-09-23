@@ -1,0 +1,154 @@
+{
+  "LevelControl": {
+    "MoveToLevel": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "Step": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "MoveToLevelWithOnOff": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "StepWithOnOff": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    }
+  },
+  "ColorControl": {
+    "MoveToHue": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "StepHue": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "MoveToSaturation": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "StepSaturation": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "MoveToHueAndSaturation": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "MoveToColor": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "StepColor": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "MoveToColorTemperature": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "EnhancedMoveToHue": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "EnhancedStepHue": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "EnhancedMoveToHueAndSaturation": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        }
+      ]
+    },
+    "MoveColorTemperature": {
+      "args": [
+        {
+          "name": "ColorTemperatureMinimumMireds",
+          "default": 0
+        },
+        {
+          "name": "ColorTemperatureMaximumMireds",
+          "default": 0
+        }
+      ]
+    },
+    "StepColorTemperature": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0
+        },
+        {
+          "name": "ColorTemperatureMinimumMireds",
+          "default": 0
+        },
+        {
+          "name": "ColorTemperatureMaximumMireds",
+          "default": 0
+        }
+      ]
+    }
+  }
+}

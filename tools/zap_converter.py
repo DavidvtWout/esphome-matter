@@ -521,6 +521,34 @@ def post_process_commands(
     return commands
 
 
+def apply_command_overrides(commands: dict, overrides: dict) -> None:
+    for cluster_name, cluster_overrides in overrides.items():
+        if cluster_name not in commands:
+            raise ValueError(f"Unknown command override cluster: {cluster_name}")
+
+        for command_name, command_overrides in cluster_overrides.items():
+            if command_name not in commands[cluster_name]:
+                raise ValueError(
+                    f"Unknown command override: {cluster_name}.{command_name}"
+                )
+
+            command = commands[cluster_name][command_name]
+            for key, value in command_overrides.items():
+                if key != "args":
+                    command[key] = value
+                    continue
+
+                args_by_name = {arg["name"]: arg for arg in command["args"]}
+                for arg_override in value:
+                    arg_name = arg_override["name"]
+                    if arg_name not in args_by_name:
+                        raise ValueError(
+                            "Unknown command argument override: "
+                            f"{cluster_name}.{command_name}.{arg_name}"
+                        )
+                    args_by_name[arg_name].update(arg_override)
+
+
 def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
     clusters = []
     for cluster in sorted(raw_clusters, key=lambda c: c.id):
@@ -682,9 +710,10 @@ def command_arg_to_doc(arg: CommandArg, command_args: list[dict]) -> str:
     if "enum_values" in arg_dict:
         comment_str = "enum: " + ", ".join(arg_dict["enum_values"])
 
-    optional_str = "# " if optional else ""
     if "default" in arg_dict:
+        optional = True
         comment_str = f"default: {arg_dict['default']} "
+    optional_str = "# " if optional else ""
     comment_str = f"# {comment_str}" if comment_str else ""
     return "\n".join(
         [
@@ -784,6 +813,9 @@ def main():
     with open(args.output_path / "clusters.json", "w") as file:
         json.dump(clusters, file, indent=2)
 
+    with open(args.output_path / "overrides" / "commands.json") as file:
+        command_overrides = json.load(file)
+    apply_command_overrides(commands, command_overrides)
     with open(args.output_path / "commands.json", "w") as file:
         json.dump(commands, file, indent=2)
 

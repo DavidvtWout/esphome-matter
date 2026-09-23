@@ -197,3 +197,141 @@ matter.send_command:
 # Stop a previous move-with-on-off command.
 matter.send_command: some_endpoint.level_control.stop_with_on_off
 ```
+
+### ColorControl cluster
+
+ColorControl commands are used both for colour temperature control and RGB colour control.
+
+##### Temperature
+
+Colour temperature is measured in mireds, which is nice because ESPHome also uses mireds.
+
+```yaml
+# This command will move the device to the requested color temperate using a transition.
+matter.send_command:
+  path: some_endpoint.color_control.move_to_color_temperature
+  arguments:
+    color_temperature_mireds:
+    # transition_time: 0s
+
+# This command allows the color temperature of the light to be moved at a specified rate.
+matter.send_command:
+  path: some_endpoint.color_control.move_color_temperature
+  arguments:
+    move_mode: # enum: stop, up, down
+    rate:
+    # color_temperature_minimum_mireds: 0
+    # color_temperature_maximum_mireds: 0
+
+# This command allows the color temperature of the light to be stepped with a specified step size.
+matter.send_command:
+  path: some_endpoint.color_control.step_color_temperature
+  arguments:
+    step_mode: # enum: up, down
+    step_size:
+    # transition_time: 0s
+    # color_temperature_minimum_mireds: 0
+    # color_temperature_maximum_mireds: 0
+```
+
+##### Hue / Saturation
+
+There are also "enhanced" commands. I'm not sure what the difference it with the normal command but you can find them at the [ColorControl](commands-full.md#colorcontrol) section of commands-full.md.
+
+```yaml
+# This command will move the device to the requested hue using a transition.
+matter.send_command:
+  path: some_endpoint.color_control.move_to_hue
+  arguments:
+    hue:
+    direction: # enum: shortest, longest, up, down
+    # transition_time: 0s
+
+# This command will change the hue of the device with a requested rate.
+matter.send_command:
+  path: some_endpoint.color_control.move_hue
+  arguments:
+    move_mode: # enum: stop, up, down
+    rate:
+
+# This command will change the hue of the device using a step and transition.
+matter.send_command:
+  path: some_endpoint.color_control.step_hue
+  arguments:
+    step_mode: # enum: up, down
+    step_size:
+    # transition_time: 0s
+
+# This command will move the device to the requested saturation using a transition.
+matter.send_command:
+  path: some_endpoint.color_control.move_to_saturation
+  arguments:
+    saturation:
+    # transition_time: 0s
+
+# This command will change the saturation of the device with a requested rate.
+matter.send_command:
+  path: some_endpoint.color_control.move_saturation
+  arguments:
+    move_mode: # enum: stop, up, down
+    rate:
+
+# This command will change the saturation of the device using a step and transition.
+matter.send_command:
+  path: some_endpoint.color_control.step_saturation
+  arguments:
+    step_mode: # enum: up, down
+    step_size:
+    # transition_time: 0s
+
+# This command will move the device to the requested hue and saturation using a transition.
+matter.send_command:
+  path: some_endpoint.color_control.move_to_hue_and_saturation
+  arguments:
+    hue:
+    saturation:
+    # transition_time: 0s
+
+# This command is provided to allow MoveTo and Step commands to be stopped.
+matter.send_command: some_endpoint.color_control.stop_move_step
+```
+
+##### Colour
+
+```yaml
+# This command will move the device to the requested color using a transition.
+matter.send_command:
+  path: some_endpoint.color_control.move_to_color
+  arguments:
+    color_x:
+    color_y:
+    # transition_time: 0s
+
+# This command will change the color of the device with a requested rate.
+matter.send_command:
+  path: some_endpoint.color_control.move_color
+  arguments:
+    rate_x:
+    rate_y:
+
+# This command will change the color of the device using a step and transition.
+matter.send_command:
+  path: some_endpoint.color_control.step_color
+  arguments:
+    step_x:
+    step_y:
+    # transition_time: 0s
+
+# This command allows a color loop to be activated such that the color light cycles through its range of hues.
+matter.send_command:
+  path: some_endpoint.color_control.color_loop_set
+  arguments:
+    # update_flags: [] # bitmap: update_action, update_direction, update_time, update_start_hue
+    action: # enum: deactivate, activate_from_color_loop_start_enhanced_hue, activate_from_enhanced_current_hue
+    direction: # enum: decrement, increment
+    time:
+    start_hue:
+
+# This command is provided to allow MoveTo and Step commands to be stopped.
+matter.send_command: some_endpoint.color_control.stop_move_step
+```
