@@ -217,9 +217,9 @@ The [all-sensors example](examples/all-sensors.yaml) also shows how to expose al
 
 See [docs/actions.md](./docs/actions.md) for a more complete overview of available actions.
 
-### OnOff cluster
+### OnOff
 
-OnOff commands are used for simple binary devices such as lights, plugs and relays.
+[OnOff commands](./docs/actions.md#onoff-cluster) are used for simple binary devices such as lights, plugs and relays.
 
 ```yaml
 # Turn off, turn on, or toggle a bound device.
@@ -236,9 +236,9 @@ matter.send_command:
     # on_off_control: 0
 ```
 
-### LevelControl cluster
+### LevelControl
 
-LevelControl commands are used for dimming. YAML values can be percentages or raw Matter brightness levels, normally `0` to `254`.
+[LevelControl commands](./docs/actions.md#levelcontrol-cluster) are used for dimming. YAML values can be percentages or raw Matter brightness levels, normally `0` to `254`.
 
 The following commands also have a version without `_with_on_off`. These commands don't turn on or off the light.
 
