@@ -17,7 +17,7 @@ from esphome.types import ConfigType
 from .const import *
 from .data_model.attributes import attribute_value_type
 from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME
-from .data_model.commands import COMMAND_ARG_TYPES, COMMANDS, Command
+from .data_model.commands import COMMANDS, Command
 from .types import (
     MatterComponent,
     MatterEndpointRef,
@@ -40,6 +40,11 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
     return var
+
+
+# ------------------------------------------------ #
+#  matter.set_attribute                            #
+# ------------------------------------------------ #
 
 
 def _find_attribute(config):
@@ -122,7 +127,7 @@ async def matter_set_attribute_to_code(
 
 
 # ------------------------------------------------ #
-#  Actions that invoke commands on bound clusters  #
+#  matter.send_command                             #
 # ------------------------------------------------ #
 
 
@@ -168,15 +173,7 @@ def _validate_send_command(config):
     command = _find_command(config)
     schema = {}
     for arg in command.args:
-        arg_schema = arg.schema
-        converter = (
-            COMMAND_ARG_TYPES.get(command.cluster_name, {})
-            .get(command.name, {})
-            .get(arg.name)
-        )
-        if converter is not None:
-            arg_schema = cv.All(converter, arg_schema)
-        schema[arg.schema_key] = arg_schema
+        schema[arg.schema_key] = arg.schema
     config[CONF_ARGUMENTS] = cv.Schema(schema)(config[CONF_ARGUMENTS])
     return config
 
@@ -272,6 +269,11 @@ async def matter_raw_send_command_to_code(
 # TODO: matter._send_command_to_nodes (send command to multiple node without using the binding cluster)
 
 
+# ------------------------------------------------ #
+#  Legacy send command actions                     #
+# ------------------------------------------------ #
+
+
 def register_bound_command_actions():
     """Registers deprecated per-command compatibility actions.
 
@@ -356,7 +358,6 @@ def _build_data(arguments, command: Command) -> str:
 
 def _command_schema(command: Command):
     schema = {
-        # TODO: validate endpoint id to exist
         cv.Required(CONF_ENDPOINT_ID): cv.Any(
             cv.uint16_t, cv.use_id(MatterEndpointRef)
         ),
@@ -364,15 +365,7 @@ def _command_schema(command: Command):
 
     has_required = False
     for arg in command.args:
-        arg_schema = arg.schema
-        converter = (
-            COMMAND_ARG_TYPES.get(command.cluster_name, {})
-            .get(command.name, {})
-            .get(arg.name)
-        )
-        if converter is not None:
-            arg_schema = cv.All(converter, arg_schema)
-        schema[arg.schema_key] = arg_schema
+        schema[arg.schema_key] = arg.schema
         if not arg.optional:
             has_required = True
 

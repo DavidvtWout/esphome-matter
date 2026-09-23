@@ -6,7 +6,8 @@
         {
           "id": 0,
           "name": "IdentifyTime",
-          "type": "int16u"
+          "type": "int16u",
+          "unit": "seconds"
         }
       ]
     },
@@ -161,13 +162,17 @@
           "id": 1,
           "name": "OnTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 2,
           "name": "OffWaitTime",
           "type": "int16u",
-          "max": 65534
+          "max": 65534,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     }
@@ -180,13 +185,16 @@
           "id": 0,
           "name": "Level",
           "type": "int8u",
-          "max": 254
+          "max": 254,
+          "unit": "percentage"
         },
         {
           "id": 1,
           "name": "TransitionTime",
           "type": "int16u",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 2,
@@ -226,7 +234,8 @@
         {
           "id": 1,
           "name": "Rate",
-          "type": "int8u"
+          "type": "int8u",
+          "unit": "percentage_rate"
         },
         {
           "id": 2,
@@ -266,13 +275,16 @@
         {
           "id": 1,
           "name": "StepSize",
-          "type": "int8u"
+          "type": "int8u",
+          "unit": "percentage"
         },
         {
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -328,13 +340,16 @@
           "id": 0,
           "name": "Level",
           "type": "int8u",
-          "max": 254
+          "max": 254,
+          "unit": "percentage"
         },
         {
           "id": 1,
           "name": "TransitionTime",
           "type": "int16u",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 2,
@@ -374,7 +389,8 @@
         {
           "id": 1,
           "name": "Rate",
-          "type": "int8u"
+          "type": "int8u",
+          "unit": "percentage_rate"
         },
         {
           "id": 2,
@@ -414,13 +430,16 @@
         {
           "id": 1,
           "name": "StepSize",
-          "type": "int8u"
+          "type": "int8u",
+          "unit": "percentage"
         },
         {
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4128,7 +4147,9 @@
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4167,7 +4188,8 @@
         {
           "id": 1,
           "name": "Rate",
-          "type": "int8u"
+          "type": "int8u",
+          "unit": "percentage_rate"
         },
         {
           "id": 2,
@@ -4211,7 +4233,9 @@
           "id": 2,
           "name": "TransitionTime",
           "type": "int8u",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4240,14 +4264,17 @@
           "id": 0,
           "name": "Saturation",
           "type": "int8u",
-          "max": 254
+          "max": 254,
+          "unit": "percentage"
         },
         {
           "id": 1,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 2,
@@ -4286,7 +4313,8 @@
         {
           "id": 1,
           "name": "Rate",
-          "type": "int8u"
+          "type": "int8u",
+          "unit": "percentage_rate"
         },
         {
           "id": 2,
@@ -4324,13 +4352,16 @@
         {
           "id": 1,
           "name": "StepSize",
-          "type": "int8u"
+          "type": "int8u",
+          "unit": "percentage"
         },
         {
           "id": 2,
           "name": "TransitionTime",
           "type": "int8u",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4365,14 +4396,17 @@
           "id": 1,
           "name": "Saturation",
           "type": "int8u",
-          "max": 254
+          "max": 254,
+          "unit": "percentage"
         },
         {
           "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4414,7 +4448,9 @@
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4487,7 +4523,9 @@
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,
@@ -4523,7 +4561,9 @@
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 2,
@@ -4756,7 +4796,8 @@
         {
           "id": 3,
           "name": "Time",
-          "type": "int16u"
+          "type": "int16u",
+          "unit": "seconds"
         },
         {
           "id": 4,
@@ -4882,7 +4923,9 @@
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534,
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "id": 3,

@@ -1,34 +1,100 @@
 {
+  "Identify": {
+    "Identify": {
+      "args": [
+        {
+          "name": "IdentifyTime",
+          "unit": "seconds"
+        }
+      ]
+    }
+  },
+  "OnOff": {
+    "OnWithTimedOff": {
+      "args": [
+        {
+          "name": "OnTime",
+          "unit": "seconds",
+          "multiplier": 10
+        },
+        {
+          "name": "OffWaitTime",
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    }
+  },
   "LevelControl": {
     "MoveToLevel": {
       "args": [
         {
+          "name": "Level",
+          "unit": "percentage"
+        },
+        {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "Move": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "percentage_rate"
         }
       ]
     },
     "Step": {
       "args": [
         {
+          "name": "StepSize",
+          "unit": "percentage"
+        },
+        {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },
     "MoveToLevelWithOnOff": {
       "args": [
         {
+          "name": "Level",
+          "unit": "percentage"
+        },
+        {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveWithOnOff": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "percentage_rate"
         }
       ]
     },
     "StepWithOnOff": {
       "args": [
         {
+          "name": "StepSize",
+          "unit": "percentage"
+        },
+        {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     }
@@ -38,7 +104,17 @@
       "args": [
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveHue": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "percentage_rate"
         }
       ]
     },
@@ -46,31 +122,59 @@
       "args": [
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },
     "MoveToSaturation": {
       "args": [
         {
+          "name": "Saturation",
+          "unit": "percentage"
+        },
+        {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveSaturation": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "percentage_rate"
         }
       ]
     },
     "StepSaturation": {
       "args": [
         {
+          "name": "StepSize",
+          "unit": "percentage"
+        },
+        {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },
     "MoveToHueAndSaturation": {
       "args": [
         {
+          "name": "Saturation",
+          "unit": "percentage"
+        },
+        {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },
@@ -78,7 +182,9 @@
       "args": [
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },
@@ -86,7 +192,9 @@
       "args": [
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         }
       ]
     },
@@ -94,7 +202,17 @@
       "args": [
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "ColorLoopSet": {
+      "args": [
+        {
+          "name": "Time",
+          "unit": "seconds"
         }
       ]
     },
@@ -138,7 +256,9 @@
       "args": [
         {
           "name": "TransitionTime",
-          "default": 0
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
         },
         {
           "name": "ColorTemperatureMinimumMireds",
