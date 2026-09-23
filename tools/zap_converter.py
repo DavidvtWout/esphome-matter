@@ -68,7 +68,7 @@ class Attribute:
 
 @dataclass
 class CommandArg:
-    id: int | None  # Also named fieldId on some args...
+    id: int  # Also named fieldId on some args...
     name: str  # CamelCase
     type: str
     min: int | None = None
@@ -223,7 +223,7 @@ def parse_command_arg_elem(elem) -> CommandArg:
         command_arg_attrs[key] += 1
     id_ = int(v, 0) if (v := elem.get("id")) else None
     if id_ is None:
-        id_ = int(v, 0) if (v := elem.get("field_id")) else None
+        id_ = int(v, 0) if (v := elem.get("fieldId")) else None
 
     # Translate Matter bullshit types to actual types. We can't deduce meaningful information from
     # these types anyway because Matter is very inconsistant in naming types...
@@ -507,6 +507,10 @@ def post_process_commands(
             args = []
             for arg in command.args:
                 args.append(resolve_arg(arg))
+            # Some command args don't set an id at all...
+            for i, arg in enumerate(args):
+                if arg.get("id") is None:
+                    arg["id"] = i
             commands[cluster_name][command.name] = filter_none(
                 {
                     "id": command.code,

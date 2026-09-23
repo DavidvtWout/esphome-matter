@@ -43,11 +43,13 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 1,
           "name": "GroupName",
           "type": "char_string"
         }
@@ -57,6 +59,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u",
           "min": 1
@@ -67,6 +70,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "GroupList",
           "type": "int16u"
         }
@@ -76,6 +80,7 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u",
           "min": 1
@@ -90,11 +95,13 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 1,
           "name": "GroupName",
           "type": "char_string"
         }
@@ -479,18 +486,22 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Endpoint",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "Cluster",
               "type": "cluster_id"
             },
             {
+              "id": 2,
               "name": "Restrictions",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "Type",
                   "type": "enum8",
                   "max": 3,
@@ -502,6 +513,7 @@
                   }
                 },
                 {
+                  "id": 1,
                   "name": "ID",
                   "type": "int32u"
                 }
@@ -736,18 +748,22 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "VendorID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "ProductID",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "SoftwareVersion",
           "type": "int32u"
         },
         {
+          "id": 3,
           "name": "ProtocolsSupported",
           "type": "enum8",
           "enum_values": {
@@ -758,22 +774,26 @@
           }
         },
         {
+          "id": 4,
           "name": "HardwareVersion",
           "type": "int16u",
           "optional": true
         },
         {
+          "id": 5,
           "name": "Location",
           "type": "char_string",
           "optional": true
         },
         {
+          "id": 6,
           "name": "RequestorCanConsent",
           "type": "boolean",
           "default": "0",
           "optional": true
         },
         {
+          "id": 7,
           "name": "MetadataForProvider",
           "type": "long_octet_string",
           "optional": true
@@ -784,10 +804,12 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "UpdateToken",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "NewVersion",
           "type": "int32u"
         }
@@ -797,10 +819,12 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "UpdateToken",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "SoftwareVersion",
           "type": "int32u"
         }
@@ -812,14 +836,17 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "ProviderNodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "VendorID",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "AnnouncementReason",
           "type": "enum8",
           "max": 2,
@@ -830,11 +857,13 @@
           }
         },
         {
+          "id": 3,
           "name": "MetadataForNode",
           "type": "long_octet_string",
           "optional": true
         },
         {
+          "id": 4,
           "name": "Endpoint",
           "type": "int16u"
         }
@@ -910,11 +939,13 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "SSID",
           "type": "octet_string",
           "optional": true
         },
         {
+          "id": 1,
           "name": "Breadcrumb",
           "type": "int64u",
           "optional": true
@@ -925,14 +956,17 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "SSID",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "Credentials",
           "type": "octet_string"
         },
         {
+          "id": 2,
           "name": "Breadcrumb",
           "type": "int64u",
           "optional": true
@@ -943,10 +977,12 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "OperationalDataset",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "Breadcrumb",
           "type": "int64u",
           "optional": true
@@ -957,10 +993,12 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "NetworkID",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "Breadcrumb",
           "type": "int64u",
           "optional": true
@@ -971,10 +1009,12 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "NetworkID",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "Breadcrumb",
           "type": "int64u",
           "optional": true
@@ -985,14 +1025,17 @@
       "id": 8,
       "args": [
         {
+          "id": 0,
           "name": "NetworkID",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "NetworkIndex",
           "type": "int8u"
         },
         {
+          "id": 2,
           "name": "Breadcrumb",
           "type": "int64u",
           "optional": true
@@ -1041,10 +1084,12 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "EnableKey",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "EventTrigger",
           "type": "int64u"
         }
@@ -1058,14 +1103,17 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "EnableKey",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "Value",
           "type": "int8u"
         },
         {
+          "id": 2,
           "name": "Count",
           "type": "int16u",
           "max": 2048
@@ -1159,10 +1207,12 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "NodeID",
               "type": "int64u"
             },
             {
+              "id": 1,
               "name": "Endpoint",
               "type": "int16u"
             }
@@ -1179,16 +1229,19 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Offset",
               "type": "int32s",
               "min": -43200,
               "max": 50400
             },
             {
+              "id": 1,
               "name": "ValidAt",
               "type": "int64u"
             },
             {
+              "id": 2,
               "name": "Name",
               "type": "char_string",
               "optional": true
@@ -1206,14 +1259,17 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Offset",
               "type": "int32s"
             },
             {
+              "id": 1,
               "name": "ValidStarting",
               "type": "int64u"
             },
             {
+              "id": 2,
               "name": "ValidUntil",
               "type": "int64u"
             }
@@ -1237,10 +1293,12 @@
       "id": 128,
       "args": [
         {
+          "id": 0,
           "name": "StayActiveDuration",
           "type": "int32u"
         },
         {
+          "id": 1,
           "name": "TimeoutMs",
           "type": "int32u",
           "min": 30000,
@@ -1303,6 +1361,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "AttestationNonce",
           "type": "octet_string"
         }
@@ -1312,6 +1371,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "CertificateType",
           "type": "enum8",
           "max": 2,
@@ -1326,10 +1386,12 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "CSRNonce",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "IsForUpdateNOC",
           "type": "boolean",
           "default": "0",
@@ -1341,23 +1403,28 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "NOCValue",
           "type": "long_octet_string"
         },
         {
+          "id": 1,
           "name": "ICACValue",
           "type": "long_octet_string",
           "optional": true
         },
         {
+          "id": 2,
           "name": "IPKValue",
           "type": "octet_string"
         },
         {
+          "id": 3,
           "name": "CaseAdminSubject",
           "type": "int64u"
         },
         {
+          "id": 4,
           "name": "AdminVendorId",
           "type": "int16u"
         }
@@ -1367,10 +1434,12 @@
       "id": 7,
       "args": [
         {
+          "id": 0,
           "name": "NOCValue",
           "type": "long_octet_string"
         },
         {
+          "id": 1,
           "name": "ICACValue",
           "type": "long_octet_string",
           "optional": true
@@ -1381,6 +1450,7 @@
       "id": 9,
       "args": [
         {
+          "id": 0,
           "name": "Label",
           "type": "char_string"
         }
@@ -1390,6 +1460,7 @@
       "id": 10,
       "args": [
         {
+          "id": 0,
           "name": "FabricIndex",
           "type": "int8u",
           "min": 1,
@@ -1401,6 +1472,7 @@
       "id": 11,
       "args": [
         {
+          "id": 0,
           "name": "RootCACertificate",
           "type": "long_octet_string"
         }
@@ -1410,16 +1482,19 @@
       "id": 12,
       "args": [
         {
+          "id": 0,
           "name": "VendorID",
           "type": "int16u",
           "optional": true
         },
         {
+          "id": 1,
           "name": "VIDVerificationStatement",
           "type": "octet_string",
           "optional": true
         },
         {
+          "id": 2,
           "name": "VVSC",
           "type": "long_octet_string",
           "optional": true
@@ -1430,12 +1505,14 @@
       "id": 13,
       "args": [
         {
+          "id": 0,
           "name": "FabricIndex",
           "type": "int8u",
           "min": 1,
           "max": 254
         },
         {
+          "id": 1,
           "name": "ClientChallenge",
           "type": "octet_string"
         }
@@ -1447,14 +1524,17 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "GroupKeySet",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "GroupKeySetID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "GroupKeySecurityPolicy",
               "type": "enum8",
               "max": 1,
@@ -1464,30 +1544,37 @@
               }
             },
             {
+              "id": 2,
               "name": "EpochKey0",
               "type": "octet_string"
             },
             {
+              "id": 3,
               "name": "EpochStartTime0",
               "type": "int64u"
             },
             {
+              "id": 4,
               "name": "EpochKey1",
               "type": "octet_string"
             },
             {
+              "id": 5,
               "name": "EpochStartTime1",
               "type": "int64u"
             },
             {
+              "id": 6,
               "name": "EpochKey2",
               "type": "octet_string"
             },
             {
+              "id": 7,
               "name": "EpochStartTime2",
               "type": "int64u"
             },
             {
+              "id": 8,
               "name": "GroupKeyMulticastPolicy",
               "type": "enum8",
               "max": 1,
@@ -1504,6 +1591,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "GroupKeySetID",
           "type": "int16u"
         }
@@ -1513,6 +1601,7 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "GroupKeySetID",
           "type": "int16u"
         }
@@ -1602,6 +1691,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "NewMode",
           "type": "int8u"
         }
@@ -1625,6 +1715,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "NewMode",
           "type": "int8u"
         }
@@ -1636,6 +1727,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "NewMode",
           "type": "int8u"
         }
@@ -1647,6 +1739,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "NewMode",
           "type": "int8u"
         }
@@ -1658,6 +1751,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "NewMode",
           "type": "int8u"
         }
@@ -1688,6 +1782,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "NewMode",
           "type": "int8u"
         }
@@ -1864,53 +1959,64 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "ClusterID",
               "type": "cluster_id"
             },
             {
+              "id": 1,
               "name": "AttributeValueList",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "AttributeID",
                   "type": "int32u"
                 },
                 {
+                  "id": 1,
                   "name": "ValueUnsigned8",
                   "type": "int8u",
                   "optional": true
                 },
                 {
+                  "id": 2,
                   "name": "ValueSigned8",
                   "type": "int8s",
                   "optional": true
                 },
                 {
+                  "id": 3,
                   "name": "ValueUnsigned16",
                   "type": "int16u",
                   "optional": true
                 },
                 {
+                  "id": 4,
                   "name": "ValueSigned16",
                   "type": "int16s",
                   "optional": true
                 },
                 {
+                  "id": 5,
                   "name": "ValueUnsigned32",
                   "type": "int32u",
                   "optional": true
                 },
                 {
+                  "id": 6,
                   "name": "ValueSigned32",
                   "type": "int32s",
                   "optional": true
                 },
                 {
+                  "id": 7,
                   "name": "ValueUnsigned64",
                   "type": "int64u",
                   "optional": true
                 },
                 {
+                  "id": 8,
                   "name": "ValueSigned64",
                   "type": "int64s",
                   "optional": true
@@ -2055,35 +2161,42 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 1,
           "name": "Endpoints",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "KeySetID",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 3,
           "name": "Key",
           "type": "octet_string",
           "optional": true
         },
         {
+          "id": 4,
           "name": "UseAuxiliaryACL",
           "type": "boolean",
           "optional": true
         },
         {
+          "id": 5,
           "name": "ReplaceEndpoints",
           "type": "boolean",
           "optional": true
         },
         {
+          "id": 6,
           "name": "McastAddrPolicy",
           "type": "enum8",
           "max": 1,
@@ -2099,10 +2212,12 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "Endpoints",
           "type": "int16u",
           "optional": true
@@ -2113,16 +2228,19 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 1,
           "name": "KeySetID",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 2,
           "name": "Key",
           "type": "octet_string",
           "optional": true
@@ -2133,10 +2251,12 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "UseAuxiliaryACL",
           "type": "boolean"
         }
@@ -2146,6 +2266,7 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "TestOperation",
           "type": "enum8",
           "max": 2,
@@ -2156,6 +2277,7 @@
           }
         },
         {
+          "id": 1,
           "name": "DurationSeconds",
           "type": "int16u",
           "min": 10,
@@ -2189,6 +2311,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "AlarmsToSuppress",
           "type": "bitmap8",
           "max": 3,
@@ -2203,6 +2326,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "AlarmsToEnableDisable",
           "type": "bitmap8",
           "max": 3,
@@ -2219,12 +2343,14 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "OpenDuration",
           "type": "int32u",
           "min": 1,
           "optional": true
         },
         {
+          "id": 1,
           "name": "TargetLevel",
           "type": "int8u",
           "min": 1,
@@ -2248,33 +2374,39 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Duration",
               "type": "int32u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "OneShot",
               "type": "boolean",
               "default": "0",
               "optional": true
             },
             {
+              "id": 2,
               "name": "EmergencyBoost",
               "type": "boolean",
               "default": "0",
               "optional": true
             },
             {
+              "id": 3,
               "name": "TemporarySetpoint",
               "type": "int16s",
               "optional": true
             },
             {
+              "id": 4,
               "name": "TargetPercentage",
               "type": "int8u",
               "optional": true
             },
             {
+              "id": 5,
               "name": "TargetReheat",
               "type": "int8u",
               "optional": true
@@ -2327,10 +2459,12 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "MessageID",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "Priority",
           "type": "enum8",
           "max": 3,
@@ -2342,6 +2476,7 @@
           }
         },
         {
+          "id": 2,
           "name": "MessageControl",
           "type": "bitmap8",
           "max": 31,
@@ -2354,29 +2489,35 @@
           }
         },
         {
+          "id": 3,
           "name": "StartTime",
           "type": "int32u"
         },
         {
+          "id": 4,
           "name": "Duration",
           "type": "int64u"
         },
         {
+          "id": 5,
           "name": "MessageText",
           "type": "long_char_string"
         },
         {
+          "id": 6,
           "name": "Responses",
           "type": "struct",
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "MessageResponseID",
               "type": "int32u",
               "min": 1,
               "optional": true
             },
             {
+              "id": 1,
               "name": "Label",
               "type": "char_string",
               "optional": true
@@ -2389,6 +2530,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "MessageIDs",
           "type": "octet_string"
         }
@@ -2400,14 +2542,17 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "Power",
           "type": "int64s"
         },
         {
+          "id": 1,
           "name": "Duration",
           "type": "int32u"
         },
         {
+          "id": 2,
           "name": "Cause",
           "type": "enum8",
           "max": 1,
@@ -2426,10 +2571,12 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "RequestedStartTime",
           "type": "int32u"
         },
         {
+          "id": 1,
           "name": "Cause",
           "type": "enum8",
           "max": 1,
@@ -2444,10 +2591,12 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "Duration",
           "type": "int32u"
         },
         {
+          "id": 1,
           "name": "Cause",
           "type": "enum8",
           "max": 1,
@@ -2466,29 +2615,35 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "ForecastID",
           "type": "int32u"
         },
         {
+          "id": 1,
           "name": "SlotAdjustments",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "SlotIndex",
               "type": "int8u"
             },
             {
+              "id": 1,
               "name": "NominalPower",
               "type": "int64s",
               "optional": true
             },
             {
+              "id": 2,
               "name": "Duration",
               "type": "int32u"
             }
           ]
         },
         {
+          "id": 2,
           "name": "Cause",
           "type": "enum8",
           "max": 1,
@@ -2503,24 +2658,29 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "Constraints",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "StartTime",
               "type": "int32u"
             },
             {
+              "id": 1,
               "name": "Duration",
               "type": "int32u",
               "max": 86400
             },
             {
+              "id": 2,
               "name": "NominalPower",
               "type": "int64s",
               "optional": true
             },
             {
+              "id": 3,
               "name": "MaximumEnergy",
               "type": "energy_mwh",
               "min": 13835058055282163712,
@@ -2528,6 +2688,7 @@
               "optional": true
             },
             {
+              "id": 4,
               "name": "LoadControl",
               "type": "int8s",
               "optional": true
@@ -2535,6 +2696,7 @@
           ]
         },
         {
+          "id": 1,
           "name": "Cause",
           "type": "enum8",
           "max": 1,
@@ -2553,6 +2715,7 @@
       "id": 8,
       "args": [
         {
+          "id": 0,
           "name": "MinPower",
           "type": "int64s",
           "min": 13835058055282163713,
@@ -2560,6 +2723,7 @@
           "default": "0"
         },
         {
+          "id": 1,
           "name": "MaxPower",
           "type": "int64s",
           "min": 13835058055282163713,
@@ -2567,11 +2731,13 @@
           "default": "4611686018427387904"
         },
         {
+          "id": 2,
           "name": "Duration",
           "type": "int32u",
           "max": 86400
         },
         {
+          "id": 3,
           "name": "Cause",
           "type": "enum8",
           "max": 1,
@@ -2643,6 +2809,7 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "DayOfWeekForSequence",
               "type": "bitmap8",
               "min": 0,
@@ -2658,22 +2825,26 @@
               }
             },
             {
+              "id": 1,
               "name": "ChargingTargets",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "TargetTimeMinutesPastMidnight",
                   "type": "int16u",
                   "max": 1439,
                   "default": "0"
                 },
                 {
+                  "id": 1,
                   "name": "TargetSoC",
                   "type": "int8u",
                   "default": "0",
                   "optional": true
                 },
                 {
+                  "id": 2,
                   "name": "AddedEnergy",
                   "type": "energy_mwh",
                   "min": 0,
@@ -2736,6 +2907,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "Alarms",
           "type": "bitmap64",
           "max": 32767,
@@ -2763,6 +2935,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "Mask",
           "type": "bitmap64",
           "max": 32767,
@@ -2790,6 +2963,7 @@
       "id": 128,
       "args": [
         {
+          "id": 0,
           "name": "OverVoltageThreshold",
           "type": "int64s",
           "min": 13835058055282163713,
@@ -2798,6 +2972,7 @@
           "optional": true
         },
         {
+          "id": 1,
           "name": "UnderVoltageThreshold",
           "type": "int64s",
           "min": 13835058055282163712,
@@ -2806,6 +2981,7 @@
           "optional": true
         },
         {
+          "id": 2,
           "name": "OverFrequencyThreshold",
           "type": "int64s",
           "min": -9223372036854775807,
@@ -2813,6 +2989,7 @@
           "optional": true
         },
         {
+          "id": 3,
           "name": "UnderFrequencyThreshold",
           "type": "int64s",
           "max": 9223372036854775806,
@@ -2820,6 +2997,7 @@
           "optional": true
         },
         {
+          "id": 4,
           "name": "OverPowerThreshold",
           "type": "int64s",
           "min": 13835058055282163713,
@@ -2828,6 +3006,7 @@
           "optional": true
         },
         {
+          "id": 5,
           "name": "UnderPowerThreshold",
           "type": "int64s",
           "min": 13835058055282163712,
@@ -2836,6 +3015,7 @@
           "optional": true
         },
         {
+          "id": 6,
           "name": "OverCurrentThreshold",
           "type": "int64s",
           "min": 13835058055282163713,
@@ -2844,6 +3024,7 @@
           "optional": true
         },
         {
+          "id": 7,
           "name": "UnderCurrentThreshold",
           "type": "int64s",
           "min": 13835058055282163712,
@@ -2852,6 +3033,7 @@
           "optional": true
         },
         {
+          "id": 8,
           "name": "PowerImportThreshold",
           "type": "int64s",
           "min": 0,
@@ -2860,6 +3042,7 @@
           "optional": true
         },
         {
+          "id": 9,
           "name": "PowerExportThreshold",
           "type": "int64s",
           "min": 13835058055282163712,
@@ -2875,6 +3058,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "Mask",
           "type": "bitmap32",
           "max": 127,
@@ -2896,6 +3080,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "PINCode",
           "type": "octet_string",
           "optional": true
@@ -2906,6 +3091,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "PINCode",
           "type": "octet_string",
           "optional": true
@@ -2916,10 +3102,12 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "Timeout",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "PINCode",
           "type": "octet_string",
           "optional": true
@@ -2930,17 +3118,20 @@
       "id": 11,
       "args": [
         {
+          "id": 0,
           "name": "WeekDayIndex",
           "type": "int8u",
           "min": 1,
           "max": 253
         },
         {
+          "id": 1,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 2,
           "name": "DaysMask",
           "type": "bitmap8",
           "max": 127,
@@ -2955,21 +3146,25 @@
           }
         },
         {
+          "id": 3,
           "name": "StartHour",
           "type": "int8u",
           "max": 23
         },
         {
+          "id": 4,
           "name": "StartMinute",
           "type": "int8u",
           "max": 59
         },
         {
+          "id": 5,
           "name": "EndHour",
           "type": "int8u",
           "max": 23
         },
         {
+          "id": 6,
           "name": "EndMinute",
           "type": "int8u",
           "max": 59
@@ -2980,12 +3175,14 @@
       "id": 12,
       "args": [
         {
+          "id": 0,
           "name": "WeekDayIndex",
           "type": "int8u",
           "min": 1,
           "max": 253
         },
         {
+          "id": 1,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
@@ -2996,12 +3193,14 @@
       "id": 13,
       "args": [
         {
+          "id": 0,
           "name": "WeekDayIndex",
           "type": "int8u",
           "min": 1,
           "max": 254
         },
         {
+          "id": 1,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
@@ -3012,21 +3211,25 @@
       "id": 14,
       "args": [
         {
+          "id": 0,
           "name": "YearDayIndex",
           "type": "int8u",
           "min": 1,
           "max": 253
         },
         {
+          "id": 1,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 2,
           "name": "LocalStartTime",
           "type": "int32u"
         },
         {
+          "id": 3,
           "name": "LocalEndTime",
           "type": "int32u"
         }
@@ -3036,12 +3239,14 @@
       "id": 15,
       "args": [
         {
+          "id": 0,
           "name": "YearDayIndex",
           "type": "int8u",
           "min": 1,
           "max": 253
         },
         {
+          "id": 1,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
@@ -3052,12 +3257,14 @@
       "id": 16,
       "args": [
         {
+          "id": 0,
           "name": "YearDayIndex",
           "type": "int8u",
           "min": 1,
           "max": 254
         },
         {
+          "id": 1,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
@@ -3068,20 +3275,24 @@
       "id": 17,
       "args": [
         {
+          "id": 0,
           "name": "HolidayIndex",
           "type": "int8u",
           "min": 1,
           "max": 253
         },
         {
+          "id": 1,
           "name": "LocalStartTime",
           "type": "int32u"
         },
         {
+          "id": 2,
           "name": "LocalEndTime",
           "type": "int32u"
         },
         {
+          "id": 3,
           "name": "OperatingMode",
           "type": "enum8",
           "max": 4,
@@ -3099,6 +3310,7 @@
       "id": 18,
       "args": [
         {
+          "id": 0,
           "name": "HolidayIndex",
           "type": "int8u",
           "min": 1,
@@ -3110,6 +3322,7 @@
       "id": 19,
       "args": [
         {
+          "id": 0,
           "name": "HolidayIndex",
           "type": "int8u",
           "min": 1,
@@ -3121,6 +3334,7 @@
       "id": 26,
       "args": [
         {
+          "id": 0,
           "name": "OperationType",
           "type": "enum8",
           "max": 2,
@@ -3131,19 +3345,23 @@
           }
         },
         {
+          "id": 1,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 2,
           "name": "UserName",
           "type": "char_string"
         },
         {
+          "id": 3,
           "name": "UserUniqueID",
           "type": "int32u"
         },
         {
+          "id": 4,
           "name": "UserStatus",
           "type": "enum8",
           "min": 1,
@@ -3155,6 +3373,7 @@
           }
         },
         {
+          "id": 5,
           "name": "UserType",
           "type": "enum8",
           "max": 9,
@@ -3172,6 +3391,7 @@
           }
         },
         {
+          "id": 6,
           "name": "CredentialRule",
           "type": "enum8",
           "max": 2,
@@ -3187,6 +3407,7 @@
       "id": 27,
       "args": [
         {
+          "id": 0,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
@@ -3197,6 +3418,7 @@
       "id": 29,
       "args": [
         {
+          "id": 0,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1
@@ -3207,6 +3429,7 @@
       "id": 34,
       "args": [
         {
+          "id": 0,
           "name": "OperationType",
           "type": "enum8",
           "max": 2,
@@ -3217,10 +3440,12 @@
           }
         },
         {
+          "id": 1,
           "name": "Credential",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "CredentialType",
               "type": "enum8",
               "max": 8,
@@ -3237,22 +3462,26 @@
               }
             },
             {
+              "id": 1,
               "name": "CredentialIndex",
               "type": "int16u"
             }
           ]
         },
         {
+          "id": 2,
           "name": "CredentialData",
           "type": "octet_string"
         },
         {
+          "id": 3,
           "name": "UserIndex",
           "type": "int16u",
           "min": 1,
           "max": 65534
         },
         {
+          "id": 4,
           "name": "UserStatus",
           "type": "enum8",
           "min": 1,
@@ -3264,6 +3493,7 @@
           }
         },
         {
+          "id": 5,
           "name": "UserType",
           "type": "enum8",
           "max": 9,
@@ -3286,10 +3516,12 @@
       "id": 36,
       "args": [
         {
+          "id": 0,
           "name": "Credential",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "CredentialType",
               "type": "enum8",
               "max": 8,
@@ -3306,6 +3538,7 @@
               }
             },
             {
+              "id": 1,
               "name": "CredentialIndex",
               "type": "int16u"
             }
@@ -3317,10 +3550,12 @@
       "id": 38,
       "args": [
         {
+          "id": 0,
           "name": "Credential",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "CredentialType",
               "type": "enum8",
               "max": 8,
@@ -3337,6 +3572,7 @@
               }
             },
             {
+              "id": 1,
               "name": "CredentialIndex",
               "type": "int16u"
             }
@@ -3348,6 +3584,7 @@
       "id": 39,
       "args": [
         {
+          "id": 0,
           "name": "PINCode",
           "type": "octet_string",
           "optional": true
@@ -3358,18 +3595,22 @@
       "id": 40,
       "args": [
         {
+          "id": 0,
           "name": "SigningKey",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "VerificationKey",
           "type": "octet_string"
         },
         {
+          "id": 2,
           "name": "GroupIdentifier",
           "type": "octet_string"
         },
         {
+          "id": 3,
           "name": "GroupResolvingKey",
           "type": "octet_string",
           "optional": true
@@ -3398,6 +3639,7 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "LiftValue",
           "type": "int16u"
         }
@@ -3407,6 +3649,7 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "LiftPercent100thsValue",
           "type": "int16u"
         }
@@ -3416,6 +3659,7 @@
       "id": 7,
       "args": [
         {
+          "id": 0,
           "name": "TiltValue",
           "type": "int16u"
         }
@@ -3425,6 +3669,7 @@
       "id": 8,
       "args": [
         {
+          "id": 0,
           "name": "TiltPercent100thsValue",
           "type": "int16u"
         }
@@ -3575,6 +3820,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "Mode",
           "type": "enum8",
           "max": 2,
@@ -3585,6 +3831,7 @@
           }
         },
         {
+          "id": 1,
           "name": "Amount",
           "type": "int8s"
         }
@@ -3594,10 +3841,12 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "NumberOfTransitionsForSequence",
           "type": "int8u"
         },
         {
+          "id": 1,
           "name": "DayOfWeekForSequence",
           "type": "bitmap8",
           "bitmap_masks": {
@@ -3612,6 +3861,7 @@
           }
         },
         {
+          "id": 2,
           "name": "ModeForSequence",
           "type": "bitmap8",
           "bitmap_masks": {
@@ -3620,20 +3870,24 @@
           }
         },
         {
+          "id": 3,
           "name": "Transitions",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "TransitionTime",
               "type": "int16u",
               "max": 1439
             },
             {
+              "id": 1,
               "name": "HeatSetpoint",
               "type": "int16s",
               "min": -27315
             },
             {
+              "id": 2,
               "name": "CoolSetpoint",
               "type": "int16s",
               "min": -27315
@@ -3646,6 +3900,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "DaysToReturn",
           "type": "bitmap8",
           "bitmap_masks": {
@@ -3660,6 +3915,7 @@
           }
         },
         {
+          "id": 1,
           "name": "ModeToReturn",
           "type": "bitmap8",
           "bitmap_masks": {
@@ -3677,6 +3933,7 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "ScheduleHandle",
           "type": "octet_string"
         }
@@ -3686,6 +3943,7 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "PresetHandle",
           "type": "octet_string"
         }
@@ -3695,14 +3953,17 @@
       "id": 7,
       "args": [
         {
+          "id": 0,
           "name": "PresetHandle",
           "type": "octet_string"
         },
         {
+          "id": 1,
           "name": "EffectiveTime",
           "type": "int32u"
         },
         {
+          "id": 2,
           "name": "ExpirationInMinutes",
           "type": "int16u",
           "min": 30,
@@ -3714,6 +3975,7 @@
       "id": 8,
       "args": [
         {
+          "id": 0,
           "name": "UniqueID",
           "type": "int8u"
         }
@@ -3784,11 +4046,13 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "UserSetpoint",
           "type": "int8u",
           "optional": true
         },
         {
+          "id": 1,
           "name": "Mode",
           "type": "enum8",
           "max": 4,
@@ -3802,6 +4066,7 @@
           }
         },
         {
+          "id": 2,
           "name": "MistType",
           "type": "bitmap8",
           "max": 3,
@@ -3812,16 +4077,19 @@
           }
         },
         {
+          "id": 3,
           "name": "Continuous",
           "type": "boolean",
           "optional": true
         },
         {
+          "id": 4,
           "name": "Sleep",
           "type": "boolean",
           "optional": true
         },
         {
+          "id": 5,
           "name": "Optimal",
           "type": "boolean",
           "optional": true
@@ -3834,11 +4102,13 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "Hue",
           "type": "int8u",
           "max": 254
         },
         {
+          "id": 1,
           "name": "Direction",
           "type": "enum8",
           "max": 3,
@@ -3850,11 +4120,13 @@
           }
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -3863,6 +4135,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -3876,6 +4149,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "MoveMode",
           "type": "enum8",
           "max": 3,
@@ -3886,10 +4160,12 @@
           }
         },
         {
+          "id": 1,
           "name": "Rate",
           "type": "int8u"
         },
         {
+          "id": 2,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -3898,6 +4174,7 @@
           }
         },
         {
+          "id": 3,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -3911,6 +4188,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "StepMode",
           "type": "enum8",
           "max": 3,
@@ -3920,14 +4198,17 @@
           }
         },
         {
+          "id": 1,
           "name": "StepSize",
           "type": "int8u"
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int8u"
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -3936,6 +4217,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -3949,16 +4231,19 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "Saturation",
           "type": "int8u",
           "max": 254
         },
         {
+          "id": 1,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 2,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -3967,6 +4252,7 @@
           }
         },
         {
+          "id": 3,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -3980,6 +4266,7 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "MoveMode",
           "type": "enum8",
           "max": 3,
@@ -3990,10 +4277,12 @@
           }
         },
         {
+          "id": 1,
           "name": "Rate",
           "type": "int8u"
         },
         {
+          "id": 2,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4002,6 +4291,7 @@
           }
         },
         {
+          "id": 3,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4015,6 +4305,7 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "StepMode",
           "type": "enum8",
           "max": 3,
@@ -4024,14 +4315,17 @@
           }
         },
         {
+          "id": 1,
           "name": "StepSize",
           "type": "int8u"
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int8u"
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4040,6 +4334,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4053,21 +4348,25 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "Hue",
           "type": "int8u",
           "max": 254
         },
         {
+          "id": 1,
           "name": "Saturation",
           "type": "int8u",
           "max": 254
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4076,6 +4375,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4089,21 +4389,25 @@
       "id": 7,
       "args": [
         {
+          "id": 0,
           "name": "ColorX",
           "type": "int16u",
           "max": 65279
         },
         {
+          "id": 1,
           "name": "ColorY",
           "type": "int16u",
           "max": 65279
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4112,6 +4416,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4125,14 +4430,17 @@
       "id": 8,
       "args": [
         {
+          "id": 0,
           "name": "RateX",
           "type": "int16s"
         },
         {
+          "id": 1,
           "name": "RateY",
           "type": "int16s"
         },
         {
+          "id": 2,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4141,6 +4449,7 @@
           }
         },
         {
+          "id": 3,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4154,19 +4463,23 @@
       "id": 9,
       "args": [
         {
+          "id": 0,
           "name": "StepX",
           "type": "int16s"
         },
         {
+          "id": 1,
           "name": "StepY",
           "type": "int16s"
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4175,6 +4488,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4188,16 +4502,19 @@
       "id": 10,
       "args": [
         {
+          "id": 0,
           "name": "ColorTemperatureMireds",
           "type": "int16u",
           "max": 65279
         },
         {
+          "id": 1,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 2,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4206,6 +4523,7 @@
           }
         },
         {
+          "id": 3,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4219,10 +4537,12 @@
       "id": 64,
       "args": [
         {
+          "id": 0,
           "name": "EnhancedHue",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "Direction",
           "type": "enum8",
           "max": 3,
@@ -4234,11 +4554,13 @@
           }
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4247,6 +4569,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4260,6 +4583,7 @@
       "id": 65,
       "args": [
         {
+          "id": 0,
           "name": "MoveMode",
           "type": "enum8",
           "max": 3,
@@ -4270,10 +4594,12 @@
           }
         },
         {
+          "id": 1,
           "name": "Rate",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4282,6 +4608,7 @@
           }
         },
         {
+          "id": 3,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4295,6 +4622,7 @@
       "id": 66,
       "args": [
         {
+          "id": 0,
           "name": "StepMode",
           "type": "enum8",
           "max": 3,
@@ -4304,15 +4632,18 @@
           }
         },
         {
+          "id": 1,
           "name": "StepSize",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4321,6 +4652,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4334,20 +4666,24 @@
       "id": 67,
       "args": [
         {
+          "id": 0,
           "name": "EnhancedHue",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "Saturation",
           "type": "int8u",
           "max": 254
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 3,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4356,6 +4692,7 @@
           }
         },
         {
+          "id": 4,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4369,6 +4706,7 @@
       "id": 68,
       "args": [
         {
+          "id": 0,
           "name": "UpdateFlags",
           "type": "bitmap8",
           "max": 15,
@@ -4380,6 +4718,7 @@
           }
         },
         {
+          "id": 1,
           "name": "Action",
           "type": "enum8",
           "max": 2,
@@ -4390,6 +4729,7 @@
           }
         },
         {
+          "id": 2,
           "name": "Direction",
           "type": "enum8",
           "max": 1,
@@ -4399,14 +4739,17 @@
           }
         },
         {
+          "id": 3,
           "name": "Time",
           "type": "int16u"
         },
         {
+          "id": 4,
           "name": "StartHue",
           "type": "int16u"
         },
         {
+          "id": 5,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4415,6 +4758,7 @@
           }
         },
         {
+          "id": 6,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4428,6 +4772,7 @@
       "id": 71,
       "args": [
         {
+          "id": 0,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4436,6 +4781,7 @@
           }
         },
         {
+          "id": 1,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4449,6 +4795,7 @@
       "id": 75,
       "args": [
         {
+          "id": 0,
           "name": "MoveMode",
           "type": "enum8",
           "max": 3,
@@ -4459,20 +4806,24 @@
           }
         },
         {
+          "id": 1,
           "name": "Rate",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "ColorTemperatureMinimumMireds",
           "type": "int16u",
           "max": 65279
         },
         {
+          "id": 3,
           "name": "ColorTemperatureMaximumMireds",
           "type": "int16u",
           "max": 65279
         },
         {
+          "id": 4,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4481,6 +4832,7 @@
           }
         },
         {
+          "id": 5,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4494,6 +4846,7 @@
       "id": 76,
       "args": [
         {
+          "id": 0,
           "name": "StepMode",
           "type": "enum8",
           "max": 3,
@@ -4503,25 +4856,30 @@
           }
         },
         {
+          "id": 1,
           "name": "StepSize",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "TransitionTime",
           "type": "int16u",
           "max": 65534
         },
         {
+          "id": 3,
           "name": "ColorTemperatureMinimumMireds",
           "type": "int16u",
           "max": 65279
         },
         {
+          "id": 4,
           "name": "ColorTemperatureMaximumMireds",
           "type": "int16u",
           "max": 65279
         },
         {
+          "id": 5,
           "name": "OptionsMask",
           "type": "bitmap8",
           "max": 1,
@@ -4530,6 +4888,7 @@
           }
         },
         {
+          "id": 6,
           "name": "OptionsOverride",
           "type": "bitmap8",
           "max": 1,
@@ -4545,14 +4904,17 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "EffectID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "Speed",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "ColorMode",
           "type": "enum8",
           "max": 6,
@@ -4567,32 +4929,39 @@
           }
         },
         {
+          "id": 3,
           "name": "ColorPalette",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Level",
               "type": "int8u"
             },
             {
+              "id": 1,
               "name": "X",
               "type": "int16u",
               "max": 65279
             },
             {
+              "id": 2,
               "name": "Y",
               "type": "int16u",
               "max": 65279
             },
             {
+              "id": 3,
               "name": "Hue",
               "type": "int8u"
             },
             {
+              "id": 4,
               "name": "EnhancedHue",
               "type": "int16u"
             },
             {
+              "id": 5,
               "name": "Saturation",
               "type": "int8u"
             }
@@ -4610,6 +4979,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "Technology",
           "type": "enum8",
           "max": 3,
@@ -4621,11 +4991,13 @@
           }
         },
         {
+          "id": 1,
           "name": "WiFiRangingDeviceRoleConfig",
           "type": "struct",
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "Role",
               "type": "enum8",
               "max": 5,
@@ -4639,10 +5011,12 @@
               }
             },
             {
+              "id": 1,
               "name": "PeerWiFiDevIK",
               "type": "octet_string"
             },
             {
+              "id": 2,
               "name": "PMK",
               "type": "octet_string",
               "optional": true
@@ -4650,11 +5024,13 @@
           ]
         },
         {
+          "id": 2,
           "name": "BLERangingDeviceRoleConfig",
           "type": "struct",
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "Role",
               "type": "enum8",
               "max": 5,
@@ -4668,17 +5044,20 @@
               }
             },
             {
+              "id": 1,
               "name": "PeerBLEDeviceID",
               "type": "int64u"
             }
           ]
         },
         {
+          "id": 3,
           "name": "BLTChannelSoundingDeviceRoleConfig",
           "type": "struct",
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "Role",
               "type": "enum8",
               "max": 5,
@@ -4692,10 +5071,12 @@
               }
             },
             {
+              "id": 1,
               "name": "PeerBLTDevIK",
               "type": "octet_string"
             },
             {
+              "id": 2,
               "name": "BLTCSMode",
               "type": "enum8",
               "max": 2,
@@ -4707,6 +5088,7 @@
               }
             },
             {
+              "id": 3,
               "name": "BLTCSSecurityLevel",
               "type": "enum8",
               "max": 3,
@@ -4719,6 +5101,7 @@
               }
             },
             {
+              "id": 4,
               "name": "LTK",
               "type": "octet_string",
               "optional": true
@@ -4726,6 +5109,7 @@
           ]
         },
         {
+          "id": 4,
           "name": "FrequencyBand",
           "type": "bitmap16",
           "max": 127,
@@ -4741,6 +5125,7 @@
           }
         },
         {
+          "id": 5,
           "name": "Bandwidth",
           "type": "bitmap32",
           "max": 1023,
@@ -4759,6 +5144,7 @@
           }
         },
         {
+          "id": 6,
           "name": "SecurityMode",
           "type": "enum8",
           "max": 1,
@@ -4768,18 +5154,22 @@
           }
         },
         {
+          "id": 7,
           "name": "Trigger",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "StartTime",
               "type": "int32u"
             },
             {
+              "id": 1,
               "name": "EndTime",
               "type": "int32u"
             },
             {
+              "id": 2,
               "name": "RangingInstanceInterval",
               "type": "int32u",
               "min": 1,
@@ -4788,22 +5178,26 @@
           ]
         },
         {
+          "id": 8,
           "name": "ReportingCondition",
           "type": "struct",
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "MinDistanceCondition",
               "type": "int16u",
               "min": 1,
               "optional": true
             },
             {
+              "id": 1,
               "name": "MaxDistanceCondition",
               "type": "int16u",
               "optional": true
             },
             {
+              "id": 2,
               "name": "ErrorMarginCondition",
               "type": "int16u",
               "optional": true
@@ -4816,6 +5210,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "SessionID",
           "type": "int8u"
         }
@@ -4827,6 +5222,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "ClientIdentity",
           "type": "octet_string"
         }
@@ -4836,6 +5232,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "ClientIndex",
           "type": "int16u",
           "min": 1,
@@ -4843,6 +5240,7 @@
           "optional": true
         },
         {
+          "id": 1,
           "name": "ClientIdentifier",
           "type": "octet_string",
           "optional": true
@@ -4853,11 +5251,13 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "NetworkIdentityIndex",
           "type": "int16u",
           "optional": true
         },
         {
+          "id": 1,
           "name": "NetworkIdentityType",
           "type": "enum8",
           "max": 1,
@@ -4867,11 +5267,13 @@
           }
         },
         {
+          "id": 2,
           "name": "ClientIndex",
           "type": "int16u",
           "optional": true
         },
         {
+          "id": 3,
           "name": "Identifier",
           "type": "octet_string",
           "optional": true
@@ -4882,6 +5284,7 @@
       "id": 64,
       "args": [
         {
+          "id": 0,
           "name": "NetworkAdministratorSharedSecret",
           "type": "octet_string"
         }
@@ -4972,7 +5375,8 @@
       "args": [
         {
           "name": "Match",
-          "type": "char_string"
+          "type": "char_string",
+          "id": 0
         }
       ]
     },
@@ -4981,11 +5385,13 @@
       "args": [
         {
           "name": "MajorNumber",
-          "type": "int16u"
+          "type": "int16u",
+          "id": 0
         },
         {
           "name": "MinorNumber",
-          "type": "int16u"
+          "type": "int16u",
+          "id": 1
         }
       ]
     },
@@ -4994,7 +5400,8 @@
       "args": [
         {
           "name": "Count",
-          "type": "int16s"
+          "type": "int16s",
+          "id": 0
         }
       ]
     },
@@ -5004,12 +5411,14 @@
         {
           "name": "StartTime",
           "type": "int32u",
-          "optional": true
+          "optional": true,
+          "id": 0
         },
         {
           "name": "EndTime",
           "type": "int32u",
-          "optional": true
+          "optional": true,
+          "id": 1
         },
         {
           "name": "ChannelList",
@@ -5055,7 +5464,8 @@
                 "ott": 3
               }
             }
-          ]
+          ],
+          "id": 2
         },
         {
           "name": "PageToken",
@@ -5082,7 +5492,8 @@
               "default": "",
               "optional": true
             }
-          ]
+          ],
+          "id": 3
         },
         {
           "name": "RecordingFlag",
@@ -5092,7 +5503,8 @@
             "scheduled": 1,
             "record_series": 2,
             "recorded": 4
-          }
+          },
+          "id": 4
         },
         {
           "name": "ExternalIDList",
@@ -5107,12 +5519,14 @@
               "name": "Value",
               "type": "char_string"
             }
-          ]
+          ],
+          "id": 5
         },
         {
           "name": "Data",
           "type": "octet_string",
-          "optional": true
+          "optional": true,
+          "id": 6
         }
       ]
     },
@@ -5121,11 +5535,13 @@
       "args": [
         {
           "name": "ProgramIdentifier",
-          "type": "char_string"
+          "type": "char_string",
+          "id": 0
         },
         {
           "name": "ShouldRecordSeries",
-          "type": "boolean"
+          "type": "boolean",
+          "id": 1
         },
         {
           "name": "ExternalIDList",
@@ -5139,11 +5555,13 @@
               "name": "Value",
               "type": "char_string"
             }
-          ]
+          ],
+          "id": 2
         },
         {
           "name": "Data",
-          "type": "octet_string"
+          "type": "octet_string",
+          "id": 3
         }
       ]
     },
@@ -5152,11 +5570,13 @@
       "args": [
         {
           "name": "ProgramIdentifier",
-          "type": "char_string"
+          "type": "char_string",
+          "id": 0
         },
         {
           "name": "ShouldRecordSeries",
-          "type": "boolean"
+          "type": "boolean",
+          "id": 1
         },
         {
           "name": "ExternalIDList",
@@ -5170,11 +5590,13 @@
               "name": "Value",
               "type": "char_string"
             }
-          ]
+          ],
+          "id": 2
         },
         {
           "name": "Data",
-          "type": "octet_string"
+          "type": "octet_string",
+          "id": 3
         }
       ]
     }
@@ -5228,7 +5650,8 @@
         {
           "name": "AudioAdvanceUnmuted",
           "type": "boolean",
-          "optional": true
+          "optional": true,
+          "id": 0
         }
       ]
     },
@@ -5238,7 +5661,8 @@
         {
           "name": "AudioAdvanceUnmuted",
           "type": "boolean",
-          "optional": true
+          "optional": true,
+          "id": 0
         }
       ]
     },
@@ -5247,7 +5671,8 @@
       "args": [
         {
           "name": "DeltaPositionMilliseconds",
-          "type": "int64u"
+          "type": "int64u",
+          "id": 0
         }
       ]
     },
@@ -5256,7 +5681,8 @@
       "args": [
         {
           "name": "DeltaPositionMilliseconds",
-          "type": "int64u"
+          "type": "int64u",
+          "id": 0
         }
       ]
     },
@@ -5265,7 +5691,8 @@
       "args": [
         {
           "name": "position",
-          "type": "int64u"
+          "type": "int64u",
+          "id": 0
         }
       ]
     },
@@ -5274,11 +5701,13 @@
       "args": [
         {
           "name": "TrackID",
-          "type": "char_string"
+          "type": "char_string",
+          "id": 0
         },
         {
           "name": "AudioOutputIndex",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 1
         }
       ]
     },
@@ -5287,7 +5716,8 @@
       "args": [
         {
           "name": "TrackID",
-          "type": "char_string"
+          "type": "char_string",
+          "id": 0
         }
       ]
     },
@@ -5494,16 +5924,19 @@
                 }
               ]
             }
-          ]
+          ],
+          "id": 0
         },
         {
           "name": "AutoPlay",
-          "type": "boolean"
+          "type": "boolean",
+          "id": 1
         },
         {
           "name": "Data",
           "type": "char_string",
-          "optional": true
+          "optional": true,
+          "id": 2
         },
         {
           "name": "PlaybackPreferences",
@@ -5593,12 +6026,14 @@
                 }
               ]
             }
-          ]
+          ],
+          "id": 3
         },
         {
           "name": "UseCurrentContext",
           "type": "boolean",
-          "optional": true
+          "optional": true,
+          "id": 4
         }
       ]
     },
@@ -5607,12 +6042,14 @@
       "args": [
         {
           "name": "ContentURL",
-          "type": "char_string"
+          "type": "char_string",
+          "id": 0
         },
         {
           "name": "DisplayString",
           "type": "char_string",
-          "optional": true
+          "optional": true,
+          "id": 1
         },
         {
           "name": "BrandingInformation",
@@ -5823,7 +6260,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "id": 2
         }
       ]
     }
@@ -5866,10 +6304,12 @@
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "CatalogVendorID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "ApplicationID",
               "type": "char_string"
             }
@@ -5893,10 +6333,12 @@
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "CatalogVendorID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "ApplicationID",
               "type": "char_string"
             }
@@ -5914,10 +6356,12 @@
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "CatalogVendorID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "ApplicationID",
               "type": "char_string"
             }
@@ -6063,18 +6507,22 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "BlockChannelIndex",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "MajorNumber",
               "type": "int16u"
             },
             {
+              "id": 2,
               "name": "MinorNumber",
               "type": "int16u"
             },
             {
+              "id": 3,
               "name": "Identifier",
               "type": "char_string",
               "optional": true
@@ -6102,10 +6550,12 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "CatalogVendorID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "ApplicationID",
               "type": "char_string"
             }
@@ -6122,10 +6572,12 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "CatalogVendorID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "ApplicationID",
               "type": "char_string"
             }
@@ -6142,10 +6594,12 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "TimeWindowIndex",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "DayOfWeek",
               "type": "bitmap8",
               "max": 127,
@@ -6160,25 +6614,30 @@
               }
             },
             {
+              "id": 2,
               "name": "TimePeriod",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "StartHour",
                   "type": "int8u",
                   "max": 23
                 },
                 {
+                  "id": 1,
                   "name": "StartMinute",
                   "type": "int8u",
                   "max": 59
                 },
                 {
+                  "id": 2,
                   "name": "EndHour",
                   "type": "int8u",
                   "max": 23
                 },
                 {
+                  "id": 3,
                   "name": "EndMinute",
                   "type": "int8u",
                   "max": 59
@@ -6223,14 +6682,17 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "Zone",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Name",
               "type": "char_string"
             },
             {
+              "id": 1,
               "name": "Use",
               "type": "enum8",
               "max": 2,
@@ -6241,20 +6703,24 @@
               }
             },
             {
+              "id": 2,
               "name": "Vertices",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "X",
                   "type": "int16u"
                 },
                 {
+                  "id": 1,
                   "name": "Y",
                   "type": "int16u"
                 }
               ]
             },
             {
+              "id": 3,
               "name": "Color",
               "type": "char_string",
               "optional": true
@@ -6267,18 +6733,22 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "ZoneID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "Zone",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Name",
               "type": "char_string"
             },
             {
+              "id": 1,
               "name": "Use",
               "type": "enum8",
               "max": 2,
@@ -6289,20 +6759,24 @@
               }
             },
             {
+              "id": 2,
               "name": "Vertices",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "X",
                   "type": "int16u"
                 },
                 {
+                  "id": 1,
                   "name": "Y",
                   "type": "int16u"
                 }
               ]
             },
             {
+              "id": 3,
               "name": "Color",
               "type": "char_string",
               "optional": true
@@ -6315,6 +6789,7 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "ZoneID",
           "type": "int16u"
         }
@@ -6324,34 +6799,41 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "Trigger",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "ZoneID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "InitialDuration",
               "type": "int32u",
               "min": 1,
               "max": 65535
             },
             {
+              "id": 2,
               "name": "AugmentationDuration",
               "type": "int32u",
               "max": 65535
             },
             {
+              "id": 3,
               "name": "MaxDuration",
               "type": "int32u",
               "min": 1
             },
             {
+              "id": 4,
               "name": "BlindDuration",
               "type": "int32u"
             },
             {
+              "id": 5,
               "name": "Sensitivity",
               "type": "int8u",
               "min": 1,
@@ -6366,6 +6848,7 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "ZoneID",
           "type": "int16u"
         }
@@ -6377,6 +6860,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "StreamUsage",
           "type": "enum8",
           "min": 1,
@@ -6389,6 +6873,7 @@
           }
         },
         {
+          "id": 1,
           "name": "AudioCodec",
           "type": "enum8",
           "max": 1,
@@ -6398,22 +6883,26 @@
           }
         },
         {
+          "id": 2,
           "name": "ChannelCount",
           "type": "int8u",
           "min": 1,
           "max": 8
         },
         {
+          "id": 3,
           "name": "SampleRate",
           "type": "int32u",
           "min": 1
         },
         {
+          "id": 4,
           "name": "BitRate",
           "type": "int32u",
           "min": 1
         },
         {
+          "id": 5,
           "name": "BitDepth",
           "type": "int8u",
           "min": 8,
@@ -6425,6 +6914,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "AudioStreamID",
           "type": "int16u"
         }
@@ -6434,6 +6924,7 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "StreamUsage",
           "type": "enum8",
           "min": 1,
@@ -6446,6 +6937,7 @@
           }
         },
         {
+          "id": 1,
           "name": "VideoCodec",
           "type": "enum8",
           "max": 3,
@@ -6457,25 +6949,30 @@
           }
         },
         {
+          "id": 2,
           "name": "MinFrameRate",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 3,
           "name": "MaxFrameRate",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 4,
           "name": "MinResolution",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Width",
               "type": "int16u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "Height",
               "type": "int16u",
               "min": 1
@@ -6483,15 +6980,18 @@
           ]
         },
         {
+          "id": 5,
           "name": "MaxResolution",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Width",
               "type": "int16u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "Height",
               "type": "int16u",
               "min": 1
@@ -6499,26 +6999,31 @@
           ]
         },
         {
+          "id": 6,
           "name": "MinBitRate",
           "type": "int32u",
           "min": 1
         },
         {
+          "id": 7,
           "name": "MaxBitRate",
           "type": "int32u",
           "min": 1
         },
         {
+          "id": 8,
           "name": "KeyFrameInterval",
           "type": "int16u",
           "max": 65500
         },
         {
+          "id": 9,
           "name": "WatermarkEnabled",
           "type": "boolean",
           "optional": true
         },
         {
+          "id": 10,
           "name": "OSDEnabled",
           "type": "boolean",
           "optional": true
@@ -6529,15 +7034,18 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "VideoStreamID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "WatermarkEnabled",
           "type": "boolean",
           "optional": true
         },
         {
+          "id": 2,
           "name": "OSDEnabled",
           "type": "boolean",
           "optional": true
@@ -6548,6 +7056,7 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "VideoStreamID",
           "type": "int16u"
         }
@@ -6557,6 +7066,7 @@
       "id": 7,
       "args": [
         {
+          "id": 0,
           "name": "ImageCodec",
           "type": "enum8",
           "max": 1,
@@ -6566,20 +7076,24 @@
           }
         },
         {
+          "id": 1,
           "name": "MaxFrameRate",
           "type": "int16u",
           "min": 1
         },
         {
+          "id": 2,
           "name": "MinResolution",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Width",
               "type": "int16u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "Height",
               "type": "int16u",
               "min": 1
@@ -6587,15 +7101,18 @@
           ]
         },
         {
+          "id": 3,
           "name": "MaxResolution",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Width",
               "type": "int16u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "Height",
               "type": "int16u",
               "min": 1
@@ -6603,17 +7120,20 @@
           ]
         },
         {
+          "id": 4,
           "name": "Quality",
           "type": "int8u",
           "min": 1,
           "max": 100
         },
         {
+          "id": 5,
           "name": "WatermarkEnabled",
           "type": "boolean",
           "optional": true
         },
         {
+          "id": 6,
           "name": "OSDEnabled",
           "type": "boolean",
           "optional": true
@@ -6624,15 +7144,18 @@
       "id": 9,
       "args": [
         {
+          "id": 0,
           "name": "SnapshotStreamID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "WatermarkEnabled",
           "type": "boolean",
           "optional": true
         },
         {
+          "id": 2,
           "name": "OSDEnabled",
           "type": "boolean",
           "optional": true
@@ -6643,6 +7166,7 @@
       "id": 10,
       "args": [
         {
+          "id": 0,
           "name": "SnapshotStreamID",
           "type": "int16u"
         }
@@ -6652,6 +7176,7 @@
       "id": 11,
       "args": [
         {
+          "id": 0,
           "name": "StreamPriorities",
           "type": "enum8",
           "enum_values": {
@@ -6667,19 +7192,23 @@
       "id": 12,
       "args": [
         {
+          "id": 0,
           "name": "SnapshotStreamID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "RequestedResolution",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Width",
               "type": "int16u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "Height",
               "type": "int16u",
               "min": 1
@@ -6804,18 +7333,22 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "X1",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "Y1",
               "type": "int16u"
             },
             {
+              "id": 2,
               "name": "X2",
               "type": "int16u"
             },
             {
+              "id": 3,
               "name": "Y2",
               "type": "int16u"
             }
@@ -6897,20 +7430,24 @@
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "URLs",
               "type": "char_string"
             },
             {
+              "id": 1,
               "name": "Username",
               "type": "long_char_string",
               "optional": true
             },
             {
+              "id": 2,
               "name": "Credential",
               "type": "long_char_string",
               "optional": true
             },
             {
+              "id": 3,
               "name": "CAID",
               "type": "int16u",
               "min": 0,
@@ -6938,15 +7475,18 @@
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "CipherSuite",
               "type": "int16u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "BaseKey",
               "type": "octet_string"
             },
             {
+              "id": 2,
               "name": "KID",
               "type": "octet_string"
             }
@@ -7015,20 +7555,24 @@
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "URLs",
               "type": "char_string"
             },
             {
+              "id": 1,
               "name": "Username",
               "type": "long_char_string",
               "optional": true
             },
             {
+              "id": 2,
               "name": "Credential",
               "type": "long_char_string",
               "optional": true
             },
             {
+              "id": 3,
               "name": "CAID",
               "type": "int16u",
               "min": 0,
@@ -7056,15 +7600,18 @@
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "CipherSuite",
               "type": "int16u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "BaseKey",
               "type": "octet_string"
             },
             {
+              "id": 2,
               "name": "KID",
               "type": "octet_string"
             }
@@ -7113,14 +7660,17 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Candidate",
               "type": "char_string"
             },
             {
+              "id": 1,
               "name": "SDPMid",
               "type": "char_string"
             },
             {
+              "id": 2,
               "name": "SDPMLineIndex",
               "type": "int16u"
             }
@@ -7181,20 +7731,24 @@
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "URLs",
               "type": "char_string"
             },
             {
+              "id": 1,
               "name": "Username",
               "type": "long_char_string",
               "optional": true
             },
             {
+              "id": 2,
               "name": "Credential",
               "type": "long_char_string",
               "optional": true
             },
             {
+              "id": 3,
               "name": "CAID",
               "type": "int16u",
               "min": 0,
@@ -7240,14 +7794,17 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Candidate",
               "type": "char_string"
             },
             {
+              "id": 1,
               "name": "SDPMid",
               "type": "char_string"
             },
             {
+              "id": 2,
               "name": "SDPMLineIndex",
               "type": "int16u"
             }
@@ -7292,10 +7849,12 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "TransportOptions",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "StreamUsage",
               "type": "enum8",
               "max": 3,
@@ -7307,30 +7866,36 @@
               }
             },
             {
+              "id": 1,
               "name": "VideoStreamID",
               "type": "int16u",
               "optional": true
             },
             {
+              "id": 2,
               "name": "AudioStreamID",
               "type": "int16u",
               "optional": true
             },
             {
+              "id": 3,
               "name": "TLSEndpointID",
               "type": "int16u",
               "min": 0,
               "max": 65534
             },
             {
+              "id": 4,
               "name": "URL",
               "type": "long_char_string"
             },
             {
+              "id": 5,
               "name": "TriggerOptions",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "TriggerType",
                   "type": "enum8",
                   "max": 3,
@@ -7342,15 +7907,18 @@
                   }
                 },
                 {
+                  "id": 1,
                   "name": "MotionZones",
                   "type": "struct",
                   "optional": true,
                   "struct": [
                     {
+                      "id": 0,
                       "name": "Zone",
                       "type": "int16u"
                     },
                     {
+                      "id": 1,
                       "name": "Sensitivity",
                       "type": "int8u",
                       "min": 1,
@@ -7360,6 +7928,7 @@
                   ]
                 },
                 {
+                  "id": 2,
                   "name": "MotionSensitivity",
                   "type": "int8u",
                   "min": 1,
@@ -7367,31 +7936,37 @@
                   "optional": true
                 },
                 {
+                  "id": 3,
                   "name": "MotionTimeControl",
                   "type": "struct",
                   "optional": true,
                   "struct": [
                     {
+                      "id": 0,
                       "name": "InitialDuration",
                       "type": "int16u",
                       "min": 1
                     },
                     {
+                      "id": 1,
                       "name": "AugmentationDuration",
                       "type": "int16u"
                     },
                     {
+                      "id": 2,
                       "name": "MaxDuration",
                       "type": "int32u",
                       "min": 1
                     },
                     {
+                      "id": 3,
                       "name": "BlindDuration",
                       "type": "int16u"
                     }
                   ]
                 },
                 {
+                  "id": 4,
                   "name": "MaxPreRollLen",
                   "type": "int16u",
                   "optional": true
@@ -7399,6 +7974,7 @@
               ]
             },
             {
+              "id": 6,
               "name": "IngestMethod",
               "type": "enum8",
               "max": 0,
@@ -7407,10 +7983,12 @@
               }
             },
             {
+              "id": 7,
               "name": "ContainerOptions",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "ContainerType",
                   "type": "enum8",
                   "max": 0,
@@ -7419,11 +7997,13 @@
                   }
                 },
                 {
+                  "id": 1,
                   "name": "CMAFContainerOptions",
                   "type": "struct",
                   "optional": true,
                   "struct": [
                     {
+                      "id": 0,
                       "name": "CMAFInterface",
                       "type": "enum8",
                       "max": 2,
@@ -7434,27 +8014,32 @@
                       }
                     },
                     {
+                      "id": 1,
                       "name": "SegmentDuration",
                       "type": "int16u",
                       "min": 500,
                       "max": 65500
                     },
                     {
+                      "id": 2,
                       "name": "ChunkDuration",
                       "type": "int16u",
                       "max": 32750
                     },
                     {
+                      "id": 3,
                       "name": "SessionGroup",
                       "type": "int8u",
                       "optional": true
                     },
                     {
+                      "id": 4,
                       "name": "TrackName",
                       "type": "char_string",
                       "optional": true
                     },
                     {
+                      "id": 7,
                       "name": "MetadataEnabled",
                       "type": "boolean",
                       "optional": true
@@ -7464,35 +8049,42 @@
               ]
             },
             {
+              "id": 8,
               "name": "ExpiryTime",
               "type": "int32u",
               "optional": true
             },
             {
+              "id": 9,
               "name": "VideoStreams",
               "type": "struct",
               "optional": true,
               "struct": [
                 {
+                  "id": 0,
                   "name": "VideoStreamName",
                   "type": "char_string"
                 },
                 {
+                  "id": 1,
                   "name": "VideoStreamID",
                   "type": "int16u"
                 }
               ]
             },
             {
+              "id": 10,
               "name": "AudioStreams",
               "type": "struct",
               "optional": true,
               "struct": [
                 {
+                  "id": 0,
                   "name": "AudioStreamName",
                   "type": "char_string"
                 },
                 {
+                  "id": 1,
                   "name": "AudioStreamID",
                   "type": "int16u"
                 }
@@ -7506,6 +8098,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "ConnectionID",
           "type": "int16u",
           "min": 0,
@@ -7517,16 +8110,19 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "ConnectionID",
           "type": "int16u",
           "min": 0,
           "max": 65534
         },
         {
+          "id": 1,
           "name": "TransportOptions",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "StreamUsage",
               "type": "enum8",
               "max": 3,
@@ -7538,30 +8134,36 @@
               }
             },
             {
+              "id": 1,
               "name": "VideoStreamID",
               "type": "int16u",
               "optional": true
             },
             {
+              "id": 2,
               "name": "AudioStreamID",
               "type": "int16u",
               "optional": true
             },
             {
+              "id": 3,
               "name": "TLSEndpointID",
               "type": "int16u",
               "min": 0,
               "max": 65534
             },
             {
+              "id": 4,
               "name": "URL",
               "type": "long_char_string"
             },
             {
+              "id": 5,
               "name": "TriggerOptions",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "TriggerType",
                   "type": "enum8",
                   "max": 3,
@@ -7573,15 +8175,18 @@
                   }
                 },
                 {
+                  "id": 1,
                   "name": "MotionZones",
                   "type": "struct",
                   "optional": true,
                   "struct": [
                     {
+                      "id": 0,
                       "name": "Zone",
                       "type": "int16u"
                     },
                     {
+                      "id": 1,
                       "name": "Sensitivity",
                       "type": "int8u",
                       "min": 1,
@@ -7591,6 +8196,7 @@
                   ]
                 },
                 {
+                  "id": 2,
                   "name": "MotionSensitivity",
                   "type": "int8u",
                   "min": 1,
@@ -7598,31 +8204,37 @@
                   "optional": true
                 },
                 {
+                  "id": 3,
                   "name": "MotionTimeControl",
                   "type": "struct",
                   "optional": true,
                   "struct": [
                     {
+                      "id": 0,
                       "name": "InitialDuration",
                       "type": "int16u",
                       "min": 1
                     },
                     {
+                      "id": 1,
                       "name": "AugmentationDuration",
                       "type": "int16u"
                     },
                     {
+                      "id": 2,
                       "name": "MaxDuration",
                       "type": "int32u",
                       "min": 1
                     },
                     {
+                      "id": 3,
                       "name": "BlindDuration",
                       "type": "int16u"
                     }
                   ]
                 },
                 {
+                  "id": 4,
                   "name": "MaxPreRollLen",
                   "type": "int16u",
                   "optional": true
@@ -7630,6 +8242,7 @@
               ]
             },
             {
+              "id": 6,
               "name": "IngestMethod",
               "type": "enum8",
               "max": 0,
@@ -7638,10 +8251,12 @@
               }
             },
             {
+              "id": 7,
               "name": "ContainerOptions",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "ContainerType",
                   "type": "enum8",
                   "max": 0,
@@ -7650,11 +8265,13 @@
                   }
                 },
                 {
+                  "id": 1,
                   "name": "CMAFContainerOptions",
                   "type": "struct",
                   "optional": true,
                   "struct": [
                     {
+                      "id": 0,
                       "name": "CMAFInterface",
                       "type": "enum8",
                       "max": 2,
@@ -7665,27 +8282,32 @@
                       }
                     },
                     {
+                      "id": 1,
                       "name": "SegmentDuration",
                       "type": "int16u",
                       "min": 500,
                       "max": 65500
                     },
                     {
+                      "id": 2,
                       "name": "ChunkDuration",
                       "type": "int16u",
                       "max": 32750
                     },
                     {
+                      "id": 3,
                       "name": "SessionGroup",
                       "type": "int8u",
                       "optional": true
                     },
                     {
+                      "id": 4,
                       "name": "TrackName",
                       "type": "char_string",
                       "optional": true
                     },
                     {
+                      "id": 7,
                       "name": "MetadataEnabled",
                       "type": "boolean",
                       "optional": true
@@ -7695,35 +8317,42 @@
               ]
             },
             {
+              "id": 8,
               "name": "ExpiryTime",
               "type": "int32u",
               "optional": true
             },
             {
+              "id": 9,
               "name": "VideoStreams",
               "type": "struct",
               "optional": true,
               "struct": [
                 {
+                  "id": 0,
                   "name": "VideoStreamName",
                   "type": "char_string"
                 },
                 {
+                  "id": 1,
                   "name": "VideoStreamID",
                   "type": "int16u"
                 }
               ]
             },
             {
+              "id": 10,
               "name": "AudioStreams",
               "type": "struct",
               "optional": true,
               "struct": [
                 {
+                  "id": 0,
                   "name": "AudioStreamName",
                   "type": "char_string"
                 },
                 {
+                  "id": 1,
                   "name": "AudioStreamID",
                   "type": "int16u"
                 }
@@ -7737,10 +8366,12 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "ConnectionID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "TransportStatus",
           "type": "enum8",
           "max": 1,
@@ -7755,12 +8386,14 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "ConnectionID",
           "type": "int16u",
           "min": 0,
           "max": 65534
         },
         {
+          "id": 1,
           "name": "ActivationReason",
           "type": "enum8",
           "max": 3,
@@ -7772,31 +8405,37 @@
           }
         },
         {
+          "id": 2,
           "name": "TimeControl",
           "type": "struct",
           "optional": true,
           "struct": [
             {
+              "id": 0,
               "name": "InitialDuration",
               "type": "int16u",
               "min": 1
             },
             {
+              "id": 1,
               "name": "AugmentationDuration",
               "type": "int16u"
             },
             {
+              "id": 2,
               "name": "MaxDuration",
               "type": "int32u",
               "min": 1
             },
             {
+              "id": 3,
               "name": "BlindDuration",
               "type": "int16u"
             }
           ]
         },
         {
+          "id": 3,
           "name": "UserDefined",
           "type": "long_octet_string",
           "optional": true
@@ -7807,6 +8446,7 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "ConnectionID",
           "type": "int16u"
         }
@@ -7831,26 +8471,32 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "ContextTriggers",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Context",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "MfgCode",
                   "type": "int16u"
                 },
                 {
+                  "id": 1,
                   "name": "NamespaceID",
                   "type": "enum8"
                 },
                 {
+                  "id": 2,
                   "name": "Tag",
                   "type": "enum8"
                 },
                 {
+                  "id": 3,
                   "name": "Label",
                   "type": "char_string",
                   "optional": true
@@ -7858,6 +8504,7 @@
               ]
             },
             {
+              "id": 1,
               "name": "ZoneIDs",
               "type": "int16u",
               "optional": true
@@ -7870,26 +8517,32 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "ContextTriggers",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Context",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "MfgCode",
                   "type": "int16u"
                 },
                 {
+                  "id": 1,
                   "name": "NamespaceID",
                   "type": "enum8"
                 },
                 {
+                  "id": 2,
                   "name": "Tag",
                   "type": "enum8"
                 },
                 {
+                  "id": 3,
                   "name": "Label",
                   "type": "char_string",
                   "optional": true
@@ -7897,6 +8550,7 @@
               ]
             },
             {
+              "id": 1,
               "name": "ZoneIDs",
               "type": "int16u",
               "optional": true
@@ -7909,6 +8563,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         }
@@ -7918,15 +8573,18 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "AnalysisStreamID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "WebRTCEndpointID",
           "type": "int16u",
           "optional": true
         },
         {
+          "id": 2,
           "name": "PushAVEndpointID",
           "type": "int16u",
           "optional": true
@@ -7937,6 +8595,7 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "AnalysisStreamID",
           "type": "int16u"
         }
@@ -7946,6 +8605,7 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "AnalysisStreamID",
           "type": "int16u"
         }
@@ -7957,6 +8617,7 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "TariffComponentID",
           "type": "int32u"
         }
@@ -7966,6 +8627,7 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "DayEntryID",
           "type": "int32u"
         }
@@ -8023,14 +8685,17 @@
       "id": 0,
       "args": [
         {
+          "id": 0,
           "name": "GroupKeySet",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "GroupKeySetID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "GroupKeySecurityPolicy",
               "type": "enum8",
               "max": 0,
@@ -8039,26 +8704,32 @@
               }
             },
             {
+              "id": 2,
               "name": "EpochKey0",
               "type": "octet_string"
             },
             {
+              "id": 3,
               "name": "EpochStartTime0",
               "type": "int64u"
             },
             {
+              "id": 4,
               "name": "EpochKey1",
               "type": "octet_string"
             },
             {
+              "id": 5,
               "name": "EpochStartTime1",
               "type": "int64u"
             },
             {
+              "id": 6,
               "name": "EpochKey2",
               "type": "octet_string"
             },
             {
+              "id": 7,
               "name": "EpochStartTime2",
               "type": "int64u"
             }
@@ -8070,14 +8741,17 @@
       "id": 1,
       "args": [
         {
+          "id": 0,
           "name": "GroupKeySet",
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "GroupKeySetID",
               "type": "int16u"
             },
             {
+              "id": 1,
               "name": "GroupKeySecurityPolicy",
               "type": "enum8",
               "max": 0,
@@ -8086,26 +8760,32 @@
               }
             },
             {
+              "id": 2,
               "name": "EpochKey0",
               "type": "octet_string"
             },
             {
+              "id": 3,
               "name": "EpochStartTime0",
               "type": "int64u"
             },
             {
+              "id": 4,
               "name": "EpochKey1",
               "type": "octet_string"
             },
             {
+              "id": 5,
               "name": "EpochStartTime1",
               "type": "int64u"
             },
             {
+              "id": 6,
               "name": "EpochKey2",
               "type": "octet_string"
             },
             {
+              "id": 7,
               "name": "EpochStartTime2",
               "type": "int64u"
             }
@@ -8117,6 +8797,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "GroupKeySetID",
           "type": "int16u"
         }
@@ -8126,30 +8807,36 @@
       "id": 3,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "FriendlyName",
           "type": "char_string"
         },
         {
+          "id": 2,
           "name": "GroupKeySetID",
           "type": "int16u",
           "min": 1,
           "max": 65534
         },
         {
+          "id": 3,
           "name": "GroupCAT",
           "type": "int16u"
         },
         {
+          "id": 4,
           "name": "GroupCATVersion",
           "type": "int16u",
           "min": 1,
           "max": 65534
         },
         {
+          "id": 5,
           "name": "GroupPermission",
           "type": "enum8",
           "max": 5,
@@ -8166,30 +8853,36 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "FriendlyName",
           "type": "char_string"
         },
         {
+          "id": 2,
           "name": "GroupKeySetID",
           "type": "int16u",
           "min": 1,
           "max": 65534
         },
         {
+          "id": 3,
           "name": "GroupCAT",
           "type": "int16u"
         },
         {
+          "id": 4,
           "name": "GroupCATVersion",
           "type": "int16u",
           "min": 1,
           "max": 65534
         },
         {
+          "id": 5,
           "name": "GroupPermission",
           "type": "enum8",
           "max": 5,
@@ -8206,6 +8899,7 @@
       "id": 5,
       "args": [
         {
+          "id": 0,
           "name": "GroupID",
           "type": "int16u"
         }
@@ -8215,18 +8909,22 @@
       "id": 6,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "FriendlyName",
           "type": "char_string"
         },
         {
+          "id": 2,
           "name": "VendorID",
           "type": "int16u"
         },
         {
+          "id": 3,
           "name": "ICAC",
           "type": "long_octet_string"
         }
@@ -8236,15 +8934,18 @@
       "id": 7,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "FriendlyName",
           "type": "char_string",
           "optional": true
         },
         {
+          "id": 2,
           "name": "ICAC",
           "type": "long_octet_string",
           "optional": true
@@ -8255,6 +8956,7 @@
       "id": 8,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         }
@@ -8264,10 +8966,12 @@
       "id": 9,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "FriendlyName",
           "type": "char_string"
         }
@@ -8277,6 +8981,7 @@
       "id": 10,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         }
@@ -8286,10 +8991,12 @@
       "id": 11,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "FriendlyName",
           "type": "char_string"
         }
@@ -8299,6 +9006,7 @@
       "id": 12,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         }
@@ -8308,14 +9016,17 @@
       "id": 13,
       "args": [
         {
+          "id": 0,
           "name": "EndpointID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 2,
           "name": "FriendlyName",
           "type": "char_string"
         }
@@ -8325,14 +9036,17 @@
       "id": 14,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "EndpointID",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "GroupID",
           "type": "int16u"
         }
@@ -8342,14 +9056,17 @@
       "id": 15,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "EndpointID",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "GroupID",
           "type": "int16u"
         }
@@ -8359,34 +9076,41 @@
       "id": 16,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "EndpointID",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "Binding",
           "type": "struct",
           "struct": [
             {
+              "id": 1,
               "name": "Node",
               "type": "int64u",
               "optional": true
             },
             {
+              "id": 2,
               "name": "Group",
               "type": "int16u",
               "min": 1,
               "optional": true
             },
             {
+              "id": 3,
               "name": "Endpoint",
               "type": "int16u",
               "optional": true
             },
             {
+              "id": 4,
               "name": "Cluster",
               "type": "cluster_id",
               "optional": true
@@ -8399,14 +9123,17 @@
       "id": 17,
       "args": [
         {
+          "id": 0,
           "name": "ListID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "EndpointID",
           "type": "int16u"
         },
         {
+          "id": 2,
           "name": "NodeID",
           "type": "int64u"
         }
@@ -8416,14 +9143,17 @@
       "id": 18,
       "args": [
         {
+          "id": 0,
           "name": "NodeID",
           "type": "int64u"
         },
         {
+          "id": 1,
           "name": "ACLEntry",
           "type": "struct",
           "struct": [
             {
+              "id": 1,
               "name": "Privilege",
               "type": "enum8",
               "max": 5,
@@ -8435,6 +9165,7 @@
               }
             },
             {
+              "id": 2,
               "name": "AuthMode",
               "type": "enum8",
               "max": 3,
@@ -8445,22 +9176,27 @@
               }
             },
             {
+              "id": 3,
               "name": "Subjects",
               "type": "int64u"
             },
             {
+              "id": 4,
               "name": "Targets",
               "type": "struct",
               "struct": [
                 {
+                  "id": 0,
                   "name": "Cluster",
                   "type": "cluster_id"
                 },
                 {
+                  "id": 1,
                   "name": "Endpoint",
                   "type": "int16u"
                 },
                 {
+                  "id": 2,
                   "name": "DeviceType",
                   "type": "devtype_id"
                 }
@@ -8474,10 +9210,12 @@
       "id": 19,
       "args": [
         {
+          "id": 0,
           "name": "ListID",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "NodeID",
           "type": "int64u"
         }
@@ -8493,6 +9231,7 @@
       "id": 2,
       "args": [
         {
+          "id": 0,
           "name": "ICACValue",
           "type": "long_octet_string"
         }
@@ -8502,25 +9241,30 @@
       "id": 4,
       "args": [
         {
+          "id": 0,
           "name": "CommissioningTimeout",
           "type": "int16u"
         },
         {
+          "id": 1,
           "name": "PAKEPasscodeVerifier",
           "type": "octet_string"
         },
         {
+          "id": 2,
           "name": "Discriminator",
           "type": "int16u",
           "max": 4095
         },
         {
+          "id": 3,
           "name": "Iterations",
           "type": "int32u",
           "min": 1000,
           "max": 100000
         },
         {
+          "id": 4,
           "name": "Salt",
           "type": "octet_string"
         }
@@ -8538,6 +9282,7 @@
       "id": 8,
       "args": [
         {
+          "id": 0,
           "name": "EndpointID",
           "type": "int16u"
         }
@@ -8745,11 +9490,13 @@
       "args": [
         {
           "name": "arg1",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 0
         },
         {
           "name": "arg2",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 1
         }
       ]
     },
@@ -8758,7 +9505,8 @@
       "args": [
         {
           "name": "arg1",
-          "type": "boolean"
+          "type": "boolean",
+          "id": 0
         }
       ]
     },
@@ -8907,7 +9655,8 @@
               "name": "g",
               "type": "int8u"
             }
-          ]
+          ],
+          "id": 0
         },
         {
           "name": "arg2",
@@ -8966,7 +9715,8 @@
                 "final_value": 2
               }
             }
-          ]
+          ],
+          "id": 1
         },
         {
           "name": "arg3",
@@ -8976,11 +9726,13 @@
             "value_a": 1,
             "value_b": 2,
             "value_c": 3
-          }
+          },
+          "id": 2
         },
         {
           "name": "arg4",
-          "type": "boolean"
+          "type": "boolean",
+          "id": 3
         },
         {
           "name": "arg5",
@@ -8990,11 +9742,13 @@
             "value_a": 1,
             "value_b": 2,
             "value_c": 3
-          }
+          },
+          "id": 4
         },
         {
           "name": "arg6",
-          "type": "boolean"
+          "type": "boolean",
+          "id": 5
         }
       ]
     },
@@ -9058,7 +9812,8 @@
                 "final_value": 2
               }
             }
-          ]
+          ],
+          "id": 0
         }
       ]
     },
@@ -9142,14 +9897,17 @@
               "optional": true,
               "struct": [
                 {
+                  "id": 0,
                   "name": "Name",
                   "type": "char_string"
                 },
                 {
+                  "id": 1,
                   "name": "MyBitmap",
                   "type": "testglobalbitmap"
                 },
                 {
+                  "id": 2,
                   "name": "MyEnum",
                   "type": "enum8",
                   "optional": true,
@@ -9161,7 +9919,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "id": 0
         }
       ]
     },
@@ -9225,7 +9984,8 @@
                 "final_value": 2
               }
             }
-          ]
+          ],
+          "id": 0
         }
       ]
     },
@@ -9234,7 +9994,8 @@
       "args": [
         {
           "name": "arg1",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 0
         }
       ]
     },
@@ -9383,7 +10144,8 @@
               "name": "g",
               "type": "int8u"
             }
-          ]
+          ],
+          "id": 0
         }
       ]
     },
@@ -9532,7 +10294,8 @@
               "name": "g",
               "type": "int8u"
             }
-          ]
+          ],
+          "id": 0
         }
       ]
     },
@@ -9541,7 +10304,8 @@
       "args": [
         {
           "name": "arg1",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 0
         }
       ]
     },
@@ -9550,7 +10314,8 @@
       "args": [
         {
           "name": "arg1",
-          "type": "int16u"
+          "type": "int16u",
+          "id": 0
         },
         {
           "name": "arg2",
@@ -9560,7 +10325,8 @@
             "value_a": 1,
             "value_b": 2,
             "value_c": 3
-          }
+          },
+          "id": 1
         }
       ]
     },
@@ -9570,7 +10336,8 @@
         {
           "name": "arg1",
           "type": "int8u",
-          "optional": true
+          "optional": true,
+          "id": 0
         }
       ]
     },
@@ -9579,31 +10346,37 @@
       "args": [
         {
           "name": "NullableInt",
-          "type": "int16u"
+          "type": "int16u",
+          "id": 0
         },
         {
           "name": "OptionalInt",
           "type": "int16u",
-          "optional": true
+          "optional": true,
+          "id": 1
         },
         {
           "name": "NullableOptionalInt",
           "type": "int16u",
-          "optional": true
+          "optional": true,
+          "id": 2
         },
         {
           "name": "NullableString",
-          "type": "char_string"
+          "type": "char_string",
+          "id": 3
         },
         {
           "name": "OptionalString",
           "type": "char_string",
-          "optional": true
+          "optional": true,
+          "id": 4
         },
         {
           "name": "NullableOptionalString",
           "type": "char_string",
-          "optional": true
+          "optional": true,
+          "id": 5
         },
         {
           "name": "NullableStruct",
@@ -9662,7 +10435,8 @@
                 "final_value": 2
               }
             }
-          ]
+          ],
+          "id": 6
         },
         {
           "name": "OptionalStruct",
@@ -9722,7 +10496,8 @@
                 "final_value": 2
               }
             }
-          ]
+          ],
+          "id": 7
         },
         {
           "name": "NullableOptionalStruct",
@@ -9782,7 +10557,8 @@
                 "final_value": 2
               }
             }
-          ]
+          ],
+          "id": 8
         },
         {
           "name": "NullableList",
@@ -9792,7 +10568,8 @@
             "value_a": 1,
             "value_b": 2,
             "value_c": 3
-          }
+          },
+          "id": 9
         },
         {
           "name": "OptionalList",
@@ -9803,7 +10580,8 @@
             "value_a": 1,
             "value_b": 2,
             "value_c": 3
-          }
+          },
+          "id": 10
         },
         {
           "name": "NullableOptionalList",
@@ -9814,7 +10592,8 @@
             "value_a": 1,
             "value_b": 2,
             "value_c": 3
-          }
+          },
+          "id": 11
         }
       ]
     },
@@ -9878,7 +10657,8 @@
                 "final_value": 2
               }
             }
-          ]
+          ],
+          "id": 0
         }
       ]
     },
@@ -9892,7 +10672,8 @@
         {
           "name": "arg1",
           "type": "boolean",
-          "optional": true
+          "optional": true,
+          "id": 0
         }
       ]
     },
@@ -9901,7 +10682,8 @@
       "args": [
         {
           "name": "arg1",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 0
         },
         {
           "name": "arg2",
@@ -9911,11 +10693,13 @@
             "value_a": 1,
             "value_b": 2,
             "value_c": 3
-          }
+          },
+          "id": 1
         },
         {
           "name": "arg3",
-          "type": "boolean"
+          "type": "boolean",
+          "id": 2
         }
       ]
     },
@@ -9924,7 +10708,8 @@
       "args": [
         {
           "name": "arg1",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 0
         }
       ]
     },
@@ -9933,17 +10718,20 @@
       "args": [
         {
           "name": "sleepBeforeResponseTimeMs",
-          "type": "int16u"
+          "type": "int16u",
+          "id": 0
         },
         {
           "name": "sizeOfResponseBuffer",
           "type": "int16u",
           "min": 0,
-          "max": 800
+          "max": 800,
+          "id": 1
         },
         {
           "name": "fillCharacter",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 2
         }
       ]
     },
@@ -9952,17 +10740,20 @@
       "args": [
         {
           "name": "sleepBeforeResponseTimeMs",
-          "type": "int16u"
+          "type": "int16u",
+          "id": 0
         },
         {
           "name": "sizeOfResponseBuffer",
           "type": "int16u",
           "min": 0,
-          "max": 800
+          "max": 800,
+          "id": 1
         },
         {
           "name": "fillCharacter",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 2
         }
       ]
     },
@@ -9971,7 +10762,8 @@
       "args": [
         {
           "name": "payload",
-          "type": "octet_string"
+          "type": "octet_string",
+          "id": 0
         }
       ]
     },
@@ -9983,14 +10775,17 @@
           "type": "struct",
           "struct": [
             {
+              "id": 0,
               "name": "Name",
               "type": "char_string"
             },
             {
+              "id": 1,
               "name": "MyBitmap",
               "type": "testglobalbitmap"
             },
             {
+              "id": 2,
               "name": "MyEnum",
               "type": "enum8",
               "optional": true,
@@ -10000,7 +10795,8 @@
                 "final_value": 2
               }
             }
-          ]
+          ],
+          "id": 0
         },
         {
           "name": "field2",
@@ -10009,7 +10805,8 @@
             "some_value": 0,
             "some_other_value": 1,
             "final_value": 2
-          }
+          },
+          "id": 1
         }
       ]
     },
@@ -10022,7 +10819,8 @@
       "args": [
         {
           "name": "arg1",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 0
         }
       ]
     }
@@ -10040,23 +10838,28 @@
             "inet_fault": 2,
             "chip_fault": 3,
             "cert_fault": 4
-          }
+          },
+          "id": 0
         },
         {
           "name": "Id",
-          "type": "int32u"
+          "type": "int32u",
+          "id": 1
         },
         {
           "name": "NumCallsToSkip",
-          "type": "int32u"
+          "type": "int32u",
+          "id": 2
         },
         {
           "name": "NumCallsToFail",
-          "type": "int32u"
+          "type": "int32u",
+          "id": 3
         },
         {
           "name": "TakeMutex",
-          "type": "boolean"
+          "type": "boolean",
+          "id": 4
         }
       ]
     },
@@ -10072,15 +10875,18 @@
             "inet_fault": 2,
             "chip_fault": 3,
             "cert_fault": 4
-          }
+          },
+          "id": 0
         },
         {
           "name": "Id",
-          "type": "int32u"
+          "type": "int32u",
+          "id": 1
         },
         {
           "name": "Percentage",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 2
         }
       ]
     }
@@ -10095,11 +10901,13 @@
       "args": [
         {
           "name": "arg1",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 0
         },
         {
           "name": "arg2",
-          "type": "int8u"
+          "type": "int8u",
+          "id": 1
         }
       ]
     }
