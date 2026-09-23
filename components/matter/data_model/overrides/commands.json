@@ -103,6 +103,11 @@
     "MoveToHue": {
       "args": [
         {
+          "name": "Hue",
+          "unit": "hue",
+          "multiplier": 254
+        },
+        {
           "name": "TransitionTime",
           "default": 0,
           "unit": "seconds",
@@ -114,12 +119,18 @@
       "args": [
         {
           "name": "Rate",
-          "unit": "percentage_rate"
+          "unit": "hue_rate",
+          "multiplier": 254
         }
       ]
     },
     "StepHue": {
       "args": [
+        {
+          "name": "StepSize",
+          "unit": "hue",
+          "multiplier": 254
+        },
         {
           "name": "TransitionTime",
           "default": 0,
@@ -132,7 +143,8 @@
       "args": [
         {
           "name": "Saturation",
-          "unit": "percentage"
+          "unit": "saturation",
+          "multiplier": 254
         },
         {
           "name": "TransitionTime",
@@ -146,7 +158,7 @@
       "args": [
         {
           "name": "Rate",
-          "unit": "percentage_rate"
+          "unit": "saturation_rate"
         }
       ]
     },
@@ -154,7 +166,8 @@
       "args": [
         {
           "name": "StepSize",
-          "unit": "percentage"
+          "unit": "saturation",
+          "multiplier": 254
         },
         {
           "name": "TransitionTime",
@@ -167,8 +180,14 @@
     "MoveToHueAndSaturation": {
       "args": [
         {
+          "name": "Hue",
+          "unit": "hue",
+          "multiplier": 254
+        },
+        {
           "name": "Saturation",
-          "unit": "percentage"
+          "unit": "saturation",
+          "multiplier": 254
         },
         {
           "name": "TransitionTime",
@@ -213,19 +232,43 @@
         {
           "name": "Time",
           "unit": "seconds"
+        },
+        {
+          "name": "StartHue",
+          "unit": "hue",
+          "multiplier": 65535
         }
       ]
     },
     "EnhancedMoveToHue": {
       "args": [
         {
+          "name": "EnhancedHue",
+          "unit": "hue",
+          "multiplier": 65535
+        },
+        {
           "name": "TransitionTime",
           "default": 0
         }
       ]
     },
+    "EnhancedMoveHue": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "hue_rate",
+          "multiplier": 65535
+        }
+      ]
+    },
     "EnhancedStepHue": {
       "args": [
+        {
+          "name": "StepSize",
+          "unit": "hue",
+          "multiplier": 65535
+        },
         {
           "name": "TransitionTime",
           "default": 0
@@ -234,6 +277,16 @@
     },
     "EnhancedMoveToHueAndSaturation": {
       "args": [
+        {
+          "name": "EnhancedHue",
+          "unit": "hue",
+          "multiplier": 65535
+        },
+        {
+          "name": "Saturation",
+          "unit": "saturation",
+          "multiplier": 254
+        },
         {
           "name": "TransitionTime",
           "default": 0

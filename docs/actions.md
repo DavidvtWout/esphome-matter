@@ -236,7 +236,10 @@ matter.send_command:
 
 ##### Hue / Saturation
 
-There are also "enhanced" commands. I'm not sure what the difference it with the normal command but you can find them at the [ColorControl](commands-full.md#colorcontrol) section of commands-full.md.
+There are also "enhanced" commands. These use int16u instead of int8u for hue. You can find them at the [ColorControl](commands-full.md#colorcontrol) section of commands-full.md.
+
+Hue values are recommened to be specifies as angles using the `°` suffix (e.g.: `90°`). Hue rates can be specified as string with unit `°/s`
+Saturation should be specified as a value between 0.0 and 1.0.
 
 ```yaml
 # This command will move the device to the requested hue using a transition.
