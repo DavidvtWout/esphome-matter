@@ -13,6 +13,7 @@
 #include <functional>
 #include <string>
 #include <utility>
+#include <variant>
 
 namespace esphome::matter {
 
@@ -20,17 +21,27 @@ class MatterComponent;
 
 void defer_to_main_loop(MatterComponent *component, std::function<void()> &&f);
 
+using MatterAttributeValue =
+    std::variant<bool, float, int64_t, uint64_t, std::string>;
+
 void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, bool value);
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, float value);
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, int64_t value);
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, uint64_t value);
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, const std::string &value);
+                         uint32_t attribute_id, MatterAttributeValue value);
 void replay_attribute_triggers(MatterComponent *component);
+
+using MatterAttributeCallback =
+    std::function<void(const esp_matter_attr_val_t &)>;
+
+struct MatterAttributeCallbackRegistration {
+  uint16_t endpoint_id;
+  uint32_t cluster_id;
+  uint32_t attribute_id;
+  MatterAttributeCallback callback;
+
+  bool matches(uint16_t endpoint, uint32_t cluster, uint32_t attribute) const {
+    return this->endpoint_id == endpoint && this->cluster_id == cluster &&
+           this->attribute_id == attribute;
+  }
+};
 
 class MatterAttributeDispatchGuard {
 public:

@@ -30,15 +30,15 @@ public:
 
   void on_light_remote_values_update() override;
   void initialize() override;
-  MatterLightMapping *as_light_mapping() override;
 
   void push_state_to_matter();
   void sync_state_from_matter();
-  void apply_matter_update(uint32_t cluster_id, uint32_t attribute_id,
-                           esp_matter_attr_val_t val);
 
 protected:
   void initialize_capabilities_();
+  void apply_on_off_(bool on);
+  void apply_level_(uint8_t level);
+  void apply_color_temperature_(uint16_t color_temperature);
 
   light::LightState *light_;
   MatterLightCapabilities capabilities_;

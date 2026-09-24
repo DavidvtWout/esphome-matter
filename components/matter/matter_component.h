@@ -37,13 +37,23 @@ public:
   // Register attribute update actions
   void register_attribute_trigger(MatterAttributeTriggerBase *trigger) {
     this->attribute_triggers_.push_back(trigger);
+    this->register_attribute_callback(
+        trigger->endpoint_id(), trigger->cluster_id(), trigger->attribute_id(),
+        [trigger](const esp_matter_attr_val_t &value) {
+          trigger->dispatch(value);
+        });
   }
+  void register_attribute_callback(uint16_t endpoint_id, uint32_t cluster_id,
+                                   uint32_t attribute_id,
+                                   MatterAttributeCallback callback);
+  void dispatch_attribute_update(uint16_t endpoint_id, uint32_t cluster_id,
+                                 uint32_t attribute_id,
+                                 const esp_matter_attr_val_t &value);
   std::vector<MatterAttributeTriggerBase *> attribute_triggers_;
 
   // Register ESPHome entities
 #ifdef USE_LIGHT
   void register_light(light::LightState *light, uint16_t endpoint_id);
-  MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
 #endif // USE_LIGHT
 #ifdef USE_SENSOR
   void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id,
@@ -88,6 +98,7 @@ private:
 
   std::vector<MatterEndpointRegistration> endpoint_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;
+  std::vector<MatterAttributeCallbackRegistration> attribute_callbacks_;
 };
 
 extern MatterComponent *
