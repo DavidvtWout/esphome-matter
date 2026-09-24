@@ -129,6 +129,7 @@ class Endpoint:
             _ClusterConfig
         )
         self._device_types: list[DeviceType] = []
+        self._light_variables = {}
 
     async def register(self, var):
         """Registers an endpoint using the register_endpoint function in matter_component.h.
@@ -225,6 +226,7 @@ class Endpoint:
         # Register ESPHome entities
         if CONF_LIGHT_ID in device_config:
             light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
+            self._light_variables[device_type.name] = light_
             cg.add(var.register_light(light_, self._endpoint_id))
 
         # Register extra features
@@ -245,6 +247,23 @@ class Endpoint:
             lines.append(f"{config_var}.level_control.min_level = {min_level};")
         if max_level := device_config.get(CONF_MAX_LEVEL):
             lines.append(f"{config_var}.level_control.max_level = {max_level};")
+
+        if device_type.name in ("color_temperature_light", "extended_color_light"):
+            light = self._light_variables.get(device_type.name)
+            if light is not None:
+                self.global_includes.add(
+                    '#include "esphome/components/matter/matter_conversions.h"'
+                )
+                traits_var = f"light_traits_{index}"
+                lines.extend(
+                    (
+                        f"auto {traits_var} = {light}->get_traits();",
+                        f"{config_var}.color_control_color_temperature.color_temp_physical_min_mireds = "
+                        f"esphome::matter::conversion::to_matter::color_temperature({traits_var}.get_min_mireds());",
+                        f"{config_var}.color_control_color_temperature.color_temp_physical_max_mireds = "
+                        f"esphome::matter::conversion::to_matter::color_temperature({traits_var}.get_max_mireds());",
+                    )
+                )
 
         # Configure cluster features
         for cluster in device_type.server_clusters:

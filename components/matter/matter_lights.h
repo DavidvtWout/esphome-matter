@@ -35,8 +35,6 @@ public:
   void push_state_to_matter();
 
 protected:
-  void initialize_matter_attributes_();
-
   // Attribute callbacks
   void apply_on_off_(bool on);
   void apply_level_(uint8_t level);

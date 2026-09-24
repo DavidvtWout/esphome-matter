@@ -6,7 +6,6 @@
 #include "matter_conversions.h"
 #include "matter_lights.h"
 
-#include <algorithm>
 #include <cmath>
 #include <esp_matter_cluster.h>
 #include <platform/CHIPDeviceLayer.h>
@@ -136,7 +135,6 @@ void MatterLightMapping::initialize() {
   this->light_->add_remote_values_listener(this);
 
   chip::DeviceLayer::SystemLayer().ScheduleLambda([this]() {
-    this->initialize_matter_attributes_();
     using namespace chip::app::Clusters;
     global_matter_component->replay_attribute_callback(
         this->endpoint_id(), OnOff::Id, OnOff::Attributes::OnOff::Id);
@@ -235,24 +233,6 @@ void MatterLightMapping::push_state_to_matter() {
               ColorControl::Attributes::EnhancedColorMode::Id, &color_mode_val);
         }
       });
-}
-
-// Set "static" attribute values at startup such as hardware capabilities of the
-// light.
-void MatterLightMapping::initialize_matter_attributes_() {
-  if (this->capabilities_.color_temperature_range.has_value()) {
-    using namespace chip::app::Clusters;
-    uint16_t endpoint_id = this->endpoint_id();
-    const auto &range = *this->capabilities_.color_temperature_range;
-    esp_matter_attr_val_t min_value = esp_matter_uint16(range.min_mireds);
-    esp_matter::attribute::report(
-        endpoint_id, ColorControl::Id,
-        ColorControl::Attributes::ColorTempPhysicalMinMireds::Id, &min_value);
-    esp_matter_attr_val_t max_value = esp_matter_uint16(range.max_mireds);
-    esp_matter::attribute::report(
-        endpoint_id, ColorControl::Id,
-        ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id, &max_value);
-  }
 }
 
 void MatterLightMapping::apply_on_off_(bool on) {

@@ -1,4 +1,4 @@
-There are four different lights in Matter; `on_off_light`, `dimmable_light`, `color_temperature_light` and `extended_colour_light`.
+There are four different lights in Matter; `on_off_light`, `dimmable_light`, `color_temperature_light` and `extended_colour_light`. These are fully supported by esphome-matter.
 
 ### Pre-defined behaviour
 
