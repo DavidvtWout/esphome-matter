@@ -1,0 +1,92 @@
+# This is an example configuration for the athom GU10 RGBWW light containing an ESP32-C3 (the old model contains
+# an ESP8266). See https://www.athom.tech/blank-1/esphome-gu10-rgbcw
+
+esphome:
+  name: athom-gu10-rgbcw
+
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: ESP32C3
+
+external_components:
+  - source: github://DavidvtWout/esphome-matter@main
+
+api:
+
+ota:
+
+logger:
+
+network:
+  enable_ipv6: true
+
+wifi:
+
+matter:
+  endpoints:
+    1:
+      extended_color_light:
+        light_id: rgbww_light
+        min_level: 20%
+
+button:
+  - platform: restart
+    name: "Restart"
+    entity_category: config
+  - platform: factory_reset
+    name: "Factory Reset"
+    entity_category: config
+    disabled_by_default: True
+  - platform: template
+    name: "Matter Factory Reset"
+    entity_category: config
+    disabled_by_default: True
+    on_press:
+      matter.factory_reset:
+
+output:
+  - platform: ledc
+    id: red_output
+    frequency: 9765
+    pin: GPIO3
+    min_power: 0
+    max_power: 1
+  - platform: ledc
+    id: green_output
+    frequency: 9765
+    pin: GPIO4
+    min_power: 0
+    max_power: 1
+  - platform: ledc
+    id: blue_output
+    frequency: 9765
+    pin: GPIO5
+    min_power: 0
+    max_power: 1
+  - platform: ledc
+    id: white_output
+    frequency: 9765
+    pin: GPIO6
+    min_power: 0
+    max_power: 0.95
+  - platform: ledc
+    id: warm_white_output
+    frequency: 9765
+    pin: GPIO7
+    min_power: 0
+    max_power: 0.95
+
+light:
+  - platform: rgbww
+    id: rgbww_light
+    name: "Light"
+    red: red_output
+    green: green_output
+    blue: blue_output
+    cold_white: white_output
+    warm_white: warm_white_output
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 3000 K
+    color_interlock: True
+    constant_brightness: True
+    default_transition_length: 250ms
