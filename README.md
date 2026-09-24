@@ -207,6 +207,11 @@ button:
 
 More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
 
+# Lights
+
+All four Matter lights are now fully supported by esphome-matter! See [docs/lights.md](./docs/lights.md) for more information.
+Also check out [examples/extended-color-light.yaml](./examples/extended-color-light.yaml) for an example of how to configure a light in esphome-matter.
+
 # Sensors
 
 Matter can expose many ESPHome sensor values. To expose a sensor, first create a device type that supports it and then map sensor ids to it. The supported sensor device types include `temperature_sensor`, `humidity_sensor`, `light_sensor`, `pressure_sensor`, `flow_sensor`, `contact_sensor`, `occupancy_sensor`, and `air_quality_sensor`. See [docs/device-types.md](docs/device-types.md) for a more complete overview of how to configure these sensors.

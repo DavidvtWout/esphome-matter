@@ -1,5 +1,13 @@
 There are four different lights in Matter; `on_off_light`, `dimmable_light`, `color_temperature_light` and `extended_colour_light`. These are fully supported by esphome-matter.
 
+The `on_off_light` is the simplest light device type. This light only has the OnOff cluster and as the name suggests, only support the "on" and "off" states.
+
+The `dimmable_light` adds the LevelControl cluster on top to support dimming.
+
+The `color_temperature_light` adds the ColorControl cluster to support color temperature.
+
+The `extended_colour_light` is for RGB lights. This device type adds additional attributes and commands to the ColorControl cluster to support the full colour spectrum.
+
 ### Pre-defined behaviour
 
 All four lights support the `light_id` config option. This maps a light to a Matter endpoint and handles the default behaviour for a Matter light. This is usually what you want.
@@ -12,7 +20,7 @@ matter:
         light_id: some_light
         #  It can be useful to set a higher minimum, for example when a low brightness
         #  turns off the light completely. The native Matter level range is 1-254, but
-        #  percentages are also valid for these two options.
+        #  percentages are also valid for the min_level and max_level options.
         # min_level: 1
         # max_level: 254
 
@@ -20,7 +28,7 @@ lights:
   - id: some_light
 ```
 
-State is synchronized both ways between the ESPHome light entity and the Matter representation. So if you set the brightness via Home Assistant, the Matter brightness attribute will be updated accordingly. The other way around is also true.
+State is synchronized both ways between the ESPHome light entity and Matter. So if you set the brightness via Home Assistant, the Matter brightness attribute will be updated accordingly. The other way around is also true.
 
 ##### Power-on behaviour
 

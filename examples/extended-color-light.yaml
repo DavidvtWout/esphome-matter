@@ -1,5 +1,10 @@
 # This is an example configuration for the athom GU10 RGBWW light containing an ESP32-C3 (the old model contains
 # an ESP8266). See https://www.athom.tech/blank-1/esphome-gu10-rgbcw
+#
+# All you need to do to create a light is to add one of the matter light device types to an endpoint and point it to
+# en ESPHome light entity using the light_id option. esphome-matter handles full synchronization of the light state
+# between the ESPHome light and the Matter representation of the light. The light can still be used via the api, for
+# example in Home Assistant.
 
 esphome:
   name: athom-gu10-rgbcw
@@ -34,10 +39,6 @@ button:
   - platform: restart
     name: "Restart"
     entity_category: config
-  - platform: factory_reset
-    name: "Factory Reset"
-    entity_category: config
-    disabled_by_default: True
   - platform: template
     name: "Matter Factory Reset"
     entity_category: config
