@@ -1,6 +1,9 @@
 #include "esphome/core/defines.h"
 #if defined(USE_MATTER) && defined(USE_LIGHT)
 
+#include "esphome/core/application.h"
+#include "esphome/core/log.h"
+#include "esphome/core/optional.h"
 #include "matter_component.h"
 #include "matter_conversions.h"
 #include "matter_lights.h"
@@ -11,6 +14,35 @@
 #include <platform/CHIPDeviceLayer.h>
 
 namespace esphome::matter {
+
+namespace {
+
+struct MatterColorTemperatureRange {
+  uint16_t min_mireds;
+  uint16_t max_mireds;
+};
+
+struct MatterLightSyncSnapshot {
+  uint16_t endpoint_id;
+  bool has_level;
+  optional<MatterColorTemperatureRange> color_temperature_range;
+};
+
+optional<MatterColorTemperatureRange>
+get_color_temperature_range(const light::LightTraits &traits) {
+  float min_mireds = traits.get_min_mireds();
+  float max_mireds = traits.get_max_mireds();
+  if (!std::isfinite(min_mireds) || !std::isfinite(max_mireds) ||
+      min_mireds <= 0.0f || max_mireds <= 0.0f || min_mireds > max_mireds)
+    return nullopt;
+
+  return MatterColorTemperatureRange{
+      conversion::to_matter::color_temperature(min_mireds),
+      conversion::to_matter::color_temperature(max_mireds),
+  };
+}
+
+} // namespace
 
 void MatterComponent::map_light_to_endpoint(light::LightState *light,
                                             uint16_t endpoint_id) {
@@ -31,7 +63,8 @@ void MatterLightMapping::register_callbacks() {
   if (this->light_ == nullptr)
     return;
   this->light_->add_remote_values_listener(this);
-  this->sync_state_from_matter();
+  App.scheduler.set_timeout(this, 15000,
+                            [this]() { this->sync_state_from_matter(); });
 }
 
 MatterLightMapping *MatterLightMapping::as_light_mapping() { return this; }
@@ -42,12 +75,11 @@ void MatterLightMapping::push_state_to_matter() {
       this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
   bool has_color_temperature =
       this->has_server_cluster(chip::app::Clusters::ColorControl::Id) &&
-      this->light_->get_traits().supports_color_capability(
-          light::ColorCapability::COLOR_TEMPERATURE);
+      get_color_temperature_range(this->light_->get_traits()).has_value();
   bool on = this->light_->remote_values.is_on();
   float brightness = this->light_->remote_values.get_brightness();
   auto level = conversion::brightness_to_level(brightness);
-  auto color_temperature = conversion::color_temperature_to_mireds(
+  auto color_temperature = conversion::to_matter::color_temperature(
       this->light_->remote_values.get_color_temperature());
   chip::DeviceLayer::SystemLayer().ScheduleLambda(
       [eid, has_level, has_color_temperature, on, level, color_temperature]() {
@@ -74,33 +106,53 @@ void MatterLightMapping::push_state_to_matter() {
 }
 
 void MatterLightMapping::sync_state_from_matter() {
-  uint16_t eid = this->endpoint_id();
-  bool has_level =
-      this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
+  // ESPHome entities must be accessed from the main loop, so copy only the
+  // values needed by the Matter-thread callback.
   auto traits = this->light_->get_traits();
-  bool has_color_temperature =
-      this->has_server_cluster(chip::app::Clusters::ColorControl::Id) &&
-      traits.supports_color_capability(
-          light::ColorCapability::COLOR_TEMPERATURE);
-  auto min_mireds =
-      conversion::color_temperature_to_mireds(traits.get_min_mireds());
-  auto max_mireds =
-      conversion::color_temperature_to_mireds(traits.get_max_mireds());
-  chip::DeviceLayer::SystemLayer().ScheduleLambda([this, eid, has_level,
-                                                   has_color_temperature,
-                                                   min_mireds, max_mireds]() {
+  auto color_temperature_range = get_color_temperature_range(traits);
+  if (!this->has_server_cluster(chip::app::Clusters::ColorControl::Id))
+    color_temperature_range = nullopt;
+  MatterLightSyncSnapshot snapshot{
+      this->endpoint_id(),
+      this->has_server_cluster(chip::app::Clusters::LevelControl::Id),
+      color_temperature_range,
+  };
+  if (snapshot.color_temperature_range.has_value()) {
+    const auto &range = *snapshot.color_temperature_range;
+    ESP_LOGD("matter",
+             "Scheduling light synchronization: endpoint=%u, level=%s, color "
+             "temperature=YES, range=%u-%u mireds",
+             snapshot.endpoint_id, YESNO(snapshot.has_level), range.min_mireds,
+             range.max_mireds);
+  } else {
+    ESP_LOGD("matter",
+             "Scheduling light synchronization: endpoint=%u, level=%s, color "
+             "temperature=NO",
+             snapshot.endpoint_id, YESNO(snapshot.has_level));
+  }
+  chip::DeviceLayer::SystemLayer().ScheduleLambda([this, snapshot]() {
+    uint16_t eid = snapshot.endpoint_id;
+    ESP_LOGD("matter", "Synchronizing light state: endpoint=%u", eid);
+
     using namespace chip::app::Clusters;
     esp_matter_attr_val_t on_value;
-    if (esp_matter::attribute::get_val(eid, OnOff::Id,
-                                       OnOff::Attributes::OnOff::Id,
-                                       &on_value) != ESP_OK ||
-        on_value.is_null())
+    esp_err_t on_err = esp_matter::attribute::get_val(
+        eid, OnOff::Id, OnOff::Attributes::OnOff::Id, &on_value);
+    bool on_is_null = on_err == ESP_OK && on_value.is_null();
+    if (on_err != ESP_OK || on_is_null) {
+      ESP_LOGD("matter",
+               "Cannot synchronize light endpoint %u: reading OnOff failed "
+               "with %s (null=%s)",
+               eid, esp_err_to_name(on_err), YESNO(on_is_null));
       return;
+    }
 
     bool on = on_value.val.b;
+    ESP_LOGD("matter", "Initial OnOff value: endpoint=%u, value=%s", eid,
+             ONOFF(on));
     bool has_valid_level = false;
     uint8_t level = 0;
-    if (has_level) {
+    if (snapshot.has_level) {
       esp_matter_attr_val_t level_value;
       if (esp_matter::attribute::get_val(
               eid, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id,
@@ -109,20 +161,28 @@ void MatterLightMapping::sync_state_from_matter() {
           level_value.val.u8 <= 254) {
         has_valid_level = true;
         level = level_value.val.u8;
+        ESP_LOGD("matter", "Initial level value: endpoint=%u, value=%u", eid,
+                 level);
       }
     }
 
     bool has_valid_color_temperature = false;
     uint16_t color_temperature = 0;
-    if (has_color_temperature && min_mireds <= max_mireds) {
-      esp_matter_attr_val_t min_value = esp_matter_uint16(min_mireds);
-      esp_matter::attribute::update(
+    if (snapshot.color_temperature_range.has_value()) {
+      const auto &range = *snapshot.color_temperature_range;
+      esp_matter_attr_val_t min_value = esp_matter_uint16(range.min_mireds);
+      esp_err_t min_err = esp_matter::attribute::update(
           eid, ColorControl::Id,
           ColorControl::Attributes::ColorTempPhysicalMinMireds::Id, &min_value);
-      esp_matter_attr_val_t max_value = esp_matter_uint16(max_mireds);
-      esp_matter::attribute::update(
+      esp_matter_attr_val_t max_value = esp_matter_uint16(range.max_mireds);
+      esp_err_t max_err = esp_matter::attribute::update(
           eid, ColorControl::Id,
           ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id, &max_value);
+      ESP_LOGD("matter",
+               "Updated physical color temperature range: endpoint=%u, "
+               "minimum=%u (%s), maximum=%u (%s)",
+               eid, range.min_mireds, esp_err_to_name(min_err),
+               range.max_mireds, esp_err_to_name(max_err));
 
       esp_matter_attr_val_t color_temperature_value;
       if (esp_matter::attribute::get_val(
@@ -131,8 +191,12 @@ void MatterLightMapping::sync_state_from_matter() {
               &color_temperature_value) == ESP_OK &&
           !color_temperature_value.is_null()) {
         has_valid_color_temperature = true;
-        color_temperature =
-            std::clamp(color_temperature_value.val.u16, min_mireds, max_mireds);
+        color_temperature = std::clamp(color_temperature_value.val.u16,
+                                       range.min_mireds, range.max_mireds);
+        ESP_LOGD("matter",
+                 "Initial color temperature: endpoint=%u, stored=%u, "
+                 "clamped=%u",
+                 eid, color_temperature_value.val.u16, color_temperature);
         if (color_temperature != color_temperature_value.val.u16) {
           color_temperature_value.val.u16 = color_temperature;
           esp_matter::attribute::update(
@@ -187,8 +251,8 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     call.set_transition_length(0);
     call.perform();
   } else if (this->has_server_cluster(ColorControl::Id) &&
-             this->light_->get_traits().supports_color_capability(
-                 light::ColorCapability::COLOR_TEMPERATURE) &&
+             get_color_temperature_range(this->light_->get_traits())
+                 .has_value() &&
              cluster_id == ColorControl::Id &&
              attribute_id ==
                  ColorControl::Attributes::ColorTemperatureMireds::Id) {

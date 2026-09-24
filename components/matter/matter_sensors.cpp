@@ -1,6 +1,6 @@
 #include "matter_sensors.h"
 
-#ifdef USE_MATTER
+#if defined(USE_MATTER) && (defined(USE_SENSOR) || defined(USE_BINARY_SENSOR))
 
 #include "esphome/core/log.h"
 #include "matter_component.h"
@@ -150,4 +150,4 @@ void MatterBinarySensorAttributeMapping::publish_(bool value) {
 
 } // namespace esphome::matter
 
-#endif // USE_MATTER
+#endif // USE_MATTER && (USE_SENSOR || USE_BINARY_SENSOR)

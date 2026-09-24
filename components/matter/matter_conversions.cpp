@@ -175,10 +175,16 @@ uint8_t brightness_to_level(float brightness) {
 
 float level_to_brightness(uint8_t level) { return level / 254.0f; }
 
-uint16_t color_temperature_to_mireds(float color_temperature) {
+namespace to_matter {
+
+// ESPHome and Matter both use mireds for color temperature, but ESPHome uses
+// floating-point values while Matter uses integers.
+uint16_t color_temperature(float color_temperature) {
   return static_cast<uint16_t>(
       std::lroundf(std::clamp(color_temperature, 1.0f, 65279.0f)));
 }
+
+} // namespace to_matter
 
 } // namespace esphome::matter::conversion
 

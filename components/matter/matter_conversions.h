@@ -32,7 +32,13 @@ esp_matter_attr_val_t watts(float value);
 
 uint8_t brightness_to_level(float brightness);
 float level_to_brightness(uint8_t level);
-uint16_t color_temperature_to_mireds(float color_temperature);
+
+// New namespace structure. I'll move the other converters later.
+namespace to_matter {
+
+uint16_t color_temperature(float color_temperature);
+
+} // namespace to_matter
 
 } // namespace esphome::matter::conversion
 
