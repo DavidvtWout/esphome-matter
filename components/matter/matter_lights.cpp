@@ -3,7 +3,6 @@
 
 #include "esphome/core/application.h"
 #include "esphome/core/log.h"
-#include "esphome/core/optional.h"
 #include "matter_component.h"
 #include "matter_conversions.h"
 #include "matter_lights.h"
@@ -17,25 +16,12 @@ namespace esphome::matter {
 
 namespace {
 
-struct MatterColorTemperatureRange {
-  uint16_t min_mireds;
-  uint16_t max_mireds;
-};
-
-struct MatterLightSyncSnapshot {
-  uint16_t endpoint_id;
-  bool has_level;
-  optional<MatterColorTemperatureRange> color_temperature_range;
-};
-
 optional<MatterColorTemperatureRange>
 get_color_temperature_range(const light::LightTraits &traits) {
   float min_mireds = traits.get_min_mireds();
   float max_mireds = traits.get_max_mireds();
-  if (!std::isfinite(min_mireds) || !std::isfinite(max_mireds) ||
-      min_mireds <= 0.0f || max_mireds <= 0.0f || min_mireds > max_mireds)
+  if (min_mireds <= 0.0f || max_mireds <= 0.0f)
     return nullopt;
-
   return MatterColorTemperatureRange{
       conversion::to_matter::color_temperature(min_mireds),
       conversion::to_matter::color_temperature(max_mireds),
@@ -44,8 +30,8 @@ get_color_temperature_range(const light::LightTraits &traits) {
 
 } // namespace
 
-void MatterComponent::map_light_to_endpoint(light::LightState *light,
-                                            uint16_t endpoint_id) {
+void MatterComponent::register_light(light::LightState *light,
+                                     uint16_t endpoint_id) {
   this->mappings_.push_back(new MatterLightMapping(light, endpoint_id));
 }
 
@@ -59,9 +45,10 @@ void MatterLightMapping::on_light_remote_values_update() {
   this->push_state_to_matter();
 }
 
-void MatterLightMapping::register_callbacks() {
+void MatterLightMapping::initialize() {
   if (this->light_ == nullptr)
     return;
+  this->initialize_capabilities_();
   this->light_->add_remote_values_listener(this);
   App.scheduler.set_timeout(this, 15000,
                             [this]() { this->sync_state_from_matter(); });
@@ -69,13 +56,20 @@ void MatterLightMapping::register_callbacks() {
 
 MatterLightMapping *MatterLightMapping::as_light_mapping() { return this; }
 
+void MatterLightMapping::initialize_capabilities_() {
+  this->capabilities_.has_level =
+      this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
+  this->capabilities_.color_temperature_range =
+      get_color_temperature_range(this->light_->get_traits());
+  if (!this->has_server_cluster(chip::app::Clusters::ColorControl::Id))
+    this->capabilities_.color_temperature_range = nullopt;
+}
+
 void MatterLightMapping::push_state_to_matter() {
   uint16_t eid = this->endpoint_id();
-  bool has_level =
-      this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
+  bool has_level = this->capabilities_.has_level;
   bool has_color_temperature =
-      this->has_server_cluster(chip::app::Clusters::ColorControl::Id) &&
-      get_color_temperature_range(this->light_->get_traits()).has_value();
+      this->capabilities_.color_temperature_range.has_value();
   bool on = this->light_->remote_values.is_on();
   float brightness = this->light_->remote_values.get_brightness();
   auto level = conversion::brightness_to_level(brightness);
@@ -106,32 +100,25 @@ void MatterLightMapping::push_state_to_matter() {
 }
 
 void MatterLightMapping::sync_state_from_matter() {
-  // ESPHome entities must be accessed from the main loop, so copy only the
-  // values needed by the Matter-thread callback.
-  auto traits = this->light_->get_traits();
-  auto color_temperature_range = get_color_temperature_range(traits);
-  if (!this->has_server_cluster(chip::app::Clusters::ColorControl::Id))
-    color_temperature_range = nullopt;
-  MatterLightSyncSnapshot snapshot{
-      this->endpoint_id(),
-      this->has_server_cluster(chip::app::Clusters::LevelControl::Id),
-      color_temperature_range,
-  };
-  if (snapshot.color_temperature_range.has_value()) {
-    const auto &range = *snapshot.color_temperature_range;
+  // Copy the cached capabilities so the Matter-thread callback does not access
+  // ESPHome entities.
+  uint16_t endpoint_id = this->endpoint_id();
+  MatterLightCapabilities capabilities = this->capabilities_;
+  if (capabilities.color_temperature_range.has_value()) {
+    const auto &range = *capabilities.color_temperature_range;
     ESP_LOGD("matter",
              "Scheduling light synchronization: endpoint=%u, level=%s, color "
              "temperature=YES, range=%u-%u mireds",
-             snapshot.endpoint_id, YESNO(snapshot.has_level), range.min_mireds,
+             endpoint_id, YESNO(capabilities.has_level), range.min_mireds,
              range.max_mireds);
   } else {
     ESP_LOGD("matter",
              "Scheduling light synchronization: endpoint=%u, level=%s, color "
              "temperature=NO",
-             snapshot.endpoint_id, YESNO(snapshot.has_level));
+             endpoint_id, YESNO(capabilities.has_level));
   }
-  chip::DeviceLayer::SystemLayer().ScheduleLambda([this, snapshot]() {
-    uint16_t eid = snapshot.endpoint_id;
+  auto synchronize = [this, endpoint_id, capabilities]() {
+    uint16_t eid = endpoint_id;
     ESP_LOGD("matter", "Synchronizing light state: endpoint=%u", eid);
 
     using namespace chip::app::Clusters;
@@ -152,7 +139,7 @@ void MatterLightMapping::sync_state_from_matter() {
              ONOFF(on));
     bool has_valid_level = false;
     uint8_t level = 0;
-    if (snapshot.has_level) {
+    if (capabilities.has_level) {
       esp_matter_attr_val_t level_value;
       if (esp_matter::attribute::get_val(
               eid, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id,
@@ -168,8 +155,8 @@ void MatterLightMapping::sync_state_from_matter() {
 
     bool has_valid_color_temperature = false;
     uint16_t color_temperature = 0;
-    if (snapshot.color_temperature_range.has_value()) {
-      const auto &range = *snapshot.color_temperature_range;
+    if (capabilities.color_temperature_range.has_value()) {
+      const auto &range = *capabilities.color_temperature_range;
       esp_matter_attr_val_t min_value = esp_matter_uint16(range.min_mireds);
       esp_err_t min_err = esp_matter::attribute::update(
           eid, ColorControl::Id,
@@ -221,7 +208,8 @@ void MatterLightMapping::sync_state_from_matter() {
           call.perform();
           this->synchronizing_from_matter_ = false;
         });
-  });
+  };
+  chip::DeviceLayer::SystemLayer().ScheduleLambda(synchronize);
 }
 
 void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
@@ -235,9 +223,10 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     auto call = this->light_->make_call();
     call.set_state(on);
     call.set_transition_length(0);
+    this->synchronizing_from_matter_ = true;
     call.perform();
-  } else if (this->has_server_cluster(LevelControl::Id) &&
-             cluster_id == LevelControl::Id &&
+    this->synchronizing_from_matter_ = false;
+  } else if (this->capabilities_.has_level && cluster_id == LevelControl::Id &&
              attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
     uint8_t level = val.val.u8;
     if (level < 1 || level > 254)
@@ -249,10 +238,10 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     auto call = this->light_->make_call();
     call.set_brightness(brightness);
     call.set_transition_length(0);
+    this->synchronizing_from_matter_ = true;
     call.perform();
-  } else if (this->has_server_cluster(ColorControl::Id) &&
-             get_color_temperature_range(this->light_->get_traits())
-                 .has_value() &&
+    this->synchronizing_from_matter_ = false;
+  } else if (this->capabilities_.color_temperature_range.has_value() &&
              cluster_id == ColorControl::Id &&
              attribute_id ==
                  ColorControl::Attributes::ColorTemperatureMireds::Id) {
@@ -263,7 +252,9 @@ void MatterLightMapping::apply_matter_update(uint32_t cluster_id,
     auto call = this->light_->make_call();
     call.set_color_temperature(color_temperature);
     call.set_transition_length(0);
+    this->synchronizing_from_matter_ = true;
     call.perform();
+    this->synchronizing_from_matter_ = false;
   }
 }
 

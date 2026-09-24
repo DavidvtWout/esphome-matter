@@ -225,7 +225,7 @@ class Endpoint:
         # Register ESPHome entities
         if CONF_LIGHT_ID in device_config:
             light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
-            cg.add(var.map_light_to_endpoint(light_, self._endpoint_id))
+            cg.add(var.register_light(light_, self._endpoint_id))
 
         # Register extra features
         for enabled_feature in device_config.get(CONF_FEATURES, ()):

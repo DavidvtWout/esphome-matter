@@ -42,7 +42,7 @@ public:
 
   // Register ESPHome entities
 #ifdef USE_LIGHT
-  void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
+  void register_light(light::LightState *light, uint16_t endpoint_id);
   MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
 #endif // USE_LIGHT
 #ifdef USE_SENSOR
@@ -81,7 +81,7 @@ public:
 private:
   // Defined in matter_endpoints.cpp
   bool create_endpoints_(esp_matter::node_t *node);
-  void register_endpoint_callbacks_();
+  void initialize_endpoint_mappings_();
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};

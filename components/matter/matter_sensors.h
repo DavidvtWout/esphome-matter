@@ -53,7 +53,7 @@ public:
                                SensorValueConverter converter,
                                SensorAttributeUpdater updater = nullptr);
 
-  void register_callbacks() override;
+  void initialize() override;
 
 protected:
   void publish_(float value);
@@ -79,7 +79,7 @@ public:
                                      BinarySensorValueConverter converter,
                                      SensorAttributeUpdater updater = nullptr);
 
-  void register_callbacks() override;
+  void initialize() override;
 
 protected:
   void publish_(bool value);

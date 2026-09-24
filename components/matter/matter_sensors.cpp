@@ -87,7 +87,7 @@ MatterSensorAttributeMapping::MatterSensorAttributeMapping(
       cluster_id_(cluster_id), attribute_id_(attribute_id),
       converter_(converter), updater_(updater) {}
 
-void MatterSensorAttributeMapping::register_callbacks() {
+void MatterSensorAttributeMapping::initialize() {
   if (this->sensor_ == nullptr || this->converter_ == nullptr)
     return;
   this->sensor_->add_on_state_callback(
@@ -133,7 +133,7 @@ MatterBinarySensorAttributeMapping::MatterBinarySensorAttributeMapping(
       cluster_id_(cluster_id), attribute_id_(attribute_id),
       converter_(converter), updater_(updater) {}
 
-void MatterBinarySensorAttributeMapping::register_callbacks() {
+void MatterBinarySensorAttributeMapping::initialize() {
   if (this->sensor_ == nullptr || this->converter_ == nullptr)
     return;
   this->sensor_->add_on_state_callback(

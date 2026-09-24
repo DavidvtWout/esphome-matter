@@ -40,7 +40,7 @@ public:
       : endpoint_id_(endpoint_id) {}
   virtual ~MatterEndpointMappingBase() = default;
 
-  virtual void register_callbacks() {}
+  virtual void initialize() {}
   virtual MatterLightMapping *as_light_mapping() { return nullptr; }
 
   uint16_t endpoint_id() const { return this->endpoint_id_; }
