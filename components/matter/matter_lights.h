@@ -32,10 +32,12 @@ public:
   void initialize() override;
 
   void push_state_to_matter();
-  void sync_state_from_matter();
 
 protected:
-  void initialize_capabilities_();
+  void initialize_matter_attributes_();
+  void restore_light_state_from_matter_();
+
+  // Attribute callbacks
   void apply_on_off_(bool on);
   void apply_level_(uint8_t level);
   void apply_color_temperature_(uint16_t color_temperature);
