@@ -246,6 +246,8 @@ void MatterComponent::register_attribute_callback(
 void MatterComponent::dispatch_attribute_update(
     uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
     const esp_matter_attr_val_t &value) {
+  if (value.is_null())
+    return;
   for (const auto &registration : this->attribute_callbacks_) {
     if (!registration.matches(endpoint_id, cluster_id, attribute_id))
       continue;

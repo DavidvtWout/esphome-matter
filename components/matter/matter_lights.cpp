@@ -1,6 +1,7 @@
 #include "esphome/core/defines.h"
 #if defined(USE_MATTER) && defined(USE_LIGHT)
 
+#include "esphome/core/log.h"
 #include "matter_component.h"
 #include "matter_conversions.h"
 #include "matter_lights.h"
@@ -9,6 +10,8 @@
 #include <cmath>
 #include <esp_matter_cluster.h>
 #include <platform/CHIPDeviceLayer.h>
+
+static const char *const TAG = "matter";
 
 namespace esphome::matter {
 
@@ -44,6 +47,8 @@ void MatterLightMapping::initialize() {
   // Initialize capabilities
   this->capabilities_.has_level =
       this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
+  this->capabilities_.has_color =
+      this->has_server_cluster(chip::app::Clusters::ColorControl::Id);
   this->capabilities_.color_temperature_range =
       get_color_temperature_range(this->light_->get_traits());
   if (!this->has_server_cluster(chip::app::Clusters::ColorControl::Id))
@@ -54,8 +59,6 @@ void MatterLightMapping::initialize() {
   global_matter_component->register_attribute_callback(
       this->endpoint_id(), OnOff::Id, OnOff::Attributes::OnOff::Id,
       [this](const esp_matter_attr_val_t &value) {
-        if (value.is_null())
-          return;
         bool on = value.val.b;
         global_matter_component->defer_to_main_loop(
             [this, on]() { this->apply_on_off_(on); });
@@ -65,8 +68,6 @@ void MatterLightMapping::initialize() {
         this->endpoint_id(), LevelControl::Id,
         LevelControl::Attributes::CurrentLevel::Id,
         [this](const esp_matter_attr_val_t &value) {
-          if (value.is_null())
-            return;
           uint8_t level = value.val.u8;
           global_matter_component->defer_to_main_loop(
               [this, level]() { this->apply_level_(level); });
@@ -77,14 +78,49 @@ void MatterLightMapping::initialize() {
         this->endpoint_id(), ColorControl::Id,
         ColorControl::Attributes::ColorTemperatureMireds::Id,
         [this](const esp_matter_attr_val_t &value) {
-          if (value.is_null())
-            return;
           uint16_t color_temperature = value.val.u16;
           global_matter_component->defer_to_main_loop(
               [this, color_temperature]() {
                 this->apply_color_temperature_(color_temperature);
               });
         });
+  }
+  if (this->capabilities_.has_color) {
+    MatterAttributeCallback color_callback =
+        [this](const esp_matter_attr_val_t &) {
+          if (this->color_update_pending_)
+            return;
+          this->color_update_pending_ = true;
+          // CurrentX and CurrentY are updated separately. Read the pair after
+          // the current Matter work item completes so a new coordinate is not
+          // combined with the previous value of the other coordinate.
+          chip::DeviceLayer::SystemLayer().ScheduleLambda([this]() {
+            this->color_update_pending_ = false;
+            using namespace chip::app::Clusters;
+            esp_matter_attr_val_t x_value;
+            esp_matter_attr_val_t y_value;
+            if (esp_matter::attribute::get_val(
+                    this->endpoint_id(), ColorControl::Id,
+                    ColorControl::Attributes::CurrentX::Id,
+                    &x_value) != ESP_OK ||
+                esp_matter::attribute::get_val(
+                    this->endpoint_id(), ColorControl::Id,
+                    ColorControl::Attributes::CurrentY::Id,
+                    &y_value) != ESP_OK ||
+                x_value.is_null() || y_value.is_null())
+              return;
+            uint16_t x = x_value.val.u16;
+            uint16_t y = y_value.val.u16;
+            global_matter_component->defer_to_main_loop(
+                [this, x, y]() { this->apply_color_(x, y); });
+          });
+        };
+    global_matter_component->register_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::CurrentX::Id, color_callback);
+    global_matter_component->register_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::CurrentY::Id, std::move(color_callback));
   }
 
   // Light calls on_light_remote_values_update() on updates.
@@ -102,18 +138,33 @@ void MatterLightMapping::on_light_remote_values_update() {
   this->push_state_to_matter();
 }
 
+// Pushes the whole state of the light to Matter. esp-matter "deduplicates"
+// attribute updates so it's okay to not check if the values are changed.
 void MatterLightMapping::push_state_to_matter() {
   uint16_t eid = this->endpoint_id();
   bool has_level = this->capabilities_.has_level;
+  const auto &values = this->light_->remote_values;
+  auto color_mode = values.get_color_mode();
+  bool has_color = this->capabilities_.has_color &&
+                   (color_mode & light::ColorCapability::RGB);
   bool has_color_temperature =
-      this->capabilities_.color_temperature_range.has_value();
+      this->capabilities_.color_temperature_range.has_value() && !has_color &&
+      (color_mode & (light::ColorCapability::COLOR_TEMPERATURE |
+                     light::ColorCapability::COLD_WARM_WHITE));
   bool on = this->light_->remote_values.is_on();
   float brightness = this->light_->remote_values.get_brightness();
-  auto level = conversion::brightness_to_level(brightness);
+  auto level = conversion::to_matter::brightness(brightness);
+  uint16_t color_x = 0;
+  uint16_t color_y = 0;
+  if (has_color &&
+      !conversion::to_matter::color(values.get_red(), values.get_green(),
+                                    values.get_blue(), color_x, color_y))
+    has_color = false;
   auto color_temperature = conversion::to_matter::color_temperature(
       this->light_->remote_values.get_color_temperature());
   chip::DeviceLayer::SystemLayer().ScheduleLambda(
-      [eid, has_level, has_color_temperature, on, level, color_temperature]() {
+      [eid, has_level, has_color, has_color_temperature, on, level, color_x,
+       color_y, color_temperature]() {
         using namespace chip::app::Clusters;
         esp_matter_attr_val_t on_val = esp_matter_bool(on);
         esp_matter::attribute::update(eid, OnOff::Id,
@@ -125,6 +176,25 @@ void MatterLightMapping::push_state_to_matter() {
               eid, LevelControl::Id, LevelControl::Attributes::CurrentLevel::Id,
               &level_val);
         }
+        if (has_color) {
+          esp_matter_attr_val_t x_val = esp_matter_uint16(color_x);
+          esp_matter::attribute::update(eid, ColorControl::Id,
+                                        ColorControl::Attributes::CurrentX::Id,
+                                        &x_val);
+          esp_matter_attr_val_t y_val = esp_matter_uint16(color_y);
+          esp_matter::attribute::update(eid, ColorControl::Id,
+                                        ColorControl::Attributes::CurrentY::Id,
+                                        &y_val);
+          esp_matter_attr_val_t color_mode_val =
+              esp_matter_enum8(static_cast<uint8_t>(
+                  ColorControl::ColorModeEnum::kCurrentXAndCurrentY));
+          esp_matter::attribute::update(eid, ColorControl::Id,
+                                        ColorControl::Attributes::ColorMode::Id,
+                                        &color_mode_val);
+          esp_matter::attribute::update(
+              eid, ColorControl::Id,
+              ColorControl::Attributes::EnhancedColorMode::Id, &color_mode_val);
+        }
         if (has_color_temperature) {
           esp_matter_attr_val_t color_temperature_val =
               esp_matter_uint16(color_temperature);
@@ -132,43 +202,35 @@ void MatterLightMapping::push_state_to_matter() {
               eid, ColorControl::Id,
               ColorControl::Attributes::ColorTemperatureMireds::Id,
               &color_temperature_val);
+          esp_matter_attr_val_t color_mode_val =
+              esp_matter_enum8(static_cast<uint8_t>(
+                  ColorControl::ColorModeEnum::kColorTemperatureMireds));
+          esp_matter::attribute::update(eid, ColorControl::Id,
+                                        ColorControl::Attributes::ColorMode::Id,
+                                        &color_mode_val);
+          esp_matter::attribute::update(
+              eid, ColorControl::Id,
+              ColorControl::Attributes::EnhancedColorMode::Id, &color_mode_val);
         }
       });
 }
 
+// Set "static" attribute values at startup such as hardware capabilities of the
+// light.
 void MatterLightMapping::initialize_matter_attributes_() {
-  if (!this->capabilities_.color_temperature_range.has_value())
-    return;
-
-  using namespace chip::app::Clusters;
-  uint16_t endpoint_id = this->endpoint_id();
-  const auto &range = *this->capabilities_.color_temperature_range;
-  esp_matter_attr_val_t min_value = esp_matter_uint16(range.min_mireds);
-  esp_matter::attribute::update(
-      endpoint_id, ColorControl::Id,
-      ColorControl::Attributes::ColorTempPhysicalMinMireds::Id, &min_value);
-  esp_matter_attr_val_t max_value = esp_matter_uint16(range.max_mireds);
-  esp_matter::attribute::update(
-      endpoint_id, ColorControl::Id,
-      ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id, &max_value);
-
-  esp_matter_attr_val_t color_temperature_value;
-  if (esp_matter::attribute::get_val(
-          endpoint_id, ColorControl::Id,
-          ColorControl::Attributes::ColorTemperatureMireds::Id,
-          &color_temperature_value) != ESP_OK ||
-      color_temperature_value.is_null())
-    return;
-
-  uint16_t color_temperature = std::clamp(color_temperature_value.val.u16,
-                                          range.min_mireds, range.max_mireds);
-  if (color_temperature == color_temperature_value.val.u16)
-    return;
-  color_temperature_value.val.u16 = color_temperature;
-  esp_matter::attribute::update(
-      endpoint_id, ColorControl::Id,
-      ColorControl::Attributes::ColorTemperatureMireds::Id,
-      &color_temperature_value);
+  if (this->capabilities_.color_temperature_range.has_value()) {
+    using namespace chip::app::Clusters;
+    uint16_t endpoint_id = this->endpoint_id();
+    const auto &range = *this->capabilities_.color_temperature_range;
+    esp_matter_attr_val_t min_value = esp_matter_uint16(range.min_mireds);
+    esp_matter::attribute::update(
+        endpoint_id, ColorControl::Id,
+        ColorControl::Attributes::ColorTempPhysicalMinMireds::Id, &min_value);
+    esp_matter_attr_val_t max_value = esp_matter_uint16(range.max_mireds);
+    esp_matter::attribute::update(
+        endpoint_id, ColorControl::Id,
+        ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id, &max_value);
+  }
 }
 
 void MatterLightMapping::restore_light_state_from_matter_() {
@@ -197,34 +259,67 @@ void MatterLightMapping::restore_light_state_from_matter_() {
     }
   }
 
+  bool has_valid_color = false;
+  float red = 0.0f;
+  float green = 0.0f;
+  float blue = 0.0f;
   bool has_valid_color_temperature = false;
   uint16_t color_temperature = 0;
-  if (this->capabilities_.color_temperature_range.has_value()) {
-    esp_matter_attr_val_t color_temperature_value;
-    if (esp_matter::attribute::get_val(
-            endpoint_id, ColorControl::Id,
-            ColorControl::Attributes::ColorTemperatureMireds::Id,
-            &color_temperature_value) == ESP_OK &&
-        !color_temperature_value.is_null()) {
-      has_valid_color_temperature = true;
-      color_temperature = color_temperature_value.val.u16;
+  if (this->capabilities_.has_color ||
+      this->capabilities_.color_temperature_range.has_value()) {
+    esp_matter_attr_val_t color_mode_value;
+    if (esp_matter::attribute::get_val(endpoint_id, ColorControl::Id,
+                                       ColorControl::Attributes::ColorMode::Id,
+                                       &color_mode_value) == ESP_OK &&
+        !color_mode_value.is_null()) {
+      auto color_mode =
+          static_cast<ColorControl::ColorModeEnum>(color_mode_value.val.u8);
+      if (this->capabilities_.has_color &&
+          color_mode == ColorControl::ColorModeEnum::kCurrentXAndCurrentY) {
+        esp_matter_attr_val_t x_value;
+        esp_matter_attr_val_t y_value;
+        if (esp_matter::attribute::get_val(
+                endpoint_id, ColorControl::Id,
+                ColorControl::Attributes::CurrentX::Id, &x_value) == ESP_OK &&
+            esp_matter::attribute::get_val(
+                endpoint_id, ColorControl::Id,
+                ColorControl::Attributes::CurrentY::Id, &y_value) == ESP_OK &&
+            !x_value.is_null() && !y_value.is_null()) {
+          has_valid_color = conversion::from_matter::color(
+              x_value.val.u16, y_value.val.u16, red, green, blue);
+        }
+      } else if (this->capabilities_.color_temperature_range.has_value() &&
+                 color_mode ==
+                     ColorControl::ColorModeEnum::kColorTemperatureMireds) {
+        esp_matter_attr_val_t color_temperature_value;
+        if (esp_matter::attribute::get_val(
+                endpoint_id, ColorControl::Id,
+                ColorControl::Attributes::ColorTemperatureMireds::Id,
+                &color_temperature_value) == ESP_OK &&
+            !color_temperature_value.is_null()) {
+          has_valid_color_temperature = true;
+          color_temperature = color_temperature_value.val.u16;
+        }
+      }
     }
   }
 
-  global_matter_component->defer_to_main_loop([this, on, has_valid_level, level,
-                                               has_valid_color_temperature,
-                                               color_temperature]() {
-    this->synchronizing_from_matter_ = true;
-    auto call = this->light_->make_call();
-    call.set_state(on);
-    if (has_valid_level)
-      call.set_brightness(conversion::level_to_brightness(level));
-    if (has_valid_color_temperature)
-      call.set_color_temperature(color_temperature);
-    call.set_transition_length(0);
-    call.perform();
-    this->synchronizing_from_matter_ = false;
-  });
+  global_matter_component->defer_to_main_loop(
+      [this, on, has_valid_level, level, has_valid_color, red, green, blue,
+       has_valid_color_temperature, color_temperature]() {
+        this->synchronizing_from_matter_ = true;
+        auto call = this->light_->make_call();
+        call.set_state(on);
+        if (has_valid_level)
+          call.set_brightness(conversion::from_matter::brightness(level));
+        if (has_valid_color)
+          call.set_rgb(red, green, blue);
+        if (has_valid_color_temperature)
+          call.set_color_temperature(color_temperature);
+        call.set_transition_length(0);
+        call.perform();
+        this->synchronizing_from_matter_ = false;
+      });
 }
 
 void MatterLightMapping::apply_on_off_(bool on) {
@@ -239,12 +334,15 @@ void MatterLightMapping::apply_on_off_(bool on) {
 }
 
 void MatterLightMapping::apply_level_(uint8_t level) {
-  if (level < 1 || level > 254)
-    return;
-  float brightness = conversion::level_to_brightness(level);
+  // TODO: constrain using MinLevel and MaxLevel attributes
+  // if (level < 1 || level > 254)
+  //   return;
+  float brightness = conversion::from_matter::brightness(level);
   if (std::fabs(this->light_->remote_values.get_brightness() - brightness) <
-      (0.5f / 254.0f))
+      (0.5f / 254.0f)) {
+    // TODO: log warning
     return;
+  }
   auto call = this->light_->make_call();
   call.set_brightness(brightness);
   call.set_transition_length(0);
@@ -255,10 +353,30 @@ void MatterLightMapping::apply_level_(uint8_t level) {
 
 void MatterLightMapping::apply_color_temperature_(uint16_t color_temperature) {
   if (std::fabs(this->light_->remote_values.get_color_temperature() -
-                color_temperature) < 0.5f)
+                color_temperature) < 0.5f) {
+    // TODO: log warning
     return;
+  }
   auto call = this->light_->make_call();
   call.set_color_temperature(color_temperature);
+  call.set_transition_length(0);
+  this->synchronizing_from_matter_ = true;
+  call.perform();
+  this->synchronizing_from_matter_ = false;
+}
+
+void MatterLightMapping::apply_color_(uint16_t x, uint16_t y) {
+  float red;
+  float green;
+  float blue;
+  if (!conversion::from_matter::color(x, y, red, green, blue)) {
+    ESP_LOGW(TAG, "Failed to convert Matter xy color: endpoint=%u, x=%u, y=%u",
+             this->endpoint_id(), x, y);
+    return;
+  }
+
+  auto call = this->light_->make_call();
+  call.set_rgb(red, green, blue);
   call.set_transition_length(0);
   this->synchronizing_from_matter_ = true;
   call.perform();
