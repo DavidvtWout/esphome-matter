@@ -1,132 +1,11 @@
 import json
-import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 
 import esphome.config_validation as cv
 
 from ..util import snake_case
-
-_LOGGER = logging.getLogger(__name__)
-
-
-def _seconds(multiplier=1):
-    def _validate(value):
-        if isinstance(value, int):
-            return value
-        if isinstance(value, float):
-            raise cv.Invalid(f"Floats are ambiguous. Use '{value}s' instead.")
-        period_ms = cv.positive_time_period_milliseconds(value).total_milliseconds
-        scaled = period_ms * multiplier
-        if scaled % 1000 != 0:
-            raise cv.Invalid(f"Duration must be a multiple of {1000 / multiplier:g}ms")
-        return scaled // 1000
-
-    return _validate
-
-
-def _percentage(multiplier=254):
-    def _validate(value):
-        if isinstance(value, int):
-            return value
-        if isinstance(value, float):
-            raise cv.Invalid(f"Floats are ambiguous. Use '{value}%' instead.")
-        return round(cv.percentage(value) * multiplier)
-
-    return _validate
-
-
-def _hue(multiplier):
-    def _validate(value):
-        if isinstance(value, int):
-            _LOGGER.warning(
-                "Integer hue value %s is interpreted as a raw Matter value. Degrees values such as '180°' are recommended.",
-                value,
-            )
-            return value
-        return round(cv.angle(value) / 360 * multiplier)
-
-    return _validate
-
-
-def _saturation(multiplier=254):
-    def _validate(value):
-        if isinstance(value, int):
-            _LOGGER.warning(
-                "Integer saturation value %s is interpreted as a raw Matter value. A value between 0.0 and 1.0 is recommended",
-                value,
-            )
-            return value
-        if isinstance(value, float):
-            if not 0.0 <= value <= 1.0:
-                raise cv.Invalid("Saturation must be between 0.0 and 1.0")
-            return round(value * multiplier)
-        raise cv.Invalid("Saturation should be a float value between 0.0 and 1.0")
-
-    return _validate
-
-
-def _xy_colour(multiplier=65536):
-    def _validate(value):
-        if isinstance(value, int):
-            _LOGGER.warning(
-                "Integer XY colour value %s is interpreted as a raw Matter value. A float is recommended",
-                value,
-            )
-            return value
-        if isinstance(value, float):
-            if not 0.0 <= value <= 1.0:
-                raise cv.Invalid("XY colour value must be in the range [0.0, 1.0]")
-            return round(value * multiplier)
-        raise cv.Invalid("XY colour value should be a float")
-
-    return _validate
-
-
-def _xy_colour_rate(multiplier=65536):
-    def _validate(value):
-        if isinstance(value, int):
-            _LOGGER.warning(
-                "Integer XY colour value %s is interpreted as a raw Matter value. A float is recommended",
-                value,
-            )
-            return value
-        if isinstance(value, float):
-            if not -0.5 <= value < 0.5:
-                raise cv.Invalid("XY colour rate must be in the range [-0.5, 0.5)")
-            return round(value * multiplier)
-        raise cv.Invalid("XY colour rate should be a float")
-
-    return _validate
-
-
-def _rate(validator_factory):
-    def _factory(multiplier=None):
-        def _validate(value):
-            if isinstance(value, str):
-                value = value.removesuffix("/s")
-            if multiplier is not None:
-                return validator_factory(multiplier)(value)
-            else:
-                return validator_factory()(value)
-
-        return _validate
-
-    return _factory
-
-
-_UNIT_VALIDATORS = {
-    "seconds": _seconds,
-    "percentage": _percentage,
-    "percentage_rate": _rate(_percentage),
-    "hue": _hue,
-    "hue_rate": _rate(_hue),
-    "saturation": _saturation,
-    "saturation_rate": _saturation,  # Unitless so no rate.
-    "xy_colour": _xy_colour,
-    "xy_colour_rate": _xy_colour_rate,
-}
-
+from .units import UNIT_VALIDATORS
 
 _INTEGER_RANGES = {
     "int8u": (0, 0xFF),
@@ -292,7 +171,7 @@ class CommandArg:
 
         if self.unit is not None:
             try:
-                unit_validator = _UNIT_VALIDATORS[self.unit]
+                unit_validator = UNIT_VALIDATORS[self.unit]
             except KeyError as err:
                 raise ValueError(f"Unknown command argument unit: {self.unit}") from err
             if self.multiplier is not None:

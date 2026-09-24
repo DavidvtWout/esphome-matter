@@ -240,6 +240,12 @@ class Endpoint:
             f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{}};"
         ]
 
+        device_config = self._config[device_type.conf_key]
+        if min_level := device_config.get(CONF_MIN_LEVEL):
+            lines.append(f"{config_var}.level_control.min_level = {min_level};")
+        if max_level := device_config.get(CONF_MAX_LEVEL):
+            lines.append(f"{config_var}.level_control.max_level = {max_level};")
+
         # Configure cluster features
         for cluster in device_type.server_clusters:
             if not cluster.required:

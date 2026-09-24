@@ -8,10 +8,11 @@ from esphome import automation
 from esphome.components import light
 from esphome.const import CONF_LIGHT_ID
 
-from ..const import CONF_FEATURES
+from ..const import CONF_FEATURES, CONF_MAX_LEVEL, CONF_MIN_LEVEL
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
 from .clusters import CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster, Feature
+from .units import percentage
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -175,6 +176,14 @@ class DeviceType:
         # TODO: replace with something better
         if self.name.endswith("light"):
             schema[cv.Optional(CONF_LIGHT_ID)] = cv.use_id(light.LightState)
+
+        if self.name.endswith("light") and any(
+            cluster.name == "LevelControl" and cluster.required
+            for cluster in self.server_clusters
+        ):
+            level = cv.All(percentage(), cv.int_range(min=1, max=254))
+            schema[cv.Optional(CONF_MIN_LEVEL, default=1)] = level
+            schema[cv.Optional(CONF_MAX_LEVEL, default=254)] = level
 
         # If a device type is a simple sensor with only a single sensor attribute the config may be simplified from;
         #   temperature_sensor:
