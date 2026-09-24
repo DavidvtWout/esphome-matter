@@ -175,30 +175,40 @@ uint8_t brightness(float brightness) {
   return level < 1 ? 1 : level;
 }
 
-// ESPHome uses normalized RGB channel values while Matter uses CIE xy. Use
-// chromaticity only because brightness is represented by Level Control.
+// This follows Home Assistant's color_RGB_to_xy() conversion. ESPHome uses
+// normalized RGB channel values instead of Home Assistant's 0-255 values, and
+// Matter stores each resulting CIE xy component as a 16-bit value.
 bool color(float red, float green, float blue, uint16_t &matter_x,
            uint16_t &matter_y) {
-  auto gamma_decode = [](float channel) {
-    channel = std::clamp(channel, 0.0f, 1.0f);
-    return channel <= 0.04045f ? channel / 12.92f
-                               : std::pow((channel + 0.055f) / 1.055f, 2.4f);
-  };
-  red = gamma_decode(red);
-  green = gamma_decode(green);
-  blue = gamma_decode(blue);
+  float r = std::clamp(red, 0.0f, 1.0f);
+  float g = std::clamp(green, 0.0f, 1.0f);
+  float b = std::clamp(blue, 0.0f, 1.0f);
+  if (r + g + b == 0.0f) {
+    matter_x = 0;
+    matter_y = 0;
+    return true;
+  }
 
-  float cie_x = 0.4124f * red + 0.3576f * green + 0.1805f * blue;
-  float cie_y = 0.2126f * red + 0.7152f * green + 0.0722f * blue;
-  float cie_z = 0.0193f * red + 0.1192f * green + 0.9505f * blue;
+  auto gamma_decode = [](float channel) {
+    return channel > 0.04045f ? std::pow((channel + 0.055f) / 1.055f, 2.4f)
+                              : channel / 12.92f;
+  };
+  r = gamma_decode(r);
+  g = gamma_decode(g);
+  b = gamma_decode(b);
+
+  float cie_x = r * 0.664511f + g * 0.154324f + b * 0.162028f;
+  float cie_y = r * 0.283881f + g * 0.668433f + b * 0.047685f;
+  float cie_z = r * 0.000088f + g * 0.072310f + b * 0.986039f;
   float sum = cie_x + cie_y + cie_z;
-  if (sum <= 0.0f)
-    return false;
+
+  float x = cie_x / sum;
+  float y = cie_y / sum;
 
   matter_x = static_cast<uint16_t>(
-      std::lroundf(std::clamp(cie_x / sum * 65536.0f, 0.0f, 65279.0f)));
+      std::lroundf(std::clamp(x * 65536.0f, 0.0f, 65279.0f)));
   matter_y = static_cast<uint16_t>(
-      std::lroundf(std::clamp(cie_y / sum * 65536.0f, 0.0f, 65279.0f)));
+      std::lroundf(std::clamp(y * 65536.0f, 0.0f, 65279.0f)));
   return true;
 }
 
@@ -215,42 +225,41 @@ namespace from_matter {
 
 float brightness(uint8_t level) { return level / 254.0f; }
 
-// Matter uses CIE xy while ESPHome uses normalized RGB channel values. Use
-// unit luminance because brightness is represented by Level Control.
+// This follows Home Assistant's color_xy_to_RGB() conversion. Matter provides
+// CIE xy as 16-bit values while ESPHome expects normalized RGB channels.
 bool color(uint16_t matter_x, uint16_t matter_y, float &red, float &green,
            float &blue) {
   float x = matter_x / 65536.0f;
   float y = matter_y / 65536.0f;
-  if (y <= 0.0f || x + y > 1.0f)
+  if (y == 0.0f)
     return false;
 
   float cie_x = x / y;
-  float cie_y = 1.0f;
   float cie_z = (1.0f - x - y) / y;
-  red = 3.2406f * cie_x - 1.5372f * cie_y - 0.4986f * cie_z;
-  green = -0.9689f * cie_x + 1.8758f * cie_y + 0.0415f * cie_z;
-  blue = 0.0557f * cie_x - 0.2040f * cie_y + 1.0570f * cie_z;
 
-  red = std::max(red, 0.0f);
-  green = std::max(green, 0.0f);
-  blue = std::max(blue, 0.0f);
-  if (std::max({red, green, blue}) <= 0.0f)
-    return false;
+  float r = cie_x * 1.656492f - 0.354851f - cie_z * 0.255038f;
+  float g = -cie_x * 0.707196f + 1.655397f + cie_z * 0.036152f;
+  float b = cie_x * 0.051713f - 0.121364f + cie_z * 1.011530f;
 
   auto gamma_encode = [](float channel) {
     return channel <= 0.0031308f
                ? 12.92f * channel
                : 1.055f * std::pow(channel, 1.0f / 2.4f) - 0.055f;
   };
-  red = gamma_encode(red);
-  green = gamma_encode(green);
-  blue = gamma_encode(blue);
-  float maximum = std::max({red, green, blue});
+  r = std::max(0.0f, gamma_encode(r));
+  g = std::max(0.0f, gamma_encode(g));
+  b = std::max(0.0f, gamma_encode(b));
+
+  float maximum = std::max({r, g, b});
   if (maximum > 1.0f) {
-    red /= maximum;
-    green /= maximum;
-    blue /= maximum;
+    r /= maximum;
+    g /= maximum;
+    b /= maximum;
   }
+
+  red = r;
+  green = g;
+  blue = b;
   return true;
 }
 
