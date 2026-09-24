@@ -36,13 +36,13 @@ public:
 
 protected:
   void initialize_matter_attributes_();
-  void restore_light_state_from_matter_();
 
   // Attribute callbacks
   void apply_on_off_(bool on);
   void apply_level_(uint8_t level);
   void apply_color_temperature_(uint16_t color_temperature);
   void apply_color_(uint16_t x, uint16_t y);
+  void apply_color_mode_(uint8_t color_mode);
 
   light::LightState *light_;
   MatterLightCapabilities capabilities_;

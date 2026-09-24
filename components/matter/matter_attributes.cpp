@@ -255,6 +255,18 @@ void MatterComponent::dispatch_attribute_update(
   }
 }
 
+// Can be used to trigger an attribute callback manually. Particularly useful
+// for restoring state of ESPHome entities after a restart.
+void MatterComponent::replay_attribute_callback(uint16_t endpoint_id,
+                                                uint32_t cluster_id,
+                                                uint32_t attribute_id) {
+  esp_matter_attr_val_t value;
+  if (esp_matter::attribute::get_val(endpoint_id, cluster_id, attribute_id,
+                                     &value) == ESP_OK)
+    this->dispatch_attribute_update(endpoint_id, cluster_id, attribute_id,
+                                    value);
+}
+
 void replay_attribute_triggers(MatterComponent *component) {
   chip::DeviceLayer::SystemLayer().ScheduleLambda([component]() {
     for (auto *trigger : component->attribute_triggers_) {

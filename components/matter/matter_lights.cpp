@@ -122,19 +122,41 @@ void MatterLightMapping::initialize() {
         this->endpoint_id(), ColorControl::Id,
         ColorControl::Attributes::CurrentY::Id, std::move(color_callback));
   }
+  if (this->capabilities_.has_color ||
+      this->capabilities_.color_temperature_range.has_value()) {
+    global_matter_component->register_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::ColorMode::Id,
+        [this](const esp_matter_attr_val_t &value) {
+          this->apply_color_mode_(value.val.u8);
+        });
+  }
 
   // Light calls on_light_remote_values_update() on updates.
   this->light_->add_remote_values_listener(this);
 
   chip::DeviceLayer::SystemLayer().ScheduleLambda([this]() {
     this->initialize_matter_attributes_();
-    this->restore_light_state_from_matter_();
+    using namespace chip::app::Clusters;
+    global_matter_component->replay_attribute_callback(
+        this->endpoint_id(), OnOff::Id, OnOff::Attributes::OnOff::Id);
+    if (this->capabilities_.has_level)
+      global_matter_component->replay_attribute_callback(
+          this->endpoint_id(), LevelControl::Id,
+          LevelControl::Attributes::CurrentLevel::Id);
+    // The color_mode callback triggers the mired and xy colour callbacks so
+    // these don't need to be called explicitely here.
+    if (this->capabilities_.has_color ||
+        this->capabilities_.color_temperature_range.has_value())
+      global_matter_component->replay_attribute_callback(
+          this->endpoint_id(), ColorControl::Id,
+          ColorControl::Attributes::ColorMode::Id);
   });
 }
 
 void MatterLightMapping::on_light_remote_values_update() {
   if (this->synchronizing_from_matter_)
-    return;
+    return; // TODO: Fix this race-condition
   this->push_state_to_matter();
 }
 
@@ -223,85 +245,13 @@ void MatterLightMapping::initialize_matter_attributes_() {
     uint16_t endpoint_id = this->endpoint_id();
     const auto &range = *this->capabilities_.color_temperature_range;
     esp_matter_attr_val_t min_value = esp_matter_uint16(range.min_mireds);
-    esp_matter::attribute::update(
+    esp_matter::attribute::report(
         endpoint_id, ColorControl::Id,
         ColorControl::Attributes::ColorTempPhysicalMinMireds::Id, &min_value);
     esp_matter_attr_val_t max_value = esp_matter_uint16(range.max_mireds);
-    esp_matter::attribute::update(
+    esp_matter::attribute::report(
         endpoint_id, ColorControl::Id,
         ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id, &max_value);
-  }
-}
-
-void MatterLightMapping::restore_light_state_from_matter_() {
-  using namespace chip::app::Clusters;
-  uint16_t endpoint_id = this->endpoint_id();
-  esp_matter_attr_val_t on_value;
-  if (esp_matter::attribute::get_val(endpoint_id, OnOff::Id,
-                                     OnOff::Attributes::OnOff::Id,
-                                     &on_value) == ESP_OK &&
-      !on_value.is_null()) {
-    bool on = on_value.val.b;
-    global_matter_component->defer_to_main_loop(
-        [this, on]() { this->apply_on_off_(on); });
-  }
-
-  if (this->capabilities_.has_level) {
-    esp_matter_attr_val_t level_value;
-    if (esp_matter::attribute::get_val(
-            endpoint_id, LevelControl::Id,
-            LevelControl::Attributes::CurrentLevel::Id,
-            &level_value) == ESP_OK &&
-        !level_value.is_null()) {
-      uint8_t level = level_value.val.u8;
-      global_matter_component->defer_to_main_loop(
-          [this, level]() { this->apply_level_(level); });
-    }
-  }
-
-  if (!this->capabilities_.has_color &&
-      !this->capabilities_.color_temperature_range.has_value())
-    return;
-
-  esp_matter_attr_val_t color_mode_value;
-  if (esp_matter::attribute::get_val(endpoint_id, ColorControl::Id,
-                                     ColorControl::Attributes::ColorMode::Id,
-                                     &color_mode_value) != ESP_OK ||
-      color_mode_value.is_null())
-    return;
-
-  auto color_mode =
-      static_cast<ColorControl::ColorModeEnum>(color_mode_value.val.u8);
-  if (this->capabilities_.has_color &&
-      color_mode == ColorControl::ColorModeEnum::kCurrentXAndCurrentY) {
-    esp_matter_attr_val_t x_value;
-    esp_matter_attr_val_t y_value;
-    if (esp_matter::attribute::get_val(endpoint_id, ColorControl::Id,
-                                       ColorControl::Attributes::CurrentX::Id,
-                                       &x_value) == ESP_OK &&
-        esp_matter::attribute::get_val(endpoint_id, ColorControl::Id,
-                                       ColorControl::Attributes::CurrentY::Id,
-                                       &y_value) == ESP_OK &&
-        !x_value.is_null() && !y_value.is_null()) {
-      uint16_t x = x_value.val.u16;
-      uint16_t y = y_value.val.u16;
-      global_matter_component->defer_to_main_loop(
-          [this, x, y]() { this->apply_color_(x, y); });
-    }
-  } else if (this->capabilities_.color_temperature_range.has_value() &&
-             color_mode ==
-                 ColorControl::ColorModeEnum::kColorTemperatureMireds) {
-    esp_matter_attr_val_t color_temperature_value;
-    if (esp_matter::attribute::get_val(
-            endpoint_id, ColorControl::Id,
-            ColorControl::Attributes::ColorTemperatureMireds::Id,
-            &color_temperature_value) == ESP_OK &&
-        !color_temperature_value.is_null()) {
-      uint16_t color_temperature = color_temperature_value.val.u16;
-      global_matter_component->defer_to_main_loop([this, color_temperature]() {
-        this->apply_color_temperature_(color_temperature);
-      });
-    }
   }
 }
 
@@ -358,6 +308,28 @@ void MatterLightMapping::apply_color_(uint16_t x, uint16_t y) {
   this->synchronizing_from_matter_ = true;
   call.perform();
   this->synchronizing_from_matter_ = false;
+}
+
+// The color mode should always update before the mireds or current_x or
+// current_y attributes. But just in case, replay the colour state attributes
+// updates for when the mode attribute is updated later.
+void MatterLightMapping::apply_color_mode_(uint8_t color_mode) {
+  using namespace chip::app::Clusters;
+  auto mode = static_cast<ColorControl::ColorModeEnum>(color_mode);
+  if (mode == ColorControl::ColorModeEnum::kCurrentXAndCurrentY &&
+      this->capabilities_.has_color) {
+    global_matter_component->replay_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::CurrentX::Id);
+    global_matter_component->replay_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::CurrentY::Id);
+  } else if (mode == ColorControl::ColorModeEnum::kColorTemperatureMireds &&
+             this->capabilities_.color_temperature_range.has_value()) {
+    global_matter_component->replay_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::ColorTemperatureMireds::Id);
+  }
 }
 
 } // namespace esphome::matter
