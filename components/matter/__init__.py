@@ -156,7 +156,9 @@ async def to_code(config: ConfigType):
 
     add_idf_component(
         name="davidvtwout/esp_matter",
-        ref="1.6.0~2",
+        ref="1.6.1~1",
+        # When testing, package esp_matter, rename to davidvtwout__esp_matter and uncomment the following line.
+        # path="/path/to/esp-matter/dist/davidvtwout__esp_matter",
     )
 
     cg.add_define("USE_MATTER")
