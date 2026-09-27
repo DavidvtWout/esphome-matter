@@ -131,9 +131,12 @@ wifi: ...
 openthread: ...
 
 matter:
-  # vendor and product name can be at most 32 characters.
   # vendor_name: defaults to ESPHome
-  # product_name: defaults to esphome.name
+  # vendor_id: defaults to 0xFFF1 (test vendor)
+  # product_name: defaults to esphome.name (truncated to 32 characters)
+  # product_id: defaults to 0x8000 (test product)
+  # hardware_version: defaults to 0
+  # hardware_version_string: defaults to TEST_VERSION
 
   endpoints:
     1:
