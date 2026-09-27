@@ -1,0 +1,4028 @@
+{
+  "AccessControl": {
+    "AccessControlEntryChanged": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 1,
+          "name": "AdminNodeID",
+          "type": "int64u",
+          "nullable": true
+        },
+        {
+          "id": 2,
+          "name": "AdminPasscodeID",
+          "type": "int16u",
+          "nullable": true
+        },
+        {
+          "id": 3,
+          "name": "ChangeType",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "changed": 0,
+            "added": 1,
+            "removed": 2
+          }
+        },
+        {
+          "id": 4,
+          "name": "LatestValue",
+          "type": "struct",
+          "nullable": true,
+          "struct": [
+            {
+              "id": 1,
+              "name": "Privilege",
+              "type": "enum8",
+              "max": 5,
+              "enum_values": {
+                "view": 1,
+                "proxy_view": 2,
+                "operate": 3,
+                "manage": 4,
+                "administer": 5
+              }
+            },
+            {
+              "id": 2,
+              "name": "AuthMode",
+              "type": "enum8",
+              "max": 3,
+              "enum_values": {
+                "pase": 1,
+                "case": 2,
+                "group": 3
+              }
+            },
+            {
+              "id": 3,
+              "name": "Subjects",
+              "type": "int64u",
+              "nullable": true,
+              "array": true
+            },
+            {
+              "id": 4,
+              "name": "Targets",
+              "type": "struct",
+              "nullable": true,
+              "array": true,
+              "struct": [
+                {
+                  "id": 0,
+                  "name": "Cluster",
+                  "type": "cluster_id",
+                  "nullable": true
+                },
+                {
+                  "id": 1,
+                  "name": "Endpoint",
+                  "type": "int16u",
+                  "nullable": true
+                },
+                {
+                  "id": 2,
+                  "name": "DeviceType",
+                  "type": "devtype_id",
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "name": "AuxiliaryType",
+              "type": "enum8",
+              "max": 1,
+              "optional": true,
+              "enum_values": {
+                "system": 0,
+                "groupcast": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "AccessControlExtensionChanged": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 1,
+          "name": "AdminNodeID",
+          "type": "int64u",
+          "nullable": true
+        },
+        {
+          "id": 2,
+          "name": "AdminPasscodeID",
+          "type": "int16u",
+          "nullable": true
+        },
+        {
+          "id": 3,
+          "name": "ChangeType",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "changed": 0,
+            "added": 1,
+            "removed": 2
+          }
+        },
+        {
+          "id": 4,
+          "name": "LatestValue",
+          "type": "struct",
+          "nullable": true,
+          "struct": [
+            {
+              "id": 1,
+              "name": "Data",
+              "type": "octet_string",
+              "length": 128
+            }
+          ]
+        }
+      ]
+    },
+    "FabricRestrictionReviewUpdate": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Token",
+          "type": "int64u"
+        },
+        {
+          "id": 1,
+          "name": "Instruction",
+          "type": "long_char_string",
+          "optional": true,
+          "length": 512
+        },
+        {
+          "id": 2,
+          "name": "ARLRequestFlowUrl",
+          "type": "long_char_string",
+          "optional": true,
+          "length": 256
+        }
+      ]
+    },
+    "AuxiliaryAccessUpdated": {
+      "id": 3,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AdminNodeID",
+          "type": "int64u",
+          "nullable": true
+        }
+      ]
+    }
+  },
+  "Actions": {
+    "StateChanged": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ActionID",
+          "type": "int16u"
+        },
+        {
+          "id": 1,
+          "name": "InvokeID",
+          "type": "int32u"
+        },
+        {
+          "id": 2,
+          "name": "NewState",
+          "type": "enum8",
+          "min": 0,
+          "max": 3,
+          "enum_values": {
+            "inactive": 0,
+            "active": 1,
+            "paused": 2,
+            "disabled": 3
+          }
+        }
+      ]
+    },
+    "ActionFailed": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ActionID",
+          "type": "int16u"
+        },
+        {
+          "id": 1,
+          "name": "InvokeID",
+          "type": "int32u"
+        },
+        {
+          "id": 2,
+          "name": "NewState",
+          "type": "enum8",
+          "min": 0,
+          "max": 3,
+          "enum_values": {
+            "inactive": 0,
+            "active": 1,
+            "paused": 2,
+            "disabled": 3
+          }
+        },
+        {
+          "id": 3,
+          "name": "Error",
+          "type": "enum8",
+          "min": 0,
+          "max": 1,
+          "enum_values": {
+            "unknown": 0,
+            "interrupted": 1
+          }
+        }
+      ]
+    }
+  },
+  "BasicInformation": {
+    "StartUp": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SoftwareVersion",
+          "type": "int32u"
+        }
+      ]
+    },
+    "ShutDown": {
+      "id": 1,
+      "fields": []
+    },
+    "Leave": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "FabricIndex",
+          "type": "int8u",
+          "min": 1,
+          "max": 254
+        }
+      ]
+    },
+    "ReachableChanged": {
+      "id": 3,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ReachableNewValue",
+          "type": "boolean"
+        }
+      ]
+    }
+  },
+  "OTASoftwareUpdateRequestor": {
+    "StateTransition": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "PreviousState",
+          "type": "enum8",
+          "max": 8,
+          "default": "0x00",
+          "enum_values": {
+            "unknown": 0,
+            "idle": 1,
+            "querying": 2,
+            "delayed_on_query": 3,
+            "downloading": 4,
+            "applying": 5,
+            "delayed_on_apply": 6,
+            "rolling_back": 7,
+            "delayed_on_user_consent": 8
+          }
+        },
+        {
+          "id": 1,
+          "name": "NewState",
+          "type": "enum8",
+          "max": 8,
+          "enum_values": {
+            "unknown": 0,
+            "idle": 1,
+            "querying": 2,
+            "delayed_on_query": 3,
+            "downloading": 4,
+            "applying": 5,
+            "delayed_on_apply": 6,
+            "rolling_back": 7,
+            "delayed_on_user_consent": 8
+          }
+        },
+        {
+          "id": 2,
+          "name": "Reason",
+          "type": "enum8",
+          "max": 4,
+          "enum_values": {
+            "unknown": 0,
+            "success": 1,
+            "failure": 2,
+            "time_out": 3,
+            "delay_by_provider": 4
+          }
+        },
+        {
+          "id": 3,
+          "name": "TargetSoftwareVersion",
+          "type": "int32u",
+          "nullable": true
+        }
+      ]
+    },
+    "VersionApplied": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SoftwareVersion",
+          "type": "int32u"
+        },
+        {
+          "id": 1,
+          "name": "ProductID",
+          "type": "int16u"
+        }
+      ]
+    },
+    "DownloadError": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SoftwareVersion",
+          "type": "int32u"
+        },
+        {
+          "id": 1,
+          "name": "BytesDownloaded",
+          "type": "int64u"
+        },
+        {
+          "id": 2,
+          "name": "ProgressPercent",
+          "type": "int8u",
+          "max": 100,
+          "nullable": true
+        },
+        {
+          "id": 3,
+          "name": "PlatformCode",
+          "type": "int64s",
+          "nullable": true
+        }
+      ]
+    }
+  },
+  "PowerSource": {
+    "WiredFaultChange": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Current",
+          "type": "enum8",
+          "array": true,
+          "length": 8,
+          "enum_values": {
+            "unspecified": 0,
+            "over_voltage": 1,
+            "under_voltage": 2
+          }
+        },
+        {
+          "id": 1,
+          "name": "Previous",
+          "type": "enum8",
+          "array": true,
+          "length": 8,
+          "enum_values": {
+            "unspecified": 0,
+            "over_voltage": 1,
+            "under_voltage": 2
+          }
+        }
+      ]
+    },
+    "BatFaultChange": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Current",
+          "type": "enum8",
+          "array": true,
+          "length": 8,
+          "enum_values": {
+            "unspecified": 0,
+            "over_temp": 1,
+            "under_temp": 2
+          }
+        },
+        {
+          "id": 1,
+          "name": "Previous",
+          "type": "enum8",
+          "array": true,
+          "length": 8,
+          "enum_values": {
+            "unspecified": 0,
+            "over_temp": 1,
+            "under_temp": 2
+          }
+        }
+      ]
+    },
+    "BatChargeFaultChange": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Current",
+          "type": "enum8",
+          "array": true,
+          "length": 16,
+          "enum_values": {
+            "unspecified": 0,
+            "ambient_too_hot": 1,
+            "ambient_too_cold": 2,
+            "battery_too_hot": 3,
+            "battery_too_cold": 4,
+            "battery_absent": 5,
+            "battery_over_voltage": 6,
+            "battery_under_voltage": 7,
+            "charger_over_voltage": 8,
+            "charger_under_voltage": 9,
+            "safety_timeout": 10
+          }
+        },
+        {
+          "id": 1,
+          "name": "Previous",
+          "type": "enum8",
+          "array": true,
+          "length": 16,
+          "enum_values": {
+            "unspecified": 0,
+            "ambient_too_hot": 1,
+            "ambient_too_cold": 2,
+            "battery_too_hot": 3,
+            "battery_too_cold": 4,
+            "battery_absent": 5,
+            "battery_over_voltage": 6,
+            "battery_under_voltage": 7,
+            "charger_over_voltage": 8,
+            "charger_under_voltage": 9,
+            "safety_timeout": 10
+          }
+        }
+      ]
+    }
+  },
+  "GeneralDiagnostics": {
+    "HardwareFaultChange": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Current",
+          "type": "enum8",
+          "array": true,
+          "length": 11,
+          "enum_values": {
+            "unspecified": 0,
+            "radio": 1,
+            "sensor": 2,
+            "resettable_over_temp": 3,
+            "non_resettable_over_temp": 4,
+            "power_source": 5,
+            "visual_display_fault": 6,
+            "audio_output_fault": 7,
+            "user_interface_fault": 8,
+            "non_volatile_memory_error": 9,
+            "tamper_detected": 10
+          }
+        },
+        {
+          "id": 1,
+          "name": "Previous",
+          "type": "enum8",
+          "array": true,
+          "length": 11,
+          "enum_values": {
+            "unspecified": 0,
+            "radio": 1,
+            "sensor": 2,
+            "resettable_over_temp": 3,
+            "non_resettable_over_temp": 4,
+            "power_source": 5,
+            "visual_display_fault": 6,
+            "audio_output_fault": 7,
+            "user_interface_fault": 8,
+            "non_volatile_memory_error": 9,
+            "tamper_detected": 10
+          }
+        }
+      ]
+    },
+    "RadioFaultChange": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Current",
+          "type": "enum8",
+          "array": true,
+          "length": 7,
+          "enum_values": {
+            "unspecified": 0,
+            "wi_fi_fault": 1,
+            "cellular_fault": 2,
+            "thread_fault": 3,
+            "nfc_fault": 4,
+            "ble_fault": 5,
+            "ethernet_fault": 6
+          }
+        },
+        {
+          "id": 1,
+          "name": "Previous",
+          "type": "enum8",
+          "array": true,
+          "length": 7,
+          "enum_values": {
+            "unspecified": 0,
+            "wi_fi_fault": 1,
+            "cellular_fault": 2,
+            "thread_fault": 3,
+            "nfc_fault": 4,
+            "ble_fault": 5,
+            "ethernet_fault": 6
+          }
+        }
+      ]
+    },
+    "NetworkFaultChange": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Current",
+          "type": "enum8",
+          "array": true,
+          "length": 4,
+          "enum_values": {
+            "unspecified": 0,
+            "hardware_failure": 1,
+            "network_jammed": 2,
+            "connection_failed": 3
+          }
+        },
+        {
+          "id": 1,
+          "name": "Previous",
+          "type": "enum8",
+          "array": true,
+          "length": 4,
+          "enum_values": {
+            "unspecified": 0,
+            "hardware_failure": 1,
+            "network_jammed": 2,
+            "connection_failed": 3
+          }
+        }
+      ]
+    },
+    "BootReason": {
+      "id": 3,
+      "fields": [
+        {
+          "id": 0,
+          "name": "BootReason",
+          "type": "enum8",
+          "max": 6,
+          "enum_values": {
+            "unspecified": 0,
+            "power_on_reboot": 1,
+            "brown_out_reset": 2,
+            "software_watchdog_reset": 3,
+            "hardware_watchdog_reset": 4,
+            "software_update_completed": 5,
+            "software_reset": 6
+          }
+        }
+      ]
+    }
+  },
+  "SoftwareDiagnostics": {
+    "SoftwareFault": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ID",
+          "type": "int64u",
+          "default": "0"
+        },
+        {
+          "id": 1,
+          "name": "Name",
+          "type": "char_string",
+          "optional": true,
+          "length": 8
+        },
+        {
+          "id": 2,
+          "name": "FaultRecording",
+          "type": "long_octet_string",
+          "optional": true,
+          "length": 1024
+        }
+      ]
+    }
+  },
+  "ThreadNetworkDiagnostics": {
+    "ConnectionStatus": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ConnectionStatus",
+          "type": "enum8",
+          "min": 0,
+          "max": 1,
+          "enum_values": {
+            "connected": 0,
+            "not_connected": 1
+          }
+        }
+      ]
+    },
+    "NetworkFaultChange": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Current",
+          "type": "enum8",
+          "array": true,
+          "length": 4,
+          "enum_values": {
+            "unspecified": 0,
+            "link_down": 1,
+            "hardware_failure": 2,
+            "network_jammed": 3
+          }
+        },
+        {
+          "id": 1,
+          "name": "Previous",
+          "type": "enum8",
+          "array": true,
+          "length": 4,
+          "enum_values": {
+            "unspecified": 0,
+            "link_down": 1,
+            "hardware_failure": 2,
+            "network_jammed": 3
+          }
+        }
+      ]
+    }
+  },
+  "WiFiNetworkDiagnostics": {
+    "Disconnection": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ReasonCode",
+          "type": "int16u"
+        }
+      ]
+    },
+    "AssociationFailure": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AssociationFailureCause",
+          "type": "enum8",
+          "min": 0,
+          "max": 3,
+          "enum_values": {
+            "unknown": 0,
+            "association_failed": 1,
+            "authentication_failed": 2,
+            "ssid_not_found": 3
+          }
+        },
+        {
+          "id": 1,
+          "name": "Status",
+          "type": "int16u"
+        }
+      ]
+    },
+    "ConnectionStatus": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ConnectionStatus",
+          "type": "enum8",
+          "min": 0,
+          "max": 1,
+          "enum_values": {
+            "connected": 0,
+            "not_connected": 1
+          }
+        }
+      ]
+    }
+  },
+  "TimeSynchronization": {
+    "DSTTableEmpty": {
+      "id": 0,
+      "fields": []
+    },
+    "DSTStatus": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "DSTOffsetActive",
+          "type": "boolean"
+        }
+      ]
+    },
+    "TimeZoneStatus": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Offset",
+          "type": "int32s",
+          "min": -43200,
+          "max": 50400
+        },
+        {
+          "id": 1,
+          "name": "Name",
+          "type": "char_string",
+          "optional": true,
+          "length": 64
+        }
+      ]
+    },
+    "TimeFailure": {
+      "id": 3,
+      "fields": []
+    },
+    "MissingTrustedTimeSource": {
+      "id": 4,
+      "fields": []
+    }
+  },
+  "BridgedDeviceBasicInformation": {
+    "StartUp": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SoftwareVersion",
+          "type": "int32u"
+        }
+      ]
+    },
+    "ShutDown": {
+      "id": 1,
+      "fields": []
+    },
+    "Leave": {
+      "id": 2,
+      "fields": []
+    },
+    "ReachableChanged": {
+      "id": 3,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ReachableNewValue",
+          "type": "boolean"
+        }
+      ]
+    }
+  },
+  "Switch": {
+    "SwitchLatched": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "NewPosition",
+          "type": "int8u",
+          "max": 254
+        }
+      ]
+    },
+    "InitialPress": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "NewPosition",
+          "type": "int8u",
+          "max": 254
+        }
+      ]
+    },
+    "LongPress": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "NewPosition",
+          "type": "int8u",
+          "max": 254
+        }
+      ]
+    },
+    "ShortRelease": {
+      "id": 3,
+      "fields": [
+        {
+          "id": 0,
+          "name": "PreviousPosition",
+          "type": "int8u",
+          "max": 254
+        }
+      ]
+    },
+    "LongRelease": {
+      "id": 4,
+      "fields": [
+        {
+          "id": 0,
+          "name": "PreviousPosition",
+          "type": "int8u",
+          "max": 254
+        }
+      ]
+    },
+    "MultiPressOngoing": {
+      "id": 5,
+      "fields": [
+        {
+          "id": 0,
+          "name": "NewPosition",
+          "type": "int8u",
+          "max": 254
+        },
+        {
+          "id": 1,
+          "name": "CurrentNumberOfPressesCounted",
+          "type": "int8u",
+          "min": 2
+        }
+      ]
+    },
+    "MultiPressComplete": {
+      "id": 6,
+      "fields": [
+        {
+          "id": 0,
+          "name": "PreviousPosition",
+          "type": "int8u",
+          "max": 254
+        },
+        {
+          "id": 1,
+          "name": "TotalNumberOfPressesCounted",
+          "type": "int8u"
+        }
+      ]
+    }
+  },
+  "BooleanState": {
+    "StateChange": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "StateValue",
+          "type": "boolean"
+        }
+      ]
+    }
+  },
+  "OvenCavityOperationalState": {
+    "OperationalError": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ErrorState",
+          "type": "errorstatestruct"
+        }
+      ]
+    },
+    "OperationCompletion": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "CompletionErrorCode",
+          "type": "enum8"
+        },
+        {
+          "id": 1,
+          "name": "TotalOperationalTime",
+          "type": "int32u",
+          "optional": true,
+          "nullable": true
+        },
+        {
+          "id": 2,
+          "name": "PausedTime",
+          "type": "int32u",
+          "optional": true,
+          "nullable": true
+        }
+      ]
+    }
+  },
+  "RefrigeratorAlarm": {
+    "Notify": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Active",
+          "type": "bitmap32",
+          "max": 1,
+          "bitmap_masks": {
+            "door_open": 1
+          }
+        },
+        {
+          "id": 1,
+          "name": "Inactive",
+          "type": "bitmap32",
+          "max": 1,
+          "bitmap_masks": {
+            "door_open": 1
+          }
+        },
+        {
+          "id": 2,
+          "name": "State",
+          "type": "bitmap32",
+          "max": 1,
+          "bitmap_masks": {
+            "door_open": 1
+          }
+        },
+        {
+          "id": 3,
+          "name": "Mask",
+          "type": "bitmap32",
+          "max": 1,
+          "bitmap_masks": {
+            "door_open": 1
+          }
+        }
+      ]
+    }
+  },
+  "SmokeCOAlarm": {
+    "SmokeAlarm": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AlarmSeverityLevel",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "normal": 0,
+            "warning": 1,
+            "critical": 2
+          }
+        }
+      ]
+    },
+    "COAlarm": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AlarmSeverityLevel",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "normal": 0,
+            "warning": 1,
+            "critical": 2
+          }
+        }
+      ]
+    },
+    "LowBattery": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AlarmSeverityLevel",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "normal": 0,
+            "warning": 1,
+            "critical": 2
+          }
+        }
+      ]
+    },
+    "HardwareFault": {
+      "id": 3,
+      "fields": []
+    },
+    "EndOfService": {
+      "id": 4,
+      "fields": []
+    },
+    "SelfTestComplete": {
+      "id": 5,
+      "fields": []
+    },
+    "AlarmMuted": {
+      "id": 6,
+      "fields": []
+    },
+    "MuteEnded": {
+      "id": 7,
+      "fields": []
+    },
+    "InterconnectSmokeAlarm": {
+      "id": 8,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AlarmSeverityLevel",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "normal": 0,
+            "warning": 1,
+            "critical": 2
+          }
+        }
+      ]
+    },
+    "InterconnectCOAlarm": {
+      "id": 9,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AlarmSeverityLevel",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "normal": 0,
+            "warning": 1,
+            "critical": 2
+          }
+        }
+      ]
+    },
+    "AllClear": {
+      "id": 10,
+      "fields": []
+    }
+  },
+  "DishwasherAlarm": {
+    "Notify": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Active",
+          "type": "bitmap32",
+          "min": 0,
+          "max": 63,
+          "default": "0x00000000",
+          "bitmap_masks": {
+            "inflow_error": 1,
+            "drain_error": 2,
+            "door_error": 4,
+            "temp_too_low": 8,
+            "temp_too_high": 16,
+            "water_level_error": 32
+          }
+        },
+        {
+          "id": 1,
+          "name": "Inactive",
+          "type": "bitmap32",
+          "min": 0,
+          "max": 63,
+          "default": "0x00000000",
+          "bitmap_masks": {
+            "inflow_error": 1,
+            "drain_error": 2,
+            "door_error": 4,
+            "temp_too_low": 8,
+            "temp_too_high": 16,
+            "water_level_error": 32
+          }
+        },
+        {
+          "id": 2,
+          "name": "State",
+          "type": "bitmap32",
+          "min": 0,
+          "max": 63,
+          "default": "0x00000000",
+          "bitmap_masks": {
+            "inflow_error": 1,
+            "drain_error": 2,
+            "door_error": 4,
+            "temp_too_low": 8,
+            "temp_too_high": 16,
+            "water_level_error": 32
+          }
+        },
+        {
+          "id": 3,
+          "name": "Mask",
+          "type": "bitmap32",
+          "min": 0,
+          "max": 63,
+          "default": "0x00000000",
+          "bitmap_masks": {
+            "inflow_error": 1,
+            "drain_error": 2,
+            "door_error": 4,
+            "temp_too_low": 8,
+            "temp_too_high": 16,
+            "water_level_error": 32
+          }
+        }
+      ]
+    }
+  },
+  "OperationalState": {
+    "OperationalError": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ErrorState",
+          "type": "struct",
+          "struct": [
+            {
+              "id": 0,
+              "name": "ErrorStateID",
+              "type": "enum8",
+              "default": "0"
+            },
+            {
+              "id": 1,
+              "name": "ErrorStateLabel",
+              "type": "char_string",
+              "optional": true,
+              "length": 64
+            },
+            {
+              "id": 2,
+              "name": "ErrorStateDetails",
+              "type": "char_string",
+              "optional": true,
+              "length": 64
+            }
+          ]
+        }
+      ]
+    },
+    "OperationCompletion": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "CompletionErrorCode",
+          "type": "enum8"
+        },
+        {
+          "id": 1,
+          "name": "TotalOperationalTime",
+          "type": "int32u",
+          "optional": true,
+          "nullable": true
+        },
+        {
+          "id": 2,
+          "name": "PausedTime",
+          "type": "int32u",
+          "optional": true,
+          "nullable": true
+        }
+      ]
+    }
+  },
+  "RVCOperationalState": {
+    "OperationalError": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ErrorState",
+          "type": "errorstatestruct"
+        }
+      ]
+    },
+    "OperationCompletion": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "CompletionErrorCode",
+          "type": "enum8"
+        },
+        {
+          "id": 1,
+          "name": "TotalOperationalTime",
+          "type": "int32u",
+          "optional": true,
+          "nullable": true
+        },
+        {
+          "id": 2,
+          "name": "PausedTime",
+          "type": "int32u",
+          "optional": true,
+          "nullable": true
+        }
+      ]
+    }
+  },
+  "Groupcast": {
+    "GroupcastTesting": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SourceIpAddress",
+          "type": "octet_string",
+          "min": 16,
+          "max": 16,
+          "optional": true
+        },
+        {
+          "id": 1,
+          "name": "DestinationIpAddress",
+          "type": "octet_string",
+          "min": 16,
+          "max": 16,
+          "optional": true
+        },
+        {
+          "id": 2,
+          "name": "GroupID",
+          "type": "int16u",
+          "optional": true
+        },
+        {
+          "id": 3,
+          "name": "EndpointID",
+          "type": "int16u",
+          "optional": true
+        },
+        {
+          "id": 4,
+          "name": "ClusterID",
+          "type": "cluster_id",
+          "optional": true
+        },
+        {
+          "id": 5,
+          "name": "ElementID",
+          "type": "int32u",
+          "optional": true
+        },
+        {
+          "id": 6,
+          "name": "AccessAllowed",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "id": 7,
+          "name": "GroupcastTestResult",
+          "type": "enum8",
+          "max": 5,
+          "enum_values": {
+            "success": 0,
+            "general_error": 1,
+            "message_replay": 2,
+            "failed_auth": 3,
+            "no_available_key": 4,
+            "send_failure": 5
+          }
+        }
+      ]
+    }
+  },
+  "BooleanStateConfiguration": {
+    "AlarmsStateChanged": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AlarmsActive",
+          "type": "bitmap8",
+          "max": 3,
+          "bitmap_masks": {
+            "visual": 1,
+            "audible": 2
+          }
+        },
+        {
+          "id": 1,
+          "name": "AlarmsSuppressed",
+          "type": "bitmap8",
+          "max": 3,
+          "optional": true,
+          "bitmap_masks": {
+            "visual": 1,
+            "audible": 2
+          }
+        }
+      ]
+    },
+    "SensorFault": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SensorFault",
+          "type": "bitmap16",
+          "max": 1,
+          "bitmap_masks": {
+            "general_fault": 1
+          }
+        }
+      ]
+    }
+  },
+  "ValveConfigurationandControl": {
+    "ValveStateChanged": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ValveState",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "closed": 0,
+            "open": 1,
+            "transitioning": 2
+          }
+        },
+        {
+          "id": 1,
+          "name": "ValveLevel",
+          "type": "int8u",
+          "max": 100,
+          "optional": true
+        }
+      ]
+    },
+    "ValveFault": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ValveFault",
+          "type": "bitmap16",
+          "max": 63,
+          "bitmap_masks": {
+            "general_fault": 1,
+            "blocked": 2,
+            "leaking": 4,
+            "not_connected": 8,
+            "short_circuit": 16,
+            "current_exceeded": 32
+          }
+        }
+      ]
+    }
+  },
+  "ElectricalPowerMeasurement": {
+    "MeasurementPeriodRanges": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Ranges",
+          "type": "struct",
+          "array": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "MeasurementType",
+              "type": "enum16",
+              "min": 0,
+              "max": 17,
+              "enum_values": {
+                "unspecified": 0,
+                "voltage": 1,
+                "active_current": 2,
+                "reactive_current": 3,
+                "apparent_current": 4,
+                "active_power": 5,
+                "reactive_power": 6,
+                "apparent_power": 7,
+                "rms_voltage": 8,
+                "rms_current": 9,
+                "rms_power": 10,
+                "frequency": 11,
+                "power_factor": 12,
+                "neutral_current": 13,
+                "electrical_energy": 14,
+                "reactive_energy": 15,
+                "apparent_energy": 16
+              }
+            },
+            {
+              "id": 1,
+              "name": "Min",
+              "type": "int64s",
+              "min": -4611686018427387904,
+              "max": 4611686018427387904
+            },
+            {
+              "id": 2,
+              "name": "Max",
+              "type": "int64s",
+              "min": -4611686018427387904,
+              "max": 4611686018427387904
+            },
+            {
+              "id": 3,
+              "name": "StartTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 4,
+              "name": "EndTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 5,
+              "name": "MinTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 6,
+              "name": "MaxTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 7,
+              "name": "StartSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 8,
+              "name": "EndSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 9,
+              "name": "MinSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 10,
+              "name": "MaxSystime",
+              "type": "int64u",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "ElectricalEnergyMeasurement": {
+    "CumulativeEnergyMeasured": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "EnergyImported",
+          "type": "struct",
+          "optional": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "Energy",
+              "type": "energy_mwh",
+              "min": 0,
+              "max": 4611686018427387904
+            },
+            {
+              "id": 1,
+              "name": "StartTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 2,
+              "name": "EndTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 3,
+              "name": "StartSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 4,
+              "name": "EndSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 5,
+              "name": "ApparentEnergy",
+              "type": "energy_mvah",
+              "min": 0,
+              "max": 4611686018427387904,
+              "optional": true
+            },
+            {
+              "id": 6,
+              "name": "ReactiveEnergy",
+              "type": "energy_mvarh",
+              "min": 0,
+              "max": 4611686018427387904,
+              "optional": true
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "EnergyExported",
+          "type": "struct",
+          "optional": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "Energy",
+              "type": "energy_mwh",
+              "min": 0,
+              "max": 4611686018427387904
+            },
+            {
+              "id": 1,
+              "name": "StartTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 2,
+              "name": "EndTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 3,
+              "name": "StartSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 4,
+              "name": "EndSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 5,
+              "name": "ApparentEnergy",
+              "type": "energy_mvah",
+              "min": 0,
+              "max": 4611686018427387904,
+              "optional": true
+            },
+            {
+              "id": 6,
+              "name": "ReactiveEnergy",
+              "type": "energy_mvarh",
+              "min": 0,
+              "max": 4611686018427387904,
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    "PeriodicEnergyMeasured": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "EnergyImported",
+          "type": "struct",
+          "optional": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "Energy",
+              "type": "energy_mwh",
+              "min": 0,
+              "max": 4611686018427387904
+            },
+            {
+              "id": 1,
+              "name": "StartTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 2,
+              "name": "EndTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 3,
+              "name": "StartSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 4,
+              "name": "EndSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 5,
+              "name": "ApparentEnergy",
+              "type": "energy_mvah",
+              "min": 0,
+              "max": 4611686018427387904,
+              "optional": true
+            },
+            {
+              "id": 6,
+              "name": "ReactiveEnergy",
+              "type": "energy_mvarh",
+              "min": 0,
+              "max": 4611686018427387904,
+              "optional": true
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "EnergyExported",
+          "type": "struct",
+          "optional": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "Energy",
+              "type": "energy_mwh",
+              "min": 0,
+              "max": 4611686018427387904
+            },
+            {
+              "id": 1,
+              "name": "StartTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 2,
+              "name": "EndTimestamp",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 3,
+              "name": "StartSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 4,
+              "name": "EndSystime",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 5,
+              "name": "ApparentEnergy",
+              "type": "energy_mvah",
+              "min": 0,
+              "max": 4611686018427387904,
+              "optional": true
+            },
+            {
+              "id": 6,
+              "name": "ReactiveEnergy",
+              "type": "energy_mvarh",
+              "min": 0,
+              "max": 4611686018427387904,
+              "optional": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "WaterHeaterManagement": {
+    "BoostStarted": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "BoostInfo",
+          "type": "struct",
+          "struct": [
+            {
+              "id": 0,
+              "name": "Duration",
+              "type": "int32u",
+              "min": 1
+            },
+            {
+              "id": 1,
+              "name": "OneShot",
+              "type": "boolean",
+              "default": "0",
+              "optional": true
+            },
+            {
+              "id": 2,
+              "name": "EmergencyBoost",
+              "type": "boolean",
+              "default": "0",
+              "optional": true
+            },
+            {
+              "id": 3,
+              "name": "TemporarySetpoint",
+              "type": "int16s",
+              "optional": true
+            },
+            {
+              "id": 4,
+              "name": "TargetPercentage",
+              "type": "int8u",
+              "optional": true
+            },
+            {
+              "id": 5,
+              "name": "TargetReheat",
+              "type": "int8u",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    "BoostEnded": {
+      "id": 1,
+      "fields": []
+    }
+  },
+  "CommodityPrice": {
+    "PriceChange": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "CurrentPrice",
+          "type": "struct",
+          "nullable": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "PeriodStart",
+              "type": "int32u"
+            },
+            {
+              "id": 1,
+              "name": "PeriodEnd",
+              "type": "int32u",
+              "nullable": true
+            },
+            {
+              "id": 2,
+              "name": "Price",
+              "type": "money",
+              "optional": true
+            },
+            {
+              "id": 3,
+              "name": "PriceLevel",
+              "type": "int16s",
+              "optional": true
+            },
+            {
+              "id": 4,
+              "name": "Description",
+              "type": "char_string",
+              "optional": true,
+              "length": 32
+            },
+            {
+              "id": 5,
+              "name": "Components",
+              "type": "struct",
+              "optional": true,
+              "array": true,
+              "length": 10,
+              "struct": [
+                {
+                  "id": 0,
+                  "name": "Price",
+                  "type": "money"
+                },
+                {
+                  "id": 1,
+                  "name": "Source",
+                  "type": "enum8",
+                  "min": 0,
+                  "max": 4,
+                  "enum_values": {
+                    "standard": 0,
+                    "critical": 1,
+                    "virtual": 2,
+                    "incentive": 3,
+                    "incentive_signal": 4
+                  }
+                },
+                {
+                  "id": 2,
+                  "name": "Description",
+                  "type": "char_string",
+                  "optional": true,
+                  "length": 32
+                },
+                {
+                  "id": 3,
+                  "name": "TariffComponentID",
+                  "type": "int32u",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Messages": {
+    "MessageQueued": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "MessageID",
+          "type": "octet_string",
+          "length": 16,
+          "min_length": 16
+        }
+      ]
+    },
+    "MessagePresented": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "MessageID",
+          "type": "octet_string",
+          "length": 16,
+          "min_length": 16
+        }
+      ]
+    },
+    "MessageComplete": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "MessageID",
+          "type": "octet_string",
+          "length": 16,
+          "min_length": 16
+        },
+        {
+          "id": 1,
+          "name": "ResponseID",
+          "type": "int32u",
+          "optional": true,
+          "nullable": true
+        },
+        {
+          "id": 2,
+          "name": "Reply",
+          "type": "long_char_string",
+          "optional": true,
+          "nullable": true,
+          "length": 256
+        },
+        {
+          "id": 3,
+          "name": "FutureMessagesPreference",
+          "type": "enum8",
+          "max": 4,
+          "nullable": true,
+          "enum_values": {
+            "allowed": 0,
+            "increased": 1,
+            "reduced": 2,
+            "disallowed": 3,
+            "banned": 4
+          }
+        }
+      ]
+    }
+  },
+  "DeviceEnergyManagement": {
+    "PowerRangeAdjustStart": {
+      "id": 4,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Adjustment",
+          "type": "struct",
+          "struct": [
+            {
+              "id": 0,
+              "name": "MinPower",
+              "type": "int64s",
+              "min": 13835058055282163713,
+              "max": 4611686018427387903,
+              "nullable": true
+            },
+            {
+              "id": 1,
+              "name": "MaxPower",
+              "type": "int64s",
+              "min": 13835058055282163713,
+              "max": 4611686018427387903,
+              "nullable": true
+            },
+            {
+              "id": 2,
+              "name": "Cause",
+              "type": "enum8",
+              "max": 2,
+              "enum_values": {
+                "no_adjustment": 0,
+                "local_optimization_adjustment": 1,
+                "grid_optimization_adjustment": 2
+              }
+            },
+            {
+              "id": 3,
+              "name": "EndTime",
+              "type": "int32u"
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Duration",
+          "type": "int32u"
+        }
+      ]
+    },
+    "PowerRangeAdjustEnd": {
+      "id": 5,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Cause",
+          "type": "enum8",
+          "max": 5,
+          "enum_values": {
+            "normal_completion": 0,
+            "offline": 1,
+            "fault": 2,
+            "user_opt_out": 3,
+            "cancelled": 4,
+            "invalid": 5
+          }
+        },
+        {
+          "id": 1,
+          "name": "Duration",
+          "type": "int32u"
+        },
+        {
+          "id": 2,
+          "name": "EnergyUse",
+          "type": "energy_mwh",
+          "min": 13835058055282163712,
+          "max": 4611686018427387903
+        }
+      ]
+    }
+  },
+  "EnergyEVSE": {
+    "EVConnected": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int32u"
+        }
+      ]
+    },
+    "EVNotDetected": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int32u"
+        },
+        {
+          "id": 1,
+          "name": "State",
+          "type": "enum8",
+          "min": 0,
+          "max": 6,
+          "enum_values": {
+            "not_plugged_in": 0,
+            "plugged_in_no_demand": 1,
+            "plugged_in_demand": 2,
+            "plugged_in_charging": 3,
+            "plugged_in_discharging": 4,
+            "session_ending": 5,
+            "fault": 6
+          }
+        },
+        {
+          "id": 2,
+          "name": "SessionDuration",
+          "type": "int32u"
+        },
+        {
+          "id": 3,
+          "name": "SessionEnergyCharged",
+          "type": "energy_mwh",
+          "min": 0
+        },
+        {
+          "id": 4,
+          "name": "SessionEnergyDischarged",
+          "type": "energy_mwh",
+          "min": 0,
+          "optional": true
+        }
+      ]
+    },
+    "EnergyTransferStarted": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int32u"
+        },
+        {
+          "id": 1,
+          "name": "State",
+          "type": "enum8",
+          "min": 0,
+          "max": 6,
+          "enum_values": {
+            "not_plugged_in": 0,
+            "plugged_in_no_demand": 1,
+            "plugged_in_demand": 2,
+            "plugged_in_charging": 3,
+            "plugged_in_discharging": 4,
+            "session_ending": 5,
+            "fault": 6
+          }
+        },
+        {
+          "id": 2,
+          "name": "MaximumCurrent",
+          "type": "int64s",
+          "min": 0
+        },
+        {
+          "id": 3,
+          "name": "MaximumDischargeCurrent",
+          "type": "int64s",
+          "min": 0,
+          "optional": true
+        }
+      ]
+    },
+    "EnergyTransferStopped": {
+      "id": 3,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int32u"
+        },
+        {
+          "id": 1,
+          "name": "State",
+          "type": "enum8",
+          "min": 0,
+          "max": 6,
+          "enum_values": {
+            "not_plugged_in": 0,
+            "plugged_in_no_demand": 1,
+            "plugged_in_demand": 2,
+            "plugged_in_charging": 3,
+            "plugged_in_discharging": 4,
+            "session_ending": 5,
+            "fault": 6
+          }
+        },
+        {
+          "id": 2,
+          "name": "Reason",
+          "type": "enum8",
+          "min": 0,
+          "max": 2,
+          "enum_values": {
+            "ev_stopped": 0,
+            "evse_stopped": 1,
+            "other": 2
+          }
+        },
+        {
+          "id": 4,
+          "name": "EnergyTransferred",
+          "type": "energy_mwh",
+          "min": 0
+        },
+        {
+          "id": 5,
+          "name": "EnergyDischarged",
+          "type": "energy_mwh",
+          "min": 0,
+          "optional": true
+        }
+      ]
+    },
+    "Fault": {
+      "id": 4,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int32u",
+          "nullable": true
+        },
+        {
+          "id": 1,
+          "name": "State",
+          "type": "enum8",
+          "min": 0,
+          "max": 6,
+          "enum_values": {
+            "not_plugged_in": 0,
+            "plugged_in_no_demand": 1,
+            "plugged_in_demand": 2,
+            "plugged_in_charging": 3,
+            "plugged_in_discharging": 4,
+            "session_ending": 5,
+            "fault": 6
+          }
+        },
+        {
+          "id": 2,
+          "name": "FaultStatePreviousState",
+          "type": "enum8",
+          "min": 0,
+          "max": 255,
+          "enum_values": {
+            "no_error": 0,
+            "meter_failure": 1,
+            "over_voltage": 2,
+            "under_voltage": 3,
+            "over_current": 4,
+            "contact_wet_failure": 5,
+            "contact_dry_failure": 6,
+            "ground_fault": 7,
+            "power_loss": 8,
+            "power_quality": 9,
+            "pilot_short_circuit": 10,
+            "emergency_stop": 11,
+            "ev_disconnected": 12,
+            "wrong_power_supply": 13,
+            "live_neutral_swap": 14,
+            "over_temperature": 15,
+            "other": 255
+          }
+        },
+        {
+          "id": 4,
+          "name": "FaultStateCurrentState",
+          "type": "enum8",
+          "min": 0,
+          "max": 255,
+          "enum_values": {
+            "no_error": 0,
+            "meter_failure": 1,
+            "over_voltage": 2,
+            "under_voltage": 3,
+            "over_current": 4,
+            "contact_wet_failure": 5,
+            "contact_dry_failure": 6,
+            "ground_fault": 7,
+            "power_loss": 8,
+            "power_quality": 9,
+            "pilot_short_circuit": 10,
+            "emergency_stop": 11,
+            "ev_disconnected": 12,
+            "wrong_power_supply": 13,
+            "live_neutral_swap": 14,
+            "over_temperature": 15,
+            "other": 255
+          }
+        }
+      ]
+    },
+    "RFID": {
+      "id": 5,
+      "fields": [
+        {
+          "id": 0,
+          "name": "UID",
+          "type": "octet_string",
+          "length": 10
+        }
+      ]
+    }
+  },
+  "ElectricalGridConditions": {
+    "CurrentConditionsChanged": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "CurrentConditions",
+          "type": "struct",
+          "nullable": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "PeriodStart",
+              "type": "int32u"
+            },
+            {
+              "id": 1,
+              "name": "PeriodEnd",
+              "type": "int32u",
+              "nullable": true
+            },
+            {
+              "id": 2,
+              "name": "GridCarbonIntensity",
+              "type": "int16s"
+            },
+            {
+              "id": 3,
+              "name": "GridCarbonLevel",
+              "type": "enum8",
+              "min": 0,
+              "max": 2,
+              "enum_values": {
+                "low": 0,
+                "medium": 1,
+                "high": 2
+              }
+            },
+            {
+              "id": 4,
+              "name": "LocalCarbonIntensity",
+              "type": "int16s"
+            },
+            {
+              "id": 5,
+              "name": "LocalCarbonLevel",
+              "type": "enum8",
+              "min": 0,
+              "max": 2,
+              "enum_values": {
+                "low": 0,
+                "medium": 1,
+                "high": 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "ElectricalAlarm": {
+    "Notify": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Active",
+          "type": "bitmap64",
+          "max": 32767,
+          "bitmap_masks": {
+            "over_voltage": 1,
+            "under_voltage": 2,
+            "swapped_polarity": 1024,
+            "loss_of_measurement": 2048,
+            "loss_of_grid_power": 4096,
+            "power_imported": 8192,
+            "power_exported": 16384,
+            "over_frequency": 4,
+            "under_frequency": 8,
+            "over_power": 16,
+            "under_power": 32,
+            "over_current": 64,
+            "under_current": 128,
+            "frequency_quality": 256,
+            "voltage_quality": 512
+          }
+        },
+        {
+          "id": 1,
+          "name": "Inactive",
+          "type": "bitmap64",
+          "max": 32767,
+          "bitmap_masks": {
+            "over_voltage": 1,
+            "under_voltage": 2,
+            "swapped_polarity": 1024,
+            "loss_of_measurement": 2048,
+            "loss_of_grid_power": 4096,
+            "power_imported": 8192,
+            "power_exported": 16384,
+            "over_frequency": 4,
+            "under_frequency": 8,
+            "over_power": 16,
+            "under_power": 32,
+            "over_current": 64,
+            "under_current": 128,
+            "frequency_quality": 256,
+            "voltage_quality": 512
+          }
+        },
+        {
+          "id": 2,
+          "name": "State",
+          "type": "bitmap64",
+          "max": 32767,
+          "bitmap_masks": {
+            "over_voltage": 1,
+            "under_voltage": 2,
+            "swapped_polarity": 1024,
+            "loss_of_measurement": 2048,
+            "loss_of_grid_power": 4096,
+            "power_imported": 8192,
+            "power_exported": 16384,
+            "over_frequency": 4,
+            "under_frequency": 8,
+            "over_power": 16,
+            "under_power": 32,
+            "over_current": 64,
+            "under_current": 128,
+            "frequency_quality": 256,
+            "voltage_quality": 512
+          }
+        },
+        {
+          "id": 3,
+          "name": "Mask",
+          "type": "bitmap64",
+          "max": 32767,
+          "bitmap_masks": {
+            "over_voltage": 1,
+            "under_voltage": 2,
+            "swapped_polarity": 1024,
+            "loss_of_measurement": 2048,
+            "loss_of_grid_power": 4096,
+            "power_imported": 8192,
+            "power_exported": 16384,
+            "over_frequency": 4,
+            "under_frequency": 8,
+            "over_power": 16,
+            "under_power": 32,
+            "over_current": 64,
+            "under_current": 128,
+            "frequency_quality": 256,
+            "voltage_quality": 512
+          }
+        }
+      ]
+    }
+  },
+  "DoorLock": {
+    "DoorLockAlarm": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AlarmCode",
+          "type": "enum8",
+          "max": 8,
+          "enum_values": {
+            "lock_jammed": 0,
+            "lock_factory_reset": 1,
+            "lock_radio_power_cycled": 3,
+            "wrong_code_entry_limit": 4,
+            "front_esceutcheon_removed": 5,
+            "door_forced_open": 6,
+            "door_ajar": 7,
+            "forced_user": 8
+          }
+        }
+      ]
+    },
+    "DoorStateChange": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "DoorState",
+          "type": "enum8",
+          "max": 5,
+          "enum_values": {
+            "door_open": 0,
+            "door_closed": 1,
+            "door_jammed": 2,
+            "door_forced_open": 3,
+            "door_unspecified_error": 4,
+            "door_ajar": 5
+          }
+        }
+      ]
+    },
+    "LockOperation": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "LockOperationType",
+          "type": "enum8",
+          "max": 4,
+          "enum_values": {
+            "lock": 0,
+            "unlock": 1,
+            "non_access_user_event": 2,
+            "forced_user_event": 3,
+            "unlatch": 4
+          }
+        },
+        {
+          "id": 1,
+          "name": "OperationSource",
+          "type": "enum8",
+          "max": 10,
+          "enum_values": {
+            "unspecified": 0,
+            "manual": 1,
+            "proprietary_remote": 2,
+            "keypad": 3,
+            "auto": 4,
+            "button": 5,
+            "schedule": 6,
+            "remote": 7,
+            "rfid": 8,
+            "biometric": 9,
+            "aliro": 10
+          }
+        },
+        {
+          "id": 2,
+          "name": "UserIndex",
+          "type": "int16u",
+          "nullable": true
+        },
+        {
+          "id": 3,
+          "name": "FabricIndex",
+          "type": "int8u",
+          "nullable": true
+        },
+        {
+          "id": 4,
+          "name": "SourceNode",
+          "type": "int64u",
+          "nullable": true
+        },
+        {
+          "id": 5,
+          "name": "Credentials",
+          "type": "struct",
+          "optional": true,
+          "nullable": true,
+          "array": true,
+          "length": 255,
+          "min_length": 1,
+          "struct": [
+            {
+              "id": 0,
+              "name": "CredentialType",
+              "type": "enum8",
+              "max": 8,
+              "enum_values": {
+                "programming_pin": 0,
+                "pin": 1,
+                "rfid": 2,
+                "fingerprint": 3,
+                "finger_vein": 4,
+                "face": 5,
+                "aliro_credential_issuer_key": 6,
+                "aliro_evictable_endpoint_key": 7,
+                "aliro_non_evictable_endpoint_key": 8
+              }
+            },
+            {
+              "id": 1,
+              "name": "CredentialIndex",
+              "type": "int16u"
+            }
+          ]
+        }
+      ]
+    },
+    "LockOperationError": {
+      "id": 3,
+      "fields": [
+        {
+          "id": 0,
+          "name": "LockOperationType",
+          "type": "enum8",
+          "max": 4,
+          "enum_values": {
+            "lock": 0,
+            "unlock": 1,
+            "non_access_user_event": 2,
+            "forced_user_event": 3,
+            "unlatch": 4
+          }
+        },
+        {
+          "id": 1,
+          "name": "OperationSource",
+          "type": "enum8",
+          "max": 10,
+          "enum_values": {
+            "unspecified": 0,
+            "manual": 1,
+            "proprietary_remote": 2,
+            "keypad": 3,
+            "auto": 4,
+            "button": 5,
+            "schedule": 6,
+            "remote": 7,
+            "rfid": 8,
+            "biometric": 9,
+            "aliro": 10
+          }
+        },
+        {
+          "id": 2,
+          "name": "OperationError",
+          "type": "enum8",
+          "max": 4,
+          "enum_values": {
+            "unspecified": 0,
+            "invalid_credential": 1,
+            "disabled_user_denied": 2,
+            "restricted": 3,
+            "insufficient_battery": 4
+          }
+        },
+        {
+          "id": 3,
+          "name": "UserIndex",
+          "type": "int16u",
+          "nullable": true
+        },
+        {
+          "id": 4,
+          "name": "FabricIndex",
+          "type": "int8u",
+          "nullable": true
+        },
+        {
+          "id": 5,
+          "name": "SourceNode",
+          "type": "int64u",
+          "nullable": true
+        },
+        {
+          "id": 6,
+          "name": "Credentials",
+          "type": "struct",
+          "optional": true,
+          "nullable": true,
+          "array": true,
+          "length": 255,
+          "min_length": 1,
+          "struct": [
+            {
+              "id": 0,
+              "name": "CredentialType",
+              "type": "enum8",
+              "max": 8,
+              "enum_values": {
+                "programming_pin": 0,
+                "pin": 1,
+                "rfid": 2,
+                "fingerprint": 3,
+                "finger_vein": 4,
+                "face": 5,
+                "aliro_credential_issuer_key": 6,
+                "aliro_evictable_endpoint_key": 7,
+                "aliro_non_evictable_endpoint_key": 8
+              }
+            },
+            {
+              "id": 1,
+              "name": "CredentialIndex",
+              "type": "int16u"
+            }
+          ]
+        }
+      ]
+    },
+    "LockUserChange": {
+      "id": 4,
+      "fields": [
+        {
+          "id": 0,
+          "name": "LockDataType",
+          "type": "enum8",
+          "max": 13,
+          "enum_values": {
+            "unspecified": 0,
+            "programming_code": 1,
+            "user_index": 2,
+            "week_day_schedule": 3,
+            "year_day_schedule": 4,
+            "holiday_schedule": 5,
+            "pin": 6,
+            "rfid": 7,
+            "fingerprint": 8,
+            "finger_vein": 9,
+            "face": 10,
+            "aliro_credential_issuer_key": 11,
+            "aliro_evictable_endpoint_key": 12,
+            "aliro_non_evictable_endpoint_key": 13
+          }
+        },
+        {
+          "id": 1,
+          "name": "DataOperationType",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "add": 0,
+            "clear": 1,
+            "modify": 2
+          }
+        },
+        {
+          "id": 2,
+          "name": "OperationSource",
+          "type": "enum8",
+          "max": 10,
+          "enum_values": {
+            "unspecified": 0,
+            "manual": 1,
+            "proprietary_remote": 2,
+            "keypad": 3,
+            "auto": 4,
+            "button": 5,
+            "schedule": 6,
+            "remote": 7,
+            "rfid": 8,
+            "biometric": 9,
+            "aliro": 10
+          }
+        },
+        {
+          "id": 3,
+          "name": "UserIndex",
+          "type": "int16u",
+          "nullable": true
+        },
+        {
+          "id": 4,
+          "name": "FabricIndex",
+          "type": "int8u",
+          "nullable": true
+        },
+        {
+          "id": 5,
+          "name": "SourceNode",
+          "type": "int64u",
+          "nullable": true
+        },
+        {
+          "id": 6,
+          "name": "DataIndex",
+          "type": "int16u",
+          "nullable": true
+        }
+      ]
+    }
+  },
+  "ClosureControl": {
+    "OperationalError": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ErrorState",
+          "type": "enum8",
+          "array": true,
+          "length": 10,
+          "min_length": 1,
+          "enum_values": {
+            "physically_blocked": 0,
+            "blocked_by_sensor": 1,
+            "temperature_limited": 2,
+            "maintenance_required": 3,
+            "internal_interference": 4
+          }
+        }
+      ]
+    },
+    "MovementCompleted": {
+      "id": 1,
+      "fields": []
+    },
+    "EngageStateChanged": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "EngageValue",
+          "type": "boolean"
+        }
+      ]
+    },
+    "SecureStateChanged": {
+      "id": 3,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SecureValue",
+          "type": "boolean"
+        }
+      ]
+    }
+  },
+  "PumpConfigurationandControl": {
+    "SupplyVoltageLow": {
+      "id": 0,
+      "fields": []
+    },
+    "SupplyVoltageHigh": {
+      "id": 1,
+      "fields": []
+    },
+    "PowerMissingPhase": {
+      "id": 2,
+      "fields": []
+    },
+    "SystemPressureLow": {
+      "id": 3,
+      "fields": []
+    },
+    "SystemPressureHigh": {
+      "id": 4,
+      "fields": []
+    },
+    "DryRunning": {
+      "id": 5,
+      "fields": []
+    },
+    "MotorTemperatureHigh": {
+      "id": 6,
+      "fields": []
+    },
+    "PumpMotorFatalFailure": {
+      "id": 7,
+      "fields": []
+    },
+    "ElectronicTemperatureHigh": {
+      "id": 8,
+      "fields": []
+    },
+    "PumpBlocked": {
+      "id": 9,
+      "fields": []
+    },
+    "SensorFailure": {
+      "id": 10,
+      "fields": []
+    },
+    "ElectronicNonFatalFailure": {
+      "id": 11,
+      "fields": []
+    },
+    "ElectronicFatalFailure": {
+      "id": 12,
+      "fields": []
+    },
+    "GeneralFault": {
+      "id": 13,
+      "fields": []
+    },
+    "Leakage": {
+      "id": 14,
+      "fields": []
+    },
+    "AirDetection": {
+      "id": 15,
+      "fields": []
+    },
+    "TurbineOperation": {
+      "id": 16,
+      "fields": []
+    }
+  },
+  "OccupancySensing": {
+    "OccupancyChanged": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Occupancy",
+          "type": "bitmap8",
+          "max": 1,
+          "bitmap_masks": {
+            "occupied": 1
+          }
+        }
+      ]
+    }
+  },
+  "AmbientContextSensing": {
+    "AmbientContextDetectStarted": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AmbientContextDetected",
+          "type": "struct",
+          "optional": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "AmbientContextSensed",
+              "type": "struct",
+              "array": true,
+              "length": 2,
+              "struct": [
+                {
+                  "id": 0,
+                  "name": "MfgCode",
+                  "type": "int16u",
+                  "nullable": true
+                },
+                {
+                  "id": 1,
+                  "name": "NamespaceID",
+                  "type": "enum8"
+                },
+                {
+                  "id": 2,
+                  "name": "Tag",
+                  "type": "enum8"
+                },
+                {
+                  "id": 3,
+                  "name": "Label",
+                  "type": "char_string",
+                  "optional": true,
+                  "nullable": true,
+                  "length": 64
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "name": "DetectionConfidence",
+              "type": "int8u",
+              "min": 1,
+              "max": 100,
+              "optional": true,
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "ObjectCountThresholdReached",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "id": 2,
+          "name": "ObjectCount",
+          "type": "int16u",
+          "min": 1,
+          "optional": true
+        }
+      ]
+    },
+    "AmbientContextDetectEnded": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "EventStartTimePos",
+          "type": "int64u",
+          "optional": true
+        },
+        {
+          "id": 1,
+          "name": "EventStartTimeSys",
+          "type": "int64u",
+          "optional": true
+        }
+      ]
+    }
+  },
+  "AmbientSensingUnion": {
+    "UnionContributorAdded": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "AddedContributor",
+          "type": "struct",
+          "array": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "ContributorNodeID",
+              "type": "int64u",
+              "nullable": true
+            },
+            {
+              "id": 1,
+              "name": "ContributorEndpointID",
+              "type": "int16u",
+              "nullable": true
+            },
+            {
+              "id": 2,
+              "name": "ContributorName",
+              "type": "char_string",
+              "optional": true,
+              "length": 128
+            },
+            {
+              "id": 3,
+              "name": "ContributorHealth",
+              "type": "enum8",
+              "max": 1,
+              "enum_values": {
+                "union_contributor_online": 0,
+                "union_contributor_offline": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "UnionContributorRemoved": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "RemovedContributor",
+          "type": "struct",
+          "array": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "ContributorNodeID",
+              "type": "int64u",
+              "nullable": true
+            },
+            {
+              "id": 1,
+              "name": "ContributorEndpointID",
+              "type": "int16u",
+              "nullable": true
+            },
+            {
+              "id": 2,
+              "name": "ContributorName",
+              "type": "char_string",
+              "optional": true,
+              "length": 128
+            },
+            {
+              "id": 3,
+              "name": "ContributorHealth",
+              "type": "enum8",
+              "max": 1,
+              "enum_values": {
+                "union_contributor_online": 0,
+                "union_contributor_offline": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "UnionContributorStatusChanged": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "StatusChangedContributor",
+          "type": "struct",
+          "array": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "ContributorNodeID",
+              "type": "int64u",
+              "nullable": true
+            },
+            {
+              "id": 1,
+              "name": "ContributorEndpointID",
+              "type": "int16u",
+              "nullable": true
+            },
+            {
+              "id": 2,
+              "name": "ContributorName",
+              "type": "char_string",
+              "optional": true,
+              "length": 128
+            },
+            {
+              "id": 3,
+              "name": "ContributorHealth",
+              "type": "enum8",
+              "max": 1,
+              "enum_values": {
+                "union_contributor_online": 0,
+                "union_contributor_offline": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "ProximityRanging": {
+    "RangingResult": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int8u"
+        },
+        {
+          "id": 1,
+          "name": "RangingResultData",
+          "type": "struct",
+          "struct": [
+            {
+              "id": 0,
+              "name": "WiFiDevIK",
+              "type": "octet_string",
+              "optional": true,
+              "length": 16,
+              "min_length": 16
+            },
+            {
+              "id": 1,
+              "name": "BLEDeviceID",
+              "type": "int64u",
+              "optional": true
+            },
+            {
+              "id": 2,
+              "name": "BLTDevIK",
+              "type": "octet_string",
+              "optional": true
+            },
+            {
+              "id": 3,
+              "name": "TimeOfMeasurement",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 4,
+              "name": "TimeOfMeasurementOffset",
+              "type": "int32u",
+              "optional": true
+            },
+            {
+              "id": 5,
+              "name": "Distance",
+              "type": "int16u",
+              "nullable": true
+            },
+            {
+              "id": 6,
+              "name": "ErrorMargin",
+              "type": "int16u",
+              "optional": true
+            },
+            {
+              "id": 7,
+              "name": "RDR",
+              "type": "struct",
+              "optional": true,
+              "struct": [
+                {
+                  "id": 0,
+                  "name": "Azimuth",
+                  "type": "int16u",
+                  "max": 2047
+                },
+                {
+                  "id": 1,
+                  "name": "Elevation",
+                  "type": "int16s",
+                  "min": -512,
+                  "max": 511
+                },
+                {
+                  "id": 2,
+                  "name": "AzimuthAccuracy",
+                  "type": "int8u",
+                  "max": 127
+                },
+                {
+                  "id": 3,
+                  "name": "ElevationAccuracy",
+                  "type": "int8u",
+                  "max": 127
+                },
+                {
+                  "id": 4,
+                  "name": "Reference",
+                  "type": "enum8",
+                  "max": 1,
+                  "enum_values": {
+                    "device_coordinates": 0,
+                    "earth_coordinates": 1
+                  }
+                }
+              ]
+            },
+            {
+              "id": 8,
+              "name": "DetectedAttackLevel",
+              "type": "enum16",
+              "max": 255,
+              "optional": true,
+              "enum_values": {
+                "attack_extremely_unlikely": 0,
+                "attack_very_unlikely": 1,
+                "attack_unlikely": 2,
+                "attack_is_possible": 3,
+                "attack_is_likely": 4,
+                "attack_very_likely": 5,
+                "attack_extremely_likely": 6,
+                "unknown": 255
+              }
+            },
+            {
+              "id": 9,
+              "name": "RSSI",
+              "type": "int8s",
+              "min": -127,
+              "max": 27,
+              "optional": true,
+              "nullable": true
+            },
+            {
+              "id": 10,
+              "name": "TxPower",
+              "type": "int8s",
+              "min": -20,
+              "max": 27,
+              "optional": true,
+              "nullable": true
+            }
+          ]
+        }
+      ]
+    },
+    "RangingSessionStatus": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int8u"
+        },
+        {
+          "id": 1,
+          "name": "Status",
+          "type": "enum8",
+          "max": 2,
+          "enum_values": {
+            "session_end_time_reached": 0,
+            "peer_not_found": 1,
+            "hardware_error": 2
+          }
+        }
+      ]
+    }
+  },
+  "TargetNavigator": {
+    "TargetUpdated": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "TargetList",
+          "type": "struct",
+          "array": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "Identifier",
+              "type": "int8u",
+              "max": 254
+            },
+            {
+              "id": 1,
+              "name": "Name",
+              "type": "char_string"
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "CurrentTarget",
+          "type": "int8u",
+          "default": "0xFF"
+        },
+        {
+          "id": 2,
+          "name": "Data",
+          "type": "long_octet_string",
+          "length": 900
+        }
+      ]
+    }
+  },
+  "MediaPlayback": {
+    "StateChanged": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "CurrentState",
+          "type": "enum8",
+          "enum_values": {
+            "playing": 0,
+            "paused": 1,
+            "not_playing": 2,
+            "buffering": 3
+          }
+        },
+        {
+          "id": 1,
+          "name": "StartTime",
+          "type": "int64u"
+        },
+        {
+          "id": 2,
+          "name": "Duration",
+          "type": "int64u"
+        },
+        {
+          "id": 3,
+          "name": "SampledPosition",
+          "type": "struct",
+          "struct": [
+            {
+              "name": "UpdatedAt",
+              "type": "int64u"
+            },
+            {
+              "name": "Position",
+              "type": "int64u",
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "PlaybackSpeed",
+          "type": "single"
+        },
+        {
+          "id": 5,
+          "name": "SeekRangeEnd",
+          "type": "int64u"
+        },
+        {
+          "id": 6,
+          "name": "SeekRangeStart",
+          "type": "int64u"
+        },
+        {
+          "id": 7,
+          "name": "Data",
+          "type": "octet_string",
+          "optional": true,
+          "length": 900
+        },
+        {
+          "id": 8,
+          "name": "AudioAdvanceUnmuted",
+          "type": "boolean",
+          "default": "true"
+        }
+      ]
+    }
+  },
+  "AccountLogin": {
+    "LoggedOut": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Node",
+          "type": "int64u",
+          "optional": true
+        }
+      ]
+    }
+  },
+  "ZoneManagement": {
+    "ZoneTriggered": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Zone",
+          "type": "int16u"
+        },
+        {
+          "id": 1,
+          "name": "Reason",
+          "type": "enum8",
+          "max": 0,
+          "enum_values": {
+            "motion": 0
+          }
+        }
+      ]
+    },
+    "ZoneStopped": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "Zone",
+          "type": "int16u"
+        },
+        {
+          "id": 1,
+          "name": "Reason",
+          "type": "enum8",
+          "max": 1,
+          "enum_values": {
+            "action_stopped": 0,
+            "timeout": 1
+          }
+        }
+      ]
+    }
+  },
+  "PushAVStreamTransport": {
+    "PushTransportBegin": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ConnectionID",
+          "type": "int16u",
+          "min": 0,
+          "max": 65534
+        },
+        {
+          "id": 1,
+          "name": "TriggerType",
+          "type": "enum8",
+          "max": 3,
+          "enum_values": {
+            "command": 0,
+            "motion": 1,
+            "continuous": 2,
+            "ambient_context": 3
+          }
+        },
+        {
+          "id": 2,
+          "name": "ActivationReason",
+          "type": "enum8",
+          "max": 3,
+          "optional": true,
+          "enum_values": {
+            "user_initiated": 0,
+            "automation": 1,
+            "emergency": 2,
+            "doorbell_pressed": 3
+          }
+        },
+        {
+          "id": 3,
+          "name": "ContainerType",
+          "type": "enum8",
+          "max": 0,
+          "optional": true,
+          "enum_values": {
+            "cmaf": 0
+          }
+        },
+        {
+          "id": 4,
+          "name": "CMAFSessionNumber",
+          "type": "int64u",
+          "optional": true
+        }
+      ]
+    },
+    "PushTransportEnd": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ConnectionID",
+          "type": "int16u",
+          "min": 0,
+          "max": 65534
+        },
+        {
+          "id": 1,
+          "name": "ContainerType",
+          "type": "enum8",
+          "max": 0,
+          "optional": true,
+          "enum_values": {
+            "cmaf": 0
+          }
+        },
+        {
+          "id": 2,
+          "name": "CMAFSessionNumber",
+          "type": "int64u",
+          "optional": true
+        }
+      ]
+    }
+  },
+  "Chime": {
+    "ChimeStartedPlaying": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "ChimeID",
+          "type": "int8u"
+        }
+      ]
+    }
+  },
+  "AVAnalysis": {
+    "AnalysisSessionStart": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int16u"
+        },
+        {
+          "id": 1,
+          "name": "SourceNodeId",
+          "type": "int64u",
+          "optional": true
+        },
+        {
+          "id": 2,
+          "name": "TriggeredZones",
+          "type": "int16u",
+          "nullable": true,
+          "array": true
+        }
+      ]
+    },
+    "AnalysisSessionEnd": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int16u"
+        },
+        {
+          "id": 1,
+          "name": "SourceNodeId",
+          "type": "int64u",
+          "optional": true
+        }
+      ]
+    },
+    "PerceivedContext": {
+      "id": 2,
+      "fields": [
+        {
+          "id": 0,
+          "name": "SessionID",
+          "type": "int16u"
+        },
+        {
+          "id": 1,
+          "name": "SourceNodeId",
+          "type": "int64u",
+          "optional": true
+        },
+        {
+          "id": 2,
+          "name": "SourceStartTimestamp",
+          "type": "int64u",
+          "optional": true
+        },
+        {
+          "id": 3,
+          "name": "NewIdentifiedContexts",
+          "type": "struct",
+          "optional": true,
+          "array": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "IdentifiedContextID",
+              "type": "int16u"
+            },
+            {
+              "id": 1,
+              "name": "IdentifiedContext",
+              "type": "struct",
+              "struct": [
+                {
+                  "id": 0,
+                  "name": "MfgCode",
+                  "type": "int16u",
+                  "nullable": true
+                },
+                {
+                  "id": 1,
+                  "name": "NamespaceID",
+                  "type": "enum8"
+                },
+                {
+                  "id": 2,
+                  "name": "Tag",
+                  "type": "enum8"
+                },
+                {
+                  "id": 3,
+                  "name": "Label",
+                  "type": "char_string",
+                  "optional": true,
+                  "nullable": true,
+                  "length": 64
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "PreviousZone",
+              "type": "int16u",
+              "optional": true,
+              "nullable": true
+            },
+            {
+              "id": 3,
+              "name": "CurrentZone",
+              "type": "int16u",
+              "optional": true,
+              "nullable": true
+            },
+            {
+              "id": 4,
+              "name": "StartTime",
+              "type": "int32u"
+            },
+            {
+              "id": 5,
+              "name": "EndTime",
+              "type": "int32u",
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "CurrentIdentifiedContexts",
+          "type": "struct",
+          "optional": true,
+          "array": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "IdentifiedContextID",
+              "type": "int16u"
+            },
+            {
+              "id": 1,
+              "name": "IdentifiedContext",
+              "type": "struct",
+              "struct": [
+                {
+                  "id": 0,
+                  "name": "MfgCode",
+                  "type": "int16u",
+                  "nullable": true
+                },
+                {
+                  "id": 1,
+                  "name": "NamespaceID",
+                  "type": "enum8"
+                },
+                {
+                  "id": 2,
+                  "name": "Tag",
+                  "type": "enum8"
+                },
+                {
+                  "id": 3,
+                  "name": "Label",
+                  "type": "char_string",
+                  "optional": true,
+                  "nullable": true,
+                  "length": 64
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "PreviousZone",
+              "type": "int16u",
+              "optional": true,
+              "nullable": true
+            },
+            {
+              "id": 3,
+              "name": "CurrentZone",
+              "type": "int16u",
+              "optional": true,
+              "nullable": true
+            },
+            {
+              "id": 4,
+              "name": "StartTime",
+              "type": "int32u"
+            },
+            {
+              "id": 5,
+              "name": "EndTime",
+              "type": "int32u",
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "ExpiredContexts",
+          "type": "struct",
+          "optional": true,
+          "array": true,
+          "struct": [
+            {
+              "id": 0,
+              "name": "IdentifiedContextID",
+              "type": "int16u"
+            },
+            {
+              "id": 1,
+              "name": "IdentifiedContext",
+              "type": "struct",
+              "struct": [
+                {
+                  "id": 0,
+                  "name": "MfgCode",
+                  "type": "int16u",
+                  "nullable": true
+                },
+                {
+                  "id": 1,
+                  "name": "NamespaceID",
+                  "type": "enum8"
+                },
+                {
+                  "id": 2,
+                  "name": "Tag",
+                  "type": "enum8"
+                },
+                {
+                  "id": 3,
+                  "name": "Label",
+                  "type": "char_string",
+                  "optional": true,
+                  "nullable": true,
+                  "length": 64
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "PreviousZone",
+              "type": "int16u",
+              "optional": true,
+              "nullable": true
+            },
+            {
+              "id": 3,
+              "name": "CurrentZone",
+              "type": "int16u",
+              "optional": true,
+              "nullable": true
+            },
+            {
+              "id": 4,
+              "name": "StartTime",
+              "type": "int32u"
+            },
+            {
+              "id": 5,
+              "name": "EndTime",
+              "type": "int32u",
+              "nullable": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "CommissionerControl": {
+    "CommissioningRequestResult": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 0,
+          "name": "RequestID",
+          "type": "int64u"
+        },
+        {
+          "id": 1,
+          "name": "ClientNodeID",
+          "type": "int64u"
+        },
+        {
+          "id": 2,
+          "name": "StatusCode",
+          "type": "int8u"
+        }
+      ]
+    }
+  },
+  "UnitTesting": {
+    "TestEvent": {
+      "id": 1,
+      "fields": [
+        {
+          "id": 1,
+          "name": "arg1",
+          "type": "int8u"
+        },
+        {
+          "id": 2,
+          "name": "arg2",
+          "type": "enum8",
+          "enum_values": {
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
+          }
+        },
+        {
+          "id": 3,
+          "name": "arg3",
+          "type": "boolean"
+        },
+        {
+          "id": 4,
+          "name": "arg4",
+          "type": "struct",
+          "struct": [
+            {
+              "name": "a",
+              "type": "int8u"
+            },
+            {
+              "name": "b",
+              "type": "boolean"
+            },
+            {
+              "name": "c",
+              "type": "enum8",
+              "enum_values": {
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
+              }
+            },
+            {
+              "name": "d",
+              "type": "octet_string"
+            },
+            {
+              "name": "e",
+              "type": "char_string"
+            },
+            {
+              "name": "f",
+              "type": "bitmap8",
+              "bitmap_masks": {
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
+              }
+            },
+            {
+              "name": "g",
+              "type": "single"
+            },
+            {
+              "name": "h",
+              "type": "double"
+            },
+            {
+              "name": "i",
+              "type": "enum8",
+              "optional": true,
+              "enum_values": {
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "arg5",
+          "type": "struct",
+          "array": true,
+          "struct": [
+            {
+              "name": "a",
+              "type": "int8u"
+            },
+            {
+              "name": "b",
+              "type": "boolean"
+            },
+            {
+              "name": "c",
+              "type": "enum8",
+              "enum_values": {
+                "unspecified": 0,
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 3
+              }
+            },
+            {
+              "name": "d",
+              "type": "octet_string"
+            },
+            {
+              "name": "e",
+              "type": "char_string"
+            },
+            {
+              "name": "f",
+              "type": "bitmap8",
+              "bitmap_masks": {
+                "value_a": 1,
+                "value_b": 2,
+                "value_c": 4
+              }
+            },
+            {
+              "name": "g",
+              "type": "single"
+            },
+            {
+              "name": "h",
+              "type": "double"
+            },
+            {
+              "name": "i",
+              "type": "enum8",
+              "optional": true,
+              "enum_values": {
+                "some_value": 0,
+                "some_other_value": 1,
+                "final_value": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "arg6",
+          "type": "enum8",
+          "array": true,
+          "enum_values": {
+            "unspecified": 0,
+            "value_a": 1,
+            "value_b": 2,
+            "value_c": 3
+          }
+        }
+      ]
+    },
+    "TestFabricScopedEvent": {
+      "id": 2,
+      "fields": []
+    },
+    "TestDifferentVendorMeiEvent": {
+      "id": 4294050030,
+      "fields": [
+        {
+          "id": 1,
+          "name": "arg1",
+          "type": "int8u"
+        }
+      ]
+    }
+  },
+  "SampleMEI": {
+    "PingCountEvent": {
+      "id": 0,
+      "fields": [
+        {
+          "id": 1,
+          "name": "count",
+          "type": "int32u"
+        }
+      ]
+    }
+  }
+}

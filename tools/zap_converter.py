@@ -76,8 +76,9 @@ class CommandArg:
     default: int | None = None
     is_nullable: bool = False
     optional: bool = False
-    # array
-    # minLength
+    array: bool = False
+    length: int | None = None
+    min_length: int | None = None
     # apiMaturity
 
 
@@ -106,6 +107,14 @@ class Command:
 
 
 @dataclass
+class Event:
+    code: int
+    name: str  # CamelCase
+    api_maturity: str | None = None
+    fields: list[CommandArg] = field(default_factory=list)
+
+
+@dataclass
 class Feature:
     bit: int
     code: str
@@ -130,6 +139,7 @@ class Cluster:
     features: list[Feature | FeatureChoice] = field(default_factory=list)
     attributes: list[Attribute] = field(default_factory=list)
     commands: list[Command] = field(default_factory=list)
+    events: list[Event] = field(default_factory=list)
 
 
 @dataclass
@@ -160,6 +170,8 @@ attribute_attrs = defaultdict(int)
 attribute_types = defaultdict(int)
 command_attrs = defaultdict(int)
 command_arg_attrs = defaultdict(int)
+event_attrs = defaultdict(int)
+event_field_attrs = defaultdict(int)
 
 
 def parse_device_type_elem(elem) -> DeviceType | None:
@@ -254,9 +266,10 @@ def parse_device_type_elem(elem) -> DeviceType | None:
     return device_type
 
 
-def parse_command_arg_elem(elem) -> CommandArg:
-    for key in elem.attrib:
-        command_arg_attrs[key] += 1
+def parse_field_elem(elem, attrs_counter=None) -> CommandArg:
+    if attrs_counter is not None:
+        for key in elem.attrib:
+            attrs_counter[key] += 1
     id_ = int(v, 0) if (v := elem.get("id")) else None
     if id_ is None:
         id_ = int(v, 0) if (v := elem.get("fieldId")) else None
@@ -294,6 +307,10 @@ def parse_command_arg_elem(elem) -> CommandArg:
         max=int(v, 0) if (v := elem.get("max")) else None,
         optional=elem.get("optional") == "true",
         default=elem.get("default"),
+        is_nullable=elem.get("isNullable") == "true",
+        array=elem.get("array") == "true",
+        length=int(v, 0) if (v := elem.get("length")) else None,
+        min_length=int(v, 0) if (v := elem.get("minLength")) else None,
     )
 
 
@@ -373,7 +390,7 @@ def parse_cluster_elem(elem) -> Cluster:
 
         args = []
         for arg_elem in command_elem.findall("./arg"):
-            args.append(parse_command_arg_elem(arg_elem))
+            args.append(parse_field_elem(arg_elem, command_arg_attrs))
 
         commands.append(
             Command(
@@ -385,6 +402,23 @@ def parse_cluster_elem(elem) -> Cluster:
             )
         )
     cluster.commands = commands
+
+    events = []
+    for event_elem in elem.findall("./event"):
+        for key in event_elem.attrib:
+            event_attrs[key] += 1
+        events.append(
+            Event(
+                code=int(event_elem.get("code"), 0),
+                name=event_elem.get("name"),
+                api_maturity=event_elem.get("apiMaturity"),
+                fields=[
+                    parse_field_elem(field_elem, event_field_attrs)
+                    for field_elem in event_elem.findall("./field")
+                ],
+            )
+        )
+    cluster.events = events
 
     return cluster
 
@@ -421,7 +455,7 @@ def parse_struct_elem(elem) -> Struct:
     if cluster_elem is not None:
         struct.cluster_code = int(cluster_elem.get("code"), 0)
     for item_elem in elem.findall("./item"):
-        struct.items.append(parse_command_arg_elem(item_elem))
+        struct.items.append(parse_field_elem(item_elem))
     return struct
 
 
@@ -456,85 +490,92 @@ def parse_data_model(
     # print("attribute types:   ", format_counter(attribute_types))
     print("command attrs:     ", format_counter(command_attrs))
     print("command arg attrs: ", format_counter(command_arg_attrs))
+    print("event attrs:       ", format_counter(event_attrs))
+    print("event field attrs: ", format_counter(event_field_attrs))
 
     return device_types, clusters, enums, bitmaps, structs
 
 
-def post_process_commands(
-    clusters: list[Cluster],
-    enums: list[Enum],
-    bitmaps: list[Enum],
-    structs: list[Struct],
-) -> dict:
-    global_enums = {}
-    cluster_enums = defaultdict(dict)
-    for enum in enums:
-        if enum.cluster_code is not None:
-            cluster_enums[enum.cluster_code][enum.name] = enum
-        else:
-            global_enums[enum.name] = enum
+class FieldResolver:
+    """Resolve ZAP field types shared by commands, events, and structs."""
 
-    cluster_bitmaps = defaultdict(dict)
-    for bitmap in bitmaps:
-        if bitmap.cluster_code is not None:
-            cluster_bitmaps[bitmap.cluster_code][bitmap.name] = bitmap
-        # No need to parse global bitmaps
+    def __init__(self, enums: list[Enum], bitmaps: list[Enum], structs: list[Struct]):
+        self.global_enums = {}
+        self.cluster_enums = defaultdict(dict)
+        for enum in enums:
+            target = (
+                self.cluster_enums[enum.cluster_code]
+                if enum.cluster_code is not None
+                else self.global_enums
+            )
+            target[enum.name] = enum
 
-    global_structs = {}
-    cluster_structs = defaultdict(dict)
-    for struct in structs:
-        if struct.cluster_code is not None:
-            cluster_structs[struct.cluster_code][struct.name] = struct
-        else:
-            global_structs[struct.name] = struct
+        self.cluster_bitmaps = defaultdict(dict)
+        for bitmap in bitmaps:
+            if bitmap.cluster_code is not None:
+                self.cluster_bitmaps[bitmap.cluster_code][bitmap.name] = bitmap
 
-    def resolve_arg(arg: CommandArg):
-        arg_type = arg.type
+        self.global_structs = {}
+        self.cluster_structs = defaultdict(dict)
+        for struct in structs:
+            target = (
+                self.cluster_structs[struct.cluster_code]
+                if struct.cluster_code is not None
+                else self.global_structs
+            )
+            target[struct.name] = struct
 
-        enum = cluster_enums.get(cluster.id, {}).get(arg_type)
-        enum_values = None
+    def resolve(self, cluster_id: int, item: CommandArg) -> dict:
+        item_type = item.type
+        enum = self.cluster_enums.get(cluster_id, {}).get(item_type)
         if not enum:
-            enum = global_enums.get(arg_type)
+            enum = self.global_enums.get(item_type)
+        enum_values = None
         if enum:
-            arg_type = enum.type
-            enum_values = enum.items
-        if enum_values:
+            item_type = enum.type
             enum_values = {
-                camel_case_to_snake_case(k): v for k, v in enum_values.items()
+                camel_case_to_snake_case(name): value
+                for name, value in enum.items.items()
             }
 
         bitmap_masks = None
-        if (bitmap := cluster_bitmaps.get(cluster.id, {}).get(arg_type)) is not None:
-            arg_type = bitmap.type
-            bitmap_masks = bitmap.items
-        if bitmap_masks:
+        bitmap = self.cluster_bitmaps.get(cluster_id, {}).get(item_type)
+        if bitmap is not None:
+            item_type = bitmap.type
             bitmap_masks = {
-                camel_case_to_snake_case(k): v for k, v in bitmap_masks.items()
+                camel_case_to_snake_case(name): value
+                for name, value in bitmap.items.items()
             }
 
-        struct = cluster_structs.get(cluster.id, {}).get(arg_type)
-        struct_values = None
+        struct = self.cluster_structs.get(cluster_id, {}).get(item_type)
         if not struct:
-            struct = global_structs.get(arg_type)
+            struct = self.global_structs.get(item_type)
+        struct_values = None
         if struct:
-            arg_type = "struct"
-            struct_values = [resolve_arg(a) for a in struct.items]
+            item_type = "struct"
+            struct_values = [self.resolve(cluster_id, field) for field in struct.items]
 
         return filter_none(
             {
-                "id": arg.id,
-                "name": arg.name,
-                "type": arg_type.lower(),
-                "min": arg.min,
-                "max": arg.max,
-                "default": arg.default,
-                "optional": True if arg.optional else None,
+                "id": item.id,
+                "name": item.name,
+                "type": item_type.lower(),
+                "min": item.min,
+                "max": item.max,
+                "default": item.default,
+                "optional": True if item.optional else None,
+                "nullable": True if item.is_nullable else None,
+                "array": True if item.array else None,
+                "length": item.length,
+                "min_length": item.min_length,
                 "enum_values": enum_values,
                 "bitmap_masks": bitmap_masks,
                 "struct": struct_values,
             }
         )
 
+
+def post_process_commands(clusters: list[Cluster], resolver: FieldResolver) -> dict:
     commands = {}
     for cluster in sorted(clusters, key=lambda c: c.id):
         cluster_name = camel_case(cluster.name)
@@ -545,7 +586,7 @@ def post_process_commands(
                 continue
             args = []
             for arg in command.args:
-                args.append(resolve_arg(arg))
+                args.append(resolver.resolve(cluster.id, arg))
             # Some command args don't set an id at all...
             for i, arg in enumerate(args):
                 if arg.get("id") is None:
@@ -558,6 +599,24 @@ def post_process_commands(
             )
 
     return commands
+
+
+def post_process_events(clusters: list[Cluster], resolver: FieldResolver) -> dict:
+    events = {}
+    for cluster in sorted(clusters, key=lambda c: c.id):
+        cluster_events = {}
+        for event in sorted(cluster.events, key=lambda e: e.code):
+            if event.api_maturity == "provisional":
+                continue
+            fields = [resolver.resolve(cluster.id, item) for item in event.fields]
+            # Some fields only specify fieldId, and some specify neither spelling.
+            for index, event_field in enumerate(fields):
+                if event_field.get("id") is None:
+                    event_field["id"] = index
+            cluster_events[event.name] = {"id": event.code, "fields": fields}
+        if cluster_events:
+            events[camel_case(cluster.name)] = cluster_events
+    return events
 
 
 def apply_command_overrides(commands: dict, overrides: dict) -> None:
@@ -1061,7 +1120,9 @@ def main():
         args.data_model_path
     )
 
-    commands = post_process_commands(raw_clusters, enums, bitmaps, structs)
+    field_resolver = FieldResolver(enums, bitmaps, structs)
+    commands = post_process_commands(raw_clusters, field_resolver)
+    events = post_process_events(raw_clusters, field_resolver)
     clusters = post_process_clusters(raw_clusters)
     device_types = post_process_device_types(raw_device_types, raw_clusters)
     fixup(device_types)
@@ -1081,6 +1142,9 @@ def main():
     apply_command_overrides(commands, command_overrides)
     with open(args.output_path / "commands.json", "w") as file:
         json.dump(commands, file, indent=2)
+
+    with open(args.output_path / "events.json", "w") as file:
+        json.dump(events, file, indent=2)
 
     documentation_path = Path(__file__).resolve().parent.parent / "docs" / "generated"
     documentation_path.mkdir(parents=True, exist_ok=True)
