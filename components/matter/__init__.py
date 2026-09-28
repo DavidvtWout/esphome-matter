@@ -241,6 +241,9 @@ async def to_code(config: ConfigType):
     if use_openthread:
         # Prevent esp-matter from trying to initialize another openthread stack.
         add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False)
+        cg.add_build_flag(
+            "-Wl,--wrap=_ZN4chip3app8Clusters24ThreadNetworkDiagnostics38DirectThreadNetworkDiagnosticsProvider13ReadAttributeEmRNS0_21AttributeValueEncoderE"
+        )
     if use_openthread or not has_connectivity:
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
 
@@ -291,3 +294,11 @@ async def to_code(config: ConfigType):
         # TODO: stop api from restarting device in commissioning mode?
 
     await register_endpoints(var, config)
+
+    if use_openthread:
+        # register_endpoints() disables optional clusters that endpoint metadata
+        # does not select. The root node still needs the Thread diagnostics
+        # implementation so its attributes are read from the live OT instance.
+        add_idf_sdkconfig_option(
+            "CONFIG_SUPPORT_THREAD_NETWORK_DIAGNOSTICS_CLUSTER", True
+        )
