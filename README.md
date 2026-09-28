@@ -37,37 +37,6 @@ seconds before a command is successfully sent.
 
 So far, `ESP32-C3`, `ESP32-C5`, `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been tested and confirmed to work!
 
-# Compatibility with popular ecosystems
-
-esphome-matter based devices might show up as "uncertified test devices" in the ecosystems. This is because the devices
-are not certified by the Connectivity Standards Alliance (CSA) and are not part of the official Matter certification
-program. The devices should still be functional, but the ecosystems might inform or warn the user about the device
-not being certified during the commissioning process.
-
-### ESPHome-based devices created with esphome-matter have been tested with:
-
-- **Home Assistant (using matterjs-server)**: ✅️ Tested and working but requires enabling the "test-net DCL" option ([See Commissioning](#ecosystem-specific-settings))
-- **IKEA Home Smart**: ✅️
-- **Apple iOS (iPhone or iPad) and tvOS 16 (Apple TV) - "Home" app by Apple**: ✅️
-- **Google Home Ecosystem (Android or Google Nest smart speakers/display) - "Google Home" app**: ❓
-- **Samsung SmartThings (Station or Hub v2 and later)**: ❓
-- **Amazon Alexa (Amazon Echo)** :
-
-| Echo   | Gen1 | Gen2 | Gen3 | Gen4 | Gen5 |
-| ------ | ---- | ---- | ---- | ---- | ---- |
-| Wifi   | X    | ❓   | ✅️   | ✅️   | ✅️   |
-| Thread | X    | X    | X    | ❓   | ❓   |
-
-- **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): ❓
-- **Homey Pro**: ❓
-- **LG ThinQ**: ❓
-- **Tuya Smart (SmartLife) app**: ❓
-- **Aqara Hubs**: ❓
-- **Flic**: ❓
-- **Yandex Smart Home**: ❓ (and for reference; Yandex is known to not allow pairing any Matter test devices)
-
-Please [report](https://github.com/DavidvtWout/esphome-matter/discussions/44)! any outdated or newly discovered information on compatible ecosystems, devices, and device types or issues.
-
 # Commissioning
 
 Because ESPHome devices already have their Wi-Fi or Thread credentials from your YAML configuration, commissioning
@@ -97,8 +66,15 @@ If you lose access to the Matter controller, you can do a Matter factory reset (
 
 - **Home Assistant / matterjs server**: Start the matterjs-server with: `matterjs-server --enable-test-net-dcl=true`. Commission the device with the `Commission existing device` option.
 - **Home Assistant Matter app (HA-OS only)**: Check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
+- **Google Home**: Doesn't automatically accept devices with the "test" vendor ID. Follow the [Tasmota guide](https://tasmota.github.io/docs/Matter-with-Google/) to add esphome-matter devices.
 
-So far, **IKEA Home smart**, **Apple Home** and the **Android Matter Commissioning API** have been confirmed to accept commissioning right away.
+So far, **IKEA Home Smart**, **Apple Home**, and **Amazon Alexa** have been confirmed to accept esphome-matter devices
+without any special configuration steps. Keep in mind that "accepting" a device doesn't mean supporting it properly. For
+example, IKEA Home Smart only supports a very limited subset of Matter device types. To get most out of the device, share
+it with a fabric that is controlled by Home Assistant.
+
+Please [report](https://github.com/DavidvtWout/esphome-matter/discussions/44) any outdated or newly discovered information
+on compatible ecosystems, devices, and device types or issues.
 
 # Example config
 
