@@ -33,9 +33,11 @@
         "id": 257,
         "name": "Door Lock",
         "required": true,
-        "features": [
-          "USR",
-          ""
+        "features": {
+          "USR": "mandatory"
+        },
+        "ignored_features": [
+          "rfid_credential"
         ]
       }
     ],
@@ -398,8 +400,8 @@
       {
         "id": 70,
         "name": "ICD Management",
-        "features": [
-          "LITS"
+        "ignored_features": [
+          "long_idle_time_support"
         ]
       }
     ],
@@ -855,9 +857,9 @@
       {
         "id": 82,
         "name": "Refrigerator And Temperature Controlled Cabinet Mode",
-        "features": [
-          "OO"
-        ]
+        "features": {
+          "OO": "disallowed"
+        }
       },
       {
         "id": 87,
@@ -883,16 +885,16 @@
       {
         "id": 73,
         "name": "Oven Mode",
-        "features": [
-          "OO"
-        ]
+        "features": {
+          "OO": "disallowed"
+        }
       },
       {
         "id": 82,
         "name": "Refrigerator And Temperature Controlled Cabinet Mode",
-        "features": [
-          "OO"
-        ]
+        "features": {
+          "OO": "disallowed"
+        }
       },
       {
         "id": 86,
@@ -931,9 +933,9 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "DF"
-        ],
+        "features": {
+          "DF": "mandatory"
+        },
         "required_attributes": [
           "ON_OFF"
         ],
@@ -988,9 +990,9 @@
       {
         "id": 6,
         "name": "On/Off",
-        "features": [
-          "DF"
-        ]
+        "features": {
+          "DF": "mandatory"
+        }
       },
       {
         "id": 29,
@@ -1000,9 +1002,9 @@
       {
         "id": 81,
         "name": "Laundry Washer Mode",
-        "features": [
-          "OO"
-        ]
+        "features": {
+          "OO": "disallowed"
+        }
       },
       {
         "id": 83,
@@ -1068,9 +1070,9 @@
       {
         "id": 6,
         "name": "On/Off",
-        "features": [
-          "DF"
-        ]
+        "features": {
+          "DF": "mandatory"
+        }
       },
       {
         "id": 29,
@@ -1084,9 +1086,9 @@
       {
         "id": 89,
         "name": "Dishwasher Mode",
-        "features": [
-          "OO"
-        ]
+        "features": {
+          "OO": "disallowed"
+        }
       },
       {
         "id": 93,
@@ -1154,9 +1156,9 @@
       {
         "id": 6,
         "name": "On/Off",
-        "features": [
-          "OFFONLY"
-        ]
+        "features": {
+          "OFFONLY": "mandatory"
+        }
       },
       {
         "id": 29,
@@ -1187,9 +1189,9 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "OFFONLY"
-        ]
+        "features": {
+          "OFFONLY": "mandatory"
+        }
       },
       {
         "id": 29,
@@ -1231,10 +1233,10 @@
       {
         "id": 514,
         "name": "Fan Control",
-        "features": [
-          "WND",
-          "DIR"
-        ]
+        "features": {
+          "WND": "disallowed",
+          "DIR": "disallowed"
+        }
       }
     ],
     "client_clusters": []
@@ -1265,11 +1267,11 @@
         "id": 514,
         "name": "Fan Control",
         "required": true,
-        "features": [
-          "RCK",
-          "WND",
-          "DIR"
-        ]
+        "features": {
+          "RCK": "disallowed",
+          "WND": "disallowed",
+          "DIR": "disallowed"
+        }
       }
     ],
     "client_clusters": []
@@ -1303,9 +1305,9 @@
       {
         "id": 6,
         "name": "On/Off",
-        "features": [
-          "DF"
-        ]
+        "features": {
+          "DF": "mandatory"
+        }
       },
       {
         "id": 29,
@@ -1319,9 +1321,9 @@
       {
         "id": 81,
         "name": "Laundry Washer Mode",
-        "features": [
-          ""
-        ]
+        "features": {
+          "": "disallowed"
+        }
       },
       {
         "id": 86,
@@ -1400,9 +1402,9 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "LT"
-        ],
+        "features": {
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -1422,10 +1424,10 @@
       {
         "id": 8,
         "name": "Level Control",
-        "features": [
-          "OO",
-          "LT"
-        ],
+        "features": {
+          "OO": "mandatory",
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "CURRENT_LEVEL",
           "OPTIONS",
@@ -1554,9 +1556,9 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "LT"
-        ],
+        "features": {
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -1577,10 +1579,10 @@
         "id": 8,
         "name": "Level Control",
         "required": true,
-        "features": [
-          "LT",
-          "OO"
-        ],
+        "features": {
+          "LT": "mandatory",
+          "OO": "mandatory"
+        },
         "required_attributes": [
           "CURRENT_LEVEL",
           "OPTIONS",
@@ -2114,9 +2116,9 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "LT"
-        ],
+        "features": {
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -2136,10 +2138,10 @@
       {
         "id": 8,
         "name": "Level Control",
-        "features": [
-          "OO",
-          "LT"
-        ],
+        "features": {
+          "OO": "mandatory",
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "CURRENT_LEVEL",
           "OPTIONS",
@@ -2239,9 +2241,9 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "LT"
-        ],
+        "features": {
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -2262,10 +2264,10 @@
         "id": 8,
         "name": "Level Control",
         "required": true,
-        "features": [
-          "OO",
-          "LT"
-        ],
+        "features": {
+          "OO": "mandatory",
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "CURRENT_LEVEL",
           "OPTIONS",
@@ -2365,9 +2367,9 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "LT"
-        ],
+        "features": {
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -2388,10 +2390,10 @@
         "id": 8,
         "name": "Level Control",
         "required": true,
-        "features": [
-          "OO",
-          "LT"
-        ],
+        "features": {
+          "OO": "mandatory",
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "CURRENT_LEVEL",
           "OPTIONS",
@@ -2450,9 +2452,9 @@
         "id": 768,
         "name": "Color Control",
         "required": true,
-        "features": [
-          "CT"
-        ],
+        "features": {
+          "CT": "mandatory"
+        },
         "required_attributes": [
           "COLOR_CONTROL_REMAINING_TIME",
           "COLOR_CONTROL_COLOR_TEMPERATURE",
@@ -2518,9 +2520,9 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "LT"
-        ],
+        "features": {
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -2541,10 +2543,10 @@
         "id": 8,
         "name": "Level Control",
         "required": true,
-        "features": [
-          "OO",
-          "LT"
-        ],
+        "features": {
+          "OO": "mandatory",
+          "LT": "mandatory"
+        },
         "required_attributes": [
           "CURRENT_LEVEL",
           "OPTIONS",
@@ -2603,13 +2605,13 @@
         "id": 768,
         "name": "Color Control",
         "required": true,
-        "features": [
-          "HS",
-          "EHUE",
-          "CL",
-          "XY",
-          "CT"
-        ],
+        "features": {
+          "HS": "optional",
+          "EHUE": "optional",
+          "CL": "optional",
+          "XY": "mandatory",
+          "CT": "mandatory"
+        },
         "required_attributes": [
           "COLOR_CONTROL_REMAINING_TIME",
           "COLOR_CONTROL_CURRENT_X",
@@ -2660,17 +2662,17 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "LT"
-        ]
+        "features": {
+          "LT": "mandatory"
+        }
       },
       {
         "id": 8,
         "name": "Level Control",
-        "features": [
-          "LT",
-          "OO"
-        ]
+        "features": {
+          "LT": "mandatory",
+          "OO": "mandatory"
+        }
       },
       {
         "id": 98,
@@ -2709,18 +2711,18 @@
         "id": 6,
         "name": "On/Off",
         "required": true,
-        "features": [
-          "LT"
-        ]
+        "features": {
+          "LT": "mandatory"
+        }
       },
       {
         "id": 8,
         "name": "Level Control",
         "required": true,
-        "features": [
-          "LT",
-          "OO"
-        ]
+        "features": {
+          "LT": "mandatory",
+          "OO": "mandatory"
+        }
       },
       {
         "id": 98,
@@ -2755,11 +2757,11 @@
         "id": 1361,
         "name": "Camera AV Stream Management",
         "required": true,
-        "features": [
-          "ADO",
-          "SNP",
-          "VDO"
-        ]
+        "features": {
+          "ADO": "mandatory",
+          "SNP": "disallowed",
+          "VDO": "disallowed"
+        }
       },
       {
         "id": 1363,
@@ -2817,11 +2819,11 @@
         "id": 1361,
         "name": "Camera AV Stream Management",
         "required": true,
-        "features": [
-          "ADO",
-          "SNP",
-          "VDO"
-        ]
+        "features": {
+          "ADO": "mandatory",
+          "SNP": "mandatory",
+          "VDO": "mandatory"
+        }
       },
       {
         "id": 1362,
@@ -2896,9 +2898,9 @@
         "id": 59,
         "name": "Switch",
         "required": true,
-        "features": [
-          "MS"
-        ]
+        "features": {
+          "MS": "mandatory"
+        }
       }
     ],
     "client_clusters": [
@@ -2979,9 +2981,9 @@
         "id": 29,
         "name": "Descriptor",
         "required": true,
-        "features": [
-          "TAGLIST"
-        ]
+        "features": {
+          "TAGLIST": "mandatory"
+        }
       },
       {
         "id": 260,
@@ -3000,9 +3002,9 @@
         "id": 29,
         "name": "Descriptor",
         "required": true,
-        "features": [
-          "TAGLIST"
-        ]
+        "features": {
+          "TAGLIST": "mandatory"
+        }
       },
       {
         "id": 261,
@@ -3800,9 +3802,9 @@
         "id": 29,
         "name": "Descriptor",
         "required": true,
-        "features": [
-          "TAGLIST"
-        ],
+        "features": {
+          "TAGLIST": "mandatory"
+        },
         "required_attributes": [
           "TAG_LIST"
         ]

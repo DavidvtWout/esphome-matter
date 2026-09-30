@@ -13,8 +13,8 @@ CONF_VENDOR_NAME = "vendor_name"
 
 # Endpoint config options. The device type names are all derived from
 # device_types.json and don't have a CONF key configured here.
-CONF_EXTRA_CLUSTERS = "extra_clusters"
-CONF_FEATURES = "features"
+CONF_CLUSTERS = "clusters"
+CONF_WITH_FEATURES = "with_features"
 CONF_MIN_LEVEL = "min_level"
 CONF_MAX_LEVEL = "max_level"
 CONF_ON_ATTRIBUTE = "on_attribute"

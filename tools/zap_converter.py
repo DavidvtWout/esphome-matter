@@ -107,12 +107,15 @@ class Command:
 
 @dataclass
 class Feature:
+    bit: int
     code: str
     name: str
+    summary: str | None = None
 
 
 @dataclass
 class FeatureChoice:
+    name: str
     min: int
     max: int | None
     features: list[Feature] = field(default_factory=list)
@@ -138,7 +141,8 @@ class DeviceCluster:
     server: bool
     client_locked: bool
     server_locked: bool
-    features: list
+    features: dict[str, str]
+    ignored_features: list[str]
     required_attributes: list
     required_commands: list
 
@@ -190,15 +194,47 @@ def parse_device_type_elem(elem) -> DeviceType | None:
 
     device_clusters = []
     for cluster_elem in elem.findall("./clusters/include"):
+        features = {}
+        ignored_features = []
+        for feature_elem in cluster_elem.findall("./features/feature"):
+            feature_code = feature_elem.attrib["code"]
+            conform_elements = list(feature_elem)
+            if not conform_elements:
+                # Assuming no conform means mandatory, but I'm not entire sure...
+                # Seems to apply mostly to irrelevant device types anyway.
+                features[feature_code] = "mandatory"
+            elif (
+                len(conform_elements) == 1
+                and conform_elements[0].tag == "mandatoryConform"
+            ):
+                features[feature_code] = "mandatory"
+            elif (
+                len(conform_elements) == 1
+                and conform_elements[0].tag == "disallowConform"
+            ):
+                features[feature_code] = "disallowed"
+            elif (
+                len(conform_elements) == 1
+                and conform_elements[0].tag == "optionalConform"
+            ):
+                features[feature_code] = "optional"
+            else:
+                ignored_features.append(
+                    camel_case_to_snake_case(camel_case(feature_elem.attrib["name"]))
+                )
+                print(
+                    "Ignoring device type feature with complicated conform rule: "
+                    f"{name}.{cluster_elem.attrib['cluster']}.{feature_code}"
+                )
+
         cluster = DeviceCluster(
             name=cluster_elem.attrib["cluster"],
             client=cluster_elem.get("client") == "true",
             server=cluster_elem.get("server") == "true",
             client_locked=cluster_elem.get("clientLocked") == "true",
             server_locked=cluster_elem.get("serverLocked") == "true",
-            features=[
-                e.attrib["code"] for e in cluster_elem.findall("./features/feature")
-            ],
+            features=features,
+            ignored_features=ignored_features,
             required_attributes=[
                 e.text for e in cluster_elem.findall("./requireAttribute")
             ],  # Refers to "define" attr in cluster attributes
@@ -275,8 +311,10 @@ def parse_cluster_elem(elem) -> Cluster:
     for feature_elem in elem.findall("./features/feature"):
         optional_conform = feature_elem.find("./optionalConform")
         feature = Feature(
+            bit=int(feature_elem.get("bit"), 0),
             code=feature_elem.get("code"),
             name=feature_elem.get("name"),
+            summary=feature_elem.get("summary"),
         )
         choice_name = (
             optional_conform.get("choice") if optional_conform is not None else None
@@ -289,6 +327,7 @@ def parse_cluster_elem(elem) -> Cluster:
             minimum = int(optional_conform.get("min", 1))
             maximum = optional_conform.get("max")
             choice = FeatureChoice(
+                name=choice_name,
                 min=minimum,
                 max=(
                     int(maximum)
@@ -549,6 +588,14 @@ def apply_command_overrides(commands: dict, overrides: dict) -> None:
                     args_by_name[arg_name].update(arg_override)
 
 
+def apply_cluster_overrides(clusters: list[dict], overrides: dict[str, dict]) -> None:
+    clusters_by_name = {cluster["name"]: cluster for cluster in clusters}
+    for cluster_name, override in overrides.items():
+        if cluster_name not in clusters_by_name:
+            raise ValueError(f"Unknown cluster override: {cluster_name}")
+        clusters_by_name[cluster_name].update(override)
+
+
 def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
     clusters = []
     for cluster in sorted(raw_clusters, key=lambda c: c.id):
@@ -558,33 +605,27 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
             "revision": cluster.revision,
         }
 
-        features = []
+        features = {}
         for feature in cluster.features:
             if isinstance(feature, FeatureChoice):
-                features.append(
-                    filter_none(
-                        {
-                            "type": "choice",
-                            "min": feature.min,
-                            "max": feature.max,
-                            "features": [
-                                {
-                                    "code": choice_feature.code,
-                                    "name": choice_feature.name,
-                                }
-                                for choice_feature in feature.features
-                            ],
-                        }
-                    )
-                )
-            else:
-                features.append(
+                features[f"choice {feature.name}"] = filter_none(
                     {
-                        "type": "feature",
-                        "code": feature.code,
-                        "name": feature.name,
+                        "min": feature.min,
+                        "max": feature.max,
+                        "features": {
+                            choice_feature.code: {
+                                "bit": choice_feature.bit,
+                                "name": choice_feature.name,
+                            }
+                            for choice_feature in feature.features
+                        },
                     }
                 )
+            else:
+                features[feature.code] = {
+                    "bit": feature.bit,
+                    "name": feature.name,
+                }
         if features:
             cluster_data["features"] = features
 
@@ -648,6 +689,7 @@ def post_process_device_types(
                             "required": cluster_config.server
                             and cluster_config.server_locked,
                             "features": cluster_config.features,
+                            "ignored_features": cluster_config.ignored_features,
                             "required_attributes": cluster_config.required_attributes,
                             "required_commands": cluster_config.required_commands,
                         }
@@ -662,6 +704,7 @@ def post_process_device_types(
                             "required": cluster_config.client
                             and cluster_config.client_locked,
                             "features": cluster_config.features,
+                            "ignored_features": cluster_config.ignored_features,
                             "required_attributes": cluster_config.required_attributes,
                             "required_commands": cluster_config.required_commands,
                         }
@@ -674,7 +717,6 @@ def post_process_device_types(
         device_type["client_clusters"] = client_clusters
         device_types.append(device_type)
 
-    device_types.sort(key=lambda d: d["id"])
     return device_types
 
 
@@ -723,7 +765,9 @@ def command_arg_to_doc(arg: CommandArg, command_args: list[dict]) -> str:
     )
 
 
-def generate_documentation(clusters: list[Cluster], processed_commands: dict) -> str:
+def generate_command_documentation(
+    clusters: list[Cluster], processed_commands: dict
+) -> str:
     lines = [
         "This file is automatically generated by tools/zap_converter.py. Don't edit it.\n\n"
         "Replace `some_endpoint` with a Matter endpoint id or the id assigned to an endpoint. "
@@ -768,6 +812,228 @@ def generate_documentation(clusters: list[Cluster], processed_commands: dict) ->
     return "\n".join(lines)
 
 
+def generate_attribute_documentation(clusters: list[Cluster]) -> str:
+    lines = [
+        "This file is automatically generated by tools/zap_converter.py. Don't edit it.\n\n"
+        "Replace `some_endpoint` with a Matter endpoint id or the id assigned to an endpoint. "
+        "The equivalent explicit `endpoint`, `cluster`, and `attribute` form is also supported.\n"
+    ]
+    for cluster in sorted(clusters, key=lambda c: c.id):
+        attributes = [
+            attribute
+            for attribute in cluster.attributes
+            if attribute.name is not None and attribute.side in ("server", "either")
+        ]
+        if not attributes:
+            continue
+        cluster_name = camel_case(cluster.name)
+        lines.append(
+            f"# {cluster_name}\n\n{sanitize_description(cluster.description)}\n\n```yaml"
+        )
+        yaml_lines = []
+        for attribute in sorted(attributes, key=lambda a: a.code):
+            yaml_lines.append(
+                "\n".join(
+                    [
+                        "matter.set_attribute:",
+                        "  path: some_endpoint."
+                        f"{camel_case_to_snake_case(cluster_name)}."
+                        f"{camel_case_to_snake_case(attribute.name)}",
+                        f"  value:  # {attribute.type}",
+                    ]
+                )
+            )
+        lines.append("\n\n".join(yaml_lines))
+        lines.append("```\n")
+    return "\n".join(lines)
+
+
+def generate_device_type_documentation(
+    device_types: list[dict], clusters: list[Cluster]
+) -> str:
+    lines = [
+        "This file is automatically generated by tools/zap_converter.py. Don't edit it.\n\n"
+        "The following examples list every supported Matter device type. Optional features "
+        "can be enabled with `with_features`. Features already required by a device type and "
+        "features disallowed by it are omitted.\n"
+    ]
+    clusters_by_id = {cluster.id: cluster for cluster in clusters}
+    for device_type in device_types:
+        features: dict[str, str | None] = {}
+        feature_choices: list[tuple[FeatureChoice, dict[str, str | None]]] = []
+        feature_choice_keys: set[tuple[int, int | None, tuple[str, ...]]] = set()
+        ignored_features: list[str] = []
+        for cluster_config in device_type["server_clusters"]:
+            cluster = clusters_by_id[cluster_config["id"]]
+            conformance = cluster_config.get("features", {})
+            for ignored_feature in cluster_config.get("ignored_features", ()):
+                if ignored_feature not in ignored_features:
+                    ignored_features.append(ignored_feature)
+
+            if cluster_config.get("required", False) and cluster_config.get(
+                "ignored_features"
+            ):
+                for cluster_feature in cluster.features:
+                    cluster_feature_items = (
+                        cluster_feature.features
+                        if isinstance(cluster_feature, FeatureChoice)
+                        else (cluster_feature,)
+                    )
+                    for omitted_feature in cluster_feature_items:
+                        if conformance.get(omitted_feature.code) in (
+                            "mandatory",
+                            "optional",
+                            "disallow",
+                            "disallowed",
+                        ):
+                            continue
+                        omitted_name = camel_case_to_snake_case(
+                            camel_case(omitted_feature.name)
+                        )
+                        if omitted_name not in ignored_features:
+                            ignored_features.append(omitted_name)
+
+            def can_enable(feature: Feature) -> bool:
+                feature_name = camel_case_to_snake_case(camel_case(feature.name))
+                if feature_name in cluster_config.get("ignored_features", ()):
+                    return False
+                feature_conformance = conformance.get(feature.code)
+                if cluster_config.get("required", False):
+                    return feature_conformance == "optional"
+                return feature_conformance not in (
+                    "mandatory",
+                    "disallow",
+                    "disallowed",
+                )
+
+            for feature in cluster.features:
+                if isinstance(feature, FeatureChoice):
+                    mandatory_count = sum(
+                        conformance.get(choice_feature.code) == "mandatory"
+                        for choice_feature in feature.features
+                    )
+                    if feature.max is not None and mandatory_count >= feature.max:
+                        continue
+                    choice_features = {
+                        camel_case_to_snake_case(camel_case(choice_feature.name)): (
+                            choice_feature.summary
+                        )
+                        for choice_feature in feature.features
+                        if can_enable(choice_feature)
+                    }
+                    if choice_features:
+                        features.update(choice_features)
+                        if mandatory_count < feature.min:
+                            choice_key = (
+                                feature.min,
+                                feature.max,
+                                tuple(choice_features),
+                            )
+                            if choice_key not in feature_choice_keys:
+                                feature_choice_keys.add(choice_key)
+                                feature_choices.append((feature, choice_features))
+                    continue
+                if not can_enable(feature):
+                    continue
+                features.setdefault(
+                    camel_case_to_snake_case(camel_case(feature.name)),
+                    feature.summary,
+                )
+
+        name = device_type["name"]
+        lines.append(f"# {name}\n\n```yaml\nmatter:\n  endpoints:\n    1:")
+        if features:
+            lines.append(f"      {name}:\n        with_features:")
+            if ignored_features:
+                lines.append(
+                    "          # Omitted because their conformance rules are not supported:"
+                )
+                lines.extend(
+                    f"          # - {ignored_feature}"
+                    for ignored_feature in ignored_features
+                )
+            choice_feature_names = {
+                feature_name
+                for _, choice_features in feature_choices
+                for feature_name in choice_features
+            }
+            for feature_name, summary in features.items():
+                if feature_name in choice_feature_names:
+                    continue
+                comment = f" # {sanitize_description(summary)}" if summary else ""
+                lines.append(f"          - {feature_name}{comment}")
+            for choice, choice_features in feature_choices:
+                feature_names = ", ".join(choice_features)
+                if choice.min == 1 and choice.max == 1:
+                    requirement = f"Exactly one of {feature_names} must be enabled."
+                else:
+                    requirement = f"At least one of {feature_names} must be enabled."
+                lines.append(f"          # {requirement}")
+                for feature_name, summary in choice_features.items():
+                    comment = f" # {sanitize_description(summary)}" if summary else ""
+                    lines.append(f"          - {feature_name}{comment}")
+        elif ignored_features:
+            lines.append(f"      {name}:")
+            lines.append(
+                "        # Omitted because their conformance rules are not yet supported by esphome-matter:"
+            )
+            lines.extend(
+                f"        # - {ignored_feature}" for ignored_feature in ignored_features
+            )
+            lines.append("        with_features: []")
+        else:
+            lines.append(f"      {name}:")
+
+        optional_server_clusters = [
+            cluster_config
+            for cluster_config in device_type["server_clusters"]
+            if not cluster_config.get("required", False)
+        ]
+        optional_client_clusters = [
+            cluster_config
+            for cluster_config in device_type["client_clusters"]
+            if not cluster_config.get("required", False)
+        ]
+        if optional_server_clusters:
+            lines.append("      clusters:")
+            lines.append(
+                f"        # The following server clusters are optional to {name};"
+            )
+            for cluster_config in optional_server_clusters:
+                cluster = clusters_by_id[cluster_config["id"]]
+                cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
+                description = sanitize_description(cluster.description).replace(
+                    "\n", " "
+                )
+                lines.append(f"        {cluster_name}: # {description}")
+            if optional_client_clusters:
+                lines.append(
+                    "        # Client clusters aren't supported by esphome-matter yet."
+                )
+                for cluster_config in optional_client_clusters:
+                    cluster = clusters_by_id[cluster_config["id"]]
+                    cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
+                    description = sanitize_description(cluster.description).replace(
+                        "\n", " "
+                    )
+                    lines.append(f"        # {cluster_name}: # {description}")
+        elif optional_client_clusters:
+            lines.append("      clusters:")
+            lines.append(
+                f"        # The following client clusters are optional to {name}, but "
+                "client clusters aren't supported by esphome-matter yet;"
+            )
+            for cluster_config in optional_client_clusters:
+                cluster = clusters_by_id[cluster_config["id"]]
+                cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
+                description = sanitize_description(cluster.description).replace(
+                    "\n", " "
+                )
+                lines.append(f"        # {cluster_name}: # {description}")
+        lines.append("```\n")
+    return "\n".join(lines)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Convert the Matter ZAP data model for use by esphome-matter."
@@ -786,13 +1052,6 @@ def parse_args() -> argparse.Namespace:
         default=Path("../components/matter/data_model"),
         help=f"output path",
     )
-    parser.add_argument(
-        "documentation_path",
-        nargs="?",
-        type=Path,
-        default=Path("../docs"),
-        help=f"output path",
-    )
     return parser.parse_args()
 
 
@@ -807,8 +1066,12 @@ def main():
     device_types = post_process_device_types(raw_device_types, raw_clusters)
     fixup(device_types)
 
+    with open(args.output_path / "overrides" / "clusters.json") as file:
+        cluster_overrides = json.load(file)
+    apply_cluster_overrides(clusters, cluster_overrides)
+
     with open(args.output_path / "device_types.json", "w") as file:
-        json.dump(device_types, file, indent=2)
+        json.dump(sorted(device_types, key=lambda d: d["id"]), file, indent=2)
 
     with open(args.output_path / "clusters.json", "w") as file:
         json.dump(clusters, file, indent=2)
@@ -819,8 +1082,14 @@ def main():
     with open(args.output_path / "commands.json", "w") as file:
         json.dump(commands, file, indent=2)
 
-    with open(args.documentation_path / "commands-full.md", "w") as file:
-        file.write(generate_documentation(raw_clusters, commands))
+    documentation_path = Path(__file__).resolve().parent.parent / "docs" / "generated"
+    documentation_path.mkdir(parents=True, exist_ok=True)
+    with open(documentation_path / "commands.md", "w") as file:
+        file.write(generate_command_documentation(raw_clusters, commands))
+    # with open(documentation_path / "attributes.md", "w") as file:
+    #     file.write(generate_attribute_documentation(raw_clusters))
+    with open(documentation_path / "device_types.md", "w") as file:
+        file.write(generate_device_type_documentation(device_types, raw_clusters))
 
     arg_types = defaultdict(int)
     for cl in commands.values():

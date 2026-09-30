@@ -3,6 +3,9 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
+import esphome.config_validation as cv
+
+from ..const import CONF_WITH_FEATURES
 from ..util import snake_case
 from .attributes import Attribute
 
@@ -14,15 +17,21 @@ class Feature:
     code: str
     name: str  # CamelCase
     # Can be set to True by DeviceType config
-    enabled: bool = False
+    mandatory: bool = False
+    disallowed: bool = False
 
     @classmethod
-    def from_dict(cls, data: dict):
-        return cls(code=data["code"], name=data["name"])
+    def from_dict(cls, code: str, data: dict):
+        name = data["name"].replace("/", "").replace(" ", "").replace("-", "")
+        return cls(code=code, name=name)
 
     @property
     def namespace(self) -> str:
         """Feature name in esp_matter::cluster::<cluster>::feature::<feature> namespace."""
+        return snake_case(self.name)
+
+    @property
+    def conf_key(self):
         return snake_case(self.name)
 
 
@@ -37,15 +46,11 @@ class FeatureChoice:
         return cls(
             min=data["min"],
             max=data.get("max"),
-            features=tuple(Feature.from_dict(feature) for feature in data["features"]),
+            features=tuple(
+                Feature.from_dict(code, feature)
+                for code, feature in data["features"].items()
+            ),
         )
-
-
-def _dict_to_feature(data: dict) -> Feature | FeatureChoice:
-    if data["type"] == "choice":
-        return FeatureChoice.from_dict(data)
-    else:
-        return Feature.from_dict(data)
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,15 +90,15 @@ class Cluster:
             name.replace("/", "").replace(" ", "").replace("-", "").replace(".", "")
         )
 
-        all_features = tuple(_dict_to_feature(f) for f in data.get("features", ()))
         _features = []
         _choice_features = []
-        for feature in all_features:
-            if isinstance(feature, FeatureChoice):
-                _choice_features.append(feature)
-                _features.extend(feature.features)
+        for code, feature_data in data.get("features", {}).items():
+            if code.startswith("choice "):
+                choice = FeatureChoice.from_dict(feature_data)
+                _choice_features.append(choice)
+                _features.extend(choice.features)
             else:
-                _features.append(feature)
+                _features.append(Feature.from_dict(code, feature_data))
 
         # TODO: are there more exceptions?
         if camel_case_name.endswith("ConcentrationMeasurement"):
@@ -107,12 +112,13 @@ class Cluster:
                 f"#include <app/clusters/{cluster_path}-server/{chip_class}.h>"
             )
 
-        espm_namespace = (
+        espm_namespace = data.get(
+            "esp_matter_namespace",
             name.replace("/", "_")
             .replace(" ", "_")
             .replace("-", "")
             .replace(".", "")
-            .lower()
+            .lower(),
         )
 
         return cls(
@@ -138,12 +144,31 @@ class Cluster:
                 return attribute
         raise KeyError(f"Cluster {self.name} has no attribute {name}")
 
+    def get_feature(self, name_or_code: str) -> Feature | None:
+        for feature in self.features:
+            if name_or_code in (feature.name, feature.code, feature.namespace):
+                return feature
+        return None
+
     def is_choice_feature(self, feature: Feature) -> bool:
         for choice in self.choice_features:
             for f in choice.features:
                 if f.name == feature.name:
                     return True
         return False
+
+    @property
+    def schema_key(self):
+        return cv.Optional(snake_case(self.name))
+
+    def schema(self):
+        schema = {}
+        if self.features:
+            # Features must be given in snake_case. e.g.: "average_measurement"
+            schema[cv.Optional(CONF_WITH_FEATURES, default=list)] = cv.ensure_list(
+                cv.one_of(*(feature.conf_key for feature in self.features))
+            )
+        return schema
 
 
 def _sdkconfig_option(name: str) -> str:

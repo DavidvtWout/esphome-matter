@@ -85,7 +85,46 @@ days_mask:
 days_mask: 65
 ```
 
+# set_attribute
+
+The `matter.set_attribute` action can be used to set an attribute on a cluster.
+
+```yaml
+matter.set_attribute:
+  endpoint: some_endpoint
+  cluster: level_control
+  attribute: current_level
+  # set_attribute also supports the shorter "path" option;
+  # path: light_endpoint.level_control.current_level
+  value: 127 # 50%
+```
+
+Currently, the value must be a raw matter value, usually some kind of integer. Support for units (such as `50%` in the above example) will be added later.
+
+More complicated values such as structs aren't supported yet. Also, some attributes require delegates in esp-matter and this has also not been implemented yet.
+
+# on_attribute
+
+on_attribute is a [trigger](https://esphome.io/automations/actions/#triggers).
+`matter.set_attribute` deliberately doesn't trigger on_attribute to avoid infinite loops.
+
+```yaml
+matter:
+  endpoints:
+    1:
+      on_off_light:
+      on_attribute:
+        on_off.on_off:
+          light.control:
+            id: light_id
+            state: !lambda return value;
+```
+
+The value is a raw matter value, usually some kind of integer. More complicated values such as structs aren't supported yet, but support for that is planned. Converter functions to more conveniently map Matter values to esphome values are also a planned feature.
+
 # Cluster commands
+
+For an extensive list of commands, see [generated/commands](generated/commands.md)
 
 ### Identify cluster
 
@@ -135,8 +174,8 @@ matter.send_command:
   path: some_endpoint.on_off.on_with_timed_off
   arguments:
     on_time: # s
-    # on_off_control: []  # Bitmap option: accept_only_when_on
-    # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
+    # on_off_control: [] # Bitmap option: accept_only_when_on
+    # off_wait_time: 0s # Time before accepting another on_with_timed_off command.
 ```
 
 ### LevelControl cluster
@@ -281,7 +320,7 @@ matter.send_command: some_endpoint.color_control.stop_move_step
 
 Hue / saturation control is an optional feature for the ColorControl cluster so not all "Extended Color Light" devices support this.
 
-There are also "enhanced" commands. These use int16u instead of int8u for hue. Again, this is an optional feature on top of hue / saturation support. So not all devices that support the standard hue / saturation control also support the extended hue commands. You can find the extended commands at the [ColorControl](commands-full.md#colorcontrol) section of commands-full.md.
+There are also "enhanced" commands. These use int16u instead of int8u for hue. Again, this is an optional feature on top of hue / saturation support. So not all devices that support the standard hue / saturation control also support the extended hue commands. You can find the extended commands at the [ColorControl](generated/commands.md#colorcontrol) section of commands.md.
 
 Hue values are recommened to be specifies as angles using the `°` suffix (e.g.: `90°`). Hue rates can be specified as string with unit `°/s`
 Saturation should be specified as a value between 0.0 and 1.0.
