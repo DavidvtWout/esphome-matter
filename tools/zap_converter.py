@@ -107,12 +107,14 @@ class Command:
 
 @dataclass
 class Feature:
+    bit: int
     code: str
     name: str
 
 
 @dataclass
 class FeatureChoice:
+    name: str
     min: int
     max: int | None
     features: list[Feature] = field(default_factory=list)
@@ -138,7 +140,7 @@ class DeviceCluster:
     server: bool
     client_locked: bool
     server_locked: bool
-    features: list
+    features: dict[str, str]
     required_attributes: list
     required_commands: list
 
@@ -190,15 +192,42 @@ def parse_device_type_elem(elem) -> DeviceType | None:
 
     device_clusters = []
     for cluster_elem in elem.findall("./clusters/include"):
+        features = {}
+        for feature_elem in cluster_elem.findall("./features/feature"):
+            feature_code = feature_elem.attrib["code"]
+            conform_elements = list(feature_elem)
+            if not conform_elements:
+                # Assuming no conform means mandatory, but I'm not entire sure...
+                # Seems to apply mostly to irrelevant device types anyway.
+                features[feature_code] = "mandatory"
+            elif (
+                len(conform_elements) == 1
+                and conform_elements[0].tag == "mandatoryConform"
+            ):
+                features[feature_code] = "mandatory"
+            elif (
+                len(conform_elements) == 1
+                and conform_elements[0].tag == "disallowConform"
+            ):
+                features[feature_code] = "disallow"
+            elif (
+                len(conform_elements) == 1
+                and conform_elements[0].tag == "optionalConform"
+            ):
+                continue
+            else:
+                print(
+                    "Ignoring device type feature with complicated conform rule: "
+                    f"{name}.{cluster_elem.attrib['cluster']}.{feature_code}"
+                )
+
         cluster = DeviceCluster(
             name=cluster_elem.attrib["cluster"],
             client=cluster_elem.get("client") == "true",
             server=cluster_elem.get("server") == "true",
             client_locked=cluster_elem.get("clientLocked") == "true",
             server_locked=cluster_elem.get("serverLocked") == "true",
-            features=[
-                e.attrib["code"] for e in cluster_elem.findall("./features/feature")
-            ],
+            features=features,
             required_attributes=[
                 e.text for e in cluster_elem.findall("./requireAttribute")
             ],  # Refers to "define" attr in cluster attributes
@@ -275,6 +304,7 @@ def parse_cluster_elem(elem) -> Cluster:
     for feature_elem in elem.findall("./features/feature"):
         optional_conform = feature_elem.find("./optionalConform")
         feature = Feature(
+            bit=int(feature_elem.get("bit"), 0),
             code=feature_elem.get("code"),
             name=feature_elem.get("name"),
         )
@@ -289,6 +319,7 @@ def parse_cluster_elem(elem) -> Cluster:
             minimum = int(optional_conform.get("min", 1))
             maximum = optional_conform.get("max")
             choice = FeatureChoice(
+                name=choice_name,
                 min=minimum,
                 max=(
                     int(maximum)
@@ -558,33 +589,27 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
             "revision": cluster.revision,
         }
 
-        features = []
+        features = {}
         for feature in cluster.features:
             if isinstance(feature, FeatureChoice):
-                features.append(
-                    filter_none(
-                        {
-                            "type": "choice",
-                            "min": feature.min,
-                            "max": feature.max,
-                            "features": [
-                                {
-                                    "code": choice_feature.code,
-                                    "name": choice_feature.name,
-                                }
-                                for choice_feature in feature.features
-                            ],
-                        }
-                    )
-                )
-            else:
-                features.append(
+                features[f"choice {feature.name}"] = filter_none(
                     {
-                        "type": "feature",
-                        "code": feature.code,
-                        "name": feature.name,
+                        "min": feature.min,
+                        "max": feature.max,
+                        "features": {
+                            choice_feature.code: {
+                                "bit": choice_feature.bit,
+                                "name": choice_feature.name,
+                            }
+                            for choice_feature in feature.features
+                        },
                     }
                 )
+            else:
+                features[feature.code] = {
+                    "bit": feature.bit,
+                    "name": feature.name,
+                }
         if features:
             cluster_data["features"] = features
 

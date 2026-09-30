@@ -27,13 +27,12 @@
     "id": 4,
     "name": "Groups",
     "revision": 4,
-    "features": [
-      {
-        "type": "feature",
-        "code": "GN",
+    "features": {
+      "GN": {
+        "bit": 0,
         "name": "GroupNames"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -50,23 +49,20 @@
     "id": 6,
     "name": "On/Off",
     "revision": 6,
-    "features": [
-      {
-        "type": "feature",
-        "code": "LT",
+    "features": {
+      "LT": {
+        "bit": 0,
         "name": "Lighting"
       },
-      {
-        "type": "feature",
-        "code": "DF",
+      "DF": {
+        "bit": 1,
         "name": "DeadFrontBehavior"
       },
-      {
-        "type": "feature",
-        "code": "OFFONLY",
+      "OFFONLY": {
+        "bit": 2,
         "name": "OffOnly"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -115,23 +111,20 @@
     "id": 8,
     "name": "Level Control",
     "revision": 6,
-    "features": [
-      {
-        "type": "feature",
-        "code": "OO",
+    "features": {
+      "OO": {
+        "bit": 0,
         "name": "OnOff"
       },
-      {
-        "type": "feature",
-        "code": "LT",
+      "LT": {
+        "bit": 1,
         "name": "Lighting"
       },
-      {
-        "type": "feature",
-        "code": "FQ",
+      "FQ": {
+        "bit": 2,
         "name": "Frequency"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -269,13 +262,12 @@
     "id": 29,
     "name": "Descriptor",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "TAGLIST",
+    "features": {
+      "TAGLIST": {
+        "bit": 0,
         "name": "TagList"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -346,23 +338,20 @@
     "id": 31,
     "name": "Access Control",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "EXTS",
+    "features": {
+      "EXTS": {
+        "bit": 0,
         "name": "Extension"
       },
-      {
-        "type": "feature",
-        "code": "MNGD",
+      "MNGD": {
+        "bit": 1,
         "name": "ManagedDevice"
       },
-      {
-        "type": "feature",
-        "code": "AUX",
+      "AUX": {
+        "bit": 2,
         "name": "Auxiliary"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -758,13 +747,12 @@
     "id": 44,
     "name": "Time Format Localization",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CALFMT",
+    "features": {
+      "CALFMT": {
+        "bit": 0,
         "name": "CalendarFormat"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -796,13 +784,12 @@
     "id": 45,
     "name": "Unit Localization",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "TEMP",
+    "features": {
+      "TEMP": {
+        "bit": 0,
         "name": "TemperatureUnit"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -842,33 +829,30 @@
     "id": 47,
     "name": "Power Source",
     "revision": 3,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "WIRED",
+        "features": {
+          "WIRED": {
+            "bit": 0,
             "name": "Wired"
           },
-          {
-            "code": "BAT",
+          "BAT": {
+            "bit": 1,
             "name": "Battery"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "RECHG",
+      "RECHG": {
+        "bit": 2,
         "name": "Rechargeable"
       },
-      {
-        "type": "feature",
-        "code": "REPLC",
+      "REPLC": {
+        "bit": 3,
         "name": "Replaceable"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -1140,18 +1124,16 @@
     "id": 48,
     "name": "General Commissioning",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "TC",
+    "features": {
+      "TC": {
+        "bit": 0,
         "name": "TermsAndConditions"
       },
-      {
-        "type": "feature",
-        "code": "NR",
+      "NR": {
+        "bit": 1,
         "name": "NetworkRecovery"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -1276,27 +1258,26 @@
     "id": 49,
     "name": "Network Commissioning",
     "revision": 2,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "WI",
+        "features": {
+          "WI": {
+            "bit": 0,
             "name": "WiFiNetworkInterface"
           },
-          {
-            "code": "TH",
+          "TH": {
+            "bit": 1,
             "name": "ThreadNetworkInterface"
           },
-          {
-            "code": "ET",
+          "ET": {
+            "bit": 2,
             "name": "EthernetNetworkInterface"
           }
-        ]
+        }
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -1401,13 +1382,12 @@
     "id": 51,
     "name": "General Diagnostics",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "DMTEST",
+    "features": {
+      "DMTEST": {
+        "bit": 0,
         "name": "DataModelTest"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -1496,13 +1476,12 @@
     "id": 52,
     "name": "Software Diagnostics",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "WTRMRK",
+    "features": {
+      "WTRMRK": {
+        "bit": 0,
         "name": "Watermarks"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -1542,28 +1521,24 @@
     "id": 53,
     "name": "Thread Network Diagnostics",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "PKTCNT",
+    "features": {
+      "PKTCNT": {
+        "bit": 0,
         "name": "PacketCounts"
       },
-      {
-        "type": "feature",
-        "code": "ERRCNT",
+      "ERRCNT": {
+        "bit": 1,
         "name": "ErrorCounts"
       },
-      {
-        "type": "feature",
-        "code": "MLECNT",
+      "MLECNT": {
+        "bit": 2,
         "name": "MLECounts"
       },
-      {
-        "type": "feature",
-        "code": "MACCNT",
+      "MACCNT": {
+        "bit": 3,
         "name": "MACCounts"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -2143,18 +2118,16 @@
     "id": 54,
     "name": "Wi-Fi Network Diagnostics",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "PKTCNT",
+    "features": {
+      "PKTCNT": {
+        "bit": 0,
         "name": "PacketCounts"
       },
-      {
-        "type": "feature",
-        "code": "ERRCNT",
+      "ERRCNT": {
+        "bit": 1,
         "name": "ErrorCounts"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -2280,18 +2253,16 @@
     "id": 55,
     "name": "Ethernet Network Diagnostics",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "PKTCNT",
+    "features": {
+      "PKTCNT": {
+        "bit": 0,
         "name": "PacketCounts"
       },
-      {
-        "type": "feature",
-        "code": "ERRCNT",
+      "ERRCNT": {
+        "bit": 1,
         "name": "ErrorCounts"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -2379,28 +2350,24 @@
     "id": 56,
     "name": "Time Synchronization",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "TZ",
+    "features": {
+      "TZ": {
+        "bit": 0,
         "name": "TimeZone"
       },
-      {
-        "type": "feature",
-        "code": "NTPC",
+      "NTPC": {
+        "bit": 1,
         "name": "NTPClient"
       },
-      {
-        "type": "feature",
-        "code": "NTPS",
+      "NTPS": {
+        "bit": 2,
         "name": "NTPServer"
       },
-      {
-        "type": "feature",
-        "code": "TSC",
+      "TSC": {
+        "bit": 3,
         "name": "TimeSyncClient"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -2523,13 +2490,12 @@
     "id": 57,
     "name": "Bridged Device Basic Information",
     "revision": 6,
-    "features": [
-      {
-        "type": "feature",
-        "code": "BIS",
+    "features": {
+      "BIS": {
+        "bit": 20,
         "name": "BridgedICDSupport"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 1,
@@ -2694,43 +2660,38 @@
     "id": 59,
     "name": "Switch",
     "revision": 2,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "LS",
+        "features": {
+          "LS": {
+            "bit": 0,
             "name": "LatchingSwitch"
           },
-          {
-            "code": "MS",
+          "MS": {
+            "bit": 1,
             "name": "MomentarySwitch"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MSR",
+      "MSR": {
+        "bit": 2,
         "name": "MomentarySwitchRelease"
       },
-      {
-        "type": "feature",
-        "code": "MSL",
+      "MSL": {
+        "bit": 3,
         "name": "MomentarySwitchLongPress"
       },
-      {
-        "type": "feature",
-        "code": "MSM",
+      "MSM": {
+        "bit": 4,
         "name": "MomentarySwitchMultiPress"
       },
-      {
-        "type": "feature",
-        "code": "AS",
+      "AS": {
+        "bit": 5,
         "name": "ActionSwitch"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -2765,13 +2726,12 @@
     "id": 60,
     "name": "Administrator Commissioning",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "BC",
+    "features": {
+      "BC": {
+        "bit": 0,
         "name": "Basic"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -2863,18 +2823,16 @@
     "id": 63,
     "name": "Group Key Management",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CS",
+    "features": {
+      "CS": {
+        "bit": 0,
         "name": "CacheAndSync"
       },
-      {
-        "type": "feature",
-        "code": "GCAST",
+      "GCAST": {
+        "bit": 1,
         "name": "Groupcast"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -2970,13 +2928,12 @@
     "id": 69,
     "name": "Boolean State",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CHGEVENT",
+    "features": {
+      "CHGEVENT": {
+        "bit": 0,
         "name": "ChangeEvent"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -2992,28 +2949,24 @@
     "id": 70,
     "name": "ICD Management",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CIP",
+    "features": {
+      "CIP": {
+        "bit": 0,
         "name": "CheckInProtocolSupport"
       },
-      {
-        "type": "feature",
-        "code": "UAT",
+      "UAT": {
+        "bit": 1,
         "name": "UserActiveModeTrigger"
       },
-      {
-        "type": "feature",
-        "code": "LITS",
+      "LITS": {
+        "bit": 2,
         "name": "LongIdleTimeSupport"
       },
-      {
-        "type": "feature",
-        "code": "DSLS",
+      "DSLS": {
+        "bit": 3,
         "name": "DynamicSitLitSupport"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3244,13 +3197,12 @@
     "id": 80,
     "name": "Mode Select",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "DEPONOFF",
+    "features": {
+      "DEPONOFF": {
+        "bit": 0,
         "name": "OnOff"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3352,22 +3304,21 @@
     "id": 83,
     "name": "Laundry Washer Controls",
     "revision": 2,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "SPIN",
+        "features": {
+          "SPIN": {
+            "bit": 0,
             "name": "Spin"
           },
-          {
-            "code": "RINSE",
+          "RINSE": {
+            "bit": 1,
             "name": "Rinse"
           }
-        ]
+        }
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3408,13 +3359,12 @@
     "id": 84,
     "name": "RVC Run Mode",
     "revision": 4,
-    "features": [
-      {
-        "type": "feature",
-        "code": "DIRECTMODECH",
+    "features": {
+      "DIRECTMODECH": {
+        "bit": 20,
         "name": "DirectModeChange"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3438,13 +3388,12 @@
     "id": 85,
     "name": "RVC Clean Mode",
     "revision": 5,
-    "features": [
-      {
-        "type": "feature",
-        "code": "DIRECTMODECH",
+    "features": {
+      "DIRECTMODECH": {
+        "bit": 20,
         "name": "DirectModeChange"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3468,28 +3417,26 @@
     "id": 86,
     "name": "Temperature Control",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "TN",
+        "features": {
+          "TN": {
+            "bit": 0,
             "name": "TemperatureNumber"
           },
-          {
-            "code": "TL",
+          "TL": {
+            "bit": 1,
             "name": "TemperatureLevel"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "STEP",
+      "STEP": {
+        "bit": 2,
         "name": "TemperatureStep"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3603,28 +3550,24 @@
     "id": 91,
     "name": "Air Quality",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "FAIR",
+    "features": {
+      "FAIR": {
+        "bit": 0,
         "name": "Fair"
       },
-      {
-        "type": "feature",
-        "code": "MOD",
+      "MOD": {
+        "bit": 1,
         "name": "Moderate"
       },
-      {
-        "type": "feature",
-        "code": "VPOOR",
+      "VPOOR": {
+        "bit": 2,
         "name": "VeryPoor"
       },
-      {
-        "type": "feature",
-        "code": "XPOOR",
+      "XPOOR": {
+        "bit": 3,
         "name": "ExtremelyPoor"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3643,22 +3586,21 @@
     "id": 92,
     "name": "Smoke CO Alarm",
     "revision": 2,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "SMOKE",
+        "features": {
+          "SMOKE": {
+            "bit": 0,
             "name": "SmokeAlarm"
           },
-          {
-            "code": "CO",
+          "CO": {
+            "bit": 1,
             "name": "CO Alarm"
           }
-        ]
+        }
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3789,13 +3731,12 @@
     "id": 93,
     "name": "Dishwasher Alarm",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "RESET",
+    "features": {
+      "RESET": {
+        "bit": 0,
         "name": "Reset"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -3870,29 +3811,26 @@
     "id": 95,
     "name": "Microwave Oven Control",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "PWRNUM",
+        "features": {
+          "PWRNUM": {
+            "bit": 0,
             "name": "PowerAsNumber"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "WATTS",
+      "WATTS": {
+        "bit": 1,
         "name": "PowerInWatts"
       },
-      {
-        "type": "feature",
-        "code": "PWRLMTS",
+      "PWRLMTS": {
+        "bit": 2,
         "name": "PowerNumberLimits"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4097,13 +4035,12 @@
     "id": 98,
     "name": "Scenes Management",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "SN",
+    "features": {
+      "SN": {
+        "bit": 0,
         "name": "SceneNames"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 1,
@@ -4128,23 +4065,20 @@
     "id": 101,
     "name": "Groupcast",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "LN",
+    "features": {
+      "LN": {
+        "bit": 0,
         "name": "Listener"
       },
-      {
-        "type": "feature",
-        "code": "SD",
+      "SD": {
+        "bit": 1,
         "name": "Sender"
       },
-      {
-        "type": "feature",
-        "code": "PGA",
+      "PGA": {
+        "bit": 2,
         "name": "PerGroup"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4194,23 +4128,20 @@
     "id": 113,
     "name": "HEPA Filter Monitoring",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CON",
+    "features": {
+      "CON": {
+        "bit": 0,
         "name": "Condition"
       },
-      {
-        "type": "feature",
-        "code": "WRN",
+      "WRN": {
+        "bit": 1,
         "name": "Warning"
       },
-      {
-        "type": "feature",
-        "code": "REP",
+      "REP": {
+        "bit": 2,
         "name": "ReplacementProductList"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4268,23 +4199,20 @@
     "id": 114,
     "name": "Activated Carbon Filter Monitoring",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CON",
+    "features": {
+      "CON": {
+        "bit": 0,
         "name": "Condition"
       },
-      {
-        "type": "feature",
-        "code": "WRN",
+      "WRN": {
+        "bit": 1,
         "name": "Warning"
       },
-      {
-        "type": "feature",
-        "code": "REP",
+      "REP": {
+        "bit": 2,
         "name": "ReplacementProductList"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4342,23 +4270,20 @@
     "id": 121,
     "name": "Water Tank Level Monitoring",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CON",
+    "features": {
+      "CON": {
+        "bit": 0,
         "name": "Condition"
       },
-      {
-        "type": "feature",
-        "code": "WRN",
+      "WRN": {
+        "bit": 1,
         "name": "Warning"
       },
-      {
-        "type": "feature",
-        "code": "REP",
+      "REP": {
+        "bit": 2,
         "name": "ReplacementProductList"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4416,33 +4341,28 @@
     "id": 128,
     "name": "Boolean State Configuration",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "VIS",
+    "features": {
+      "VIS": {
+        "bit": 0,
         "name": "Visual"
       },
-      {
-        "type": "feature",
-        "code": "AUD",
+      "AUD": {
+        "bit": 1,
         "name": "Audible"
       },
-      {
-        "type": "feature",
-        "code": "SPRS",
+      "SPRS": {
+        "bit": 2,
         "name": "AlarmSuppress"
       },
-      {
-        "type": "feature",
-        "code": "SENSLVL",
+      "SENSLVL": {
+        "bit": 3,
         "name": "SensitivityLevel"
       },
-      {
-        "type": "feature",
-        "code": "FAULTEV",
+      "FAULTEV": {
+        "bit": 4,
         "name": "FaultEvents"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4524,18 +4444,16 @@
     "id": 129,
     "name": "Valve Configuration and Control",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "TS",
+    "features": {
+      "TS": {
+        "bit": 0,
         "name": "TimeSync"
       },
-      {
-        "type": "feature",
-        "code": "LVL",
+      "LVL": {
+        "bit": 1,
         "name": "Level"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4644,37 +4562,33 @@
     "id": 144,
     "name": "Electrical Power Measurement",
     "revision": 3,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "DIRC",
+        "features": {
+          "DIRC": {
+            "bit": 0,
             "name": "DirectCurrent"
           },
-          {
-            "code": "ALTC",
+          "ALTC": {
+            "bit": 1,
             "name": "AlternatingCurrent"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "POLY",
+      "POLY": {
+        "bit": 2,
         "name": "PolyphasePower"
       },
-      {
-        "type": "feature",
-        "code": "HARM",
+      "HARM": {
+        "bit": 3,
         "name": "Harmonics"
       },
-      {
-        "type": "feature",
-        "code": "PWRQ",
+      "PWRQ": {
+        "bit": 4,
         "name": "PowerQuality"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4863,46 +4777,42 @@
     "id": 145,
     "name": "Electrical Energy Measurement",
     "revision": 2,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "IMPE",
+        "features": {
+          "IMPE": {
+            "bit": 0,
             "name": "ImportedEnergy"
           },
-          {
-            "code": "EXPE",
+          "EXPE": {
+            "bit": 1,
             "name": "ExportedEnergy"
           }
-        ]
+        }
       },
-      {
-        "type": "choice",
+      "choice b": {
         "min": 1,
-        "features": [
-          {
-            "code": "CUME",
+        "features": {
+          "CUME": {
+            "bit": 2,
             "name": "CumulativeEnergy"
           },
-          {
-            "code": "PERE",
+          "PERE": {
+            "bit": 3,
             "name": "PeriodicEnergy"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "APPE",
+      "APPE": {
+        "bit": 4,
         "name": "ApparentEnergy"
       },
-      {
-        "type": "feature",
-        "code": "REAE",
+      "REAE": {
+        "bit": 5,
         "name": "ReactiveEnergy"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -4958,18 +4868,16 @@
     "id": 148,
     "name": "Water Heater Management",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "EM",
+    "features": {
+      "EM": {
+        "bit": 0,
         "name": "EnergyManagement"
       },
-      {
-        "type": "feature",
-        "code": "TP",
+      "TP": {
+        "bit": 1,
         "name": "TankPercent"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5038,13 +4946,12 @@
     "id": 149,
     "name": "Commodity Price",
     "revision": 4,
-    "features": [
-      {
-        "type": "feature",
-        "code": "FORE",
+    "features": {
+      "FORE": {
+        "bit": 0,
         "name": "Forecasting"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5086,28 +4993,24 @@
     "id": 151,
     "name": "Messages",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CONF",
+    "features": {
+      "CONF": {
+        "bit": 0,
         "name": "ReceivedConfirmation"
       },
-      {
-        "type": "feature",
-        "code": "RESP",
+      "RESP": {
+        "bit": 1,
         "name": "ConfirmationResponse"
       },
-      {
-        "type": "feature",
-        "code": "RPLY",
+      "RPLY": {
+        "bit": 2,
         "name": "ConfirmationReply"
       },
-      {
-        "type": "feature",
-        "code": "PROT",
+      "PROT": {
+        "bit": 3,
         "name": "ProtectedMessages"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5131,60 +5034,52 @@
     "id": 152,
     "name": "Device Energy Management",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "PA",
+        "features": {
+          "PA": {
+            "bit": 0,
             "name": "PowerAdjustment"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "PFR",
+      "PFR": {
+        "bit": 1,
         "name": "PowerForecastReporting"
       },
-      {
-        "type": "choice",
+      "choice b": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "SFR",
+        "features": {
+          "SFR": {
+            "bit": 2,
             "name": "StateForecastReporting"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "STA",
+      "STA": {
+        "bit": 3,
         "name": "StartTimeAdjustment"
       },
-      {
-        "type": "feature",
-        "code": "PAU",
+      "PAU": {
+        "bit": 4,
         "name": "Pausable"
       },
-      {
-        "type": "feature",
-        "code": "FA",
+      "FA": {
+        "bit": 5,
         "name": "ForecastAdjustment"
       },
-      {
-        "type": "feature",
-        "code": "CON",
+      "CON": {
+        "bit": 6,
         "name": "ConstraintBasedAdjustment"
       },
-      {
-        "type": "feature",
-        "code": "PRA",
+      "PRA": {
+        "bit": 7,
         "name": "PowerRangeAdjustment"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5270,33 +5165,28 @@
     "id": 153,
     "name": "Energy EVSE",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "PREF",
+    "features": {
+      "PREF": {
+        "bit": 0,
         "name": "ChargingPreferences"
       },
-      {
-        "type": "feature",
-        "code": "SOC",
+      "SOC": {
+        "bit": 1,
         "name": "SoCReporting"
       },
-      {
-        "type": "feature",
-        "code": "PNC",
+      "PNC": {
+        "bit": 2,
         "name": "PlugAndCharge"
       },
-      {
-        "type": "feature",
-        "code": "RFID",
+      "RFID": {
+        "bit": 3,
         "name": "RFID"
       },
-      {
-        "type": "feature",
-        "code": "V2X",
+      "V2X": {
+        "bit": 4,
         "name": "V2X"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5509,22 +5399,21 @@
     "id": 155,
     "name": "Energy Preference",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "BALA",
+        "features": {
+          "BALA": {
+            "bit": 0,
             "name": "EnergyBalance"
           },
-          {
-            "code": "LPMS",
+          "LPMS": {
+            "bit": 1,
             "name": "LowPowerModeSensitivity"
           }
-        ]
+        }
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5572,37 +5461,34 @@
     "id": 156,
     "name": "Power Topology",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "NODE",
+        "features": {
+          "NODE": {
+            "bit": 0,
             "name": "NodeTopology"
           },
-          {
-            "code": "TREE",
+          "TREE": {
+            "bit": 1,
             "name": "TreeTopology"
           },
-          {
-            "code": "SET",
+          "SET": {
+            "bit": 2,
             "name": "SetTopology"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "DYPF",
+      "DYPF": {
+        "bit": 3,
         "name": "DynamicPowerFlow"
       },
-      {
-        "type": "feature",
-        "code": "CIRC",
+      "CIRC": {
+        "bit": 4,
         "name": "ElectricalCircuit"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5634,13 +5520,12 @@
     "id": 157,
     "name": "Energy EVSE Mode",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "DEPONOFF",
+    "features": {
+      "DEPONOFF": {
+        "bit": 0,
         "name": "OnOff"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5664,13 +5549,12 @@
     "id": 158,
     "name": "Water Heater Mode",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "DEPONOFF",
+    "features": {
+      "DEPONOFF": {
+        "bit": 0,
         "name": "OnOff"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5694,13 +5578,12 @@
     "id": 159,
     "name": "Device Energy Management Mode",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "DEPONOFF",
+    "features": {
+      "DEPONOFF": {
+        "bit": 0,
         "name": "OnOff"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5724,13 +5607,12 @@
     "id": 160,
     "name": "Electrical Grid Conditions",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "FORE",
+    "features": {
+      "FORE": {
+        "bit": 0,
         "name": "Forecasting"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -5762,64 +5644,61 @@
     "id": 161,
     "name": "Electrical Alarm",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "RESET",
+    "features": {
+      "RESET": {
+        "bit": 0,
         "name": "Reset"
       },
-      {
-        "type": "feature",
-        "code": "ADJUST",
+      "ADJUST": {
+        "bit": 20,
         "name": "AdjustableThresholds"
       },
-      {
-        "type": "choice",
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "OVERVOLT",
+        "features": {
+          "OVERVOLT": {
+            "bit": 21,
             "name": "OverVoltage"
           },
-          {
-            "code": "UNDERVOLT",
+          "UNDERVOLT": {
+            "bit": 22,
             "name": "UnderVoltage"
           },
-          {
-            "code": "OVERFREQ",
+          "OVERFREQ": {
+            "bit": 23,
             "name": "OverFrequency"
           },
-          {
-            "code": "UNDERFREQ",
+          "UNDERFREQ": {
+            "bit": 24,
             "name": "UnderFrequency"
           },
-          {
-            "code": "OVERPOWER",
+          "OVERPOWER": {
+            "bit": 25,
             "name": "OverPower"
           },
-          {
-            "code": "UNDERPOWER",
+          "UNDERPOWER": {
+            "bit": 26,
             "name": "UnderPower"
           },
-          {
-            "code": "OVERCUR",
+          "OVERCUR": {
+            "bit": 27,
             "name": "OverCurrent"
           },
-          {
-            "code": "UNDERCUR",
+          "UNDERCUR": {
+            "bit": 28,
             "name": "UnderCurrent"
           },
-          {
-            "code": "POWERIMP",
+          "POWERIMP": {
+            "bit": 29,
             "name": "PowerImport"
           },
-          {
-            "code": "POWEREXP",
+          "POWEREXP": {
+            "bit": 30,
             "name": "PowerExport"
           }
-        ]
+        }
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -6025,43 +5904,41 @@
     "id": 163,
     "name": "Electrical Protection Alarm",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "SHORT",
+        "features": {
+          "SHORT": {
+            "bit": 20,
             "name": "ShortCircuit"
           },
-          {
-            "code": "OL",
+          "OL": {
+            "bit": 21,
             "name": "OverLoad"
           },
-          {
-            "code": "OV",
+          "OV": {
+            "bit": 22,
             "name": "OverVoltage"
           },
-          {
-            "code": "SP",
+          "SP": {
+            "bit": 23,
             "name": "SurgeProtection"
           },
-          {
-            "code": "RC",
+          "RC": {
+            "bit": 24,
             "name": "ResidualCurrent"
           },
-          {
-            "code": "ARC",
+          "ARC": {
+            "bit": 25,
             "name": "ArcFault"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "SELFTEST",
+      "SELFTEST": {
+        "bit": 26,
         "name": "SelfTest"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -6153,83 +6030,68 @@
     "id": 257,
     "name": "Door Lock",
     "revision": 10,
-    "features": [
-      {
-        "type": "feature",
-        "code": "PIN",
+    "features": {
+      "PIN": {
+        "bit": 0,
         "name": "PIN Credential"
       },
-      {
-        "type": "feature",
-        "code": "RID",
+      "RID": {
+        "bit": 1,
         "name": "RFID Credential"
       },
-      {
-        "type": "feature",
-        "code": "YDSCH",
+      "YDSCH": {
+        "bit": 10,
         "name": "YearDayAccessSchedules"
       },
-      {
-        "type": "feature",
-        "code": "HDSCH",
+      "HDSCH": {
+        "bit": 11,
         "name": "HolidaySchedules"
       },
-      {
-        "type": "feature",
-        "code": "UBOLT",
+      "UBOLT": {
+        "bit": 12,
         "name": "Unbolt"
       },
-      {
-        "type": "feature",
-        "code": "ALIRO",
+      "ALIRO": {
+        "bit": 13,
         "name": "AliroProvisioning"
       },
-      {
-        "type": "feature",
-        "code": "ALBU",
+      "ALBU": {
+        "bit": 14,
         "name": "AliroBLEUWB"
       },
-      {
-        "type": "feature",
-        "code": "FGP",
+      "FGP": {
+        "bit": 2,
         "name": "FingerCredentials"
       },
-      {
-        "type": "feature",
-        "code": "LOG",
+      "LOG": {
+        "bit": 3,
         "name": "Logging"
       },
-      {
-        "type": "feature",
-        "code": "WDSCH",
+      "WDSCH": {
+        "bit": 4,
         "name": "WeekDayAccessSchedules"
       },
-      {
-        "type": "feature",
-        "code": "DPS",
+      "DPS": {
+        "bit": 5,
         "name": "DoorPositionSensor"
       },
-      {
-        "type": "feature",
-        "code": "FACE",
+      "FACE": {
+        "bit": 6,
         "name": "FaceCredentials"
       },
-      {
-        "type": "feature",
-        "code": "COTA",
+      "COTA": {
+        "bit": 7,
         "name": "CredentialsOverTheAirAccess"
       },
-      {
-        "type": "feature",
-        "code": "USR",
+      "USR": {
+        "bit": 8,
         "name": "User"
       },
-      {
-        "type": "feature",
-        "code": "NOT",
+      "NOT": {
+        "bit": 9,
         "name": "Notification"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -6621,37 +6483,33 @@
     "id": 258,
     "name": "Window Covering",
     "revision": 8,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "LF",
+        "features": {
+          "LF": {
+            "bit": 0,
             "name": "Lift"
           },
-          {
-            "code": "TL",
+          "TL": {
+            "bit": 1,
             "name": "Tilt"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "PA_LF",
+      "PA_LF": {
+        "bit": 2,
         "name": "PositionAwareLift"
       },
-      {
-        "type": "feature",
-        "code": "ABS",
+      "ABS": {
+        "bit": 3,
         "name": "AbsolutePosition"
       },
-      {
-        "type": "feature",
-        "code": "PA_TL",
+      "PA_TL": {
+        "bit": 4,
         "name": "PositionAwareTilt"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -6861,57 +6719,49 @@
     "id": 260,
     "name": "Closure Control",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "PS",
+        "features": {
+          "PS": {
+            "bit": 0,
             "name": "Positioning"
           },
-          {
-            "code": "LT",
+          "LT": {
+            "bit": 1,
             "name": "MotionLatching"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "IS",
+      "IS": {
+        "bit": 2,
         "name": "Instantaneous"
       },
-      {
-        "type": "feature",
-        "code": "SP",
+      "SP": {
+        "bit": 3,
         "name": "Speed"
       },
-      {
-        "type": "feature",
-        "code": "VT",
+      "VT": {
+        "bit": 4,
         "name": "Ventilation"
       },
-      {
-        "type": "feature",
-        "code": "PD",
+      "PD": {
+        "bit": 5,
         "name": "Pedestrian"
       },
-      {
-        "type": "feature",
-        "code": "CL",
+      "CL": {
+        "bit": 6,
         "name": "Calibration"
       },
-      {
-        "type": "feature",
-        "code": "PT",
+      "PT": {
+        "bit": 7,
         "name": "Protection"
       },
-      {
-        "type": "feature",
-        "code": "MO",
+      "MO": {
+        "bit": 8,
         "name": "ManuallyOperable"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -6970,56 +6820,51 @@
     "id": 261,
     "name": "Closure Dimension",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "PS",
+        "features": {
+          "PS": {
+            "bit": 0,
             "name": "Positioning"
           },
-          {
-            "code": "LT",
+          "LT": {
+            "bit": 1,
             "name": "MotionLatching"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "UT",
+      "UT": {
+        "bit": 2,
         "name": "Unit"
       },
-      {
-        "type": "feature",
-        "code": "LM",
+      "LM": {
+        "bit": 3,
         "name": "Limitation"
       },
-      {
-        "type": "feature",
-        "code": "SP",
+      "SP": {
+        "bit": 4,
         "name": "Speed"
       },
-      {
-        "type": "choice",
+      "choice b": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "TR",
+        "features": {
+          "TR": {
+            "bit": 5,
             "name": "Translation"
           },
-          {
-            "code": "RO",
+          "RO": {
+            "bit": 6,
             "name": "Rotation"
           },
-          {
-            "code": "MD",
+          "MD": {
+            "bit": 7,
             "name": "Modulation"
           }
-        ]
+        }
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -7133,23 +6978,20 @@
     "id": 336,
     "name": "Service Area",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "SELRUN",
+    "features": {
+      "SELRUN": {
+        "bit": 0,
         "name": "SelectWhileRunning"
       },
-      {
-        "type": "feature",
-        "code": "PROG",
+      "PROG": {
+        "bit": 1,
         "name": "ProgressReporting"
       },
-      {
-        "type": "feature",
-        "code": "MAPS",
+      "MAPS": {
+        "bit": 2,
         "name": "Maps"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -7205,44 +7047,41 @@
     "id": 512,
     "name": "Pump Configuration and Control",
     "revision": 4,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "PRSCONST",
+        "features": {
+          "PRSCONST": {
+            "bit": 0,
             "name": "ConstantPressure"
           },
-          {
-            "code": "PRSCOMP",
+          "PRSCOMP": {
+            "bit": 1,
             "name": "CompensatedPressure"
           },
-          {
-            "code": "FLW",
+          "FLW": {
+            "bit": 2,
             "name": "ConstantFlow"
           },
-          {
-            "code": "SPD",
+          "SPD": {
+            "bit": 3,
             "name": "ConstantSpeed"
           },
-          {
-            "code": "TEMP",
+          "TEMP": {
+            "bit": 4,
             "name": "ConstantTemperature"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "AUTO",
+      "AUTO": {
+        "bit": 5,
         "name": "Automatic"
       },
-      {
-        "type": "feature",
-        "code": "LOCAL",
+      "LOCAL": {
+        "bit": 6,
         "name": "LocalOperation"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -7451,63 +7290,52 @@
     "id": 513,
     "name": "Thermostat",
     "revision": 11,
-    "features": [
-      {
-        "type": "feature",
-        "code": "HEAT",
+    "features": {
+      "HEAT": {
+        "bit": 0,
         "name": "Heating"
       },
-      {
-        "type": "feature",
-        "code": "COOL",
+      "COOL": {
+        "bit": 1,
         "name": "Cooling"
       },
-      {
-        "type": "feature",
-        "code": "TSUGGEST",
+      "TSUGGEST": {
+        "bit": 10,
         "name": "ThermostatSuggestions"
       },
-      {
-        "type": "feature",
-        "code": "OCC",
+      "OCC": {
+        "bit": 2,
         "name": "Occupancy"
       },
-      {
-        "type": "feature",
-        "code": "SCH",
+      "SCH": {
+        "bit": 3,
         "name": "ScheduleConfiguration"
       },
-      {
-        "type": "feature",
-        "code": "SB",
+      "SB": {
+        "bit": 4,
         "name": "Setback"
       },
-      {
-        "type": "feature",
-        "code": "AUTO",
+      "AUTO": {
+        "bit": 5,
         "name": "AutoMode"
       },
-      {
-        "type": "feature",
-        "code": "LTNE",
+      "LTNE": {
+        "bit": 6,
         "name": "LocalTemperatureNotExposed"
       },
-      {
-        "type": "feature",
-        "code": "MSCH",
+      "MSCH": {
+        "bit": 7,
         "name": "MatterScheduleConfiguration"
       },
-      {
-        "type": "feature",
-        "code": "PRES",
+      "PRES": {
+        "bit": 8,
         "name": "Presets"
       },
-      {
-        "type": "feature",
-        "code": "TEVT",
+      "TEVT": {
+        "bit": 9,
         "name": "Events"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -8096,38 +7924,32 @@
     "id": 514,
     "name": "Fan Control",
     "revision": 5,
-    "features": [
-      {
-        "type": "feature",
-        "code": "SPD",
+    "features": {
+      "SPD": {
+        "bit": 0,
         "name": "MultiSpeed"
       },
-      {
-        "type": "feature",
-        "code": "AUT",
+      "AUT": {
+        "bit": 1,
         "name": "Auto"
       },
-      {
-        "type": "feature",
-        "code": "RCK",
+      "RCK": {
+        "bit": 2,
         "name": "Rocking"
       },
-      {
-        "type": "feature",
-        "code": "WND",
+      "WND": {
+        "bit": 3,
         "name": "Wind"
       },
-      {
-        "type": "feature",
-        "code": "STEP",
+      "STEP": {
+        "bit": 4,
         "name": "Step"
       },
-      {
-        "type": "feature",
-        "code": "DIR",
+      "DIR": {
+        "bit": 5,
         "name": "AirflowDirection"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -8282,65 +8104,59 @@
     "id": 517,
     "name": "Humidistat",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "HUM",
+        "features": {
+          "HUM": {
+            "bit": 0,
             "name": "Humidifier"
           },
-          {
-            "code": "DEHUM",
+          "DEHUM": {
+            "bit": 1,
             "name": "Dehumidifier"
           }
-        ]
+        }
       },
-      {
-        "type": "choice",
+      "choice b": {
         "min": 1,
-        "features": [
-          {
-            "code": "CONT",
+        "features": {
+          "CONT": {
+            "bit": 2,
             "name": "Continuous"
           },
-          {
-            "code": "SENSOR",
+          "SENSOR": {
+            "bit": 3,
             "name": "Sensor"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "AUTO",
+      "AUTO": {
+        "bit": 4,
         "name": "Auto"
       },
-      {
-        "type": "feature",
-        "code": "FAN",
+      "FAN": {
+        "bit": 5,
         "name": "FanOnly"
       },
-      {
-        "type": "feature",
-        "code": "OPT",
+      "OPT": {
+        "bit": 6,
         "name": "Optimal"
       },
-      {
-        "type": "choice",
+      "choice c": {
         "min": 1,
-        "features": [
-          {
-            "code": "WARM",
+        "features": {
+          "WARM": {
+            "bit": 7,
             "name": "WarmMist"
           },
-          {
-            "code": "COLD",
+          "COLD": {
+            "bit": 8,
             "name": "ColdMist"
           }
-        ]
+        }
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -8441,33 +8257,28 @@
     "id": 768,
     "name": "Color Control",
     "revision": 9,
-    "features": [
-      {
-        "type": "feature",
-        "code": "HS",
+    "features": {
+      "HS": {
+        "bit": 0,
         "name": "Hue And Saturation"
       },
-      {
-        "type": "feature",
-        "code": "EHUE",
+      "EHUE": {
+        "bit": 1,
         "name": "EnhancedHue"
       },
-      {
-        "type": "feature",
-        "code": "CL",
+      "CL": {
+        "bit": 2,
         "name": "ColorLoop"
       },
-      {
-        "type": "feature",
-        "code": "XY",
+      "XY": {
+        "bit": 3,
         "name": "XY"
       },
-      {
-        "type": "feature",
-        "code": "CT",
+      "CT": {
+        "bit": 4,
         "name": "ColorTemperature"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -9203,13 +9014,12 @@
     "id": 1027,
     "name": "Pressure Measurement",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "EXT",
+    "features": {
+      "EXT": {
+        "bit": 0,
         "name": "Extended"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -9392,56 +9202,53 @@
     "id": 1030,
     "name": "Occupancy Sensing",
     "revision": 7,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "OTHER",
+        "features": {
+          "OTHER": {
+            "bit": 0,
             "name": "Other"
           },
-          {
-            "code": "PIR",
+          "PIR": {
+            "bit": 1,
             "name": "PassiveInfrared"
           },
-          {
-            "code": "US",
+          "US": {
+            "bit": 2,
             "name": "Ultrasonic"
           },
-          {
-            "code": "PHY",
+          "PHY": {
+            "bit": 3,
             "name": "PhysicalContact"
           },
-          {
-            "code": "AIR",
+          "AIR": {
+            "bit": 4,
             "name": "ActiveInfrared"
           },
-          {
-            "code": "RAD",
+          "RAD": {
+            "bit": 5,
             "name": "Radar"
           },
-          {
-            "code": "RFS",
+          "RFS": {
+            "bit": 6,
             "name": "RFSensing"
           },
-          {
-            "code": "VIS",
+          "VIS": {
+            "bit": 7,
             "name": "Vision"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "PRED",
+      "PRED": {
+        "bit": 8,
         "name": "Prediction"
       },
-      {
-        "type": "feature",
-        "code": "OCCEVENT",
+      "OCCEVENT": {
+        "bit": 9,
         "name": "OccupancyEvent"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -9587,42 +9394,37 @@
     "id": 1036,
     "name": "Carbon Monoxide Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -9723,42 +9525,37 @@
     "id": 1037,
     "name": "Carbon Dioxide Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -9859,42 +9656,37 @@
     "id": 1043,
     "name": "Nitrogen Dioxide Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -9995,42 +9787,37 @@
     "id": 1045,
     "name": "Ozone Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -10131,42 +9918,37 @@
     "id": 1066,
     "name": "PM2.5 Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -10267,42 +10049,37 @@
     "id": 1067,
     "name": "Formaldehyde Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -10403,42 +10180,37 @@
     "id": 1068,
     "name": "PM1 Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -10539,42 +10311,37 @@
     "id": 1069,
     "name": "PM10 Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -10675,42 +10442,37 @@
     "id": 1070,
     "name": "Total Volatile Organic Compounds Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -10811,42 +10573,37 @@
     "id": 1071,
     "name": "Radon Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -10970,38 +10727,32 @@
     "id": 1073,
     "name": "Ambient Context Sensing",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "HA",
+    "features": {
+      "HA": {
+        "bit": 0,
         "name": "HumanActivity"
       },
-      {
-        "type": "feature",
-        "code": "OC",
+      "OC": {
+        "bit": 1,
         "name": "ObjectCounting"
       },
-      {
-        "type": "feature",
-        "code": "OI",
+      "OI": {
+        "bit": 2,
         "name": "ObjectIdentification"
       },
-      {
-        "type": "feature",
-        "code": "AUD",
+      "AUD": {
+        "bit": 3,
         "name": "SoundIdentification"
       },
-      {
-        "type": "feature",
-        "code": "PRED",
+      "PRED": {
+        "bit": 4,
         "name": "PredictedActivity"
       },
-      {
-        "type": "feature",
-        "code": "FUS",
+      "FUS": {
+        "bit": 5,
         "name": "SensorFusion"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11148,31 +10899,29 @@
     "id": 1075,
     "name": "Proximity Ranging",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "WFUSDPD",
+        "features": {
+          "WFUSDPD": {
+            "bit": 0,
             "name": "Wi-Fi USD Proximity Detection"
           },
-          {
-            "code": "BLTCS",
+          "BLTCS": {
+            "bit": 1,
             "name": "Bluetooth Channel Sounding"
           },
-          {
-            "code": "BLERBC",
+          "BLERBC": {
+            "bit": 2,
             "name": "BLE Beacon RSSI"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "UWBRNG",
+      "UWBRNG": {
+        "bit": 3,
         "name": "UWB Ranging"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11238,42 +10987,37 @@
     "id": 1076,
     "name": "Smoke Concentration Measurement",
     "revision": 5,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "MEA",
+        "features": {
+          "MEA": {
+            "bit": 0,
             "name": "NumericMeasurement"
           },
-          {
-            "code": "LEV",
+          "LEV": {
+            "bit": 1,
             "name": "LevelIndication"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MED",
+      "MED": {
+        "bit": 2,
         "name": "MediumLevel"
       },
-      {
-        "type": "feature",
-        "code": "CRI",
+      "CRI": {
+        "bit": 3,
         "name": "CriticalLevel"
       },
-      {
-        "type": "feature",
-        "code": "PEA",
+      "PEA": {
+        "bit": 4,
         "name": "PeakMeasurement"
       },
-      {
-        "type": "feature",
-        "code": "AVG",
+      "AVG": {
+        "bit": 5,
         "name": "AverageMeasurement"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11431,13 +11175,12 @@
     "id": 1106,
     "name": "Thread Border Router Management",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "PC",
+    "features": {
+      "PC": {
+        "bit": 0,
         "name": "PANChange"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11547,28 +11290,24 @@
     "id": 1284,
     "name": "Channel",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "CL",
+    "features": {
+      "CL": {
+        "bit": 0,
         "name": "ChannelList"
       },
-      {
-        "type": "feature",
-        "code": "LI",
+      "LI": {
+        "bit": 1,
         "name": "LineupInfo"
       },
-      {
-        "type": "feature",
-        "code": "EG",
+      "EG": {
+        "bit": 2,
         "name": "ElectronicGuide"
       },
-      {
-        "type": "feature",
-        "code": "RP",
+      "RP": {
+        "bit": 3,
         "name": "RecordProgram"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11624,33 +11363,28 @@
     "id": 1286,
     "name": "Media Playback",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "AS",
+    "features": {
+      "AS": {
+        "bit": 0,
         "name": "AdvancedSeek"
       },
-      {
-        "type": "feature",
-        "code": "VS",
+      "VS": {
+        "bit": 1,
         "name": "VariableSpeed"
       },
-      {
-        "type": "feature",
-        "code": "TT",
+      "TT": {
+        "bit": 2,
         "name": "TextTracks"
       },
-      {
-        "type": "feature",
-        "code": "AT",
+      "AT": {
+        "bit": 3,
         "name": "AudioTracks"
       },
-      {
-        "type": "feature",
-        "code": "AA",
+      "AA": {
+        "bit": 4,
         "name": "AudioAdvance"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11749,13 +11483,12 @@
     "id": 1287,
     "name": "Media Input",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "NU",
+    "features": {
+      "NU": {
+        "bit": 0,
         "name": "NameUpdates"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11784,23 +11517,20 @@
     "id": 1289,
     "name": "Keypad Input",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "NV",
+    "features": {
+      "NV": {
+        "bit": 0,
         "name": "NavigationKeyCodes"
       },
-      {
-        "type": "feature",
-        "code": "LK",
+      "LK": {
+        "bit": 1,
         "name": "LocationKeys"
       },
-      {
-        "type": "feature",
-        "code": "NK",
+      "NK": {
+        "bit": 2,
         "name": "NumberKeys"
       }
-    ]
+    }
   },
   {
     "id": 1290,
@@ -11830,13 +11560,12 @@
     "id": 1291,
     "name": "Audio Output",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "NU",
+    "features": {
+      "NU": {
+        "bit": 0,
         "name": "NameUpdates"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11860,13 +11589,12 @@
     "id": 1292,
     "name": "Application Launcher",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "AP",
+    "features": {
+      "AP": {
+        "bit": 0,
         "name": "ApplicationPlatform"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -11968,48 +11696,40 @@
     "id": 1295,
     "name": "Content Control",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "ST",
+    "features": {
+      "ST": {
+        "bit": 0,
         "name": "ScreenTime"
       },
-      {
-        "type": "feature",
-        "code": "PM",
+      "PM": {
+        "bit": 1,
         "name": "PINManagement"
       },
-      {
-        "type": "feature",
-        "code": "BU",
+      "BU": {
+        "bit": 2,
         "name": "BlockUnrated"
       },
-      {
-        "type": "feature",
-        "code": "OCR",
+      "OCR": {
+        "bit": 3,
         "name": "OnDemandContentRating"
       },
-      {
-        "type": "feature",
-        "code": "SCR",
+      "SCR": {
+        "bit": 4,
         "name": "ScheduledContentRating"
       },
-      {
-        "type": "feature",
-        "code": "BC",
+      "BC": {
+        "bit": 5,
         "name": "BlockChannels"
       },
-      {
-        "type": "feature",
-        "code": "BA",
+      "BA": {
+        "bit": 6,
         "name": "BlockApplications"
       },
-      {
-        "type": "feature",
-        "code": "BTW",
+      "BTW": {
+        "bit": 7,
         "name": "BlockContentTimeWindow"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -12112,28 +11832,24 @@
     "id": 1360,
     "name": "Zone Management",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "TWODCART",
+    "features": {
+      "TWODCART": {
+        "bit": 0,
         "name": "TwoDimensionalCartesianZone"
       },
-      {
-        "type": "feature",
-        "code": "PERZONESENS",
+      "PERZONESENS": {
+        "bit": 1,
         "name": "PerZoneSensitivity"
       },
-      {
-        "type": "feature",
-        "code": "USERDEFINED",
+      "USERDEFINED": {
+        "bit": 2,
         "name": "UserDefined"
       },
-      {
-        "type": "feature",
-        "code": "FOCUSZONES",
+      "FOCUSZONES": {
+        "bit": 3,
         "name": "FocusZones"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -12203,66 +11919,57 @@
     "id": 1361,
     "name": "Camera AV Stream Management",
     "revision": 2,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "ADO",
+        "features": {
+          "ADO": {
+            "bit": 0,
             "name": "Audio"
           },
-          {
-            "code": "VDO",
+          "VDO": {
+            "bit": 1,
             "name": "Video"
           },
-          {
-            "code": "SNP",
+          "SNP": {
+            "bit": 2,
             "name": "Snapshot"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "PRIV",
+      "PRIV": {
+        "bit": 3,
         "name": "Privacy"
       },
-      {
-        "type": "feature",
-        "code": "SPKR",
+      "SPKR": {
+        "bit": 4,
         "name": "Speaker"
       },
-      {
-        "type": "feature",
-        "code": "ICTL",
+      "ICTL": {
+        "bit": 5,
         "name": "ImageControl"
       },
-      {
-        "type": "feature",
-        "code": "WMARK",
+      "WMARK": {
+        "bit": 6,
         "name": "Watermark"
       },
-      {
-        "type": "feature",
-        "code": "OSD",
+      "OSD": {
+        "bit": 7,
         "name": "OnScreenDisplay"
       },
-      {
-        "type": "feature",
-        "code": "STOR",
+      "STOR": {
+        "bit": 8,
         "name": "LocalStorage"
       },
-      {
-        "type": "feature",
-        "code": "HDR",
+      "HDR": {
+        "bit": 9,
         "name": "HighDynamicRange"
       },
-      {
-        "type": "feature",
-        "code": "NV",
+      "NV": {
+        "bit": 10,
         "name": "NightVision"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -12624,35 +12331,33 @@
     "id": 1362,
     "name": "Camera AV Settings User Level Management",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "DPTZ",
+        "features": {
+          "DPTZ": {
+            "bit": 0,
             "name": "DigitalPTZ"
           },
-          {
-            "code": "MPAN",
+          "MPAN": {
+            "bit": 1,
             "name": "MechanicalPan"
           },
-          {
-            "code": "MTILT",
+          "MTILT": {
+            "bit": 2,
             "name": "MechanicalTilt"
           },
-          {
-            "code": "MZOOM",
+          "MZOOM": {
+            "bit": 3,
             "name": "MechanicalZoom"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "MPRESETS",
+      "MPRESETS": {
+        "bit": 4,
         "name": "MechanicalPresets"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -12751,13 +12456,12 @@
     "id": 1363,
     "name": "WebRTC Transport Provider",
     "revision": 2,
-    "features": [
-      {
-        "type": "feature",
-        "code": "METADATA",
+    "features": {
+      "METADATA": {
+        "bit": 0,
         "name": "Metadata"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -12788,18 +12492,16 @@
     "id": 1365,
     "name": "Push AV Stream Transport",
     "revision": 3,
-    "features": [
-      {
-        "type": "feature",
-        "code": "PERZONESENS",
+    "features": {
+      "PERZONESENS": {
+        "bit": 0,
         "name": "PerZoneSensitivity"
       },
-      {
-        "type": "feature",
-        "code": "METADATA",
+      "METADATA": {
+        "bit": 1,
         "name": "Metadata"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -12854,28 +12556,26 @@
     "id": 1367,
     "name": "AV Analysis",
     "revision": 1,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
         "max": 1,
-        "features": [
-          {
-            "code": "LCLCONDETECT",
+        "features": {
+          "LCLCONDETECT": {
+            "bit": 0,
             "name": "LocalContextDetection"
           },
-          {
-            "code": "REMCONDETECT",
+          "REMCONDETECT": {
+            "bit": 1,
             "name": "RemoteContextDetection"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "PERZONEDETECT",
+      "PERZONEDETECT": {
+        "bit": 2,
         "name": "PerZoneContextDetection"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -12931,41 +12631,37 @@
     "id": 1792,
     "name": "Commodity Tariff",
     "revision": 2,
-    "features": [
-      {
-        "type": "choice",
+    "features": {
+      "choice a": {
         "min": 1,
-        "features": [
-          {
-            "code": "PRICE",
+        "features": {
+          "PRICE": {
+            "bit": 0,
             "name": "Pricing"
           },
-          {
-            "code": "FCRED",
+          "FCRED": {
+            "bit": 1,
             "name": "FriendlyCredit"
           },
-          {
-            "code": "AUXLD",
+          "AUXLD": {
+            "bit": 2,
             "name": "AuxiliaryLoad"
           }
-        ]
+        }
       },
-      {
-        "type": "feature",
-        "code": "PEAKP",
+      "PEAKP": {
+        "bit": 3,
         "name": "PeakPeriod"
       },
-      {
-        "type": "feature",
-        "code": "PWRTHLD",
+      "PWRTHLD": {
+        "bit": 4,
         "name": "PowerThreshold"
       },
-      {
-        "type": "feature",
-        "code": "RNDM",
+      "RNDM": {
+        "bit": 5,
         "name": "Randomization"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
@@ -13372,13 +13068,12 @@
     "id": 2822,
     "name": "Meter Identification",
     "revision": 1,
-    "features": [
-      {
-        "type": "feature",
-        "code": "PWRTHLD",
+    "features": {
+      "PWRTHLD": {
+        "bit": 0,
         "name": "PowerThreshold"
       }
-    ],
+    },
     "server_attributes": [
       {
         "id": 0,
