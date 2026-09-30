@@ -28,5 +28,7 @@ CONF_DATA = "data"
 CONF_ENDPOINT = "endpoint"
 CONF_CLUSTER = "cluster"
 CONF_ARGUMENTS = "arguments"
+CONF_EVENT = "event"
+CONF_FIELDS = "fields"
 
 KEY_ENDPOINT_ID_MAP = "endpoint_id_map"

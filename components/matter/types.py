@@ -13,3 +13,4 @@ MatterSetAttributeAction = matter_ns.class_(
     "MatterSetAttributeAction", automation.Action
 )
 MatterSendCommandAction = matter_ns.class_("MatterSendCommandAction", automation.Action)
+MatterSendEventAction = matter_ns.class_("MatterSendEventAction", automation.Action)

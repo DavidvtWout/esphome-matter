@@ -202,7 +202,7 @@ class Command:
 def _load_commands(
     commands_file: Path = Path(__file__).resolve().parent / "commands.json",
 ) -> tuple[Command, ...]:
-    commands: list[Command] = []
+    commands = []
     with open(commands_file, "r") as file:
         contents = json.load(file)
     for cluster_name, commands_data in contents.items():

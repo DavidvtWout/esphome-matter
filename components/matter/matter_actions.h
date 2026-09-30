@@ -21,6 +21,10 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
                          chip::CommandId command,
                          const char *command_data = "{}");
 
+void send_event(uint16_t endpoint_id, chip::ClusterId cluster,
+                chip::EventId event, uint8_t priority,
+                const char *event_data = "{}");
+
 template <typename T, typename... Ts>
 class MatterSetAttributeAction : public Action<Ts...> {
 public:
@@ -63,6 +67,29 @@ protected:
   uint16_t endpoint_id_{0};
   uint32_t cluster_id_{0};
   uint32_t command_id_{0};
+  std::string data_{"{}"};
+};
+
+template <typename... Ts> class MatterSendEventAction : public Action<Ts...> {
+public:
+  void set_endpoint_id(uint16_t endpoint_id) {
+    this->endpoint_id_ = endpoint_id;
+  }
+  void set_cluster_id(uint32_t cluster_id) { this->cluster_id_ = cluster_id; }
+  void set_event_id(uint32_t event_id) { this->event_id_ = event_id; }
+  void set_priority(uint8_t priority) { this->priority_ = priority; }
+  void set_data(const char *data) { this->data_ = data; }
+
+  void play(Ts... x) override {
+    send_event(this->endpoint_id_, this->cluster_id_, this->event_id_,
+               this->priority_, this->data_.c_str());
+  }
+
+protected:
+  uint16_t endpoint_id_{0};
+  uint32_t cluster_id_{0};
+  uint32_t event_id_{0};
+  uint8_t priority_{1};
   std::string data_{"{}"};
 };
 

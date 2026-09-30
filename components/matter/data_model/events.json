@@ -2,6 +2,7 @@
   "AccessControl": {
     "AccessControlEntryChanged": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 1,
@@ -107,6 +108,7 @@
     },
     "AccessControlExtensionChanged": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 1,
@@ -149,6 +151,7 @@
     },
     "FabricRestrictionReviewUpdate": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -173,6 +176,7 @@
     },
     "AuxiliaryAccessUpdated": {
       "id": 3,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -186,6 +190,7 @@
   "Actions": {
     "StateChanged": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -214,6 +219,7 @@
     },
     "ActionFailed": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -255,6 +261,7 @@
   "BasicInformation": {
     "StartUp": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -265,10 +272,12 @@
     },
     "ShutDown": {
       "id": 1,
+      "priority": "critical",
       "fields": []
     },
     "Leave": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -281,6 +290,7 @@
     },
     "ReachableChanged": {
       "id": 3,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -293,6 +303,7 @@
   "OTASoftwareUpdateRequestor": {
     "StateTransition": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -352,6 +363,7 @@
     },
     "VersionApplied": {
       "id": 1,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -367,6 +379,7 @@
     },
     "DownloadError": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -397,6 +410,7 @@
   "PowerSource": {
     "WiredFaultChange": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -426,6 +440,7 @@
     },
     "BatFaultChange": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -455,6 +470,7 @@
     },
     "BatChargeFaultChange": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -502,6 +518,7 @@
   "GeneralDiagnostics": {
     "HardwareFaultChange": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -547,6 +564,7 @@
     },
     "RadioFaultChange": {
       "id": 1,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -584,6 +602,7 @@
     },
     "NetworkFaultChange": {
       "id": 2,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -615,6 +634,7 @@
     },
     "BootReason": {
       "id": 3,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -637,6 +657,7 @@
   "SoftwareDiagnostics": {
     "SoftwareFault": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -664,6 +685,7 @@
   "ThreadNetworkDiagnostics": {
     "ConnectionStatus": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -680,6 +702,7 @@
     },
     "NetworkFaultChange": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -713,6 +736,7 @@
   "WiFiNetworkDiagnostics": {
     "Disconnection": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -723,6 +747,7 @@
     },
     "AssociationFailure": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -746,6 +771,7 @@
     },
     "ConnectionStatus": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -764,10 +790,12 @@
   "TimeSynchronization": {
     "DSTTableEmpty": {
       "id": 0,
+      "priority": "info",
       "fields": []
     },
     "DSTStatus": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -778,6 +806,7 @@
     },
     "TimeZoneStatus": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -797,16 +826,19 @@
     },
     "TimeFailure": {
       "id": 3,
+      "priority": "info",
       "fields": []
     },
     "MissingTrustedTimeSource": {
       "id": 4,
+      "priority": "info",
       "fields": []
     }
   },
   "BridgedDeviceBasicInformation": {
     "StartUp": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -817,14 +849,17 @@
     },
     "ShutDown": {
       "id": 1,
+      "priority": "critical",
       "fields": []
     },
     "Leave": {
       "id": 2,
+      "priority": "info",
       "fields": []
     },
     "ReachableChanged": {
       "id": 3,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -837,6 +872,7 @@
   "Switch": {
     "SwitchLatched": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -848,6 +884,7 @@
     },
     "InitialPress": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -859,6 +896,7 @@
     },
     "LongPress": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -870,6 +908,7 @@
     },
     "ShortRelease": {
       "id": 3,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -881,6 +920,7 @@
     },
     "LongRelease": {
       "id": 4,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -892,6 +932,7 @@
     },
     "MultiPressOngoing": {
       "id": 5,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -909,6 +950,7 @@
     },
     "MultiPressComplete": {
       "id": 6,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -927,6 +969,7 @@
   "BooleanState": {
     "StateChange": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -939,6 +982,7 @@
   "OvenCavityOperationalState": {
     "OperationalError": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -949,6 +993,7 @@
     },
     "OperationCompletion": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -975,6 +1020,7 @@
   "RefrigeratorAlarm": {
     "Notify": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1018,6 +1064,7 @@
   "SmokeCOAlarm": {
     "SmokeAlarm": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -1034,6 +1081,7 @@
     },
     "COAlarm": {
       "id": 1,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -1050,6 +1098,7 @@
     },
     "LowBattery": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1066,26 +1115,32 @@
     },
     "HardwareFault": {
       "id": 3,
+      "priority": "info",
       "fields": []
     },
     "EndOfService": {
       "id": 4,
+      "priority": "info",
       "fields": []
     },
     "SelfTestComplete": {
       "id": 5,
+      "priority": "info",
       "fields": []
     },
     "AlarmMuted": {
       "id": 6,
+      "priority": "info",
       "fields": []
     },
     "MuteEnded": {
       "id": 7,
+      "priority": "info",
       "fields": []
     },
     "InterconnectSmokeAlarm": {
       "id": 8,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -1102,6 +1157,7 @@
     },
     "InterconnectCOAlarm": {
       "id": 9,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -1118,12 +1174,14 @@
     },
     "AllClear": {
       "id": 10,
+      "priority": "info",
       "fields": []
     }
   },
   "DishwasherAlarm": {
     "Notify": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1195,6 +1253,7 @@
   "OperationalState": {
     "OperationalError": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -1227,6 +1286,7 @@
     },
     "OperationCompletion": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1253,6 +1313,7 @@
   "RVCOperationalState": {
     "OperationalError": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -1263,6 +1324,7 @@
     },
     "OperationCompletion": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1289,6 +1351,7 @@
   "Groupcast": {
     "GroupcastTesting": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1356,6 +1419,7 @@
   "BooleanStateConfiguration": {
     "AlarmsStateChanged": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1382,6 +1446,7 @@
     },
     "SensorFault": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1398,6 +1463,7 @@
   "ValveConfigurationandControl": {
     "ValveStateChanged": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1421,6 +1487,7 @@
     },
     "ValveFault": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1442,6 +1509,7 @@
   "ElectricalPowerMeasurement": {
     "MeasurementPeriodRanges": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1545,6 +1613,7 @@
   "ElectricalEnergyMeasurement": {
     "CumulativeEnergyMeasured": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1660,6 +1729,7 @@
     },
     "PeriodicEnergyMeasured": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1777,6 +1847,7 @@
   "WaterHeaterManagement": {
     "BoostStarted": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1827,12 +1898,14 @@
     },
     "BoostEnded": {
       "id": 1,
+      "priority": "info",
       "fields": []
     }
   },
   "CommodityPrice": {
     "PriceChange": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1920,6 +1993,7 @@
   "Messages": {
     "MessageQueued": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1932,6 +2006,7 @@
     },
     "MessagePresented": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1944,6 +2019,7 @@
     },
     "MessageComplete": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -1987,6 +2063,7 @@
   "DeviceEnergyManagement": {
     "PowerRangeAdjustStart": {
       "id": 4,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2036,6 +2113,7 @@
     },
     "PowerRangeAdjustEnd": {
       "id": 5,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2069,6 +2147,7 @@
   "EnergyEVSE": {
     "EVConnected": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2079,6 +2158,7 @@
     },
     "EVNotDetected": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2123,6 +2203,7 @@
     },
     "EnergyTransferStarted": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2162,6 +2243,7 @@
     },
     "EnergyTransferStopped": {
       "id": 3,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2213,6 +2295,7 @@
     },
     "Fault": {
       "id": 4,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -2292,6 +2375,7 @@
     },
     "RFID": {
       "id": 5,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2305,6 +2389,7 @@
   "ElectricalGridConditions": {
     "CurrentConditionsChanged": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2365,6 +2450,7 @@
   "ElectricalAlarm": {
     "Notify": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2464,6 +2550,7 @@
   "DoorLock": {
     "DoorLockAlarm": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -2485,6 +2572,7 @@
     },
     "DoorStateChange": {
       "id": 1,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -2504,6 +2592,7 @@
     },
     "LockOperation": {
       "id": 2,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -2593,6 +2682,7 @@
     },
     "LockOperationError": {
       "id": 3,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -2695,6 +2785,7 @@
     },
     "LockUserChange": {
       "id": 4,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2778,6 +2869,7 @@
   "ClosureControl": {
     "OperationalError": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -2798,10 +2890,12 @@
     },
     "MovementCompleted": {
       "id": 1,
+      "priority": "info",
       "fields": []
     },
     "EngageStateChanged": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2812,6 +2906,7 @@
     },
     "SecureStateChanged": {
       "id": 3,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2824,76 +2919,94 @@
   "PumpConfigurationandControl": {
     "SupplyVoltageLow": {
       "id": 0,
+      "priority": "info",
       "fields": []
     },
     "SupplyVoltageHigh": {
       "id": 1,
+      "priority": "info",
       "fields": []
     },
     "PowerMissingPhase": {
       "id": 2,
+      "priority": "info",
       "fields": []
     },
     "SystemPressureLow": {
       "id": 3,
+      "priority": "info",
       "fields": []
     },
     "SystemPressureHigh": {
       "id": 4,
+      "priority": "info",
       "fields": []
     },
     "DryRunning": {
       "id": 5,
+      "priority": "critical",
       "fields": []
     },
     "MotorTemperatureHigh": {
       "id": 6,
+      "priority": "info",
       "fields": []
     },
     "PumpMotorFatalFailure": {
       "id": 7,
+      "priority": "critical",
       "fields": []
     },
     "ElectronicTemperatureHigh": {
       "id": 8,
+      "priority": "info",
       "fields": []
     },
     "PumpBlocked": {
       "id": 9,
+      "priority": "critical",
       "fields": []
     },
     "SensorFailure": {
       "id": 10,
+      "priority": "info",
       "fields": []
     },
     "ElectronicNonFatalFailure": {
       "id": 11,
+      "priority": "info",
       "fields": []
     },
     "ElectronicFatalFailure": {
       "id": 12,
+      "priority": "critical",
       "fields": []
     },
     "GeneralFault": {
       "id": 13,
+      "priority": "info",
       "fields": []
     },
     "Leakage": {
       "id": 14,
+      "priority": "info",
       "fields": []
     },
     "AirDetection": {
       "id": 15,
+      "priority": "info",
       "fields": []
     },
     "TurbineOperation": {
       "id": 16,
+      "priority": "info",
       "fields": []
     }
   },
   "OccupancySensing": {
     "OccupancyChanged": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2910,6 +3023,7 @@
   "AmbientContextSensing": {
     "AmbientContextDetectStarted": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2978,6 +3092,7 @@
     },
     "AmbientContextDetectEnded": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -2997,6 +3112,7 @@
   "AmbientSensingUnion": {
     "UnionContributorAdded": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3039,6 +3155,7 @@
     },
     "UnionContributorRemoved": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3081,6 +3198,7 @@
     },
     "UnionContributorStatusChanged": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3125,6 +3243,7 @@
   "ProximityRanging": {
     "RangingResult": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3264,6 +3383,7 @@
     },
     "RangingSessionStatus": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3287,6 +3407,7 @@
   "TargetNavigator": {
     "TargetUpdated": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3325,6 +3446,7 @@
   "MediaPlayback": {
     "StateChanged": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3397,6 +3519,7 @@
   "AccountLogin": {
     "LoggedOut": {
       "id": 0,
+      "priority": "critical",
       "fields": [
         {
           "id": 0,
@@ -3410,6 +3533,7 @@
   "ZoneManagement": {
     "ZoneTriggered": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3429,6 +3553,7 @@
     },
     "ZoneStopped": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3451,6 +3576,7 @@
   "PushAVStreamTransport": {
     "PushTransportBegin": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3504,6 +3630,7 @@
     },
     "PushTransportEnd": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3534,6 +3661,7 @@
   "Chime": {
     "ChimeStartedPlaying": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3546,6 +3674,7 @@
   "AVAnalysis": {
     "AnalysisSessionStart": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3569,6 +3698,7 @@
     },
     "AnalysisSessionEnd": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3585,6 +3715,7 @@
     },
     "PerceivedContext": {
       "id": 2,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3819,6 +3950,7 @@
   "CommissionerControl": {
     "CommissioningRequestResult": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 0,
@@ -3841,6 +3973,7 @@
   "UnitTesting": {
     "TestEvent": {
       "id": 1,
+      "priority": "info",
       "fields": [
         {
           "id": 1,
@@ -4000,10 +4133,12 @@
     },
     "TestFabricScopedEvent": {
       "id": 2,
+      "priority": "info",
       "fields": []
     },
     "TestDifferentVendorMeiEvent": {
       "id": 4294050030,
+      "priority": "info",
       "fields": [
         {
           "id": 1,
@@ -4016,6 +4151,7 @@
   "SampleMEI": {
     "PingCountEvent": {
       "id": 0,
+      "priority": "info",
       "fields": [
         {
           "id": 1,
