@@ -2720,7 +2720,8 @@
         "writable": false,
         "optional": false
       }
-    ]
+    ],
+    "esp_matter_namespace": "switch_cluster"
   },
   {
     "id": 60,

@@ -580,6 +580,14 @@ def apply_command_overrides(commands: dict, overrides: dict) -> None:
                     args_by_name[arg_name].update(arg_override)
 
 
+def apply_cluster_overrides(clusters: list[dict], overrides: dict[str, dict]) -> None:
+    clusters_by_name = {cluster["name"]: cluster for cluster in clusters}
+    for cluster_name, override in overrides.items():
+        if cluster_name not in clusters_by_name:
+            raise ValueError(f"Unknown cluster override: {cluster_name}")
+        clusters_by_name[cluster_name].update(override)
+
+
 def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
     clusters = []
     for cluster in sorted(raw_clusters, key=lambda c: c.id):
@@ -831,6 +839,10 @@ def main():
     clusters = post_process_clusters(raw_clusters)
     device_types = post_process_device_types(raw_device_types, raw_clusters)
     fixup(device_types)
+
+    with open(args.output_path / "overrides" / "clusters.json") as file:
+        cluster_overrides = json.load(file)
+    apply_cluster_overrides(clusters, cluster_overrides)
 
     with open(args.output_path / "device_types.json", "w") as file:
         json.dump(device_types, file, indent=2)

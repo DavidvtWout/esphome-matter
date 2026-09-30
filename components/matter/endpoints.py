@@ -24,7 +24,7 @@ from .data_model.device_types import (
     DeviceType,
 )
 from .types import MatterAttributeTrigger, MatterEndpointRef
-from .util import snake_case
+from .util import maybe_empty, snake_case
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -98,9 +98,11 @@ ENDPOINT_SCHEMA = cv.All(
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(MatterEndpointRef),
-            cv.Optional(CONF_EXTRA_CLUSTERS, default=list): cv.ensure_list(
-                cv.one_of(*(cluster.name for cluster in CLUSTERS))
-            ),
+            cv.Optional(CONF_CLUSTERS, default=dict): {
+                cluster.schema_key: maybe_empty(cluster.schema())
+                for cluster in CLUSTERS
+            },
+            # TODO: move on_attribute to clusters
             cv.Optional(CONF_ON_ATTRIBUTE): _on_attribute_schema(),
         }
         | {device_type.schema_key: device_type.schema() for device_type in DEVICE_TYPES}
@@ -163,10 +165,13 @@ class Endpoint:
             if device_type:
                 await self._configure_device_type(var, device_type, device_config)
 
-        for cluster_name in self._config[CONF_EXTRA_CLUSTERS]:
+        for cluster_name, config in self._config[CONF_CLUSTERS].items():
             cluster = CLUSTERS_BY_NAME[cluster_name]
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
-            self._cluster_configs.setdefault(cluster_name, _ClusterConfig())
+            cluster_config = self._cluster_configs[cluster_name]
+            for configured_feature in config.get(CONF_WITH_FEATURES, ()):
+                if feature := cluster.get_feature(configured_feature):
+                    cluster_config.enabled_features[feature.name] = True
 
         await self._register_attribute_automations(var)
 
@@ -230,11 +235,11 @@ class Endpoint:
             cg.add(var.register_light(light_, self._endpoint_id))
 
         # Register extra features
-        for enabled_feature in device_config.get(CONF_FEATURES, ()):
+        for enabled_feature in device_config.get(CONF_WITH_FEATURES, ()):
             for cluster in device_type.server_clusters:
-                cluster_config = self._cluster_configs[cluster.name]
-                if enabled_feature in (f.name for f in cluster.features):
-                    cluster_config.enabled_features[enabled_feature] = True
+                if feature := cluster.get_feature(enabled_feature):
+                    cluster_config = self._cluster_configs[cluster.name]
+                    cluster_config.enabled_features[feature.name] = True
 
     def _make_device_type_lines(self, device_type: DeviceType, index: int):
         config_var = f"device_config_{index}"
@@ -379,13 +384,9 @@ class Endpoint:
         for index, device_type in enumerate(self._device_types):
             lines.extend(self._make_device_type_lines(device_type, index))
 
-        extra_clusters = [
-            CLUSTERS_BY_NAME[cluster_name]
-            for cluster_name, cluster_config in self._cluster_configs.items()
-            if not cluster_config.created
-        ]
-        for cluster in extra_clusters:
-            lines.extend(self._make_cluster_lines(cluster))
+        for cluster_name, cluster_config in self._cluster_configs.items():
+            if not cluster_config.created:
+                lines.extend(self._make_cluster_lines(CLUSTERS_BY_NAME[cluster_name]))
 
         # Choice features must be present in the config used to create their
         # cluster. Other features on device-type-created clusters are added
