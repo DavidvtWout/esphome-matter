@@ -983,6 +983,53 @@ def generate_device_type_documentation(
             lines.append("        with_features: []")
         else:
             lines.append(f"      {name}:")
+
+        optional_server_clusters = [
+            cluster_config
+            for cluster_config in device_type["server_clusters"]
+            if not cluster_config.get("required", False)
+        ]
+        optional_client_clusters = [
+            cluster_config
+            for cluster_config in device_type["client_clusters"]
+            if not cluster_config.get("required", False)
+        ]
+        if optional_server_clusters:
+            lines.append("      clusters:")
+            lines.append(
+                f"        # The following server clusters are optional to {name};"
+            )
+            for cluster_config in optional_server_clusters:
+                cluster = clusters_by_id[cluster_config["id"]]
+                cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
+                description = sanitize_description(cluster.description).replace(
+                    "\n", " "
+                )
+                lines.append(f"        {cluster_name}: # {description}")
+            if optional_client_clusters:
+                lines.append(
+                    "        # Client clusters aren't supported by esphome-matter yet."
+                )
+                for cluster_config in optional_client_clusters:
+                    cluster = clusters_by_id[cluster_config["id"]]
+                    cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
+                    description = sanitize_description(cluster.description).replace(
+                        "\n", " "
+                    )
+                    lines.append(f"        # {cluster_name}: # {description}")
+        elif optional_client_clusters:
+            lines.append("      clusters:")
+            lines.append(
+                f"        # The following client clusters are optional to {name}, but "
+                "client clusters aren't supported by esphome-matter yet;"
+            )
+            for cluster_config in optional_client_clusters:
+                cluster = clusters_by_id[cluster_config["id"]]
+                cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
+                description = sanitize_description(cluster.description).replace(
+                    "\n", " "
+                )
+                lines.append(f"        # {cluster_name}: # {description}")
         lines.append("```\n")
     return "\n".join(lines)
 

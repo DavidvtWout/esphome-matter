@@ -26,6 +26,19 @@ matter:
           - check_in_protocol_support # Device supports attributes and commands for the Check-In Protocol support.
           - user_active_mode_trigger # Device supports the user active mode trigger feature.
           - dynamic_sit_lit_support # Device supports dynamic switching from SIT to LIT operating modes.
+      clusters:
+        # The following server clusters are optional to root_node;
+        localization_configuration: # Nodes should be expected to be deployed to any and all regions of the world. These global regions may have differing common languages, units of measurements, and numerical formatting standards. As such, Nodes that visually or audibly convey information need a mechanism by which they can be configured to use a user’s preferred language, units, etc
+        time_format_localization: # Nodes should be expected to be deployed to any and all regions of the world. These global regions may have differing preferences for how dates and times are conveyed. As such, Nodes that visually or audibly convey time information need a mechanism by which they can be configured to use a user’s preferred format.
+        unit_localization: # Nodes should be expected to be deployed to any and all regions of the world. These global regions may have differing preferences for the units in which values are conveyed in communication to a user. As such, Nodes that visually or audibly convey measurable values to the user need a mechanism by which they can be configured to use a user’s preferred unit.
+        power_source_configuration: # This cluster is used to describe the configuration and capabilities of a Device's power system.
+        diagnostic_logs: # The cluster provides commands for retrieving unstructured diagnostic logs from a Node that may be used to aid in diagnostics.
+        software_diagnostics: # The Software Diagnostics Cluster provides a means to acquire standardized diagnostics metrics that MAY be used by a Node to assist a user or Administrative Node in diagnosing potential problems.
+        thread_network_diagnostics: # The Thread Network Diagnostics Cluster provides a means to acquire standardized diagnostics metrics that MAY be used by a Node to assist a user or Administrative Node in diagnosing potential problems
+        wi_fi_network_diagnostics: # The Wi-Fi Network Diagnostics Cluster provides a means to acquire standardized diagnostics metrics that MAY be used by a Node to assist a user or Administrative Node in diagnosing potential problems.
+        ethernet_network_diagnostics: # The Ethernet Network Diagnostics Cluster provides a means to acquire standardized diagnostics metrics that MAY be used by a Node to assist a user or Administrative Node in diagnosing potential problems.
+        time_synchronization: # Accurate time is required for a number of reasons, including scheduling, display and validating security materials.
+        icd_management: # Allows servers to ensure that listed clients are notified when a server is available for communication.
 ```
 
 # power_source
@@ -59,6 +72,10 @@ matter:
           # At least one of cumulative_energy, periodic_energy must be enabled.
           - cumulative_energy # Measurements are cumulative
           - periodic_energy # Measurements are periodic
+      clusters:
+        # The following server clusters are optional to electrical_sensor;
+        electrical_power_measurement: # This cluster provides a mechanism for querying data about electrical power as measured by the server.
+        electrical_energy_measurement: # This cluster provides a mechanism for querying data about the electrical energy imported or provided by the server.
 ```
 
 # ota_requestor
@@ -77,6 +94,9 @@ matter:
   endpoints:
     1:
       ota_provider:
+      clusters:
+        # The following client clusters are optional to ota_provider, but client clusters aren't supported by esphome-matter yet;
+        # ota_software_update_requestor: # This cluster implements the Requestor role in the OTA process.
 ```
 
 # aggregator
@@ -86,6 +106,10 @@ matter:
   endpoints:
     1:
       aggregator:
+      clusters:
+        # The following server clusters are optional to aggregator;
+        actions: # This cluster provides a standardized way for a Node (typically a Bridge, but could be any Node) to expose action information.
+        commissioner_control: # Supports the ability for clients to request the commissioning of themselves or other nodes onto a fabric which the cluster server can commission onto.
 ```
 
 # bridged_node
@@ -102,6 +126,11 @@ matter:
           # Exactly one of wired, battery must be enabled.
           - wired # A wired power source
           - battery # A battery power source
+      clusters:
+        # The following server clusters are optional to bridged_node;
+        power_source_configuration: # This cluster is used to describe the configuration and capabilities of a Device's power system.
+        power_source: # This cluster is used to describe the configuration and capabilities of a physical power source that provides power to the Node.
+        administrator_commissioning: # Commands to trigger a Node to allow a new Administrator to commission it.
 ```
 
 # on_off_light
@@ -113,6 +142,12 @@ matter:
       on_off_light:
         with_features:
           - frequency # Supports frequency attributes and behavior.
+      clusters:
+        # The following server clusters are optional to on_off_light;
+        level_control: # Attributes and commands for controlling devices that can be set to a level between fully 'On' and fully 'Off.'
+        # Client clusters aren't supported by esphome-matter yet.
+        # scenes_management: # Attributes and commands for scene configuration and manipulation.
+        # occupancy_sensing: # The server cluster provides an interface to occupancy sensing functionality based on one or more sensing modalities, including configuration and provision of notifications of occupancy status.
 ```
 
 # dimmable_light
@@ -122,6 +157,11 @@ matter:
   endpoints:
     1:
       dimmable_light:
+      clusters:
+        # The following server clusters are optional to dimmable_light;
+        binding: # The Binding Cluster is meant to replace the support from the Zigbee Device Object (ZDO) for supporting the binding table.
+        # Client clusters aren't supported by esphome-matter yet.
+        # occupancy_sensing: # The server cluster provides an interface to occupancy sensing functionality based on one or more sensing modalities, including configuration and provision of notifications of occupancy status.
 ```
 
 # color_temperature_light
@@ -155,6 +195,9 @@ matter:
       on_off_plug_in_unit:
         with_features:
           - frequency # Supports frequency attributes and behavior.
+      clusters:
+        # The following server clusters are optional to on_off_plug_in_unit;
+        level_control: # Attributes and commands for controlling devices that can be set to a level between fully 'On' and fully 'Off.'
 ```
 
 # dimmable_plug_in_unit
@@ -176,6 +219,12 @@ matter:
         with_features:
           - frequency # Supports frequency attributes and behavior.
           - scene_names # The ability to store a name for a scene.
+      clusters:
+        # The following server clusters are optional to mounted_on_off_control;
+        level_control: # Attributes and commands for controlling devices that can be set to a level between fully 'On' and fully 'Off.'
+        scenes_management: # Attributes and commands for scene configuration and manipulation.
+        # Client clusters aren't supported by esphome-matter yet.
+        # occupancy_sensing: # The server cluster provides an interface to occupancy sensing functionality based on one or more sensing modalities, including configuration and provision of notifications of occupancy status.
 ```
 
 # mounted_dimmable_load_control
@@ -187,6 +236,11 @@ matter:
       mounted_dimmable_load_control:
         with_features:
           - scene_names # The ability to store a name for a scene.
+      clusters:
+        # The following server clusters are optional to mounted_dimmable_load_control;
+        scenes_management: # Attributes and commands for scene configuration and manipulation.
+        # Client clusters aren't supported by esphome-matter yet.
+        # occupancy_sensing: # The server cluster provides an interface to occupancy sensing functionality based on one or more sensing modalities, including configuration and provision of notifications of occupancy status.
 ```
 
 # audio_doorbell
@@ -199,6 +253,14 @@ matter:
         with_features:
           - per_zone_sensitivity # Supports a sensitivity value per Zone
           - metadata # Supports metadata transmission in Push transports
+      clusters:
+        # The following server clusters are optional to audio_doorbell;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        web_rtc_transport_requestor: # The WebRTC transport requestor cluster provides a way for stream consumers (e.g. Matter Stream Viewer) to establish a WebRTC connection with a stream provider.
+        push_av_stream_transport: # This cluster implements the upload of Audio and Video streams from the Push AV Stream Transport Cluster using suitable push-based transports.
+        chime: # This cluster provides facilities to configure and play Chime sounds, such as those used in a doorbell.
+        # Client clusters aren't supported by esphome-matter yet.
+        # web_rtc_transport_provider: # The WebRTC transport provider cluster provides a way for stream providers (e.g. Cameras) to stream or receive their data through WebRTC.
 ```
 
 # camera
@@ -231,6 +293,16 @@ matter:
           - mechanical_pan # Mechanical Pan support
           - mechanical_tilt # Mechanical Tilt support
           - mechanical_zoom # Mechanical Zoom support
+      clusters:
+        # The following server clusters are optional to camera;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        occupancy_sensing: # The server cluster provides an interface to occupancy sensing functionality based on one or more sensing modalities, including configuration and provision of notifications of occupancy status.
+        zone_management: # This cluster provides an interface to manage regions of interest, or Zones, which can be either manufacturer or user defined.
+        camera_av_settings_user_level_management: # This cluster provides an interface into controls associated with the operation of a device that provides pan, tilt, and zoom functions, either mechanically, or against a digital image.
+        web_rtc_transport_requestor: # The WebRTC transport requestor cluster provides a way for stream consumers (e.g. Matter Stream Viewer) to establish a WebRTC connection with a stream provider.
+        push_av_stream_transport: # This cluster implements the upload of Audio and Video streams from the Push AV Stream Transport Cluster using suitable push-based transports.
+        # Client clusters aren't supported by esphome-matter yet.
+        # web_rtc_transport_provider: # The WebRTC transport provider cluster provides a way for stream providers (e.g. Cameras) to stream or receive their data through WebRTC.
 ```
 
 # video_doorbell
@@ -249,6 +321,9 @@ matter:
   endpoints:
     1:
       chime:
+      clusters:
+        # The following server clusters are optional to chime;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
 ```
 
 # doorbell
@@ -285,6 +360,10 @@ matter:
   endpoints:
     1:
       closure_controller:
+      clusters:
+        # The following client clusters are optional to closure_controller, but client clusters aren't supported by esphome-matter yet;
+        # identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        # closure_dimension: # This cluster provides an interface to reflect and control a closure's range of movement, usually involving a panel, by using 6-axis framework.
 ```
 
 # pump
@@ -301,6 +380,20 @@ matter:
           - frequency # Supports frequency attributes and behavior.
           - scene_names # The ability to store a name for a scene.
           - extended # Extended range and resolution
+      clusters:
+        # The following server clusters are optional to pump;
+        groups: # Attributes and commands for group configuration and manipulation.
+        level_control: # Attributes and commands for controlling devices that can be set to a level between fully 'On' and fully 'Off.'
+        binding: # The Binding Cluster is meant to replace the support from the Zigbee Device Object (ZDO) for supporting the binding table.
+        scenes_management: # Attributes and commands for scene configuration and manipulation.
+        temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
+        pressure_measurement: # Attributes and commands for configuring the measurement of pressure, and reporting pressure measurements.
+        flow_measurement: # Attributes and commands for configuring the measurement of flow, and reporting flow measurements.
+        # Client clusters aren't supported by esphome-matter yet.
+        # temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
+        # pressure_measurement: # Attributes and commands for configuring the measurement of pressure, and reporting pressure measurements.
+        # flow_measurement: # Attributes and commands for configuring the measurement of flow, and reporting flow measurements.
+        # occupancy_sensing: # The server cluster provides an interface to occupancy sensing functionality based on one or more sensing modalities, including configuration and provision of notifications of occupancy status.
 ```
 
 # on_off_light_switch
@@ -310,6 +403,10 @@ matter:
   endpoints:
     1:
       on_off_light_switch:
+      clusters:
+        # The following client clusters are optional to on_off_light_switch, but client clusters aren't supported by esphome-matter yet;
+        # groups: # Attributes and commands for group configuration and manipulation.
+        # scenes_management: # Attributes and commands for scene configuration and manipulation.
 ```
 
 # dimmer_switch
@@ -319,6 +416,10 @@ matter:
   endpoints:
     1:
       dimmer_switch:
+      clusters:
+        # The following client clusters are optional to dimmer_switch, but client clusters aren't supported by esphome-matter yet;
+        # groups: # Attributes and commands for group configuration and manipulation.
+        # scenes_management: # Attributes and commands for scene configuration and manipulation.
 ```
 
 # color_dimmer_switch
@@ -328,6 +429,10 @@ matter:
   endpoints:
     1:
       color_dimmer_switch:
+      clusters:
+        # The following client clusters are optional to color_dimmer_switch, but client clusters aren't supported by esphome-matter yet;
+        # groups: # Attributes and commands for group configuration and manipulation.
+        # scenes_management: # Attributes and commands for scene configuration and manipulation.
 ```
 
 # electrical_utility_meter
@@ -355,6 +460,10 @@ matter:
           - pricing # Supports information about commodity pricing
           - friendly_credit # Supports information about when friendly credit periods begin and end
           - auxiliary_load # Supports information about when auxiliary loads should be enabled or disabled
+      clusters:
+        # The following server clusters are optional to electrical_energy_tariff;
+        commodity_price: # The Commodity Price Cluster provides the mechanism for communicating Gas, Energy, or Water pricing information within the premises.
+        commodity_tariff: # The CommodityTariffCluster provides the mechanism for communicating Commodity Tariff information within the premises.
 ```
 
 # electrical_meter
@@ -373,6 +482,10 @@ matter:
   endpoints:
     1:
       control_bridge:
+      clusters:
+        # The following client clusters are optional to control_bridge, but client clusters aren't supported by esphome-matter yet;
+        # illuminance_measurement: # Attributes and commands for configuring the measurement of illuminance, and reporting illuminance measurements.
+        # occupancy_sensing: # The server cluster provides an interface to occupancy sensing functionality based on one or more sensing modalities, including configuration and provision of notifications of occupancy status.
 ```
 
 # pump_controller
@@ -382,6 +495,15 @@ matter:
   endpoints:
     1:
       pump_controller:
+      clusters:
+        # The following client clusters are optional to pump_controller, but client clusters aren't supported by esphome-matter yet;
+        # identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        # groups: # Attributes and commands for group configuration and manipulation.
+        # level_control: # Attributes and commands for controlling devices that can be set to a level between fully 'On' and fully 'Off.'
+        # scenes_management: # Attributes and commands for scene configuration and manipulation.
+        # temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
+        # pressure_measurement: # Attributes and commands for configuring the measurement of pressure, and reporting pressure measurements.
+        # flow_measurement: # Attributes and commands for configuring the measurement of flow, and reporting flow measurements.
 ```
 
 # generic_switch
@@ -391,6 +513,10 @@ matter:
   endpoints:
     1:
       generic_switch:
+      clusters:
+        # The following server clusters are optional to generic_switch;
+        fixed_label: # The Fixed Label Cluster provides a feature for the device to tag an endpoint with zero or more read only labels.
+        user_label: # The User Label Cluster provides a feature to tag an endpoint with zero or more labels.
 ```
 
 # contact_sensor
@@ -409,6 +535,9 @@ matter:
   endpoints:
     1:
       light_sensor:
+      clusters:
+        # The following server clusters are optional to light_sensor;
+        binding: # The Binding Cluster is meant to replace the support from the Zigbee Device Object (ZDO) for supporting the binding table.
 ```
 
 # occupancy_sensor
@@ -418,6 +547,9 @@ matter:
   endpoints:
     1:
       occupancy_sensor:
+      clusters:
+        # The following server clusters are optional to occupancy_sensor;
+        binding: # The Binding Cluster is meant to replace the support from the Zigbee Device Object (ZDO) for supporting the binding table.
 ```
 
 # temperature_sensor
@@ -490,6 +622,9 @@ matter:
       window_covering:
         with_features:
           - group_names # The ability to store a name for a group.
+      clusters:
+        # The following server clusters are optional to window_covering;
+        groups: # Attributes and commands for group configuration and manipulation.
 ```
 
 # thermostat
@@ -501,6 +636,16 @@ matter:
       thermostat:
         with_features:
           - group_names # The ability to store a name for a group.
+      clusters:
+        # The following server clusters are optional to thermostat;
+        groups: # Attributes and commands for group configuration and manipulation.
+        binding: # The Binding Cluster is meant to replace the support from the Zigbee Device Object (ZDO) for supporting the binding table.
+        thermostat_user_interface_configuration: # An interface for configuring the user interface of a thermostat (which may be remote from the thermostat).
+        # Client clusters aren't supported by esphome-matter yet.
+        # fan_control: # An interface for controlling a fan in a heating/cooling system.
+        # temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
+        # relative_humidity_measurement: # Attributes and commands for configuring the measurement of relative humidity, and reporting relative humidity measurements.
+        # occupancy_sensing: # The server cluster provides an interface to occupancy sensing functionality based on one or more sensing modalities, including configuration and provision of notifications of occupancy status.
 ```
 
 # fan
@@ -519,6 +664,9 @@ matter:
   endpoints:
     1:
       mode_select:
+      clusters:
+        # The following client clusters are optional to mode_select, but client clusters aren't supported by esphome-matter yet;
+        # mode_select: # Attributes and commands for selecting a mode from a list of supported options.
 ```
 
 # room_air_conditioner
@@ -537,6 +685,14 @@ matter:
           - wind # Wind emulation supported
           - step # Step command supported
           - airflow_direction # Airflow Direction attribute is supported
+      clusters:
+        # The following server clusters are optional to room_air_conditioner;
+        groups: # Attributes and commands for group configuration and manipulation.
+        scenes_management: # Attributes and commands for scene configuration and manipulation.
+        fan_control: # An interface for controlling a fan in a heating/cooling system.
+        thermostat_user_interface_configuration: # An interface for configuring the user interface of a thermostat (which may be remote from the thermostat).
+        temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
+        relative_humidity_measurement: # Attributes and commands for configuring the measurement of relative humidity, and reporting relative humidity measurements.
 ```
 
 # smoke_co_alarm
@@ -555,6 +711,12 @@ matter:
           # At least one of numeric_measurement, level_indication must be enabled.
           - numeric_measurement # Cluster supports numeric measurement of substance
           - level_indication # Cluster supports basic level indication for substance using the ConcentrationLevel enum
+      clusters:
+        # The following server clusters are optional to smoke_co_alarm;
+        groups: # Attributes and commands for group configuration and manipulation.
+        temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
+        relative_humidity_measurement: # Attributes and commands for configuring the measurement of relative humidity, and reporting relative humidity measurements.
+        carbon_monoxide_concentration_measurement: # Attributes for reporting carbon monoxide concentration measurements
 ```
 
 # air_purifier
@@ -569,6 +731,11 @@ matter:
           - condition # Supports monitoring the condition of the resource in percentage
           - warning # Supports warning indication
           - replacement_product_list # Supports specifying the list of replacement products
+      clusters:
+        # The following server clusters are optional to air_purifier;
+        groups: # Attributes and commands for group configuration and manipulation.
+        hepa_filter_monitoring: # Attributes and commands for monitoring HEPA filters in a device
+        activated_carbon_filter_monitoring: # Attributes and commands for monitoring activated carbon filters in a device
 ```
 
 # air_quality_sensor
@@ -586,6 +753,20 @@ matter:
           # At least one of numeric_measurement, level_indication must be enabled.
           - numeric_measurement # Cluster supports numeric measurement of substance
           - level_indication # Cluster supports basic level indication for substance using the ConcentrationLevel enum
+      clusters:
+        # The following server clusters are optional to air_quality_sensor;
+        temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
+        relative_humidity_measurement: # Attributes and commands for configuring the measurement of relative humidity, and reporting relative humidity measurements.
+        carbon_monoxide_concentration_measurement: # Attributes for reporting carbon monoxide concentration measurements
+        carbon_dioxide_concentration_measurement: # Attributes for reporting carbon dioxide concentration measurements
+        nitrogen_dioxide_concentration_measurement: # Attributes for reporting nitrogen dioxide concentration measurements
+        ozone_concentration_measurement: # Attributes for reporting ozone concentration measurements
+        pm2.5_concentration_measurement: # Attributes for reporting PM2.5 concentration measurements
+        formaldehyde_concentration_measurement: # Attributes for reporting formaldehyde concentration measurements
+        pm1_concentration_measurement: # Attributes for reporting PM1 concentration measurements
+        pm10_concentration_measurement: # Attributes for reporting PM10 concentration measurements
+        total_volatile_organic_compounds_concentration_measurement: # Attributes for reporting total volatile organic compounds concentration measurements
+        radon_concentration_measurement: # Attributes for reporting radon concentration measurements
 ```
 
 # dishwasher
@@ -603,6 +784,13 @@ matter:
           # Exactly one of temperature_number, temperature_level must be enabled.
           - temperature_number # Use actual temperature numbers
           - temperature_level # Use temperature levels
+      clusters:
+        # The following server clusters are optional to dishwasher;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        on_off: # Attributes and commands for switching devices between 'On' and 'Off' states.
+        temperature_control: # Attributes and commands for configuring the temperature control, and reporting temperature.
+        dishwasher_mode: # Attributes and commands for selecting a mode from a list of supported options.
+        dishwasher_alarm: # Attributes and commands for configuring the Dishwasher alarm.
 ```
 
 # oven
@@ -612,6 +800,9 @@ matter:
   endpoints:
     1:
       oven:
+      clusters:
+        # The following server clusters are optional to oven;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
 ```
 
 # microwave_oven
@@ -626,6 +817,10 @@ matter:
           - auto # Automatic mode supported for fan speed
           - rocking # Rocking movement supported
           - step # Step command supported
+      clusters:
+        # The following server clusters are optional to microwave_oven;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        fan_control: # An interface for controlling a fan in a heating/cooling system.
 ```
 
 # refrigerator
@@ -635,6 +830,11 @@ matter:
   endpoints:
     1:
       refrigerator:
+      clusters:
+        # The following server clusters are optional to refrigerator;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        refrigerator_and_temperature_controlled_cabinet_mode: # Attributes and commands for selecting a mode from a list of supported options.
+        refrigerator_alarm: # Attributes and commands for configuring the Refrigerator alarm.
 ```
 
 # laundry_washer
@@ -654,6 +854,13 @@ matter:
           # Exactly one of temperature_number, temperature_level must be enabled.
           - temperature_number # Use actual temperature numbers
           - temperature_level # Use temperature levels
+      clusters:
+        # The following server clusters are optional to laundry_washer;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        on_off: # Attributes and commands for switching devices between 'On' and 'Off' states.
+        laundry_washer_mode: # Attributes and commands for selecting a mode from a list of supported options.
+        laundry_washer_controls: # This cluster supports remotely monitoring and controlling the different types of functionality available to a washing device, such as a washing machine.
+        temperature_control: # Attributes and commands for configuring the temperature control, and reporting temperature.
 ```
 
 # laundry_dryer
@@ -670,6 +877,13 @@ matter:
           # Exactly one of temperature_number, temperature_level must be enabled.
           - temperature_number # Use actual temperature numbers
           - temperature_level # Use temperature levels
+      clusters:
+        # The following server clusters are optional to laundry_dryer;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        on_off: # Attributes and commands for switching devices between 'On' and 'Off' states.
+        laundry_dryer_controls: # This cluster provides a way to access options associated with the operation of a laundry dryer device type.
+        laundry_washer_mode: # Attributes and commands for selecting a mode from a list of supported options.
+        temperature_control: # Attributes and commands for configuring the temperature control, and reporting temperature.
 ```
 
 # extractor_hood
@@ -683,6 +897,11 @@ matter:
           - condition # Supports monitoring the condition of the resource in percentage
           - warning # Supports warning indication
           - replacement_product_list # Supports specifying the list of replacement products
+      clusters:
+        # The following server clusters are optional to extractor_hood;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        hepa_filter_monitoring: # Attributes and commands for monitoring HEPA filters in a device
+        activated_carbon_filter_monitoring: # Attributes and commands for monitoring activated carbon filters in a device
 ```
 
 # robotic_vacuum_cleaner
@@ -697,6 +916,10 @@ matter:
           - select_while_running # The device allows changing the selected areas while running
           - progress_reporting # The device implements the progress reporting feature
           - maps # The device has map support
+      clusters:
+        # The following server clusters are optional to robotic_vacuum_cleaner;
+        rvc_clean_mode: # Attributes and commands for selecting a mode from a list of supported options.
+        service_area: # The Service Area cluster provides an interface for controlling the areas where a device should operate, and for querying the current area being serviced.
 ```
 
 # temperature_controlled_cabinet
@@ -706,6 +929,12 @@ matter:
   endpoints:
     1:
       temperature_controlled_cabinet:
+      clusters:
+        # The following server clusters are optional to temperature_controlled_cabinet;
+        oven_cavity_operational_state: # This cluster supports remotely monitoring and, where supported, changing the operational state of an Oven.
+        oven_mode: # Attributes and commands for selecting a mode from a list of supported options.
+        refrigerator_and_temperature_controlled_cabinet_mode: # Attributes and commands for selecting a mode from a list of supported options.
+        temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
 ```
 
 # water_freeze_detector
@@ -721,6 +950,9 @@ matter:
           - alarm_suppress # Supports ability to suppress or acknowledge alarms
           - sensitivity_level # Supports ability to set sensor sensitivity
           - fault_events # Supports reporting fault events
+      clusters:
+        # The following server clusters are optional to water_freeze_detector;
+        boolean_state_configuration: # This cluster is used to configure a boolean sensor.
 ```
 
 # water_valve
@@ -745,6 +977,9 @@ matter:
           - alarm_suppress # Supports ability to suppress or acknowledge alarms
           - sensitivity_level # Supports ability to set sensor sensitivity
           - fault_events # Supports reporting fault events
+      clusters:
+        # The following server clusters are optional to water_leak_detector;
+        boolean_state_configuration: # This cluster is used to configure a boolean sensor.
 ```
 
 # rain_sensor
@@ -760,6 +995,9 @@ matter:
           - alarm_suppress # Supports ability to suppress or acknowledge alarms
           - sensitivity_level # Supports ability to set sensor sensitivity
           - fault_events # Supports reporting fault events
+      clusters:
+        # The following server clusters are optional to rain_sensor;
+        boolean_state_configuration: # This cluster is used to configure a boolean sensor.
 ```
 
 # thread_border_router
@@ -783,6 +1021,11 @@ matter:
           - error_counts # Server supports the counts for the number of errors that have occurred during the reception and transmission of packets on the Thread interface.
           - mle_counts # Server supports the counts for various MLE layer happenings.
           - mac_counts # Server supports the counts for various MAC layer happenings.
+      clusters:
+        # The following server clusters are optional to secondary_network_interface;
+        thread_network_diagnostics: # The Thread Network Diagnostics Cluster provides a means to acquire standardized diagnostics metrics that MAY be used by a Node to assist a user or Administrative Node in diagnosing potential problems
+        wi_fi_network_diagnostics: # The Wi-Fi Network Diagnostics Cluster provides a means to acquire standardized diagnostics metrics that MAY be used by a Node to assist a user or Administrative Node in diagnosing potential problems.
+        ethernet_network_diagnostics: # The Ethernet Network Diagnostics Cluster provides a means to acquire standardized diagnostics metrics that MAY be used by a Node to assist a user or Administrative Node in diagnosing potential problems.
 ```
 
 # cooktop
@@ -792,6 +1035,9 @@ matter:
   endpoints:
     1:
       cooktop:
+      clusters:
+        # The following server clusters are optional to cooktop;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
 ```
 
 # cook_surface
@@ -808,6 +1054,11 @@ matter:
           # Exactly one of temperature_number, temperature_level must be enabled.
           - temperature_number # Use actual temperature numbers
           - temperature_level # Use temperature levels
+      clusters:
+        # The following server clusters are optional to cook_surface;
+        on_off: # Attributes and commands for switching devices between 'On' and 'Off' states.
+        temperature_control: # Attributes and commands for configuring the temperature control, and reporting temperature.
+        temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
 ```
 
 # evse
@@ -817,6 +1068,10 @@ matter:
   endpoints:
     1:
       evse:
+      clusters:
+        # The following server clusters are optional to evse;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
 ```
 
 # device_energy_management
@@ -828,6 +1083,9 @@ matter:
       device_energy_management:
         with_features:
           - on_off # Dependency with the OnOff cluster
+      clusters:
+        # The following server clusters are optional to device_energy_management;
+        device_energy_management_mode: # Attributes and commands for selecting a mode from a list of supported options.
 ```
 
 # water_heater
@@ -837,6 +1095,9 @@ matter:
   endpoints:
     1:
       water_heater:
+      clusters:
+        # The following server clusters are optional to water_heater;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
 ```
 
 # heat_pump
@@ -846,6 +1107,11 @@ matter:
   endpoints:
     1:
       heat_pump:
+      clusters:
+        # The following server clusters are optional to heat_pump;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        # Client clusters aren't supported by esphome-matter yet.
+        # thermostat: # An interface for configuring and controlling the functionality of a thermostat.
 ```
 
 # solar_power
@@ -855,6 +1121,9 @@ matter:
   endpoints:
     1:
       solar_power:
+      clusters:
+        # The following server clusters are optional to solar_power;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
 ```
 
 # battery_storage
@@ -864,6 +1133,9 @@ matter:
   endpoints:
     1:
       battery_storage:
+      clusters:
+        # The following server clusters are optional to battery_storage;
+        identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
 ```
 
 # thermostat_controller
@@ -873,6 +1145,11 @@ matter:
   endpoints:
     1:
       thermostat_controller:
+      clusters:
+        # The following client clusters are optional to thermostat_controller, but client clusters aren't supported by esphome-matter yet;
+        # identify: # Attributes and commands for putting a device into Identification mode (e.g. flashing a light).
+        # groups: # Attributes and commands for group configuration and manipulation.
+        # scenes_management: # Attributes and commands for scene configuration and manipulation.
 ```
 
 # soil_sensor
@@ -882,4 +1159,7 @@ matter:
   endpoints:
     1:
       soil_sensor:
+      clusters:
+        # The following server clusters are optional to soil_sensor;
+        temperature_measurement: # Attributes and commands for configuring the measurement of temperature, and reporting temperature measurements.
 ```
