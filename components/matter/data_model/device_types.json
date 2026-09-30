@@ -35,7 +35,10 @@
         "required": true,
         "features": {
           "USR": "mandatory"
-        }
+        },
+        "ignored_features": [
+          "rfid_credential"
+        ]
       }
     ],
     "client_clusters": []
@@ -396,7 +399,10 @@
       },
       {
         "id": 70,
-        "name": "ICD Management"
+        "name": "ICD Management",
+        "ignored_features": [
+          "long_idle_time_support"
+        ]
       }
     ],
     "client_clusters": []
@@ -852,7 +858,7 @@
         "id": 82,
         "name": "Refrigerator And Temperature Controlled Cabinet Mode",
         "features": {
-          "OO": "disallow"
+          "OO": "disallowed"
         }
       },
       {
@@ -880,14 +886,14 @@
         "id": 73,
         "name": "Oven Mode",
         "features": {
-          "OO": "disallow"
+          "OO": "disallowed"
         }
       },
       {
         "id": 82,
         "name": "Refrigerator And Temperature Controlled Cabinet Mode",
         "features": {
-          "OO": "disallow"
+          "OO": "disallowed"
         }
       },
       {
@@ -997,7 +1003,7 @@
         "id": 81,
         "name": "Laundry Washer Mode",
         "features": {
-          "OO": "disallow"
+          "OO": "disallowed"
         }
       },
       {
@@ -1081,7 +1087,7 @@
         "id": 89,
         "name": "Dishwasher Mode",
         "features": {
-          "OO": "disallow"
+          "OO": "disallowed"
         }
       },
       {
@@ -1228,8 +1234,8 @@
         "id": 514,
         "name": "Fan Control",
         "features": {
-          "WND": "disallow",
-          "DIR": "disallow"
+          "WND": "disallowed",
+          "DIR": "disallowed"
         }
       }
     ],
@@ -1262,9 +1268,9 @@
         "name": "Fan Control",
         "required": true,
         "features": {
-          "RCK": "disallow",
-          "WND": "disallow",
-          "DIR": "disallow"
+          "RCK": "disallowed",
+          "WND": "disallowed",
+          "DIR": "disallowed"
         }
       }
     ],
@@ -1316,7 +1322,7 @@
         "id": 81,
         "name": "Laundry Washer Mode",
         "features": {
-          "": "disallow"
+          "": "disallowed"
         }
       },
       {
@@ -2600,6 +2606,9 @@
         "name": "Color Control",
         "required": true,
         "features": {
+          "HS": "optional",
+          "EHUE": "optional",
+          "CL": "optional",
           "XY": "mandatory",
           "CT": "mandatory"
         },
@@ -2750,8 +2759,8 @@
         "required": true,
         "features": {
           "ADO": "mandatory",
-          "SNP": "disallow",
-          "VDO": "disallow"
+          "SNP": "disallowed",
+          "VDO": "disallowed"
         }
       },
       {

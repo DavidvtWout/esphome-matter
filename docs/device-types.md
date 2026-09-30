@@ -1,6 +1,7 @@
 Almost all device types can be created in esphome-matter. But some require extra configuration to be created correctly. However, creating a device type only allows other Matter devices to interact with these device types. It doesn't automatically mean that ESPHome can do anything useful with the clusters the device type creates yet.
 
 Here is a list of all device types that are currently known to work and what functionality is supported.
+For a generated configuration overview of every supported device type and its optional features, see [device_types.md](generated/device_types.md).
 
 # Lights
 

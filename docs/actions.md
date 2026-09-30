@@ -281,7 +281,7 @@ matter.send_command: some_endpoint.color_control.stop_move_step
 
 Hue / saturation control is an optional feature for the ColorControl cluster so not all "Extended Color Light" devices support this.
 
-There are also "enhanced" commands. These use int16u instead of int8u for hue. Again, this is an optional feature on top of hue / saturation support. So not all devices that support the standard hue / saturation control also support the extended hue commands. You can find the extended commands at the [ColorControl](commands-full.md#colorcontrol) section of commands-full.md.
+There are also "enhanced" commands. These use int16u instead of int8u for hue. Again, this is an optional feature on top of hue / saturation support. So not all devices that support the standard hue / saturation control also support the extended hue commands. You can find the extended commands at the [ColorControl](generated/commands.md#colorcontrol) section of commands.md.
 
 Hue values are recommened to be specifies as angles using the `°` suffix (e.g.: `90°`). Hue rates can be specified as string with unit `°/s`
 Saturation should be specified as a value between 0.0 and 1.0.
