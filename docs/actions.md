@@ -85,7 +85,46 @@ days_mask:
 days_mask: 65
 ```
 
+# set_attribute
+
+The `matter.set_attribute` action can be used to set an attribute on a cluster.
+
+```yaml
+matter.set_attribute:
+  endpoint: some_endpoint
+  cluster: level_control
+  attribute: current_level
+  # set_attribute also supports the shorter "path" option;
+  # path: light_endpoint.level_control.current_level
+  value: 127 # 50%
+```
+
+Currently, the value must be a raw matter value, usually some kind of integer. Support for units (such as `50%` in the above example) will be added later.
+
+More complicated values such as structs aren't supported yet. Also, some attributes require delegates in esp-matter and this has also not been implemented yet.
+
+# on_attribute
+
+on_attribute is a [trigger](https://esphome.io/automations/actions/#triggers).
+`matter.set_attribute` deliberately doesn't trigger on_attribute to avoid infinite loops.
+
+```yaml
+matter:
+  endpoints:
+    1:
+      on_off_light:
+      on_attribute:
+        on_off.on_off:
+          light.control:
+            id: light_id
+            state: !lambda return value;
+```
+
+The value is a raw matter value, usually some kind of integer. More complicated values such as structs aren't supported yet, but support for that is planned. Converter functions to more conveniently map Matter values to esphome values are also a planned feature.
+
 # Cluster commands
+
+For an extensive list of commands, see [generated/commands](generated/commands.md)
 
 ### Identify cluster
 
@@ -135,8 +174,8 @@ matter.send_command:
   path: some_endpoint.on_off.on_with_timed_off
   arguments:
     on_time: # s
-    # on_off_control: []  # Bitmap option: accept_only_when_on
-    # off_wait_time: 0s  # Time before accepting another on_with_timed_off command.
+    # on_off_control: [] # Bitmap option: accept_only_when_on
+    # off_wait_time: 0s # Time before accepting another on_with_timed_off command.
 ```
 
 ### LevelControl cluster
