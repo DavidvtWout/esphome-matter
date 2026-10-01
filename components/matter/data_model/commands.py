@@ -1,10 +1,10 @@
-import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
 import esphome.config_validation as cv
 
-from ..util import snake_case
+from ..util import load_data_model_json, snake_case
+from .conformance import Conformance
 from .units import UNIT_VALIDATORS
 
 _INTEGER_RANGES = {
@@ -188,6 +188,7 @@ class Command:
     id: int
     # optional: bool = False
     args: tuple[CommandArg, ...] = ()
+    conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
     def from_dict(cls, cluster_name: str, name: str, data: dict):
@@ -196,19 +197,10 @@ class Command:
             name=name,
             id=data["id"],
             args=tuple([CommandArg.from_dict(arg) for arg in data["args"]]),
+            conformance=Conformance.from_dict(data.get("conformance")),
         )
 
 
-def _load_commands(
-    commands_file: Path = Path(__file__).resolve().parent / "commands.json",
-) -> tuple[Command, ...]:
-    commands = []
-    with open(commands_file, "r") as file:
-        contents = json.load(file)
-    for cluster_name, commands_data in contents.items():
-        for name, data in commands_data.items():
-            commands.append(Command.from_dict(cluster_name, name, data))
-    return tuple(commands)
-
-
-COMMANDS: tuple[Command, ...] = _load_commands()
+COMMANDS: tuple[Command, ...] = load_data_model_json(
+    Path(__file__).resolve().parent / "commands.json", Command
+)

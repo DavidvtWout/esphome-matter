@@ -24,7 +24,7 @@ from .actions import register_bound_command_actions
 from .const import *
 from .endpoints import (
     ENDPOINT_SCHEMA,
-    light_restore_warning,
+    build_endpoints,
     register_endpoints,
 )
 from .types import MatterComponent
@@ -164,7 +164,8 @@ def _final_validate(config: dict):
             "Please set `enable_ipv6: true` in the `network` configuration."
         )
 
-    light_restore_warning(config, full_config)
+    # Should be done during validation instead of codegen to make sure an invalid config fails early.
+    build_endpoints(config, full_config)
 
 
 FINAL_VALIDATE_SCHEMA = _final_validate

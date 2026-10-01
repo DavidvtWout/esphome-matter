@@ -6,28 +6,38 @@ from esphome.components.binary_sensor import BinarySensor
 from esphome.components.sensor import Sensor
 from esphome.cpp_generator import MockObjClass
 
+from ..util import snake_case
+from .conformance import Conformance
+
 if TYPE_CHECKING:
     from .clusters import Cluster
 
 
 @dataclass(frozen=True, slots=True)
 class Attribute:
+    cluster_name: str  # CamelCase
     id: int
-    name: str | None  # CamelCase
+    name: str  # CamelCase
+    conf_key: str  # snake_case
     type: str
     # max: int | None = None
     # is_nullable: bool = False
     writable: bool = False
     optional: bool = False
+    conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_dict(cls, cluster_name: str, data: dict):
+        name: str = data.get("name", data["define"])
         return cls(
+            cluster_name=cluster_name,
             id=data["id"],
-            name=data.get("name"),
+            name=name,
+            conf_key=snake_case(name),
             type=data["type"],
             writable=data["writable"],
             optional=data["optional"],
+            conformance=Conformance.from_dict(data.get("conformance")),
         )
 
 

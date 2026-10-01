@@ -1,5 +1,6 @@
 import json
 import logging
+from collections.abc import Mapping
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -15,10 +16,10 @@ from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model.attributes import attribute_value_type
-from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME
+from .data_model.attributes import Attribute, attribute_value_type
+from .data_model.clusters import CLUSTERS_BY_CONF_KEY, CLUSTERS_BY_NAME, Cluster
 from .data_model.commands import COMMANDS, Command
-from .data_model.events import EVENTS
+from .data_model.events import EVENTS, Event
 from .types import (
     MatterComponent,
     MatterEndpointRef,
@@ -49,24 +50,20 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
 # ------------------------------------------------ #
 
 
-def _find_attribute(config):
-    cluster_key = config[CONF_CLUSTER]
-    attribute_key = config[CONF_ATTRIBUTE]
-    for cluster in CLUSTERS:
-        if snake_case(cluster.name) != cluster_key:
-            continue
-        for attribute in cluster.server_attributes:
-            if (
-                attribute.name is not None
-                and snake_case(attribute.name) == attribute_key
-            ):
-                return cluster, attribute
-        break
-    raise cv.Invalid(f"Unknown Matter attribute {cluster_key}.{attribute_key}")
+def get_attribute_from_config(config: Mapping) -> tuple[Cluster, Attribute]:
+    cluster = CLUSTERS_BY_CONF_KEY.get(config[CONF_CLUSTER])
+    if cluster is None:
+        raise cv.Invalid(f"Unknown Matter cluster {config[CONF_CLUSTER]}")
+    attribute = cluster.get_attribute(config[CONF_ATTRIBUTE])
+    if attribute is None:
+        raise cv.Invalid(
+            f"Unknown Matter attribute {config[CONF_CLUSTER]}.{config[CONF_ATTRIBUTE]}"
+        )
+    return cluster, attribute
 
 
 def _validate_set_attribute(config):
-    _, attribute = _find_attribute(config)
+    _, attribute = get_attribute_from_config(config)
     if attribute_value_type(attribute) is None:
         raise cv.Invalid(
             f"Matter attribute {config[CONF_CLUSTER]}.{config[CONF_ATTRIBUTE]} "
@@ -116,7 +113,7 @@ def _normalize_set_attribute(config):
 async def matter_set_attribute_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
-    cluster, attribute = _find_attribute(config)
+    cluster, attribute = get_attribute_from_config(config)
     value_type = attribute_value_type(attribute)
     action_template_arg = cg.TemplateArguments(value_type, *template_arg)
     var = cg.new_Pvariable(action_id, action_template_arg)
@@ -228,7 +225,7 @@ async def matter_send_command_to_code(
 # ------------------------------------------------ #
 
 
-def _find_event(config):
+def get_event_from_config(config: Mapping) -> Event:
     cluster_key = config[CONF_CLUSTER]
     event_key = config[CONF_EVENT]
     for event in EVENTS:
@@ -253,7 +250,7 @@ def _normalize_send_event(config):
 
 
 def _validate_send_event(config):
-    event = _find_event(config)
+    event = get_event_from_config(config)
     config[CONF_FIELDS] = _validate_fields(config[CONF_FIELDS], event.fields)
     return config
 
@@ -288,7 +285,7 @@ SEND_EVENT_SCHEMA = automation.maybe_conf(
 async def matter_send_event_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
-    event = _find_event(config)
+    event = get_event_from_config(config)
     var = cg.new_Pvariable(action_id, template_arg)
     cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT])))
     cluster = CLUSTERS_BY_NAME[event.cluster_name]

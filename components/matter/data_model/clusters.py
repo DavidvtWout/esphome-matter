@@ -1,6 +1,6 @@
 import json
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import esphome.config_validation as cv
@@ -8,6 +8,7 @@ import esphome.config_validation as cv
 from ..const import CONF_WITH_FEATURES
 from ..util import snake_case
 from .attributes import Attribute
+from .conformance import Conformance
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -19,11 +20,16 @@ class Feature:
     # Can be set to True by DeviceType config
     mandatory: bool = False
     disallowed: bool = False
+    conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
     def from_dict(cls, code: str, data: dict):
         name = data["name"].replace("/", "").replace(" ", "").replace("-", "")
-        return cls(code=code, name=name)
+        return cls(
+            code=code,
+            name=name,
+            conformance=Conformance.from_dict(data.get("conformance")),
+        )
 
     @property
     def namespace(self) -> str:
@@ -70,6 +76,7 @@ class Cluster:
     # ----------------------------------- #
     # Derived attributes                  #
     # ----------------------------------- #
+    conf_key: str
     sdkconfig_option: str
     # connectedhomeip fully qualified name. e.g.: chip::app::Clusters::TemperatureMeasurementCluster
     chip_fqn: str
@@ -125,12 +132,14 @@ class Cluster:
             id=data["id"],
             _name=name,
             name=camel_case_name,
+            conf_key=snake_case(name),
             # Some lack a revision. Assuming it's 1...
             revision=data.get("revision", 1),
             features=tuple(_features),
             choice_features=tuple(_choice_features),
             server_attributes=tuple(
-                Attribute.from_dict(a) for a in data.get("server_attributes", ())
+                Attribute.from_dict(camel_case_name, a)
+                for a in data.get("server_attributes", ())
             ),
             sdkconfig_option=sdkconfig_option,
             chip_fqn=chip_fqn,
@@ -138,11 +147,11 @@ class Cluster:
             espm_namespace=espm_namespace,
         )
 
-    def get_attribute(self, name: str) -> Attribute:
+    def get_attribute(self, name: str) -> Attribute | None:
         for attribute in self.server_attributes:
-            if attribute.name == name:
+            if name in (attribute.name, attribute.conf_key, attribute.id):
                 return attribute
-        raise KeyError(f"Cluster {self.name} has no attribute {name}")
+        return None
 
     def get_feature(self, name_or_code: str) -> Feature | None:
         for feature in self.features:
@@ -159,7 +168,7 @@ class Cluster:
 
     @property
     def schema_key(self):
-        return cv.Optional(snake_case(self.name))
+        return cv.Optional(self.conf_key)
 
     def schema(self):
         schema = {}
@@ -206,3 +215,6 @@ def _load_clusters(
 CLUSTERS: tuple[Cluster, ...] = _load_clusters()
 CLUSTERS_BY_ID: dict[int, Cluster] = {cluster.id: cluster for cluster in CLUSTERS}
 CLUSTERS_BY_NAME: dict[str, Cluster] = {cluster.name: cluster for cluster in CLUSTERS}
+CLUSTERS_BY_CONF_KEY: dict[str, Cluster] = {
+    cluster.conf_key: cluster for cluster in CLUSTERS
+}
