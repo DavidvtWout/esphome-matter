@@ -7,12 +7,14 @@ on:
     paths:
       - "components/**"
       - "tests/**"
+      - "tools/validate-configs"
       - ".github/workflows/ci.yml"
 
   pull_request:
     paths:
       - "components/**"
       - "tests/**"
+      - "tools/validate-configs"
       - ".github/workflows/ci.yml"
 
 permissions:
@@ -44,12 +46,8 @@ jobs:
           python -m venv .venv
           .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}"
 
-      - name: Check tests/configs/esp32-all-endpoints.yaml
-        run: .venv/bin/esphome config tests/configs/esp32-all-endpoints.yaml
-      - name: Check tests/configs/esp32-thread.yaml
-        run: .venv/bin/esphome config tests/configs/esp32-thread.yaml
-      - name: Check tests/configs/esp32-wifi.yaml
-        run: .venv/bin/esphome config tests/configs/esp32-wifi.yaml
+      - name: Validate all test configs
+        run: tools/validate-configs
 
   compile:
     name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})

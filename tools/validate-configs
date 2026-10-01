@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+config_dir="${repo_dir}/tests/configs"
+
+if [[ -x "${repo_dir}/.venv/bin/esphome" ]]; then
+  esphome_bin="${repo_dir}/.venv/bin/esphome"
+else
+  esphome_bin="$(command -v esphome)"
+fi
+
+mapfile -d '' configs < <(
+  find "${config_dir}" -maxdepth 1 -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
+    | sort -z
+)
+
+for config in "${configs[@]}"; do
+  relative_config="${config#"${repo_dir}/"}"
+  echo "Validating ${relative_config}"
+  if "${esphome_bin}" -l WARNING config "${config}" >/dev/null; then
+    continue
+  else
+    status=$?
+    # Rerun `esphome config` without redirecting stdout. This is a bit wasteful but I
+    # couldn't easily find a way to capture stdout while keeping the ANSI colour codes.
+    "${esphome_bin}" -l WARNING config "${config}" || true
+    exit "${status}"
+  fi
+done
