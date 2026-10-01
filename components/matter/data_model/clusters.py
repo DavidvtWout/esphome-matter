@@ -17,9 +17,6 @@ _LOGGER = logging.getLogger(__name__)
 class Feature:
     code: str
     name: str  # CamelCase
-    # Can be set to True by DeviceType config
-    mandatory: bool = False
-    disallowed: bool = False
     conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
@@ -42,24 +39,6 @@ class Feature:
 
 
 @dataclass(frozen=True, slots=True)
-class FeatureChoice:
-    min: int
-    max: int | None
-    features: tuple[Feature, ...]
-
-    @classmethod
-    def from_dict(cls, data: dict):
-        return cls(
-            min=data["min"],
-            max=data.get("max"),
-            features=tuple(
-                Feature.from_dict(code, feature)
-                for code, feature in data["features"].items()
-            ),
-        )
-
-
-@dataclass(frozen=True, slots=True)
 class Cluster:
     # ----------------------------------- #
     # Parsed directly from clusters.json  #
@@ -71,7 +50,6 @@ class Cluster:
     name: str
     revision: int
     features: tuple[Feature, ...]
-    choice_features: tuple[FeatureChoice, ...]
     server_attributes: tuple[Attribute, ...]
     # ----------------------------------- #
     # Derived attributes                  #
@@ -98,14 +76,8 @@ class Cluster:
         )
 
         _features = []
-        _choice_features = []
         for code, feature_data in data.get("features", {}).items():
-            if code.startswith("choice "):
-                choice = FeatureChoice.from_dict(feature_data)
-                _choice_features.append(choice)
-                _features.extend(choice.features)
-            else:
-                _features.append(Feature.from_dict(code, feature_data))
+            _features.append(Feature.from_dict(code, feature_data))
 
         # TODO: are there more exceptions?
         if camel_case_name.endswith("ConcentrationMeasurement"):
@@ -136,7 +108,6 @@ class Cluster:
             # Some lack a revision. Assuming it's 1...
             revision=data.get("revision", 1),
             features=tuple(_features),
-            choice_features=tuple(_choice_features),
             server_attributes=tuple(
                 Attribute.from_dict(camel_case_name, a)
                 for a in data.get("server_attributes", ())
@@ -158,13 +129,6 @@ class Cluster:
             if name_or_code in (feature.name, feature.code, feature.namespace):
                 return feature
         return None
-
-    def is_choice_feature(self, feature: Feature) -> bool:
-        for choice in self.choice_features:
-            for f in choice.features:
-                if f.name == feature.name:
-                    return True
-        return False
 
     @property
     def schema_key(self):

@@ -10,8 +10,6 @@ matter:
     1:
       root_node:
         with_features:
-          # Omitted because their conformance rules are not yet supported by esphome-matter:
-          # - long_idle_time_support
           - calendar_format # The Node can be configured to use different calendar formats when conveying values to a user.
           - temperature_unit # The Node can be configured to use different units of temperature when conveying values to a user.
           - watermarks # Node makes available the metrics for high watermark related to memory consumption.
@@ -25,6 +23,7 @@ matter:
           - time_sync_client # Time synchronization client cluster is present.
           - check_in_protocol_support # Device supports attributes and commands for the Check-In Protocol support.
           - user_active_mode_trigger # Device supports the user active mode trigger feature.
+          - long_idle_time_support # Device supports operating as a Long Idle Time ICD.
           - dynamic_sit_lit_support # Device supports dynamic switching from SIT to LIT operating modes.
           # Exactly one of wi_fi_network_interface, thread_network_interface, ethernet_network_interface must be enabled.
           - wi_fi_network_interface # Wi-Fi related features
@@ -370,7 +369,6 @@ matter:
     1:
       camera:
         with_features:
-          - prediction # Supports sensing based on prediction of occupancy
           - occupancy_event # Supports generating OccupancyChanged events
           - two_dimensional_cartesian_zone # Supports Two Dimensional Cartesian Zones
           - per_zone_sensitivity # Supports a sensitivity value per Zone
@@ -378,7 +376,7 @@ matter:
           - focus_zones # Supports user defined focus zones
           - mechanical_presets # Mechanical saved presets support
           - metadata # Supports metadata transmission in Push transports
-          # At least one of other, passive_infrared, ultrasonic, physical_contact, active_infrared, radar, rf_sensing, vision must be enabled.
+          # At least one of other, passive_infrared, ultrasonic, physical_contact, active_infrared, radar, rf_sensing, vision, prediction must be enabled.
           - other # Supports sensing using a modality not listed in the other bits
           - passive_infrared # Supports sensing using PIR (Passive InfraRed)
           - ultrasonic # Supports sensing using UltraSound
@@ -387,6 +385,7 @@ matter:
           - radar # Supports sensing using radar waves (microwave)
           - rf_sensing # Supports sensing using analysis of radio signals, e.g.: RSSI, CSI and/or any other metric from the signal
           - vision # Supports sensing based on analyzing images
+          - prediction # Supports sensing based on prediction of occupancy
           # At least one of digital_ptz, mechanical_pan, mechanical_tilt, mechanical_zoom must be enabled.
           - digital_ptz # Digital PTZ support
           - mechanical_pan # Mechanical Pan support
@@ -735,7 +734,7 @@ matter:
     1:
       occupancy_sensor:
         with_features:
-          # At least one of other, passive_infrared, ultrasonic, physical_contact, active_infrared, radar, rf_sensing, vision must be enabled.
+          # At least one of other, passive_infrared, ultrasonic, physical_contact, active_infrared, radar, rf_sensing, vision, prediction must be enabled.
           - other # Supports sensing using a modality not listed in the other bits
           - passive_infrared # Supports sensing using PIR (Passive InfraRed)
           - ultrasonic # Supports sensing using UltraSound
@@ -744,8 +743,8 @@ matter:
           - radar # Supports sensing using radar waves (microwave)
           - rf_sensing # Supports sensing using analysis of radio signals, e.g.: RSSI, CSI and/or any other metric from the signal
           - vision # Supports sensing based on analyzing images
+          - prediction # Supports sensing based on prediction of occupancy
           # - tag_list # The TagList attribute is present
-          # - prediction # Supports sensing based on prediction of occupancy
           # - occupancy_event # Supports generating OccupancyChanged events
       clusters:
         # The following server clusters are optional to occupancy_sensor;
@@ -805,23 +804,9 @@ matter:
     1:
       door_lock:
         with_features:
-          # Omitted because their conformance rules are not yet supported by esphome-matter:
-          # - rfid_credential
-          # - pin_credential
-          # - year_day_access_schedules
-          # - holiday_schedules
-          # - unbolt
-          # - aliro_provisioning
-          # - aliro_bleuwb
-          # - finger_credentials
-          # - logging
-          # - week_day_access_schedules
-          # - door_position_sensor
-          # - face_credentials
-          # - credentials_over_the_air_access
-          # - notification
           # - tag_list # The TagList attribute is present
           # - pin_credential # Lock supports PIN credentials (via keypad, or over-the-air)
+          # - rfid_credential # Lock supports RFID credentials
           # - year_day_access_schedules # Lock supports year day user access schedules
           # - holiday_schedules # Lock supports holiday schedules
           # - unbolt # Lock supports unbolting
@@ -866,9 +851,10 @@ matter:
       thermostat:
         with_features:
           - group_names # The ability to store a name for a group.
+          # At least one of heating, cooling must be enabled.
+          - heating # Thermostat is capable of managing a heating device
+          - cooling # Thermostat is capable of managing a cooling device
           # - tag_list # The TagList attribute is present
-          # - heating # Thermostat is capable of managing a heating device
-          # - cooling # Thermostat is capable of managing a cooling device
           # - thermostat_suggestions # Thermostat supports suggestions
           # - occupancy # Supports Occupied and Unoccupied setpoints
           # - schedule_configuration # Supports remote configuration of a weekly schedule of setpoint transitions
@@ -939,11 +925,12 @@ matter:
           - wind # Wind emulation supported
           - step # Step command supported
           - airflow_direction # Airflow Direction attribute is supported
+          # At least one of heating, cooling must be enabled.
+          - heating # Thermostat is capable of managing a heating device
+          - cooling # Thermostat is capable of managing a cooling device
           # - lighting # Behavior that supports lighting applications.
           # - off_only # Device supports the OffOnly Feature feature
           # - tag_list # The TagList attribute is present
-          # - heating # Thermostat is capable of managing a heating device
-          # - cooling # Thermostat is capable of managing a cooling device
           # - thermostat_suggestions # Thermostat supports suggestions
           # - occupancy # Supports Occupied and Unoccupied setpoints
           # - schedule_configuration # Supports remote configuration of a weekly schedule of setpoint transitions
@@ -1104,10 +1091,10 @@ matter:
           - auto # Automatic mode supported for fan speed
           - rocking # Rocking movement supported
           - step # Step command supported
-          # Exactly one of power_as_number must be enabled.
+          # Exactly one of power_as_number, power_in_watts must be enabled.
           - power_as_number # Power is specified as a unitless number or a percentage
+          - power_in_watts # Power is specified in Watts
           # - tag_list # The TagList attribute is present
-          # - power_in_watts # Power is specified in Watts
           # - power_number_limits # Supports the limit attributes used with the PWRNUM feature
       clusters:
         # The following server clusters are optional to microwave_oven;
@@ -1425,16 +1412,16 @@ matter:
       device_energy_management:
         with_features:
           - on_off # Dependency with the OnOff cluster
-          # Exactly one of power_adjustment must be enabled.
+          # Exactly one of power_adjustment, power_range_adjustment must be enabled.
           - power_adjustment # Allows an EMS to make a temporary power adjustment (within the limits offered by the ESA).
-          # Exactly one of state_forecast_reporting must be enabled.
+          - power_range_adjustment # Allows an EMS to make a temporary power range adjustment (within the limits offered by the ESA).
+          # Exactly one of power_forecast_reporting, state_forecast_reporting must be enabled.
+          - power_forecast_reporting # Allows an ESA to advertise its indicative future power consumption vs time.
           - state_forecast_reporting # Allows an ESA to advertise its indicative future state vs time.
-          # - power_forecast_reporting # Allows an ESA to advertise its indicative future power consumption vs time.
           # - start_time_adjustment # Allows an EMS to delay an ESA's planned operation.
           # - pausable # Allows an EMS to pause an ESA's planned operation.
           # - forecast_adjustment # Allows an EMS to adjust an ESA's planned operation.
           # - constraint_based_adjustment # Allows an EMS to request constraints to an ESA's planned operation.
-          # - power_range_adjustment # Allows an EMS to make a temporary power range adjustment (within the limits offered by the ESA).
       clusters:
         # The following server clusters are optional to device_energy_management;
         device_energy_management_mode: # Attributes and commands for selecting a mode from a list of supported options.
@@ -1448,12 +1435,13 @@ matter:
     1:
       water_heater:
         with_features:
+          # At least one of heating, cooling must be enabled.
+          - heating # Thermostat is capable of managing a heating device
+          - cooling # Thermostat is capable of managing a cooling device
           # - tag_list # The TagList attribute is present
           # - energy_management # Allows energy management control of the tank
           # - tank_percent # Supports monitoring the percentage of hot water in the tank
           # - on_off # Dependency with the OnOff cluster
-          # - heating # Thermostat is capable of managing a heating device
-          # - cooling # Thermostat is capable of managing a cooling device
           # - thermostat_suggestions # Thermostat supports suggestions
           # - occupancy # Supports Occupied and Unoccupied setpoints
           # - schedule_configuration # Supports remote configuration of a weekly schedule of setpoint transitions

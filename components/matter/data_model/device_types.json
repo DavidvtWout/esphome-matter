@@ -34,48 +34,46 @@
         "name": "Door Lock",
         "required": true,
         "features": {
-          "USR": "mandatory"
-        },
-        "feature_conformance": {
           "USR": {
-            "mandatory": {
-              "and": [
-                {
-                  "condition": "Matter"
-                },
-                {
-                  "or": [
-                    {
-                      "feature": "PIN"
-                    },
-                    {
-                      "feature": "RID"
-                    },
-                    {
-                      "feature": "FPG"
-                    },
-                    {
-                      "feature": "FACE"
-                    }
-                  ]
-                }
-              ]
+            "conformance": {
+              "mandatory": {
+                "and": [
+                  {
+                    "condition": "Matter"
+                  },
+                  {
+                    "or": [
+                      {
+                        "feature": "PIN"
+                      },
+                      {
+                        "feature": "RID"
+                      },
+                      {
+                        "feature": "FPG"
+                      },
+                      {
+                        "feature": "FACE"
+                      }
+                    ]
+                  }
+                ]
+              }
             }
           },
           "": {
-            "otherwise": [
-              {
-                "provisional": true
-              },
-              {
-                "optional": true
-              }
-            ]
+            "conformance": {
+              "otherwise": [
+                {
+                  "provisional": true
+                },
+                {
+                  "optional": true
+                }
+              ]
+            }
           }
-        },
-        "ignored_features": [
-          "rfid_credential"
-        ]
+        }
       }
     ],
     "client_clusters": []
@@ -437,23 +435,22 @@
       {
         "id": 70,
         "name": "ICD Management",
-        "feature_conformance": {
+        "features": {
           "LITS": {
-            "otherwise": [
-              {
-                "provisional": true
-              },
-              {
-                "mandatory": {
-                  "feature": "LIT"
+            "conformance": {
+              "otherwise": [
+                {
+                  "provisional": true
+                },
+                {
+                  "mandatory": {
+                    "feature": "LIT"
+                  }
                 }
-              }
-            ]
+              ]
+            }
           }
-        },
-        "ignored_features": [
-          "long_idle_time_support"
-        ]
+        }
       }
     ],
     "client_clusters": []
@@ -909,11 +906,10 @@
         "id": 82,
         "name": "Refrigerator And Temperature Controlled Cabinet Mode",
         "features": {
-          "OO": "disallowed"
-        },
-        "feature_conformance": {
           "OO": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       },
@@ -942,11 +938,10 @@
         "id": 73,
         "name": "Oven Mode",
         "features": {
-          "OO": "disallowed"
-        },
-        "feature_conformance": {
           "OO": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       },
@@ -954,11 +949,10 @@
         "id": 82,
         "name": "Refrigerator And Temperature Controlled Cabinet Mode",
         "features": {
-          "OO": "disallowed"
-        },
-        "feature_conformance": {
           "OO": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       },
@@ -1000,11 +994,10 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "DF": "mandatory"
-        },
-        "feature_conformance": {
           "DF": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -1062,11 +1055,10 @@
         "id": 6,
         "name": "On/Off",
         "features": {
-          "DF": "mandatory"
-        },
-        "feature_conformance": {
           "DF": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         }
       },
@@ -1079,11 +1071,10 @@
         "id": 81,
         "name": "Laundry Washer Mode",
         "features": {
-          "OO": "disallowed"
-        },
-        "feature_conformance": {
           "OO": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       },
@@ -1152,11 +1143,10 @@
         "id": 6,
         "name": "On/Off",
         "features": {
-          "DF": "mandatory"
-        },
-        "feature_conformance": {
           "DF": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         }
       },
@@ -1173,11 +1163,10 @@
         "id": 89,
         "name": "Dishwasher Mode",
         "features": {
-          "OO": "disallowed"
-        },
-        "feature_conformance": {
           "OO": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       },
@@ -1248,11 +1237,10 @@
         "id": 6,
         "name": "On/Off",
         "features": {
-          "OFFONLY": "mandatory"
-        },
-        "feature_conformance": {
           "OFFONLY": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         }
       },
@@ -1286,11 +1274,10 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "OFFONLY": "mandatory"
-        },
-        "feature_conformance": {
           "OFFONLY": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         }
       },
@@ -1335,15 +1322,15 @@
         "id": 514,
         "name": "Fan Control",
         "features": {
-          "WND": "disallowed",
-          "DIR": "disallowed"
-        },
-        "feature_conformance": {
           "WND": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           },
           "DIR": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       }
@@ -1377,19 +1364,20 @@
         "name": "Fan Control",
         "required": true,
         "features": {
-          "RCK": "disallowed",
-          "WND": "disallowed",
-          "DIR": "disallowed"
-        },
-        "feature_conformance": {
           "RCK": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           },
           "WND": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           },
           "DIR": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       }
@@ -1426,11 +1414,10 @@
         "id": 6,
         "name": "On/Off",
         "features": {
-          "DF": "mandatory"
-        },
-        "feature_conformance": {
           "DF": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         }
       },
@@ -1447,11 +1434,10 @@
         "id": 81,
         "name": "Laundry Washer Mode",
         "features": {
-          "": "disallowed"
-        },
-        "feature_conformance": {
           "": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       },
@@ -1533,11 +1519,10 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -1560,15 +1545,15 @@
         "id": 8,
         "name": "Level Control",
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "OO": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           },
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -1700,11 +1685,10 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -1728,15 +1712,15 @@
         "name": "Level Control",
         "required": true,
         "features": {
-          "LT": "mandatory",
-          "OO": "mandatory"
-        },
-        "feature_conformance": {
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           },
           "OO": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2273,11 +2257,10 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2300,15 +2283,15 @@
         "id": 8,
         "name": "Level Control",
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "OO": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           },
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2411,11 +2394,10 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2439,15 +2421,15 @@
         "name": "Level Control",
         "required": true,
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "OO": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           },
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2550,11 +2532,10 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2578,15 +2559,15 @@
         "name": "Level Control",
         "required": true,
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "OO": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           },
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2648,11 +2629,10 @@
         "name": "Color Control",
         "required": true,
         "features": {
-          "CT": "mandatory"
-        },
-        "feature_conformance": {
           "CT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2721,11 +2701,10 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2749,15 +2728,15 @@
         "name": "Level Control",
         "required": true,
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
-        },
-        "feature_conformance": {
           "OO": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           },
           "LT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2819,27 +2798,30 @@
         "name": "Color Control",
         "required": true,
         "features": {
-          "HS": "optional",
-          "EHUE": "optional",
-          "CL": "optional",
-          "XY": "mandatory",
-          "CT": "mandatory"
-        },
-        "feature_conformance": {
           "HS": {
-            "optional": true
+            "conformance": {
+              "optional": true
+            }
           },
           "EHUE": {
-            "optional": true
+            "conformance": {
+              "optional": true
+            }
           },
           "CL": {
-            "optional": true
+            "conformance": {
+              "optional": true
+            }
           },
           "XY": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           },
           "CT": {
-            "mandatory": true
+            "conformance": {
+              "mandatory": true
+            }
           }
         },
         "required_attributes": [
@@ -2893,15 +2875,27 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
       {
         "id": 8,
         "name": "Level Control",
         "features": {
-          "LT": "mandatory",
-          "OO": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
       {
@@ -2942,7 +2936,11 @@
         "name": "On/Off",
         "required": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
       {
@@ -2950,8 +2948,16 @@
         "name": "Level Control",
         "required": true,
         "features": {
-          "LT": "mandatory",
-          "OO": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
       {
@@ -2988,16 +2994,20 @@
         "name": "Camera AV Stream Management",
         "required": true,
         "features": {
-          "ADO": "mandatory",
-          "SNP": "disallowed",
-          "VDO": "disallowed"
-        },
-        "feature_conformance": {
+          "ADO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
           "SNP": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           },
           "VDO": {
-            "disallowed": true
+            "conformance": {
+              "disallowed": true
+            }
           }
         }
       },
@@ -3058,9 +3068,21 @@
         "name": "Camera AV Stream Management",
         "required": true,
         "features": {
-          "ADO": "mandatory",
-          "SNP": "mandatory",
-          "VDO": "mandatory"
+          "ADO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "SNP": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "VDO": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
       {
@@ -3137,7 +3159,11 @@
         "name": "Switch",
         "required": true,
         "features": {
-          "MS": "mandatory"
+          "MS": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       }
     ],
@@ -3220,7 +3246,11 @@
         "name": "Descriptor",
         "required": true,
         "features": {
-          "TAGLIST": "mandatory"
+          "TAGLIST": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
       {
@@ -3241,7 +3271,11 @@
         "name": "Descriptor",
         "required": true,
         "features": {
-          "TAGLIST": "mandatory"
+          "TAGLIST": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
       {
@@ -4041,7 +4075,11 @@
         "name": "Descriptor",
         "required": true,
         "features": {
-          "TAGLIST": "mandatory"
+          "TAGLIST": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "TAG_LIST"

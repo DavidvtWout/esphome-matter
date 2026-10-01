@@ -12,6 +12,7 @@ from ..const import CONF_MAX_LEVEL, CONF_MIN_LEVEL, CONF_WITH_FEATURES
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
 from .clusters import CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster, Feature
+from .conformance import Conformance
 from .units import percentage
 
 _LOGGER = logging.getLogger(__name__)
@@ -20,42 +21,29 @@ _LOGGER = logging.getLogger(__name__)
 def _parse_cluster_include(data: dict) -> Cluster:
     cluster = CLUSTERS_BY_ID[data["id"]]
     required = data.get("required", False)
-    mandatory_features = set()
-    disallowed_features = set()
-    for code, conformance in data.get("features", {}).items():
-        if conformance == "mandatory":
-            mandatory_features.add(code)
-        elif conformance == "disallowed":
-            disallowed_features.add(code)
+    include_conformance = {
+        code: Conformance.from_dict(feature_data.get("conformance"))
+        for code, feature_data in data.get("features", {}).items()
+    }
 
-    def _replace(f):
-        if f.code in mandatory_features:
-            return replace(f, mandatory=True)
-        elif f.code in disallowed_features:
-            return replace(f, disallowed=True)
-        else:
-            return f
+    def compose(feature: Feature) -> Feature:
+        refinement = include_conformance.get(feature.code)
+        if refinement is None:
+            return feature
+        conformance = (
+            feature.conformance.compose(refinement)
+            if feature.conformance is not None
+            else refinement
+        )
+        return replace(feature, conformance=conformance)
 
-    features = []
-    choice_features = []
-    for feature in cluster.features:
-        features.append(_replace(feature))
-    for choice in cluster.choice_features:
-        new_choice_features = []
-        for feature in choice.features:
-            new_choice_features.append(_replace(feature))
-        # Remove choice features if device type already solves the choice by enabling any of the choice features.
-        if not any(feature.mandatory for feature in new_choice_features):
-            choice_features.append(replace(choice, features=tuple(new_choice_features)))
-        else:
-            features.extend(new_choice_features)
+    features = tuple(compose(feature) for feature in cluster.features)
 
-    # TODO: also update attribute and command info
+    # TODO: also update attribute, command and event info
     return replace(
         cluster,
         required=required,
-        features=tuple(features),
-        choice_features=tuple(choice_features),
+        features=features,
     )
 
 

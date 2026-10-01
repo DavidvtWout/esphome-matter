@@ -1,11 +1,21 @@
 import argparse
 import json
 import re
+import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree
+
+_DATA_MODEL_PATH = (
+    Path(__file__).resolve().parent.parent / "components" / "matter" / "data_model"
+)
+sys.path.insert(0, str(_DATA_MODEL_PATH))
+try:
+    from conformance import Choice, Conformance
+finally:
+    sys.path.pop(0)
 
 
 def snake_case(name: str) -> str:
@@ -267,20 +277,12 @@ class Feature:
 
 
 @dataclass
-class FeatureChoice:
-    name: str
-    min: int
-    max: int | None
-    features: list[Feature] = field(default_factory=list)
-
-
-@dataclass
 class Cluster:
     id: int
     name: str  # CamelCase
     description: str
     revision: int | None = None
-    features: list[Feature | FeatureChoice] = field(default_factory=list)
+    features: list[Feature] = field(default_factory=list)
     attributes: list[Attribute] = field(default_factory=list)
     commands: list[Command] = field(default_factory=list)
     events: list[Event] = field(default_factory=list)
@@ -295,9 +297,7 @@ class DeviceCluster:
     server: bool
     client_locked: bool
     server_locked: bool
-    features: dict[str, str]
-    feature_conformance: dict[str, dict]
-    ignored_features: list[str]
+    features: dict[str, dict]
     required_attributes: list
     required_commands: list
 
@@ -352,43 +352,21 @@ def parse_device_type_elem(elem) -> DeviceType | None:
     device_clusters = []
     for cluster_elem in elem.findall("./clusters/include"):
         features = {}
-        feature_conformance = {}
-        ignored_features = []
         for feature_elem in cluster_elem.findall("./features/feature"):
             feature_code = feature_elem.attrib["code"]
             context = (
                 f"device type {name}.{cluster_elem.attrib['cluster']}.{feature_code}"
             )
-            if conformance := parse_conformance(feature_elem, context):
-                feature_conformance[feature_code] = conformance
             conform_elements = list(feature_elem)
             if not conform_elements:
                 # Assuming no conform means mandatory, but I'm not entire sure...
                 # Seems to apply mostly to irrelevant device types anyway.
-                features[feature_code] = "mandatory"
-            elif (
-                len(conform_elements) == 1
-                and conform_elements[0].tag == "mandatoryConform"
-            ):
-                features[feature_code] = "mandatory"
-            elif (
-                len(conform_elements) == 1
-                and conform_elements[0].tag == "disallowConform"
-            ):
-                features[feature_code] = "disallowed"
-            elif (
-                len(conform_elements) == 1
-                and conform_elements[0].tag == "optionalConform"
-            ):
-                features[feature_code] = "optional"
-            else:
-                ignored_features.append(
-                    camel_case_to_snake_case(camel_case(feature_elem.attrib["name"]))
-                )
-                print(
-                    "Ignoring device type feature with complicated conform rule: "
-                    f"{name}.{cluster_elem.attrib['cluster']}.{feature_code}"
-                )
+                features[feature_code] = {"conformance": {"mandatory": True}}
+                continue
+
+            conformance = parse_conformance(feature_elem, context)
+            if conformance is not None:
+                features[feature_code] = {"conformance": conformance}
 
         cluster = DeviceCluster(
             name=cluster_elem.attrib["cluster"],
@@ -397,8 +375,6 @@ def parse_device_type_elem(elem) -> DeviceType | None:
             client_locked=cluster_elem.get("clientLocked") == "true",
             server_locked=cluster_elem.get("serverLocked") == "true",
             features=features,
-            feature_conformance=feature_conformance,
-            ignored_features=ignored_features,
             required_attributes=[
                 e.text for e in cluster_elem.findall("./requireAttribute")
             ],  # Refers to "define" attr in cluster attributes
@@ -480,10 +456,8 @@ def parse_cluster_elem(elem) -> Cluster:
     if (rev_elem := elem.find('globalAttribute[@code="0xFFFD"]')) is not None:
         cluster.revision = int(rev_elem.attrib["value"])
 
-    features: list[Feature | FeatureChoice] = []
-    choices: dict[str, FeatureChoice] = {}
+    features: list[Feature] = []
     for feature_elem in elem.findall("./features/feature"):
-        optional_conform = feature_elem.find("./optionalConform")
         feature = Feature(
             bit=int(feature_elem.get("bit"), 0),
             code=feature_elem.get("code"),
@@ -494,30 +468,7 @@ def parse_cluster_elem(elem) -> Cluster:
                 f"cluster {cluster.name} feature {feature_elem.get('code')}",
             ),
         )
-        choice_name = (
-            optional_conform.get("choice") if optional_conform is not None else None
-        )
-        if choice_name is None:
-            features.append(feature)
-            continue
-
-        if choice_name not in choices:
-            minimum = int(optional_conform.get("min", 1))
-            maximum = optional_conform.get("max")
-            choice = FeatureChoice(
-                name=choice_name,
-                min=minimum,
-                max=(
-                    int(maximum)
-                    if maximum is not None
-                    else None
-                    if optional_conform.get("more") == "true"
-                    else 1
-                ),
-            )
-            choices[choice_name] = choice
-            features.append(choice)
-        choices[choice_name].features.append(feature)
+        features.append(feature)
     cluster.features = features
 
     attributes: list[Attribute] = []
@@ -873,35 +824,15 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
 
         features = {}
         for feature in cluster.features:
-            if isinstance(feature, FeatureChoice):
-                features[f"choice {feature.name}"] = filter_none(
-                    {
-                        "min": feature.min,
-                        "max": feature.max,
-                        "features": {
-                            choice_feature.code: {
-                                "bit": choice_feature.bit,
-                                "name": choice_feature.name,
-                                **(
-                                    {"conformance": choice_feature.conformance}
-                                    if choice_feature.conformance is not None
-                                    else {}
-                                ),
-                            }
-                            for choice_feature in feature.features
-                        },
-                    }
-                )
-            else:
-                features[feature.code] = {
-                    "bit": feature.bit,
-                    "name": feature.name,
-                    **(
-                        {"conformance": feature.conformance}
-                        if feature.conformance is not None
-                        else {}
-                    ),
-                }
+            features[feature.code] = {
+                "bit": feature.bit,
+                "name": feature.name,
+                **(
+                    {"conformance": feature.conformance}
+                    if feature.conformance is not None
+                    else {}
+                ),
+            }
         if features:
             cluster_data["features"] = features
 
@@ -966,8 +897,6 @@ def post_process_device_types(
                             "required": cluster_config.server
                             and cluster_config.server_locked,
                             "features": cluster_config.features,
-                            "feature_conformance": cluster_config.feature_conformance,
-                            "ignored_features": cluster_config.ignored_features,
                             "required_attributes": cluster_config.required_attributes,
                             "required_commands": cluster_config.required_commands,
                         }
@@ -982,8 +911,6 @@ def post_process_device_types(
                             "required": cluster_config.client
                             and cluster_config.client_locked,
                             "features": cluster_config.features,
-                            "feature_conformance": cluster_config.feature_conformance,
-                            "ignored_features": cluster_config.ignored_features,
                             "required_attributes": cluster_config.required_attributes,
                             "required_commands": cluster_config.required_commands,
                         }
@@ -1144,47 +1071,24 @@ def generate_device_type_documentation(
     for device_type in device_types:
         features: dict[str, str | None] = {}
         inherited_features: dict[str, str | None] = {}
-        feature_choices: list[tuple[FeatureChoice, dict[str, str | None]]] = []
+        feature_choices: list[tuple[Choice, dict[str, str | None]]] = []
         feature_choice_keys: set[tuple[int, int | None, tuple[str, ...]]] = set()
-        ignored_features: list[str] = []
         for cluster_config in device_type["server_clusters"]:
             cluster = clusters_by_id[cluster_config["id"]]
             conformance = cluster_config.get("features", {})
-            for ignored_feature in cluster_config.get("ignored_features", ()):
-                if ignored_feature not in ignored_features:
-                    ignored_features.append(ignored_feature)
 
-            if cluster_config.get("required", False) and cluster_config.get(
-                "ignored_features"
-            ):
-                for cluster_feature in cluster.features:
-                    cluster_feature_items = (
-                        cluster_feature.features
-                        if isinstance(cluster_feature, FeatureChoice)
-                        else (cluster_feature,)
-                    )
-                    for omitted_feature in cluster_feature_items:
-                        if conformance.get(omitted_feature.code) in (
-                            "mandatory",
-                            "optional",
-                            "disallow",
-                            "disallowed",
-                        ):
-                            continue
-                        omitted_name = camel_case_to_snake_case(
-                            camel_case(omitted_feature.name)
-                        )
-                        if omitted_name not in ignored_features:
-                            ignored_features.append(omitted_name)
+            def conformance_type(feature_code: str) -> str | None:
+                feature = conformance.get(feature_code, {})
+                rule = feature.get("conformance")
+                if not isinstance(rule, dict) or not rule:
+                    return None
+                return next(iter(rule))
 
             def feature_source(feature: Feature) -> str | None:
                 feature_name = camel_case_to_snake_case(camel_case(feature.name))
-                if feature_name in cluster_config.get("ignored_features", ()):
-                    return None
-                feature_conformance = conformance.get(feature.code)
-                if feature_conformance in (
+                feature_rule_type = conformance_type(feature.code)
+                if feature_rule_type in (
                     "mandatory",
-                    "disallow",
                     "disallowed",
                 ):
                     return None
@@ -1192,7 +1096,7 @@ def generate_device_type_documentation(
                 # omitted feature keeps the availability defined by the cluster.
                 # Features on optional clusters were already documented before
                 # required clusters began inheriting their cluster features.
-                if feature_conformance == "optional" or not cluster_config.get(
+                if feature_rule_type == "optional" or not cluster_config.get(
                     "required", False
                 ):
                     return "explicit"
@@ -1209,53 +1113,48 @@ def generate_device_type_documentation(
                 elif feature_name not in features:
                     inherited_features.setdefault(feature_name, feature.summary)
 
+            choices: dict[Choice, list[Feature]] = defaultdict(list)
             for feature in cluster.features:
-                if isinstance(feature, FeatureChoice):
-                    mandatory_count = sum(
-                        conformance.get(choice_feature.code) == "mandatory"
-                        for choice_feature in feature.features
-                    )
-                    if feature.max is not None and mandatory_count >= feature.max:
-                        continue
-                    choice_features = {}
-                    for choice_feature in feature.features:
-                        if feature_source(choice_feature) is None:
-                            continue
-                        choice_name = camel_case_to_snake_case(
-                            camel_case(choice_feature.name)
-                        )
-                        choice_features[choice_name] = choice_feature.summary
-                        add_feature(choice_feature)
-                    if choice_features:
-                        if mandatory_count < feature.min:
-                            # An unresolved choice requires user input, even when
-                            # its features are inherited from a required cluster.
-                            for choice_name, summary in choice_features.items():
-                                inherited_features.pop(choice_name, None)
-                                features.setdefault(choice_name, summary)
-                            choice_key = (
-                                feature.min,
-                                feature.max,
-                                tuple(choice_features),
-                            )
-                            if choice_key not in feature_choice_keys:
-                                feature_choice_keys.add(choice_key)
-                                feature_choices.append((feature, choice_features))
+                feature_conformance = Conformance.from_dict(feature.conformance)
+                choice = (
+                    feature_conformance.choice
+                    if feature_conformance is not None
+                    else None
+                )
+                if choice is None:
+                    add_feature(feature)
                     continue
-                add_feature(feature)
+                choices[choice].append(feature)
+
+            for choice, choice_members in choices.items():
+                mandatory_count = sum(
+                    conformance_type(feature.code) == "mandatory"
+                    for feature in choice_members
+                )
+                if choice.max is not None and mandatory_count >= choice.max:
+                    continue
+                choice_features = {}
+                for feature in choice_members:
+                    if feature_source(feature) is None:
+                        continue
+                    feature_name = camel_case_to_snake_case(camel_case(feature.name))
+                    choice_features[feature_name] = feature.summary
+                    add_feature(feature)
+                if choice_features and mandatory_count < choice.min:
+                    # An unresolved choice requires user input, even when its
+                    # features are inherited from a required cluster.
+                    for feature_name, summary in choice_features.items():
+                        inherited_features.pop(feature_name, None)
+                        features.setdefault(feature_name, summary)
+                    choice_key = (choice.min, choice.max, tuple(choice_features))
+                    if choice_key not in feature_choice_keys:
+                        feature_choice_keys.add(choice_key)
+                        feature_choices.append((choice, choice_features))
 
         name = device_type["name"]
         lines.append(f"# {name}\n\n```yaml\nmatter:\n  endpoints:\n    1:")
         if features or inherited_features:
             lines.append(f"      {name}:\n        with_features:")
-            if ignored_features:
-                lines.append(
-                    "          # Omitted because their conformance rules are not yet supported by esphome-matter:"
-                )
-                lines.extend(
-                    f"          # - {ignored_feature}"
-                    for ignored_feature in ignored_features
-                )
             choice_feature_names = {
                 feature_name
                 for _, choice_features in feature_choices
@@ -1308,15 +1207,6 @@ def generate_device_type_documentation(
                 for feature_name, summary in inherited_choice_features.items():
                     comment = f" # {sanitize_description(summary)}" if summary else ""
                     lines.append(f"          # - {feature_name}{comment}")
-        elif ignored_features:
-            lines.append(f"      {name}:")
-            lines.append(
-                "        # Omitted because their conformance rules are not yet supported by esphome-matter:"
-            )
-            lines.extend(
-                f"        # - {ignored_feature}" for ignored_feature in ignored_features
-            )
-            lines.append("        with_features: []")
         else:
             lines.append(f"      {name}:")
 

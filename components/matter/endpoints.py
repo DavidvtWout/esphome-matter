@@ -18,7 +18,11 @@ from .actions import get_attribute_from_config, get_event_from_config
 from .const import *
 from .data_model.attributes import Attribute, SensorAttribute, attribute_value_type
 from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME, Cluster
-from .data_model.conformance import ConformanceError, resolve_feature_requirements
+from .data_model.conformance import (
+    ConformanceDisposition,
+    ConformanceError,
+    resolve_feature_requirements,
+)
 from .data_model.device_types import (
     DEVICE_TYPES,
     DEVICE_TYPES_BY_CONF_KEY,
@@ -121,8 +125,8 @@ class Endpoint:
 
     def _cluster_state(self, cluster: Cluster):
         enabled_codes = set()
-        disallowed_codes = set()
         cluster_present = False
+        device_features = []
 
         explicit_cluster_config = self._config[CONF_CLUSTERS].get(
             snake_case(cluster.name)
@@ -142,20 +146,34 @@ class Endpoint:
                 if device_cluster.name != cluster.name:
                     continue
                 cluster_present |= device_cluster.required
-                enabled_codes.update(
-                    feature.code
-                    for feature in device_cluster.features
-                    if feature.mandatory
-                )
-                disallowed_codes.update(
-                    feature.code
-                    for feature in device_cluster.features
-                    if feature.disallowed
-                )
+                device_features.extend(device_cluster.features)
             for feature_name in device_config.get(CONF_WITH_FEATURES, ()):
                 feature = cluster.get_feature(feature_name)
                 if feature is not None:
                     enabled_codes.add(feature.code)
+
+        # A mandatory feature can make another conditional feature mandatory, so
+        # evaluate the composed cluster/device-type conformance to a fixed point.
+        changed = True
+        while changed:
+            changed = False
+            for feature in device_features:
+                if feature.conformance is None or feature.code in enabled_codes:
+                    continue
+                if (
+                    feature.conformance.disposition(enabled_codes)
+                    is ConformanceDisposition.MANDATORY
+                ):
+                    enabled_codes.add(feature.code)
+                    changed = True
+
+        disallowed_codes = {
+            feature.code
+            for feature in device_features
+            if feature.conformance is not None
+            and feature.conformance.disposition(enabled_codes)
+            is ConformanceDisposition.DISALLOWED
+        }
 
         return cluster_present, enabled_codes, disallowed_codes
 
@@ -204,10 +222,14 @@ class Endpoint:
                 )
 
             resulting_codes = enabled_codes | inferred_codes
-            for choice in cluster.choice_features:
+            choices = defaultdict(list)
+            for feature in cluster.features:
+                if feature.conformance is not None and feature.conformance.choice:
+                    choices[feature.conformance.choice].append(feature)
+            for choice, features in choices.items():
                 selected = [
                     feature.conf_key
-                    for feature in choice.features
+                    for feature in features
                     if feature.code in resulting_codes
                 ]
                 if choice.max is not None and len(selected) > choice.max:
@@ -368,7 +390,7 @@ class Endpoint:
                 if not enabled:
                     continue
                 feature = features_by_name[feature_name]
-                if cluster.is_choice_feature(feature):
+                if feature.conformance is not None and feature.conformance.choice:
                     feature_flags.append(
                         f"esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::get_id()"
                     )
@@ -488,7 +510,10 @@ class Endpoint:
                 for feature_name, enabled in cluster_config.enabled_features.items()
                 if enabled
                 and feature_name in features_by_name
-                and not cluster.is_choice_feature(features_by_name[feature_name])
+                and (
+                    features_by_name[feature_name].conformance is None
+                    or features_by_name[feature_name].conformance.choice is None
+                )
             ]
             if not direct_features:
                 continue

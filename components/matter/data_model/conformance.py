@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any
 
 
@@ -8,6 +9,19 @@ class ConformanceError(ValueError):
 
 class AmbiguousConformanceError(ConformanceError):
     pass
+
+
+class ConformanceDisposition(Enum):
+    DISALLOWED = 0
+    OPTIONAL = 1
+    MANDATORY = 2
+
+
+@dataclass(frozen=True, slots=True)
+class Choice:
+    name: str
+    min: int
+    max: int | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,13 +42,137 @@ class Requirement:
 @dataclass(frozen=True, slots=True)
 class Conformance:
     rule: dict[str, Any]
+    components: tuple["Conformance", ...] = ()
 
     @classmethod
     def from_dict(cls, data: dict | None) -> "Conformance | None":
         return cls(data) if data is not None else None
 
     def alternatives(self) -> tuple[Requirement, ...]:
-        return tuple(_rule_alternatives(self.rule))
+        alternatives = _rule_alternatives(self.rule)
+        for component in self.components:
+            alternatives = _combine(alternatives, list(component.alternatives()))
+        return tuple(alternatives)
+
+    def compose(self, refinement: "Conformance | None") -> "Conformance":
+        if refinement is None:
+            return self
+        return Conformance(self.rule, (*self.components, refinement))
+
+    @property
+    def choice(self) -> Choice | None:
+        choices = [
+            choice
+            for choice in (
+                _rule_choice(self.rule),
+                *(component.choice for component in self.components),
+            )
+            if choice is not None
+        ]
+        if not choices:
+            return None
+        if any(choice != choices[0] for choice in choices[1:]):
+            raise ConformanceError("Composed conformance contains conflicting choices")
+        return choices[0]
+
+    def disposition(self, enabled_features: set[str]) -> ConformanceDisposition:
+        dispositions = [_rule_disposition(self.rule, enabled_features)]
+        dispositions.extend(
+            component.disposition(enabled_features) for component in self.components
+        )
+        if ConformanceDisposition.DISALLOWED in dispositions:
+            return ConformanceDisposition.DISALLOWED
+        if ConformanceDisposition.MANDATORY in dispositions:
+            return ConformanceDisposition.MANDATORY
+        return ConformanceDisposition.OPTIONAL
+
+
+def _rule_choice(rule: Any) -> Choice | None:
+    if not isinstance(rule, dict) or len(rule) != 1:
+        return None
+    rule_type, payload = next(iter(rule.items()))
+    if rule_type == "optional" and isinstance(payload, dict) and "choice" in payload:
+        maximum = payload.get("max")
+        return Choice(
+            name=payload["choice"],
+            min=payload.get("min", 1),
+            max=(
+                maximum
+                if maximum is not None
+                else None
+                if payload.get("more") is True
+                else 1
+            ),
+        )
+    if rule_type in ("all", "otherwise"):
+        choices = [choice for child in payload if (choice := _rule_choice(child))]
+        if not choices:
+            return None
+        if any(choice != choices[0] for choice in choices[1:]):
+            raise ConformanceError("Conformance contains conflicting choices")
+        return choices[0]
+    return None
+
+
+def _term_matches(term: Any, enabled_features: set[str]) -> bool | None:
+    if term is True:
+        return True
+    if not isinstance(term, dict) or len(term) != 1:
+        return None
+    operator, value = next(iter(term.items()))
+    if operator == "feature":
+        return value in enabled_features
+    if operator == "condition":
+        return True if value == "Matter" else None
+    if operator == "literal":
+        return bool(value)
+    if operator in ("and", "or"):
+        results = [_term_matches(child, enabled_features) for child in value]
+        if operator == "and":
+            if False in results:
+                return False
+            return None if None in results else True
+        if True in results:
+            return True
+        return None if None in results else False
+    if operator == "not":
+        result = _term_matches(value, enabled_features)
+        return None if result is None else not result
+    return None
+
+
+def _payload_matches(payload: Any, enabled_features: set[str]) -> bool | None:
+    if payload is True:
+        return True
+    if isinstance(payload, dict) and "term" in payload:
+        return _term_matches(payload["term"], enabled_features)
+    if isinstance(payload, dict) and set(payload) <= {"choice", "min", "max", "more"}:
+        return True
+    return _term_matches(payload, enabled_features)
+
+
+def _rule_disposition(rule: Any, enabled_features: set[str]) -> ConformanceDisposition:
+    if not isinstance(rule, dict) or len(rule) != 1:
+        return ConformanceDisposition.OPTIONAL
+    rule_type, payload = next(iter(rule.items()))
+    if rule_type == "disallowed":
+        return ConformanceDisposition.DISALLOWED
+    if rule_type in ("deprecated", "provisional", "described"):
+        return ConformanceDisposition.OPTIONAL
+    if rule_type in ("mandatory", "optional"):
+        matches = _payload_matches(payload, enabled_features)
+        if matches is False:
+            return ConformanceDisposition.OPTIONAL
+        if rule_type == "mandatory" and matches is True:
+            return ConformanceDisposition.MANDATORY
+        return ConformanceDisposition.OPTIONAL
+    if rule_type in ("all", "otherwise"):
+        dispositions = [_rule_disposition(child, enabled_features) for child in payload]
+        if ConformanceDisposition.DISALLOWED in dispositions:
+            return ConformanceDisposition.DISALLOWED
+        if ConformanceDisposition.MANDATORY in dispositions:
+            return ConformanceDisposition.MANDATORY
+    return ConformanceDisposition.OPTIONAL
 
 
 def _combine(left: list[Requirement], right: list[Requirement]) -> list[Requirement]:

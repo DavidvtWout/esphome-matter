@@ -1148,27 +1148,21 @@
     "name": "Power Source",
     "revision": 3,
     "features": {
-      "choice a": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "WIRED": {
-            "bit": 0,
-            "name": "Wired",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
-          },
-          "BAT": {
-            "bit": 1,
-            "name": "Battery",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
+      "WIRED": {
+        "bit": 0,
+        "name": "Wired",
+        "conformance": {
+          "optional": {
+            "choice": "a"
+          }
+        }
+      },
+      "BAT": {
+        "bit": 1,
+        "name": "Battery",
+        "conformance": {
+          "optional": {
+            "choice": "a"
           }
         }
       },
@@ -1844,36 +1838,30 @@
     "name": "Network Commissioning",
     "revision": 2,
     "features": {
-      "choice a": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "WI": {
-            "bit": 0,
-            "name": "WiFiNetworkInterface",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
-          },
-          "TH": {
-            "bit": 1,
-            "name": "ThreadNetworkInterface",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
-          },
-          "ET": {
-            "bit": 2,
-            "name": "EthernetNetworkInterface",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
+      "WI": {
+        "bit": 0,
+        "name": "WiFiNetworkInterface",
+        "conformance": {
+          "optional": {
+            "choice": "a"
+          }
+        }
+      },
+      "TH": {
+        "bit": 1,
+        "name": "ThreadNetworkInterface",
+        "conformance": {
+          "optional": {
+            "choice": "a"
+          }
+        }
+      },
+      "ET": {
+        "bit": 2,
+        "name": "EthernetNetworkInterface",
+        "conformance": {
+          "optional": {
+            "choice": "a"
           }
         }
       }
@@ -3881,27 +3869,21 @@
     "name": "Switch",
     "revision": 2,
     "features": {
-      "choice a": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "LS": {
-            "bit": 0,
-            "name": "LatchingSwitch",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
-          },
-          "MS": {
-            "bit": 1,
-            "name": "MomentarySwitch",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
+      "LS": {
+        "bit": 0,
+        "name": "LatchingSwitch",
+        "conformance": {
+          "optional": {
+            "choice": "a"
+          }
+        }
+      },
+      "MS": {
+        "bit": 1,
+        "name": "MomentarySwitch",
+        "conformance": {
+          "optional": {
+            "choice": "a"
           }
         }
       },
@@ -4746,30 +4728,25 @@
     "name": "Laundry Washer Controls",
     "revision": 2,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "SPIN": {
-            "bit": 0,
-            "name": "Spin",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "RINSE": {
-            "bit": 1,
-            "name": "Rinse",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "SPIN": {
+        "bit": 0,
+        "name": "Spin",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "RINSE": {
+        "bit": 1,
+        "name": "Rinse",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       }
@@ -4899,27 +4876,21 @@
     "name": "Temperature Control",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "TN": {
-            "bit": 0,
-            "name": "TemperatureNumber",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
-          },
-          "TL": {
-            "bit": 1,
-            "name": "TemperatureLevel",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
+      "TN": {
+        "bit": 0,
+        "name": "TemperatureNumber",
+        "conformance": {
+          "optional": {
+            "choice": "a"
+          }
+        }
+      },
+      "TL": {
+        "bit": 1,
+        "name": "TemperatureLevel",
+        "conformance": {
+          "optional": {
+            "choice": "a"
           }
         }
       },
@@ -5125,30 +5096,25 @@
     "name": "Smoke CO Alarm",
     "revision": 2,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "SMOKE": {
-            "bit": 0,
-            "name": "SmokeAlarm",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "CO": {
-            "bit": 1,
-            "name": "CO Alarm",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "SMOKE": {
+        "bit": 0,
+        "name": "SmokeAlarm",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "CO": {
+        "bit": 1,
+        "name": "CO Alarm",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       }
@@ -5423,18 +5389,12 @@
     "name": "Microwave Oven Control",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "PWRNUM": {
-            "bit": 0,
-            "name": "PowerAsNumber",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
+      "PWRNUM": {
+        "bit": 0,
+        "name": "PowerAsNumber",
+        "conformance": {
+          "optional": {
+            "choice": "a"
           }
         }
       },
@@ -6563,30 +6523,25 @@
     "name": "Electrical Power Measurement",
     "revision": 3,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "DIRC": {
-            "bit": 0,
-            "name": "DirectCurrent",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "ALTC": {
-            "bit": 1,
-            "name": "AlternatingCurrent",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "DIRC": {
+        "bit": 0,
+        "name": "DirectCurrent",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "ALTC": {
+        "bit": 1,
+        "name": "AlternatingCurrent",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -6876,57 +6831,47 @@
     "name": "Electrical Energy Measurement",
     "revision": 2,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "IMPE": {
-            "bit": 0,
-            "name": "ImportedEnergy",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "EXPE": {
-            "bit": 1,
-            "name": "ExportedEnergy",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "IMPE": {
+        "bit": 0,
+        "name": "ImportedEnergy",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
-      "choice b": {
-        "min": 1,
-        "features": {
-          "CUME": {
-            "bit": 2,
-            "name": "CumulativeEnergy",
-            "conformance": {
-              "optional": {
-                "choice": "b",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "PERE": {
-            "bit": 3,
-            "name": "PeriodicEnergy",
-            "conformance": {
-              "optional": {
-                "choice": "b",
-                "more": true,
-                "min": 1
-              }
-            }
+      "EXPE": {
+        "bit": 1,
+        "name": "ExportedEnergy",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "CUME": {
+        "bit": 2,
+        "name": "CumulativeEnergy",
+        "conformance": {
+          "optional": {
+            "choice": "b",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "PERE": {
+        "bit": 3,
+        "name": "PeriodicEnergy",
+        "conformance": {
+          "optional": {
+            "choice": "b",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -7288,19 +7233,13 @@
     "name": "Device Energy Management",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "PA": {
-            "bit": 0,
-            "name": "PowerAdjustment",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "max": 1
-              }
-            }
+      "PA": {
+        "bit": 0,
+        "name": "PowerAdjustment",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "max": 1
           }
         }
       },
@@ -7352,31 +7291,25 @@
           ]
         }
       },
-      "choice b": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "SFR": {
-            "bit": 2,
-            "name": "StateForecastReporting",
-            "conformance": {
-              "optional": {
-                "choice": "b",
-                "term": {
-                  "and": [
-                    {
-                      "not": {
-                        "feature": "PA"
-                      }
-                    },
-                    {
-                      "not": {
-                        "feature": "PRA"
-                      }
-                    }
-                  ]
+      "SFR": {
+        "bit": 2,
+        "name": "StateForecastReporting",
+        "conformance": {
+          "optional": {
+            "choice": "b",
+            "term": {
+              "and": [
+                {
+                  "not": {
+                    "feature": "PA"
+                  }
+                },
+                {
+                  "not": {
+                    "feature": "PRA"
+                  }
                 }
-              }
+              ]
             }
           }
         }
@@ -7927,30 +7860,25 @@
     "name": "Energy Preference",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "BALA": {
-            "bit": 0,
-            "name": "EnergyBalance",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LPMS": {
-            "bit": 1,
-            "name": "LowPowerModeSensitivity",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "BALA": {
+        "bit": 0,
+        "name": "EnergyBalance",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LPMS": {
+        "bit": 1,
+        "name": "LowPowerModeSensitivity",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       }
@@ -8028,36 +7956,30 @@
     "name": "Power Topology",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "NODE": {
-            "bit": 0,
-            "name": "NodeTopology",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
-          },
-          "TREE": {
-            "bit": 1,
-            "name": "TreeTopology",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
-          },
-          "SET": {
-            "bit": 2,
-            "name": "SetTopology",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
+      "NODE": {
+        "bit": 0,
+        "name": "NodeTopology",
+        "conformance": {
+          "optional": {
+            "choice": "a"
+          }
+        }
+      },
+      "TREE": {
+        "bit": 1,
+        "name": "TreeTopology",
+        "conformance": {
+          "optional": {
+            "choice": "a"
+          }
+        }
+      },
+      "SET": {
+        "bit": 2,
+        "name": "SetTopology",
+        "conformance": {
+          "optional": {
+            "choice": "a"
           }
         }
       },
@@ -8312,118 +8234,113 @@
           "optional": true
         }
       },
-      "choice a": {
-        "min": 1,
-        "features": {
-          "OVERVOLT": {
-            "bit": 21,
-            "name": "OverVoltage",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "UNDERVOLT": {
-            "bit": 22,
-            "name": "UnderVoltage",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "OVERFREQ": {
-            "bit": 23,
-            "name": "OverFrequency",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "UNDERFREQ": {
-            "bit": 24,
-            "name": "UnderFrequency",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "OVERPOWER": {
-            "bit": 25,
-            "name": "OverPower",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "UNDERPOWER": {
-            "bit": 26,
-            "name": "UnderPower",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "OVERCUR": {
-            "bit": 27,
-            "name": "OverCurrent",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "UNDERCUR": {
-            "bit": 28,
-            "name": "UnderCurrent",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "POWERIMP": {
-            "bit": 29,
-            "name": "PowerImport",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "POWEREXP": {
-            "bit": 30,
-            "name": "PowerExport",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "OVERVOLT": {
+        "bit": 21,
+        "name": "OverVoltage",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "UNDERVOLT": {
+        "bit": 22,
+        "name": "UnderVoltage",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "OVERFREQ": {
+        "bit": 23,
+        "name": "OverFrequency",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "UNDERFREQ": {
+        "bit": 24,
+        "name": "UnderFrequency",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "OVERPOWER": {
+        "bit": 25,
+        "name": "OverPower",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "UNDERPOWER": {
+        "bit": 26,
+        "name": "UnderPower",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "OVERCUR": {
+        "bit": 27,
+        "name": "OverCurrent",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "UNDERCUR": {
+        "bit": 28,
+        "name": "UnderCurrent",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "POWERIMP": {
+        "bit": 29,
+        "name": "PowerImport",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "POWEREXP": {
+        "bit": 30,
+        "name": "PowerExport",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       }
@@ -8689,74 +8606,69 @@
     "name": "Electrical Protection Alarm",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "SHORT": {
-            "bit": 20,
-            "name": "ShortCircuit",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "OL": {
-            "bit": 21,
-            "name": "OverLoad",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "OV": {
-            "bit": 22,
-            "name": "OverVoltage",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "SP": {
-            "bit": 23,
-            "name": "SurgeProtection",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "RC": {
-            "bit": 24,
-            "name": "ResidualCurrent",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "ARC": {
-            "bit": 25,
-            "name": "ArcFault",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "SHORT": {
+        "bit": 20,
+        "name": "ShortCircuit",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "OL": {
+        "bit": 21,
+        "name": "OverLoad",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "OV": {
+        "bit": 22,
+        "name": "OverVoltage",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "SP": {
+        "bit": 23,
+        "name": "SurgeProtection",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "RC": {
+        "bit": 24,
+        "name": "ResidualCurrent",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "ARC": {
+        "bit": 25,
+        "name": "ArcFault",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -9644,30 +9556,25 @@
     "name": "Window Covering",
     "revision": 8,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "LF": {
-            "bit": 0,
-            "name": "Lift",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "TL": {
-            "bit": 1,
-            "name": "Tilt",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "LF": {
+        "bit": 0,
+        "name": "Lift",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "TL": {
+        "bit": 1,
+        "name": "Tilt",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -10175,30 +10082,25 @@
     "name": "Closure Control",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "PS": {
-            "bit": 0,
-            "name": "Positioning",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LT": {
-            "bit": 1,
-            "name": "MotionLatching",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "PS": {
+        "bit": 0,
+        "name": "Positioning",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LT": {
+        "bit": 1,
+        "name": "MotionLatching",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -10347,30 +10249,25 @@
     "name": "Closure Dimension",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "PS": {
-            "bit": 0,
-            "name": "Positioning",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LT": {
-            "bit": 1,
-            "name": "MotionLatching",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "PS": {
+        "bit": 0,
+        "name": "Positioning",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LT": {
+        "bit": 1,
+        "name": "MotionLatching",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -10401,44 +10298,38 @@
           }
         }
       },
-      "choice b": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "TR": {
-            "bit": 5,
-            "name": "Translation",
-            "conformance": {
-              "optional": {
-                "choice": "b",
-                "term": {
-                  "feature": "PS"
-                }
-              }
+      "TR": {
+        "bit": 5,
+        "name": "Translation",
+        "conformance": {
+          "optional": {
+            "choice": "b",
+            "term": {
+              "feature": "PS"
             }
-          },
-          "RO": {
-            "bit": 6,
-            "name": "Rotation",
-            "conformance": {
-              "optional": {
-                "choice": "b",
-                "term": {
-                  "feature": "PS"
-                }
-              }
+          }
+        }
+      },
+      "RO": {
+        "bit": 6,
+        "name": "Rotation",
+        "conformance": {
+          "optional": {
+            "choice": "b",
+            "term": {
+              "feature": "PS"
             }
-          },
-          "MD": {
-            "bit": 7,
-            "name": "Modulation",
-            "conformance": {
-              "optional": {
-                "choice": "b",
-                "term": {
-                  "feature": "PS"
-                }
-              }
+          }
+        }
+      },
+      "MD": {
+        "bit": 7,
+        "name": "Modulation",
+        "conformance": {
+          "optional": {
+            "choice": "b",
+            "term": {
+              "feature": "PS"
             }
           }
         }
@@ -10704,63 +10595,58 @@
     "name": "Pump Configuration and Control",
     "revision": 4,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "PRSCONST": {
-            "bit": 0,
-            "name": "ConstantPressure",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "PRSCOMP": {
-            "bit": 1,
-            "name": "CompensatedPressure",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "FLW": {
-            "bit": 2,
-            "name": "ConstantFlow",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "SPD": {
-            "bit": 3,
-            "name": "ConstantSpeed",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "TEMP": {
-            "bit": 4,
-            "name": "ConstantTemperature",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "PRSCONST": {
+        "bit": 0,
+        "name": "ConstantPressure",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "PRSCOMP": {
+        "bit": 1,
+        "name": "CompensatedPressure",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "FLW": {
+        "bit": 2,
+        "name": "ConstantFlow",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "SPD": {
+        "bit": 3,
+        "name": "ConstantSpeed",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "TEMP": {
+        "bit": 4,
+        "name": "ConstantTemperature",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -12442,57 +12328,47 @@
     "name": "Humidistat",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "HUM": {
-            "bit": 0,
-            "name": "Humidifier",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "DEHUM": {
-            "bit": 1,
-            "name": "Dehumidifier",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "HUM": {
+        "bit": 0,
+        "name": "Humidifier",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
-      "choice b": {
-        "min": 1,
-        "features": {
-          "CONT": {
-            "bit": 2,
-            "name": "Continuous",
-            "conformance": {
-              "optional": {
-                "choice": "b",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "SENSOR": {
-            "bit": 3,
-            "name": "Sensor",
-            "conformance": {
-              "optional": {
-                "choice": "b",
-                "more": true,
-                "min": 1
-              }
-            }
+      "DEHUM": {
+        "bit": 1,
+        "name": "Dehumidifier",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "CONT": {
+        "bit": 2,
+        "name": "Continuous",
+        "conformance": {
+          "optional": {
+            "choice": "b",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "SENSOR": {
+        "bit": 3,
+        "name": "Sensor",
+        "conformance": {
+          "optional": {
+            "choice": "b",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -12531,35 +12407,30 @@
           }
         }
       },
-      "choice c": {
-        "min": 1,
-        "features": {
-          "WARM": {
-            "bit": 7,
-            "name": "WarmMist",
-            "conformance": {
-              "optional": {
-                "choice": "c",
-                "more": true,
-                "min": 1,
-                "term": {
-                  "feature": "HUM"
-                }
-              }
+      "WARM": {
+        "bit": 7,
+        "name": "WarmMist",
+        "conformance": {
+          "optional": {
+            "choice": "c",
+            "more": true,
+            "min": 1,
+            "term": {
+              "feature": "HUM"
             }
-          },
-          "COLD": {
-            "bit": 8,
-            "name": "ColdMist",
-            "conformance": {
-              "optional": {
-                "choice": "c",
-                "more": true,
-                "min": 1,
-                "term": {
-                  "feature": "HUM"
-                }
-              }
+          }
+        }
+      },
+      "COLD": {
+        "bit": 8,
+        "name": "ColdMist",
+        "conformance": {
+          "optional": {
+            "choice": "c",
+            "more": true,
+            "min": 1,
+            "term": {
+              "feature": "HUM"
             }
           }
         }
@@ -14243,96 +14114,91 @@
     "name": "Occupancy Sensing",
     "revision": 7,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "OTHER": {
-            "bit": 0,
-            "name": "Other",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "PIR": {
-            "bit": 1,
-            "name": "PassiveInfrared",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "US": {
-            "bit": 2,
-            "name": "Ultrasonic",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "PHY": {
-            "bit": 3,
-            "name": "PhysicalContact",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "AIR": {
-            "bit": 4,
-            "name": "ActiveInfrared",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "RAD": {
-            "bit": 5,
-            "name": "Radar",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "RFS": {
-            "bit": 6,
-            "name": "RFSensing",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "VIS": {
-            "bit": 7,
-            "name": "Vision",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "OTHER": {
+        "bit": 0,
+        "name": "Other",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "PIR": {
+        "bit": 1,
+        "name": "PassiveInfrared",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "US": {
+        "bit": 2,
+        "name": "Ultrasonic",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "PHY": {
+        "bit": 3,
+        "name": "PhysicalContact",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "AIR": {
+        "bit": 4,
+        "name": "ActiveInfrared",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "RAD": {
+        "bit": 5,
+        "name": "Radar",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "RFS": {
+        "bit": 6,
+        "name": "RFSensing",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "VIS": {
+        "bit": 7,
+        "name": "Vision",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -14938,30 +14804,25 @@
     "name": "Carbon Monoxide Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -15153,30 +15014,25 @@
     "name": "Carbon Dioxide Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -15368,30 +15224,25 @@
     "name": "Nitrogen Dioxide Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -15583,30 +15434,25 @@
     "name": "Ozone Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -15798,30 +15644,25 @@
     "name": "PM2.5 Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -16013,30 +15854,25 @@
     "name": "Formaldehyde Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -16228,30 +16064,25 @@
     "name": "PM1 Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -16443,30 +16274,25 @@
     "name": "PM10 Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -16658,30 +16484,25 @@
     "name": "Total Volatile Organic Compounds Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -16873,30 +16694,25 @@
     "name": "Radon Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -17550,41 +17366,36 @@
     "name": "Proximity Ranging",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "WFUSDPD": {
-            "bit": 0,
-            "name": "Wi-Fi USD Proximity Detection",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "BLTCS": {
-            "bit": 1,
-            "name": "Bluetooth Channel Sounding",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "BLERBC": {
-            "bit": 2,
-            "name": "BLE Beacon RSSI",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "WFUSDPD": {
+        "bit": 0,
+        "name": "Wi-Fi USD Proximity Detection",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "BLTCS": {
+        "bit": 1,
+        "name": "Bluetooth Channel Sounding",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "BLERBC": {
+        "bit": 2,
+        "name": "BLE Beacon RSSI",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -17705,30 +17516,25 @@
     "name": "Smoke Concentration Measurement",
     "revision": 5,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "MEA": {
-            "bit": 0,
-            "name": "NumericMeasurement",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "LEV": {
-            "bit": 1,
-            "name": "LevelIndication",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "MEA": {
+        "bit": 0,
+        "name": "NumericMeasurement",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "LEV": {
+        "bit": 1,
+        "name": "LevelIndication",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -18980,41 +18786,36 @@
     "name": "Camera AV Stream Management",
     "revision": 2,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "ADO": {
-            "bit": 0,
-            "name": "Audio",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "VDO": {
-            "bit": 1,
-            "name": "Video",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "SNP": {
-            "bit": 2,
-            "name": "Snapshot",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "ADO": {
+        "bit": 0,
+        "name": "Audio",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "VDO": {
+        "bit": 1,
+        "name": "Video",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "SNP": {
+        "bit": 2,
+        "name": "Snapshot",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -19742,52 +19543,47 @@
     "name": "Camera AV Settings User Level Management",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "DPTZ": {
-            "bit": 0,
-            "name": "DigitalPTZ",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "MPAN": {
-            "bit": 1,
-            "name": "MechanicalPan",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "MTILT": {
-            "bit": 2,
-            "name": "MechanicalTilt",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "MZOOM": {
-            "bit": 3,
-            "name": "MechanicalZoom",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "DPTZ": {
+        "bit": 0,
+        "name": "DigitalPTZ",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "MPAN": {
+        "bit": 1,
+        "name": "MechanicalPan",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "MTILT": {
+        "bit": 2,
+        "name": "MechanicalTilt",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "MZOOM": {
+        "bit": 3,
+        "name": "MechanicalZoom",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
@@ -20103,27 +19899,21 @@
     "name": "AV Analysis",
     "revision": 1,
     "features": {
-      "choice a": {
-        "min": 1,
-        "max": 1,
-        "features": {
-          "LCLCONDETECT": {
-            "bit": 0,
-            "name": "LocalContextDetection",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
-          },
-          "REMCONDETECT": {
-            "bit": 1,
-            "name": "RemoteContextDetection",
-            "conformance": {
-              "optional": {
-                "choice": "a"
-              }
-            }
+      "LCLCONDETECT": {
+        "bit": 0,
+        "name": "LocalContextDetection",
+        "conformance": {
+          "optional": {
+            "choice": "a"
+          }
+        }
+      },
+      "REMCONDETECT": {
+        "bit": 1,
+        "name": "RemoteContextDetection",
+        "conformance": {
+          "optional": {
+            "choice": "a"
           }
         }
       },
@@ -20206,41 +19996,36 @@
     "name": "Commodity Tariff",
     "revision": 2,
     "features": {
-      "choice a": {
-        "min": 1,
-        "features": {
-          "PRICE": {
-            "bit": 0,
-            "name": "Pricing",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "FCRED": {
-            "bit": 1,
-            "name": "FriendlyCredit",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
-          },
-          "AUXLD": {
-            "bit": 2,
-            "name": "AuxiliaryLoad",
-            "conformance": {
-              "optional": {
-                "choice": "a",
-                "more": true,
-                "min": 1
-              }
-            }
+      "PRICE": {
+        "bit": 0,
+        "name": "Pricing",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "FCRED": {
+        "bit": 1,
+        "name": "FriendlyCredit",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
+          }
+        }
+      },
+      "AUXLD": {
+        "bit": 2,
+        "name": "AuxiliaryLoad",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1
           }
         }
       },
