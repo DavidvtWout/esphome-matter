@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from pathlib import Path
 
-from ..util import load_data_model_json, snake_case
+from ..util import snake_case
 from .commands import CommandArg
 from .conformance import Conformance
 
@@ -33,8 +32,3 @@ class Event:
             fields=tuple(CommandArg.from_dict(field) for field in data["fields"]),
             conformance=Conformance.from_dict(data.get("conformance")),
         )
-
-
-EVENTS: tuple[Event, ...] = load_data_model_json(
-    Path(__file__).resolve().parent / "events.json", Event
-)

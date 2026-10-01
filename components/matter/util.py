@@ -1,20 +1,8 @@
-import json
 import re
 from collections.abc import Iterator, Mapping, Sequence
-from pathlib import Path
 
 import esphome.config_validation as cv
 from esphome.types import ConfigFragmentType
-
-
-def load_data_model_json(path: Path, data_type):
-    items = []
-    with open(path, "r") as file:
-        contents = json.load(file)
-    for cluster_name, commands_data in contents.items():
-        for name, data in commands_data.items():
-            items.append(data_type.from_dict(cluster_name, name, data))
-    return tuple(items)
 
 
 def iter_matter_actions(

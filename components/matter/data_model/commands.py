@@ -1,9 +1,8 @@
 from dataclasses import dataclass, field
-from pathlib import Path
 
 import esphome.config_validation as cv
 
-from ..util import load_data_model_json, snake_case
+from ..util import snake_case
 from .conformance import Conformance
 from .units import UNIT_VALIDATORS
 
@@ -199,8 +198,3 @@ class Command:
             args=tuple([CommandArg.from_dict(arg) for arg in data["args"]]),
             conformance=Conformance.from_dict(data.get("conformance")),
         )
-
-
-COMMANDS: tuple[Command, ...] = load_data_model_json(
-    Path(__file__).resolve().parent / "commands.json", Command
-)

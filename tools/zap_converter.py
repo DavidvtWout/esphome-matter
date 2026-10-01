@@ -805,27 +805,30 @@ def apply_command_overrides(commands: dict, overrides: dict) -> None:
                     args_by_name[arg_name].update(arg_override)
 
 
-def apply_cluster_overrides(clusters: list[dict], overrides: dict[str, dict]) -> None:
-    clusters_by_name = {cluster["name"]: cluster for cluster in clusters}
+def apply_cluster_overrides(
+    clusters: dict[str, dict], overrides: dict[str, dict]
+) -> None:
+    clusters_by_name = {cluster["name"]: cluster for cluster in clusters.values()}
     for cluster_name, override in overrides.items():
         if cluster_name not in clusters_by_name:
             raise ValueError(f"Unknown cluster override: {cluster_name}")
         clusters_by_name[cluster_name].update(override)
 
 
-def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
-    clusters = []
+def post_process_clusters(
+    raw_clusters: list[Cluster], commands: dict, events: dict
+) -> dict[str, dict]:
+    clusters = {}
     for cluster in sorted(raw_clusters, key=lambda c: c.id):
         cluster_data: dict[str, ...] = {
-            "id": cluster.id,
             "name": cluster.name,
             "revision": cluster.revision,
         }
 
         features = {}
         for feature in cluster.features:
-            features[feature.code] = {
-                "bit": feature.bit,
+            features[str(feature.bit)] = {
+                "code": feature.code,
                 "name": feature.name,
                 **(
                     {"conformance": feature.conformance}
@@ -836,15 +839,15 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
         if features:
             cluster_data["features"] = features
 
-        server_attributes = []
-        client_attributes = []
+        attributes = {}
         for attr in cluster.attributes:
             attribute_data = filter_none(
                 {
-                    "id": attr.code,
                     "define": attr.define,
                     "name": attr.name,
                     "type": attr.type,
+                    "server": True if attr.side in ("server", "either") else None,
+                    "client": True if attr.side in ("client", "either") else None,
                     "min": attr.min,
                     "max": attr.max,
                     "writable": attr.writable,
@@ -853,75 +856,62 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
                     "conformance": attr.conformance,
                 }
             )
-            if attr.side in ("server", "either"):
-                server_attributes.append(attribute_data)
-            if attr.side in ("client", "either"):
-                client_attributes.append(attribute_data)
+            attributes[str(attr.code)] = attribute_data
 
-        if server_attributes:
-            cluster_data["server_attributes"] = server_attributes
-        if client_attributes:
-            cluster_data["client_attributes"] = client_attributes
+        if attributes:
+            cluster_data["attributes"] = attributes
+        cluster_name = camel_case(cluster.name)
+        if cluster_name in commands:
+            cluster_data["commands"] = commands[cluster_name]
+        if cluster_name in events:
+            cluster_data["events"] = events[cluster_name]
 
-        clusters.append(cluster_data)
+        clusters[str(cluster.id)] = cluster_data
     return clusters
 
 
 def post_process_device_types(
     raw_device_types: list[DeviceType], raw_clusters: list[Cluster]
-) -> list[dict]:
-    device_types = []
+) -> dict[str, dict]:
+    device_types = {}
 
     raw_clusters_by_name = {c.name: c for c in raw_clusters}
 
-    for raw_device_type in raw_device_types:
+    for raw_device_type in sorted(raw_device_types, key=lambda item: item.device_id):
         device_type: dict[str, ...] = {
-            "id": raw_device_type.device_id,
             "name": raw_device_type.name,
             "revision": raw_device_type.revision,
         }
-        server_clusters = []
-        client_clusters = []
-        for cluster_config in raw_device_type.clusters:
+        clusters = {}
+        cluster_configs = sorted(
+            raw_device_type.clusters,
+            key=lambda item: (
+                raw_clusters_by_name[item.name].id
+                if item.name in raw_clusters_by_name
+                else 0xFFFFFFFF
+            ),
+        )
+        for cluster_config in cluster_configs:
             cluster = raw_clusters_by_name.get(cluster_config.name)
             if not cluster:
                 print(f"WARNING: {cluster_config.name} cluster not found!")
                 continue
 
-            if cluster_config.server or not cluster_config.server_locked:
-                server_clusters.append(
-                    filter_empty(
-                        {
-                            "id": cluster.id,
-                            "name": cluster_config.name,
-                            "required": cluster_config.server
-                            and cluster_config.server_locked,
-                            "features": cluster_config.features,
-                            "required_attributes": cluster_config.required_attributes,
-                            "required_commands": cluster_config.required_commands,
-                        }
-                    )
-                )
-            if cluster_config.client or not cluster_config.client_locked:
-                client_clusters.append(
-                    filter_empty(
-                        {
-                            "id": cluster.id,
-                            "name": cluster_config.name,
-                            "required": cluster_config.client
-                            and cluster_config.client_locked,
-                            "features": cluster_config.features,
-                            "required_attributes": cluster_config.required_attributes,
-                            "required_commands": cluster_config.required_commands,
-                        }
-                    )
-                )
+            clusters[str(cluster.id)] = filter_empty(
+                {
+                    "name": cluster_config.name,
+                    "server": cluster_config.server,
+                    "client": cluster_config.client,
+                    "server_locked": cluster_config.server_locked,
+                    "client_locked": cluster_config.client_locked,
+                    "features": cluster_config.features,
+                    "required_attributes": cluster_config.required_attributes,
+                    "required_commands": cluster_config.required_commands,
+                }
+            )
 
-        server_clusters.sort(key=lambda c: c["id"])
-        device_type["server_clusters"] = server_clusters
-        client_clusters.sort(key=lambda c: c["id"])
-        device_type["client_clusters"] = client_clusters
-        device_types.append(device_type)
+        device_type["clusters"] = clusters
+        device_types[str(raw_device_type.device_id)] = device_type
 
     return device_types
 
@@ -1058,7 +1048,7 @@ def generate_attribute_documentation(clusters: list[Cluster]) -> str:
 
 
 def generate_device_type_documentation(
-    device_types: list[dict], clusters: list[Cluster]
+    device_types: dict[str, dict], clusters: list[Cluster]
 ) -> str:
     lines = [
         "This file is automatically generated by tools/zap_converter.py. Don't edit it.\n\n"
@@ -1068,13 +1058,15 @@ def generate_device_type_documentation(
         "are shown commented out unless they belong to an unresolved feature choice.\n"
     ]
     clusters_by_id = {cluster.id: cluster for cluster in clusters}
-    for device_type in device_types:
+    for device_type in device_types.values():
         features: dict[str, str | None] = {}
         inherited_features: dict[str, str | None] = {}
         feature_choices: list[tuple[Choice, dict[str, str | None]]] = []
         feature_choice_keys: set[tuple[int, int | None, tuple[str, ...]]] = set()
-        for cluster_config in device_type["server_clusters"]:
-            cluster = clusters_by_id[cluster_config["id"]]
+        for cluster_id, cluster_config in device_type["clusters"].items():
+            if not cluster_config.get("server") and cluster_config.get("server_locked"):
+                continue
+            cluster = clusters_by_id[int(cluster_id)]
             conformance = cluster_config.get("features", {})
 
             def conformance_type(feature_code: str) -> str | None:
@@ -1096,9 +1088,10 @@ def generate_device_type_documentation(
                 # omitted feature keeps the availability defined by the cluster.
                 # Features on optional clusters were already documented before
                 # required clusters began inheriting their cluster features.
-                if feature_rule_type == "optional" or not cluster_config.get(
-                    "required", False
-                ):
+                required = cluster_config.get("server", False) and cluster_config.get(
+                    "server_locked", False
+                )
+                if feature_rule_type == "optional" or not required:
                     return "explicit"
                 return "inherited"
 
@@ -1211,22 +1204,22 @@ def generate_device_type_documentation(
             lines.append(f"      {name}:")
 
         optional_server_clusters = [
-            cluster_config
-            for cluster_config in device_type["server_clusters"]
-            if not cluster_config.get("required", False)
+            (cluster_id, cluster_config)
+            for cluster_id, cluster_config in device_type["clusters"].items()
+            if not cluster_config.get("server_locked", False)
         ]
         optional_client_clusters = [
-            cluster_config
-            for cluster_config in device_type["client_clusters"]
-            if not cluster_config.get("required", False)
+            (cluster_id, cluster_config)
+            for cluster_id, cluster_config in device_type["clusters"].items()
+            if not cluster_config.get("client_locked", False)
         ]
         if optional_server_clusters:
             lines.append("      clusters:")
             lines.append(
                 f"        # The following server clusters are optional to {name};"
             )
-            for cluster_config in optional_server_clusters:
-                cluster = clusters_by_id[cluster_config["id"]]
+            for cluster_id, cluster_config in optional_server_clusters:
+                cluster = clusters_by_id[int(cluster_id)]
                 cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
                 description = sanitize_description(cluster.description).replace(
                     "\n", " "
@@ -1236,8 +1229,8 @@ def generate_device_type_documentation(
                 lines.append(
                     "        # Client clusters aren't supported by esphome-matter yet."
                 )
-                for cluster_config in optional_client_clusters:
-                    cluster = clusters_by_id[cluster_config["id"]]
+                for cluster_id, cluster_config in optional_client_clusters:
+                    cluster = clusters_by_id[int(cluster_id)]
                     cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
                     description = sanitize_description(cluster.description).replace(
                         "\n", " "
@@ -1249,8 +1242,8 @@ def generate_device_type_documentation(
                 f"        # The following client clusters are optional to {name}, but "
                 "client clusters aren't supported by esphome-matter yet;"
             )
-            for cluster_config in optional_client_clusters:
-                cluster = clusters_by_id[cluster_config["id"]]
+            for cluster_id, cluster_config in optional_client_clusters:
+                cluster = clusters_by_id[int(cluster_id)]
                 cluster_name = camel_case_to_snake_case(camel_case(cluster.name))
                 description = sanitize_description(cluster.description).replace(
                     "\n", " "
@@ -1331,28 +1324,23 @@ def main():
     field_resolver = FieldResolver(enums, bitmaps, structs)
     commands = post_process_commands(raw_clusters, field_resolver)
     events = post_process_events(raw_clusters, field_resolver)
-    clusters = post_process_clusters(raw_clusters)
     device_types = post_process_device_types(raw_device_types, raw_clusters)
     fixup(device_types)
+
+    with open(args.output_path / "overrides" / "commands.json") as file:
+        command_overrides = json.load(file)
+    apply_command_overrides(commands, command_overrides)
+    clusters = post_process_clusters(raw_clusters, commands, events)
 
     with open(args.output_path / "overrides" / "clusters.json") as file:
         cluster_overrides = json.load(file)
     apply_cluster_overrides(clusters, cluster_overrides)
 
     with open(args.output_path / "device_types.json", "w") as file:
-        json.dump(sorted(device_types, key=lambda d: d["id"]), file, indent=2)
+        json.dump(device_types, file, indent=2)
 
     with open(args.output_path / "clusters.json", "w") as file:
         json.dump(clusters, file, indent=2)
-
-    with open(args.output_path / "overrides" / "commands.json") as file:
-        command_overrides = json.load(file)
-    apply_command_overrides(commands, command_overrides)
-    with open(args.output_path / "commands.json", "w") as file:
-        json.dump(commands, file, indent=2)
-
-    with open(args.output_path / "events.json", "w") as file:
-        json.dump(events, file, indent=2)
 
     documentation_path = Path(__file__).resolve().parent.parent / "docs" / "generated"
     documentation_path.mkdir(parents=True, exist_ok=True)

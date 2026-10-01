@@ -40,7 +40,9 @@ def _on_attribute_schema():
     options = {}
     for cluster in CLUSTERS:
         attributes = {}
-        for attribute in cluster.server_attributes:
+        for attribute in cluster.attributes:
+            if not attribute.server:
+                continue
             if attribute.name is None:
                 continue
             value_type = attribute_value_type(attribute)
@@ -65,7 +67,9 @@ def _validate_on_attribute_forms(config):
     for cluster in CLUSTERS:
         cluster_key = snake_case(cluster.name)
         nested = configured.get(cluster_key, {})
-        for attribute in cluster.server_attributes:
+        for attribute in cluster.attributes:
+            if not attribute.server:
+                continue
             if attribute.name is None:
                 continue
             attribute_key = snake_case(attribute.name)
@@ -115,6 +119,10 @@ class Endpoint:
         )
         self._device_types: list[DeviceType] = []
         self._light_variables = {}
+
+    @property
+    def endpoint_id(self) -> int:
+        return self._endpoint_id
 
     @property
     def config(self) -> dict:
@@ -292,7 +300,9 @@ class Endpoint:
         for cluster in CLUSTERS:
             cluster_key = snake_case(cluster.name)
             cluster_config = configured_clusters.get(cluster_key, {})
-            for attribute in cluster.server_attributes:
+            for attribute in cluster.attributes:
+                if not attribute.server:
+                    continue
                 if attribute.name is None:
                     continue
                 value_type = attribute_value_type(attribute)
@@ -537,37 +547,37 @@ class Endpoint:
         return "\n".join(lines)
 
 
-def get_endpoint(
-    endpoints: dict[int, Endpoint], endpoint_reference: int | ID
-) -> Endpoint:
-    if isinstance(endpoint_reference, int):
-        endpoint = endpoints.get(endpoint_reference)
-    else:
-        endpoint = next(
-            (
-                endpoint
-                for endpoint in endpoints.values()
-                if endpoint.config[CONF_ID] == endpoint_reference
-            ),
-            None,
-        )
-    if endpoint is None:
-        raise cv.Invalid(f"Unknown Matter endpoint '{endpoint_reference}'")
-    return endpoint
+class EndpointRegistry:
+    def __init__(self):
+        self._endpoints: list[Endpoint] = []
+        self._lookup: dict[int | ID, Endpoint] = {}
+
+    def register(self, endpoint: Endpoint):
+        self._endpoints.append(endpoint)
+        self._lookup[endpoint.endpoint_id] = endpoint
+        self._lookup[endpoint.config[CONF_ID]] = endpoint
+
+    def lookup(self, endpoint_reference: int | ID) -> Endpoint:
+        endpoint = self._lookup.get(endpoint_reference)
+        if endpoint is None:
+            raise cv.Invalid(f"Unknown Matter endpoint '{endpoint_reference}'")
+        return endpoint
+
+    def __iter__(self):
+        return iter(self._endpoints)
 
 
-def build_endpoints(matter_config: dict, full_config: Config) -> dict[int, Endpoint]:
+def build_endpoints(matter_config: dict, full_config: Config) -> EndpointRegistry:
     """During validation an endpoint registry is built and stored in CORE.data["matter"]["endpoints"]."""
-    endpoints = {
-        endpoint_id: Endpoint(endpoint_id, endpoint_config)
-        for endpoint_id, endpoint_config in matter_config[CONF_ENDPOINTS].items()
-    }
+    endpoints = EndpointRegistry()
+    for endpoint_id, endpoint_config in matter_config[CONF_ENDPOINTS].items():
+        endpoints.register(Endpoint(endpoint_id, endpoint_config))
 
     # Register matter actions that might require specific features to the endpoints.
     for action_type, action in iter_matter_actions(full_config):
         if action_type not in ("matter.send_event", "matter.set_attribute"):
             continue
-        endpoint = get_endpoint(endpoints, action[CONF_ENDPOINT])
+        endpoint = endpoints.lookup(action[CONF_ENDPOINT])
         if action_type == "matter.send_event":
             endpoint.register_usage(get_event_from_config(action))
         else:
@@ -598,7 +608,7 @@ async def register_endpoints(var, config: ConfigType):
         }
     )
 
-    for endpoint in CORE.data[CONF_MATTER][CONF_ENDPOINTS].values():
+    for endpoint in CORE.data[CONF_MATTER][CONF_ENDPOINTS]:
         await endpoint.register(var)
         global_includes.update(endpoint.global_includes)
         enabled_sdkconfig_clusters.update(endpoint.enabled_sdkconfig_options)

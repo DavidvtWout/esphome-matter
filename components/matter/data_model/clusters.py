@@ -8,22 +8,26 @@ import esphome.config_validation as cv
 from ..const import CONF_WITH_FEATURES
 from ..util import snake_case
 from .attributes import Attribute
+from .commands import Command
 from .conformance import Conformance
+from .events import Event
 
 _LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
 class Feature:
+    bit: int
     code: str
     name: str  # CamelCase
     conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
-    def from_dict(cls, code: str, data: dict):
+    def from_dict(cls, bit: int, data: dict):
         name = data["name"].replace("/", "").replace(" ", "").replace("-", "")
         return cls(
-            code=code,
+            bit=bit,
+            code=data["code"],
             name=name,
             conformance=Conformance.from_dict(data.get("conformance")),
         )
@@ -50,7 +54,9 @@ class Cluster:
     name: str
     revision: int
     features: tuple[Feature, ...]
-    server_attributes: tuple[Attribute, ...]
+    attributes: tuple[Attribute, ...]
+    commands: tuple[Command, ...]
+    events: tuple[Event, ...]
     # ----------------------------------- #
     # Derived attributes                  #
     # ----------------------------------- #
@@ -65,7 +71,14 @@ class Cluster:
     # ----------------------------------- #
     # Set by DeviceType                   #
     # ----------------------------------- #
-    required: bool = False
+    server: bool = False
+    client: bool = False
+    server_locked: bool = False
+    client_locked: bool = False
+
+    @property
+    def required(self) -> bool:
+        return self.server and self.server_locked
 
     @classmethod
     def from_dict(cls, data: dict):
@@ -76,8 +89,8 @@ class Cluster:
         )
 
         _features = []
-        for code, feature_data in data.get("features", {}).items():
-            _features.append(Feature.from_dict(code, feature_data))
+        for bit, feature_data in data.get("features", {}).items():
+            _features.append(Feature.from_dict(int(bit), feature_data))
 
         # TODO: are there more exceptions?
         if camel_case_name.endswith("ConcentrationMeasurement"):
@@ -104,13 +117,21 @@ class Cluster:
             id=data["id"],
             _name=name,
             name=camel_case_name,
-            conf_key=snake_case(name),
+            conf_key=snake_case(camel_case_name),
             # Some lack a revision. Assuming it's 1...
             revision=data.get("revision", 1),
             features=tuple(_features),
-            server_attributes=tuple(
-                Attribute.from_dict(camel_case_name, a)
-                for a in data.get("server_attributes", ())
+            attributes=tuple(
+                Attribute.from_dict(camel_case_name, int(attribute_id), attribute)
+                for attribute_id, attribute in data.get("attributes", {}).items()
+            ),
+            commands=tuple(
+                Command.from_dict(camel_case_name, command_name, command)
+                for command_name, command in data.get("commands", {}).items()
+            ),
+            events=tuple(
+                Event.from_dict(camel_case_name, event_name, event)
+                for event_name, event in data.get("events", {}).items()
             ),
             sdkconfig_option=sdkconfig_option,
             chip_fqn=chip_fqn,
@@ -119,7 +140,9 @@ class Cluster:
         )
 
     def get_attribute(self, name: str) -> Attribute | None:
-        for attribute in self.server_attributes:
+        for attribute in self.attributes:
+            if not attribute.server:
+                continue
             if name in (attribute.name, attribute.conf_key, attribute.id):
                 return attribute
         return None
@@ -128,6 +151,18 @@ class Cluster:
         for feature in self.features:
             if name_or_code in (feature.name, feature.code, feature.namespace):
                 return feature
+        return None
+
+    def get_command(self, name: str) -> Command | None:
+        for command in self.commands:
+            if name in (command.name, snake_case(command.name), command.id):
+                return command
+        return None
+
+    def get_event(self, name: str) -> Event | None:
+        for event in self.events:
+            if name in (event.name, event.conf_key, event.id):
+                return event
         return None
 
     @property
@@ -171,8 +206,8 @@ def _load_clusters(
     clusters: list[Cluster] = []
     with open(clusters_file, "r") as file:
         contents = json.load(file)
-    for clusters_data in contents:
-        clusters.append(Cluster.from_dict(clusters_data))
+    for cluster_id, cluster_data in contents.items():
+        clusters.append(Cluster.from_dict({"id": int(cluster_id), **cluster_data}))
     return tuple(clusters)
 
 

@@ -24,19 +24,23 @@ class Attribute:
     # is_nullable: bool = False
     writable: bool = False
     optional: bool = False
+    server: bool = False
+    client: bool = False
     conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
-    def from_dict(cls, cluster_name: str, data: dict):
+    def from_dict(cls, cluster_name: str, attribute_id: int, data: dict):
         name: str = data.get("name", data["define"])
         return cls(
             cluster_name=cluster_name,
-            id=data["id"],
+            id=attribute_id,
             name=name,
             conf_key=snake_case(name),
             type=data["type"],
             writable=data["writable"],
             optional=data["optional"],
+            server=data.get("server", False),
+            client=data.get("client", False),
             conformance=Conformance.from_dict(data.get("conformance")),
         )
 
