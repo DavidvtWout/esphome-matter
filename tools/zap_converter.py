@@ -38,6 +38,143 @@ def format_counter(data: dict[str, int]) -> str:
     )
 
 
+CONFORMANCE_TYPES = {
+    "deprecateConform": "deprecated",
+    "describedConform": "described",
+    "disallowConform": "disallowed",
+    "mandatoryConform": "mandatory",
+    "optionalConform": "optional",
+    "otherwiseConform": "otherwise",
+    "provisionalConform": "provisional",
+}
+CONFORMANCE_TERMS = {
+    "andTerm": "and",
+    "orTerm": "or",
+    "notTerm": "not",
+    "greaterTerm": "greater",
+    "greaterOrEqualTerm": "greater_or_equal",
+}
+CONFORMANCE_REFERENCES = {
+    "attribute",
+    "command",
+    "condition",
+    "feature",
+    "revision",
+}
+
+
+def _conformance_scalar(value: str) -> str | int | bool:
+    if value == "true":
+        return True
+    if value == "false":
+        return False
+    try:
+        return int(value, 0)
+    except ValueError:
+        return value
+
+
+def _parse_conformance_node(elem, context: str) -> dict | None:
+    if elem.tag in CONFORMANCE_REFERENCES:
+        attribute = "value" if elem.tag == "revision" else "name"
+        value = elem.get(attribute)
+        if value is None or list(elem):
+            print(
+                f"WARNING: Unsupported conformance reference in {context}: {elem.tag}"
+            )
+            return None
+        return {elem.tag: _conformance_scalar(value)}
+
+    if elem.tag == "literal":
+        value = elem.get("value")
+        if value is None or list(elem):
+            print(f"WARNING: Unsupported conformance literal in {context}")
+            return None
+        return {"literal": _conformance_scalar(value)}
+
+    if elem.tag in CONFORMANCE_TERMS:
+        children = []
+        for child in elem:
+            parsed = _parse_conformance_node(child, context)
+            if parsed is None:
+                return None
+            children.append(parsed)
+        operator = CONFORMANCE_TERMS[elem.tag]
+        expected_children = (
+            1
+            if operator == "not"
+            else 2
+            if operator
+            in (
+                "greater",
+                "greater_or_equal",
+            )
+            else None
+        )
+        if not children or (
+            expected_children is not None and len(children) != expected_children
+        ):
+            print(
+                f"WARNING: Unsupported {elem.tag} child count in {context}: "
+                f"{len(children)}"
+            )
+            return None
+        return {operator: children[0] if operator == "not" else children}
+
+    if elem.tag in CONFORMANCE_TYPES:
+        children = []
+        for child in elem:
+            parsed = _parse_conformance_node(child, context)
+            if parsed is None:
+                return None
+            children.append(parsed)
+        rule_type = CONFORMANCE_TYPES[elem.tag]
+        attributes = {
+            key: _conformance_scalar(value) for key, value in elem.attrib.items()
+        }
+        if rule_type == "otherwise":
+            if attributes or not children:
+                print(f"WARNING: Unsupported otherwiseConform in {context}")
+                return None
+            return {rule_type: children}
+        if len(children) > 1:
+            print(f"WARNING: Unsupported {elem.tag} child count in {context}")
+            return None
+        if attributes:
+            if children:
+                attributes["term"] = children[0]
+            return {rule_type: attributes}
+        return {rule_type: children[0] if children else True}
+
+    print(f"WARNING: Unsupported conformance element in {context}: {elem.tag}")
+    return None
+
+
+def parse_conformance(elem, context: str) -> dict | None:
+    conform_elements = [child for child in elem if child.tag.endswith("Conform")]
+    bare_terms = [
+        child
+        for child in elem
+        if child.tag in CONFORMANCE_TERMS
+        or child.tag in CONFORMANCE_REFERENCES
+        or child.tag == "literal"
+    ]
+    for bare_term in bare_terms:
+        print(
+            f"WARNING: Unsupported top-level conformance term in {context}: "
+            f"{bare_term.tag}"
+        )
+    if not conform_elements:
+        return None
+    rules = []
+    for conform_elem in conform_elements:
+        parsed = _parse_conformance_node(conform_elem, context)
+        if parsed is None:
+            return None
+        rules.append(parsed)
+    return rules[0] if len(rules) == 1 else {"all": rules}
+
+
 # Also used for bitmaps
 @dataclass
 class Enum:
@@ -61,6 +198,7 @@ class Attribute:
     optional: bool = False
     default: Any | None = None
     length: int | None = None
+    conformance: dict | None = None
     # entryType
     # apiMaturity
     # minLength
@@ -79,6 +217,7 @@ class CommandArg:
     array: bool = False
     length: int | None = None
     min_length: int | None = None
+    conformance: dict | None = None
     # apiMaturity
 
 
@@ -104,6 +243,7 @@ class Command:
     # mustUseTimedInvoke
     description: str | None = None
     args: list[CommandArg] = field(default_factory=list)
+    conformance: dict | None = None
 
 
 @dataclass
@@ -114,6 +254,7 @@ class Event:
     api_maturity: str | None = None
     description: str | None = None
     fields: list[CommandArg] = field(default_factory=list)
+    conformance: dict | None = None
 
 
 @dataclass
@@ -122,6 +263,7 @@ class Feature:
     code: str
     name: str
     summary: str | None = None
+    conformance: dict | None = None
 
 
 @dataclass
@@ -154,6 +296,7 @@ class DeviceCluster:
     client_locked: bool
     server_locked: bool
     features: dict[str, str]
+    feature_conformance: dict[str, dict]
     ignored_features: list[str]
     required_attributes: list
     required_commands: list
@@ -209,9 +352,15 @@ def parse_device_type_elem(elem) -> DeviceType | None:
     device_clusters = []
     for cluster_elem in elem.findall("./clusters/include"):
         features = {}
+        feature_conformance = {}
         ignored_features = []
         for feature_elem in cluster_elem.findall("./features/feature"):
             feature_code = feature_elem.attrib["code"]
+            context = (
+                f"device type {name}.{cluster_elem.attrib['cluster']}.{feature_code}"
+            )
+            if conformance := parse_conformance(feature_elem, context):
+                feature_conformance[feature_code] = conformance
             conform_elements = list(feature_elem)
             if not conform_elements:
                 # Assuming no conform means mandatory, but I'm not entire sure...
@@ -248,6 +397,7 @@ def parse_device_type_elem(elem) -> DeviceType | None:
             client_locked=cluster_elem.get("clientLocked") == "true",
             server_locked=cluster_elem.get("serverLocked") == "true",
             features=features,
+            feature_conformance=feature_conformance,
             ignored_features=ignored_features,
             required_attributes=[
                 e.text for e in cluster_elem.findall("./requireAttribute")
@@ -268,7 +418,9 @@ def parse_device_type_elem(elem) -> DeviceType | None:
     return device_type
 
 
-def parse_field_elem(elem, attrs_counter=None) -> CommandArg:
+def parse_field_elem(
+    elem, attrs_counter=None, context: str | None = None
+) -> CommandArg:
     if attrs_counter is not None:
         for key in elem.attrib:
             attrs_counter[key] += 1
@@ -313,6 +465,9 @@ def parse_field_elem(elem, attrs_counter=None) -> CommandArg:
         array=elem.get("array") == "true",
         length=int(v, 0) if (v := elem.get("length")) else None,
         min_length=int(v, 0) if (v := elem.get("minLength")) else None,
+        conformance=parse_conformance(
+            elem, context or f"{elem.tag} {elem.get('name', '<unnamed>')}"
+        ),
     )
 
 
@@ -334,6 +489,10 @@ def parse_cluster_elem(elem) -> Cluster:
             code=feature_elem.get("code"),
             name=feature_elem.get("name"),
             summary=feature_elem.get("summary"),
+            conformance=parse_conformance(
+                feature_elem,
+                f"cluster {cluster.name} feature {feature_elem.get('code')}",
+            ),
         )
         choice_name = (
             optional_conform.get("choice") if optional_conform is not None else None
@@ -373,6 +532,10 @@ def parse_cluster_elem(elem) -> Cluster:
             side=attribute_elem.get("side"),
             type=attribute_elem.get("type"),
             define=attribute_elem.get("define"),
+            conformance=parse_conformance(
+                attribute_elem,
+                f"cluster {cluster.name} attribute {attribute_elem.get('name')}",
+            ),
         )
         attribute.min = int(v, 0) if (v := attribute_elem.get("min")) else None
         attribute.max = int(v, 0) if (v := attribute_elem.get("max")) else None
@@ -392,7 +555,14 @@ def parse_cluster_elem(elem) -> Cluster:
 
         args = []
         for arg_elem in command_elem.findall("./arg"):
-            args.append(parse_field_elem(arg_elem, command_arg_attrs))
+            args.append(
+                parse_field_elem(
+                    arg_elem,
+                    command_arg_attrs,
+                    f"cluster {cluster.name} command {command_elem.get('name')} "
+                    f"argument {arg_elem.get('name')}",
+                )
+            )
 
         commands.append(
             Command(
@@ -401,6 +571,10 @@ def parse_cluster_elem(elem) -> Cluster:
                 name=command_elem.get("name"),
                 description=command_elem.findtext("description").strip(),
                 args=args,
+                conformance=parse_conformance(
+                    command_elem,
+                    f"cluster {cluster.name} command {command_elem.get('name')}",
+                ),
             )
         )
     cluster.commands = commands
@@ -421,9 +595,18 @@ def parse_cluster_elem(elem) -> Cluster:
                     else None
                 ),
                 fields=[
-                    parse_field_elem(field_elem, event_field_attrs)
+                    parse_field_elem(
+                        field_elem,
+                        event_field_attrs,
+                        f"cluster {cluster.name} event {event_elem.get('name')} "
+                        f"field {field_elem.get('name')}",
+                    )
                     for field_elem in event_elem.findall("./field")
                 ],
+                conformance=parse_conformance(
+                    event_elem,
+                    f"cluster {cluster.name} event {event_elem.get('name')}",
+                ),
             )
         )
     cluster.events = events
@@ -463,7 +646,12 @@ def parse_struct_elem(elem) -> Struct:
     if cluster_elem is not None:
         struct.cluster_code = int(cluster_elem.get("code"), 0)
     for item_elem in elem.findall("./item"):
-        struct.items.append(parse_field_elem(item_elem))
+        struct.items.append(
+            parse_field_elem(
+                item_elem,
+                context=f"struct {struct.name} item {item_elem.get('name')}",
+            )
+        )
     return struct
 
 
@@ -579,6 +767,7 @@ class FieldResolver:
                 "enum_values": enum_values,
                 "bitmap_masks": bitmap_masks,
                 "struct": struct_values,
+                "conformance": item.conformance,
             }
         )
 
@@ -603,6 +792,7 @@ def post_process_commands(clusters: list[Cluster], resolver: FieldResolver) -> d
                 {
                     "id": command.code,
                     "args": args,
+                    "conformance": command.conformance,
                 }
             )
 
@@ -625,6 +815,11 @@ def post_process_events(clusters: list[Cluster], resolver: FieldResolver) -> dic
                 "id": event.code,
                 "priority": event.priority,
                 "fields": fields,
+                **(
+                    {"conformance": event.conformance}
+                    if event.conformance is not None
+                    else {}
+                ),
             }
         if cluster_events:
             events[camel_case(cluster.name)] = cluster_events
@@ -687,6 +882,11 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
                             choice_feature.code: {
                                 "bit": choice_feature.bit,
                                 "name": choice_feature.name,
+                                **(
+                                    {"conformance": choice_feature.conformance}
+                                    if choice_feature.conformance is not None
+                                    else {}
+                                ),
                             }
                             for choice_feature in feature.features
                         },
@@ -696,6 +896,11 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
                 features[feature.code] = {
                     "bit": feature.bit,
                     "name": feature.name,
+                    **(
+                        {"conformance": feature.conformance}
+                        if feature.conformance is not None
+                        else {}
+                    ),
                 }
         if features:
             cluster_data["features"] = features
@@ -714,6 +919,7 @@ def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
                     "writable": attr.writable,
                     "optional": attr.optional,
                     "default": attr.default,
+                    "conformance": attr.conformance,
                 }
             )
             if attr.side in ("server", "either"):
@@ -760,6 +966,7 @@ def post_process_device_types(
                             "required": cluster_config.server
                             and cluster_config.server_locked,
                             "features": cluster_config.features,
+                            "feature_conformance": cluster_config.feature_conformance,
                             "ignored_features": cluster_config.ignored_features,
                             "required_attributes": cluster_config.required_attributes,
                             "required_commands": cluster_config.required_commands,
@@ -775,6 +982,7 @@ def post_process_device_types(
                             "required": cluster_config.client
                             and cluster_config.client_locked,
                             "features": cluster_config.features,
+                            "feature_conformance": cluster_config.feature_conformance,
                             "ignored_features": cluster_config.ignored_features,
                             "required_attributes": cluster_config.required_attributes,
                             "required_commands": cluster_config.required_commands,

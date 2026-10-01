@@ -36,6 +36,43 @@
         "features": {
           "USR": "mandatory"
         },
+        "feature_conformance": {
+          "USR": {
+            "mandatory": {
+              "and": [
+                {
+                  "condition": "Matter"
+                },
+                {
+                  "or": [
+                    {
+                      "feature": "PIN"
+                    },
+                    {
+                      "feature": "RID"
+                    },
+                    {
+                      "feature": "FPG"
+                    },
+                    {
+                      "feature": "FACE"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "": {
+            "otherwise": [
+              {
+                "provisional": true
+              },
+              {
+                "optional": true
+              }
+            ]
+          }
+        },
         "ignored_features": [
           "rfid_credential"
         ]
@@ -400,6 +437,20 @@
       {
         "id": 70,
         "name": "ICD Management",
+        "feature_conformance": {
+          "LITS": {
+            "otherwise": [
+              {
+                "provisional": true
+              },
+              {
+                "mandatory": {
+                  "feature": "LIT"
+                }
+              }
+            ]
+          }
+        },
         "ignored_features": [
           "long_idle_time_support"
         ]
@@ -859,6 +910,11 @@
         "name": "Refrigerator And Temperature Controlled Cabinet Mode",
         "features": {
           "OO": "disallowed"
+        },
+        "feature_conformance": {
+          "OO": {
+            "disallowed": true
+          }
         }
       },
       {
@@ -887,6 +943,11 @@
         "name": "Oven Mode",
         "features": {
           "OO": "disallowed"
+        },
+        "feature_conformance": {
+          "OO": {
+            "disallowed": true
+          }
         }
       },
       {
@@ -894,6 +955,11 @@
         "name": "Refrigerator And Temperature Controlled Cabinet Mode",
         "features": {
           "OO": "disallowed"
+        },
+        "feature_conformance": {
+          "OO": {
+            "disallowed": true
+          }
         }
       },
       {
@@ -935,6 +1001,11 @@
         "required": true,
         "features": {
           "DF": "mandatory"
+        },
+        "feature_conformance": {
+          "DF": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "ON_OFF"
@@ -992,6 +1063,11 @@
         "name": "On/Off",
         "features": {
           "DF": "mandatory"
+        },
+        "feature_conformance": {
+          "DF": {
+            "mandatory": true
+          }
         }
       },
       {
@@ -1004,6 +1080,11 @@
         "name": "Laundry Washer Mode",
         "features": {
           "OO": "disallowed"
+        },
+        "feature_conformance": {
+          "OO": {
+            "disallowed": true
+          }
         }
       },
       {
@@ -1072,6 +1153,11 @@
         "name": "On/Off",
         "features": {
           "DF": "mandatory"
+        },
+        "feature_conformance": {
+          "DF": {
+            "mandatory": true
+          }
         }
       },
       {
@@ -1088,6 +1174,11 @@
         "name": "Dishwasher Mode",
         "features": {
           "OO": "disallowed"
+        },
+        "feature_conformance": {
+          "OO": {
+            "disallowed": true
+          }
         }
       },
       {
@@ -1158,6 +1249,11 @@
         "name": "On/Off",
         "features": {
           "OFFONLY": "mandatory"
+        },
+        "feature_conformance": {
+          "OFFONLY": {
+            "mandatory": true
+          }
         }
       },
       {
@@ -1191,6 +1287,11 @@
         "required": true,
         "features": {
           "OFFONLY": "mandatory"
+        },
+        "feature_conformance": {
+          "OFFONLY": {
+            "mandatory": true
+          }
         }
       },
       {
@@ -1236,6 +1337,14 @@
         "features": {
           "WND": "disallowed",
           "DIR": "disallowed"
+        },
+        "feature_conformance": {
+          "WND": {
+            "disallowed": true
+          },
+          "DIR": {
+            "disallowed": true
+          }
         }
       }
     ],
@@ -1271,6 +1380,17 @@
           "RCK": "disallowed",
           "WND": "disallowed",
           "DIR": "disallowed"
+        },
+        "feature_conformance": {
+          "RCK": {
+            "disallowed": true
+          },
+          "WND": {
+            "disallowed": true
+          },
+          "DIR": {
+            "disallowed": true
+          }
         }
       }
     ],
@@ -1307,6 +1427,11 @@
         "name": "On/Off",
         "features": {
           "DF": "mandatory"
+        },
+        "feature_conformance": {
+          "DF": {
+            "mandatory": true
+          }
         }
       },
       {
@@ -1323,6 +1448,11 @@
         "name": "Laundry Washer Mode",
         "features": {
           "": "disallowed"
+        },
+        "feature_conformance": {
+          "": {
+            "disallowed": true
+          }
         }
       },
       {
@@ -1405,6 +1535,11 @@
         "features": {
           "LT": "mandatory"
         },
+        "feature_conformance": {
+          "LT": {
+            "mandatory": true
+          }
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -1427,6 +1562,14 @@
         "features": {
           "OO": "mandatory",
           "LT": "mandatory"
+        },
+        "feature_conformance": {
+          "OO": {
+            "mandatory": true
+          },
+          "LT": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -1559,6 +1702,11 @@
         "features": {
           "LT": "mandatory"
         },
+        "feature_conformance": {
+          "LT": {
+            "mandatory": true
+          }
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -1582,6 +1730,14 @@
         "features": {
           "LT": "mandatory",
           "OO": "mandatory"
+        },
+        "feature_conformance": {
+          "LT": {
+            "mandatory": true
+          },
+          "OO": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2119,6 +2275,11 @@
         "features": {
           "LT": "mandatory"
         },
+        "feature_conformance": {
+          "LT": {
+            "mandatory": true
+          }
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -2141,6 +2302,14 @@
         "features": {
           "OO": "mandatory",
           "LT": "mandatory"
+        },
+        "feature_conformance": {
+          "OO": {
+            "mandatory": true
+          },
+          "LT": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2244,6 +2413,11 @@
         "features": {
           "LT": "mandatory"
         },
+        "feature_conformance": {
+          "LT": {
+            "mandatory": true
+          }
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -2267,6 +2441,14 @@
         "features": {
           "OO": "mandatory",
           "LT": "mandatory"
+        },
+        "feature_conformance": {
+          "OO": {
+            "mandatory": true
+          },
+          "LT": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2370,6 +2552,11 @@
         "features": {
           "LT": "mandatory"
         },
+        "feature_conformance": {
+          "LT": {
+            "mandatory": true
+          }
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -2393,6 +2580,14 @@
         "features": {
           "OO": "mandatory",
           "LT": "mandatory"
+        },
+        "feature_conformance": {
+          "OO": {
+            "mandatory": true
+          },
+          "LT": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2454,6 +2649,11 @@
         "required": true,
         "features": {
           "CT": "mandatory"
+        },
+        "feature_conformance": {
+          "CT": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "COLOR_CONTROL_REMAINING_TIME",
@@ -2523,6 +2723,11 @@
         "features": {
           "LT": "mandatory"
         },
+        "feature_conformance": {
+          "LT": {
+            "mandatory": true
+          }
+        },
         "required_attributes": [
           "ON_OFF",
           "GLOBAL_SCENE_CONTROL",
@@ -2546,6 +2751,14 @@
         "features": {
           "OO": "mandatory",
           "LT": "mandatory"
+        },
+        "feature_conformance": {
+          "OO": {
+            "mandatory": true
+          },
+          "LT": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2611,6 +2824,23 @@
           "CL": "optional",
           "XY": "mandatory",
           "CT": "mandatory"
+        },
+        "feature_conformance": {
+          "HS": {
+            "optional": true
+          },
+          "EHUE": {
+            "optional": true
+          },
+          "CL": {
+            "optional": true
+          },
+          "XY": {
+            "mandatory": true
+          },
+          "CT": {
+            "mandatory": true
+          }
         },
         "required_attributes": [
           "COLOR_CONTROL_REMAINING_TIME",
@@ -2761,6 +2991,14 @@
           "ADO": "mandatory",
           "SNP": "disallowed",
           "VDO": "disallowed"
+        },
+        "feature_conformance": {
+          "SNP": {
+            "disallowed": true
+          },
+          "VDO": {
+            "disallowed": true
+          }
         }
       },
       {

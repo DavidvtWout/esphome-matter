@@ -147,7 +147,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "EXTS"
+        }
+      }
     },
     "FabricRestrictionReviewUpdate": {
       "id": 2,
@@ -172,7 +177,12 @@
           "optional": true,
           "length": 256
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MNGD"
+        }
+      }
     },
     "AuxiliaryAccessUpdated": {
       "id": 3,
@@ -184,7 +194,19 @@
           "type": "int64u",
           "nullable": true
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "AUX"
+            }
+          }
+        ]
+      }
     }
   },
   "Actions": {
@@ -273,7 +295,10 @@
     "ShutDown": {
       "id": 1,
       "priority": "critical",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "Leave": {
       "id": 2,
@@ -286,7 +311,10 @@
           "min": 1,
           "max": 254
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "ReachableChanged": {
       "id": 3,
@@ -297,7 +325,12 @@
           "name": "ReachableNewValue",
           "type": "boolean"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "attribute": "Reachable"
+        }
+      }
     }
   },
   "OTASoftwareUpdateRequestor": {
@@ -436,7 +469,12 @@
             "under_voltage": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "feature": "WIRED"
+        }
+      }
     },
     "BatFaultChange": {
       "id": 1,
@@ -466,7 +504,12 @@
             "under_temp": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "feature": "BAT"
+        }
+      }
     },
     "BatChargeFaultChange": {
       "id": 2,
@@ -512,7 +555,12 @@
             "safety_timeout": 10
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "feature": "RECHG"
+        }
+      }
     }
   },
   "GeneralDiagnostics": {
@@ -560,7 +608,10 @@
             "tamper_detected": 10
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "RadioFaultChange": {
       "id": 1,
@@ -598,7 +649,10 @@
             "ethernet_fault": 6
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "NetworkFaultChange": {
       "id": 2,
@@ -630,7 +684,10 @@
             "connection_failed": 3
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "BootReason": {
       "id": 3,
@@ -679,7 +736,10 @@
           "optional": true,
           "length": 1024
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "ThreadNetworkDiagnostics": {
@@ -698,7 +758,10 @@
             "not_connected": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "NetworkFaultChange": {
       "id": 1,
@@ -730,7 +793,10 @@
             "network_jammed": 3
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "WiFiNetworkDiagnostics": {
@@ -743,7 +809,10 @@
           "name": "ReasonCode",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "AssociationFailure": {
       "id": 1,
@@ -767,7 +836,10 @@
           "name": "Status",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "ConnectionStatus": {
       "id": 2,
@@ -784,14 +856,22 @@
             "not_connected": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "TimeSynchronization": {
     "DSTTableEmpty": {
       "id": 0,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "TZ"
+        }
+      }
     },
     "DSTStatus": {
       "id": 1,
@@ -802,7 +882,12 @@
           "name": "DSTOffsetActive",
           "type": "boolean"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "TZ"
+        }
+      }
     },
     "TimeZoneStatus": {
       "id": 2,
@@ -822,7 +907,12 @@
           "optional": true,
           "length": 64
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "TZ"
+        }
+      }
     },
     "TimeFailure": {
       "id": 3,
@@ -832,7 +922,12 @@
     "MissingTrustedTimeSource": {
       "id": 4,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "TSC"
+        }
+      }
     }
   },
   "BridgedDeviceBasicInformation": {
@@ -845,17 +940,26 @@
           "name": "SoftwareVersion",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "ShutDown": {
       "id": 1,
       "priority": "critical",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "Leave": {
       "id": 2,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "ReachableChanged": {
       "id": 3,
@@ -880,7 +984,12 @@
           "type": "int8u",
           "max": 254
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "LS"
+        }
+      }
     },
     "InitialPress": {
       "id": 1,
@@ -892,7 +1001,12 @@
           "type": "int8u",
           "max": 254
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MS"
+        }
+      }
     },
     "LongPress": {
       "id": 2,
@@ -904,7 +1018,12 @@
           "type": "int8u",
           "max": 254
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MSL"
+        }
+      }
     },
     "ShortRelease": {
       "id": 3,
@@ -916,7 +1035,12 @@
           "type": "int8u",
           "max": 254
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MSR"
+        }
+      }
     },
     "LongRelease": {
       "id": 4,
@@ -928,7 +1052,12 @@
           "type": "int8u",
           "max": 254
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MSL"
+        }
+      }
     },
     "MultiPressOngoing": {
       "id": 5,
@@ -946,7 +1075,21 @@
           "type": "int8u",
           "min": 2
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "and": [
+            {
+              "feature": "MSM"
+            },
+            {
+              "not": {
+                "feature": "AS"
+              }
+            }
+          ]
+        }
+      }
     },
     "MultiPressComplete": {
       "id": 6,
@@ -963,7 +1106,12 @@
           "name": "TotalNumberOfPressesCounted",
           "type": "int8u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MSM"
+        }
+      }
     }
   },
   "BooleanState": {
@@ -976,7 +1124,19 @@
           "name": "StateValue",
           "type": "boolean"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "feature": "CHGEVENT"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     }
   },
   "OvenCavityOperationalState": {
@@ -1014,7 +1174,10 @@
           "optional": true,
           "nullable": true
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "RefrigeratorAlarm": {
@@ -1077,7 +1240,12 @@
             "critical": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "SMOKE"
+        }
+      }
     },
     "COAlarm": {
       "id": 1,
@@ -1094,7 +1262,12 @@
             "critical": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CO"
+        }
+      }
     },
     "LowBattery": {
       "id": 2,
@@ -1131,12 +1304,18 @@
     "AlarmMuted": {
       "id": 6,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "MuteEnded": {
       "id": 7,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "InterconnectSmokeAlarm": {
       "id": 8,
@@ -1153,7 +1332,12 @@
             "critical": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "feature": "SMOKE"
+        }
+      }
     },
     "InterconnectCOAlarm": {
       "id": 9,
@@ -1170,7 +1354,12 @@
             "critical": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "feature": "CO"
+        }
+      }
     },
     "AllClear": {
       "id": 10,
@@ -1307,7 +1496,10 @@
           "optional": true,
           "nullable": true
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "RVCOperationalState": {
@@ -1345,7 +1537,10 @@
           "optional": true,
           "nullable": true
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "Groupcast": {
@@ -1413,7 +1608,17 @@
             "send_failure": 5
           }
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     }
   },
   "BooleanStateConfiguration": {
@@ -1442,7 +1647,19 @@
             "audible": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "VIS"
+            },
+            {
+              "feature": "AUD"
+            }
+          ]
+        }
+      }
     },
     "SensorFault": {
       "id": 1,
@@ -1457,7 +1674,19 @@
             "general_fault": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "feature": "FAULTEV"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     }
   },
   "ValveConfigurationandControl": {
@@ -1483,7 +1712,10 @@
           "max": 100,
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "ValveFault": {
       "id": 1,
@@ -1503,7 +1735,10 @@
             "current_exceeded": 32
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "ElectricalPowerMeasurement": {
@@ -1607,7 +1842,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "attribute": "Ranges"
+        }
+      }
     }
   },
   "ElectricalEnergyMeasurement": {
@@ -1725,7 +1965,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CUME"
+        }
+      }
     },
     "PeriodicEnergyMeasured": {
       "id": 1,
@@ -1841,7 +2086,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "PERE"
+        }
+      }
     }
   },
   "WaterHeaterManagement": {
@@ -1894,12 +2144,18 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "BoostEnded": {
       "id": 1,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "mandatory": true
+      }
     }
   },
   "CommodityPrice": {
@@ -1987,7 +2243,10 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "Messages": {
@@ -2109,7 +2368,19 @@
           "name": "Duration",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "PRA"
+            }
+          }
+        ]
+      }
     },
     "PowerRangeAdjustEnd": {
       "id": 5,
@@ -2141,7 +2412,19 @@
           "min": 13835058055282163712,
           "max": 4611686018427387903
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "PRA"
+            }
+          }
+        ]
+      }
     }
   },
   "EnergyEVSE": {
@@ -2154,7 +2437,10 @@
           "name": "SessionID",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "EVNotDetected": {
       "id": 1,
@@ -2199,7 +2485,10 @@
           "min": 0,
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "EnergyTransferStarted": {
       "id": 2,
@@ -2239,7 +2528,10 @@
           "min": 0,
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "EnergyTransferStopped": {
       "id": 3,
@@ -2291,7 +2583,10 @@
           "min": 0,
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "Fault": {
       "id": 4,
@@ -2371,7 +2666,10 @@
             "other": 255
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "RFID": {
       "id": 5,
@@ -2383,7 +2681,12 @@
           "type": "octet_string",
           "length": 10
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "feature": "RFID"
+        }
+      }
     }
   },
   "ElectricalGridConditions": {
@@ -2444,7 +2747,10 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "ElectricalAlarm": {
@@ -2588,7 +2894,12 @@
             "door_ajar": 5
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "DPS"
+        }
+      }
     },
     "LockOperation": {
       "id": 2,
@@ -2863,7 +3174,12 @@
           "type": "int16u",
           "nullable": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "USR"
+        }
+      }
     }
   },
   "ClosureControl": {
@@ -2891,7 +3207,14 @@
     "MovementCompleted": {
       "id": 1,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "mandatory": {
+          "not": {
+            "feature": "IS"
+          }
+        }
+      }
     },
     "EngageStateChanged": {
       "id": 2,
@@ -2902,7 +3225,12 @@
           "name": "EngageValue",
           "type": "boolean"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MO"
+        }
+      }
     },
     "SecureStateChanged": {
       "id": 3,
@@ -2920,87 +3248,138 @@
     "SupplyVoltageLow": {
       "id": 0,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "SupplyVoltageHigh": {
       "id": 1,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "PowerMissingPhase": {
       "id": 2,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "SystemPressureLow": {
       "id": 3,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "SystemPressureHigh": {
       "id": 4,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "DryRunning": {
       "id": 5,
       "priority": "critical",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "MotorTemperatureHigh": {
       "id": 6,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "PumpMotorFatalFailure": {
       "id": 7,
       "priority": "critical",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "ElectronicTemperatureHigh": {
       "id": 8,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "PumpBlocked": {
       "id": 9,
       "priority": "critical",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "SensorFailure": {
       "id": 10,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "ElectronicNonFatalFailure": {
       "id": 11,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "ElectronicFatalFailure": {
       "id": 12,
       "priority": "critical",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "GeneralFault": {
       "id": 13,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "Leakage": {
       "id": 14,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "AirDetection": {
       "id": 15,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "TurbineOperation": {
       "id": 16,
       "priority": "info",
-      "fields": []
+      "fields": [],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "OccupancySensing": {
@@ -3017,7 +3396,19 @@
             "occupied": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "feature": "OCCEVENT"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     }
   },
   "AmbientContextSensing": {
@@ -3088,7 +3479,39 @@
           "min": 1,
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "or": [
+                {
+                  "feature": "HA"
+                },
+                {
+                  "feature": "OI"
+                },
+                {
+                  "feature": "AUD"
+                },
+                {
+                  "and": [
+                    {
+                      "feature": "OC"
+                    },
+                    {
+                      "feature": "OI"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
     },
     "AmbientContextDetectEnded": {
       "id": 1,
@@ -3106,7 +3529,39 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "or": [
+                {
+                  "feature": "HA"
+                },
+                {
+                  "feature": "OI"
+                },
+                {
+                  "feature": "AUD"
+                },
+                {
+                  "and": [
+                    {
+                      "feature": "OC"
+                    },
+                    {
+                      "feature": "OI"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   },
   "AmbientSensingUnion": {
@@ -3151,7 +3606,17 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "UnionContributorRemoved": {
       "id": 1,
@@ -3194,7 +3659,17 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "UnionContributorStatusChanged": {
       "id": 2,
@@ -3237,7 +3712,17 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     }
   },
   "ProximityRanging": {
@@ -3513,7 +3998,10 @@
           "type": "boolean",
           "default": "true"
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "AccountLogin": {
@@ -3527,7 +4015,10 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "ZoneManagement": {
@@ -3668,7 +4159,26 @@
           "name": "ChimeID",
           "type": "int8u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "greater_or_equal": [
+                {
+                  "revision": "current"
+                },
+                {
+                  "revision": 2
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   },
   "AVAnalysis": {
@@ -3694,7 +4204,17 @@
           "nullable": true,
           "array": true
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "AnalysisSessionEnd": {
       "id": 1,
@@ -3711,7 +4231,17 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "PerceivedContext": {
       "id": 2,
@@ -3944,7 +4474,17 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     }
   },
   "CommissionerControl": {

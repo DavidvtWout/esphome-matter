@@ -36,7 +36,10 @@
             "default": 0
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "Groups": {
@@ -119,11 +122,25 @@
     },
     "On": {
       "id": 1,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "not": {
+            "feature": "OFFONLY"
+          }
+        }
+      }
     },
     "Toggle": {
       "id": 2,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "not": {
+            "feature": "OFFONLY"
+          }
+        }
+      }
     },
     "OffWithEffect": {
       "id": 64,
@@ -143,11 +160,21 @@
           "name": "EffectVariant",
           "type": "enum8"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "LT"
+        }
+      }
     },
     "OnWithRecallGlobalScene": {
       "id": 65,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "LT"
+        }
+      }
     },
     "OnWithTimedOff": {
       "id": 66,
@@ -177,7 +204,12 @@
           "unit": "seconds",
           "multiplier": 10
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "LT"
+        }
+      }
     }
   },
   "LevelControl": {
@@ -511,7 +543,12 @@
           "name": "Frequency",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "FQ"
+        }
+      }
     }
   },
   "AccessControl": {
@@ -563,7 +600,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MNGD"
+        }
+      }
     }
   },
   "Actions": {
@@ -581,7 +623,10 @@
           "type": "int32u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "InstantActionWithTransition": {
       "id": 1,
@@ -602,7 +647,10 @@
           "name": "TransitionTime",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "StartAction": {
       "id": 2,
@@ -618,7 +666,10 @@
           "type": "int32u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "StartActionWithDuration": {
       "id": 3,
@@ -639,7 +690,10 @@
           "name": "Duration",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "StopAction": {
       "id": 4,
@@ -655,7 +709,10 @@
           "type": "int32u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "PauseAction": {
       "id": 5,
@@ -671,7 +728,10 @@
           "type": "int32u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "PauseActionWithDuration": {
       "id": 6,
@@ -692,7 +752,10 @@
           "name": "Duration",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "ResumeAction": {
       "id": 7,
@@ -708,7 +771,10 @@
           "type": "int32u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "EnableAction": {
       "id": 8,
@@ -724,7 +790,10 @@
           "type": "int32u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "EnableActionWithDuration": {
       "id": 9,
@@ -745,7 +814,10 @@
           "name": "Duration",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "DisableAction": {
       "id": 10,
@@ -761,7 +833,10 @@
           "type": "int32u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     },
     "DisableActionWithDuration": {
       "id": 11,
@@ -782,7 +857,10 @@
           "name": "Duration",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "described": true
+      }
     }
   },
   "OTASoftwareUpdateProvider": {
@@ -919,7 +997,10 @@
           "name": "Endpoint",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "GeneralCommissioning": {
@@ -985,7 +1066,19 @@
           "name": "TCUserResponse",
           "type": "bitmap16"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "TC"
+            }
+          }
+        ]
+      }
     }
   },
   "NetworkCommissioning": {
@@ -1007,7 +1100,19 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "WI"
+            },
+            {
+              "feature": "TH"
+            }
+          ]
+        }
+      }
     },
     "AddOrUpdateWiFiNetwork": {
       "id": 2,
@@ -1030,7 +1135,12 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "WI"
+        }
+      }
     },
     "AddOrUpdateThreadNetwork": {
       "id": 3,
@@ -1047,7 +1157,12 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "TH"
+        }
+      }
     },
     "RemoveNetwork": {
       "id": 4,
@@ -1065,7 +1180,19 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "WI"
+            },
+            {
+              "feature": "TH"
+            }
+          ]
+        }
+      }
     },
     "ConnectNetwork": {
       "id": 6,
@@ -1083,7 +1210,19 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "WI"
+            },
+            {
+              "feature": "TH"
+            }
+          ]
+        }
+      }
     },
     "ReorderNetwork": {
       "id": 8,
@@ -1106,7 +1245,19 @@
           "type": "int64u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "WI"
+            },
+            {
+              "feature": "TH"
+            }
+          ]
+        }
+      }
     }
   },
   "DiagnosticLogs": {
@@ -1189,31 +1340,63 @@
           "type": "int16u",
           "max": 2048
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "DMTEST"
+        }
+      }
     }
   },
   "SoftwareDiagnostics": {
     "ResetWatermarks": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "WTRMRK"
+        }
+      }
     }
   },
   "ThreadNetworkDiagnostics": {
     "ResetCounts": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "ERRCNT"
+        }
+      }
     }
   },
   "WiFiNetworkDiagnostics": {
     "ResetCounts": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "ERRCNT"
+        }
+      }
     }
   },
   "EthernetNetworkDiagnostics": {
     "ResetCounts": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "PKTCNT"
+            },
+            {
+              "feature": "ERRCNT"
+            }
+          ]
+        }
+      }
     }
   },
   "TimeSynchronization": {
@@ -1290,7 +1473,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "TSC"
+        }
+      }
     },
     "SetTimeZone": {
       "id": 2,
@@ -1324,7 +1512,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "TZ"
+        }
+      }
     },
     "SetDSTOffset": {
       "id": 4,
@@ -1353,7 +1546,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "TZ"
+        }
+      }
     },
     "SetDefaultNTP": {
       "id": 5,
@@ -1365,7 +1563,12 @@
           "nullable": true,
           "length": 128
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "NTPC"
+        }
+      }
     }
   },
   "BridgedDeviceBasicInformation": {
@@ -1384,7 +1587,12 @@
           "min": 30000,
           "max": 3600000
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "BIS"
+        }
+      }
     }
   },
   "AdministratorCommissioning": {
@@ -1433,7 +1641,12 @@
           "name": "CommissioningTimeout",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "BC"
+        }
+      }
     },
     "RevokeCommissioning": {
       "id": 2,
@@ -1763,7 +1976,12 @@
             "ephemeral": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CIP"
+        }
+      }
     },
     "UnregisterClient": {
       "id": 2,
@@ -1781,7 +1999,12 @@
           "length": 16,
           "min_length": 16
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CIP"
+        }
+      }
     },
     "StayActiveRequest": {
       "id": 3,
@@ -1791,17 +2014,44 @@
           "name": "StayActiveDuration",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "feature": "LITS"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     }
   },
   "OvenCavityOperationalState": {
     "Stop": {
       "id": 1,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "command": "Start"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     },
     "Start": {
       "id": 2,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "OvenMode": {
@@ -1910,7 +2160,10 @@
   "SmokeCOAlarm": {
     "SelfTestRequest": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "DishwasherAlarm": {
@@ -1933,7 +2186,12 @@
             "water_level_error": 32
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "RESET"
+        }
+      }
     },
     "ModifyEnabledAlarms": {
       "id": 1,
@@ -1954,7 +2212,10 @@
             "water_level_error": 32
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "MicrowaveOvenControl": {
@@ -2010,39 +2271,108 @@
           "min": 1,
           "max": 86400
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "OperationalState": {
     "Pause": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "command": "Resume"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     },
     "Stop": {
       "id": 1,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "command": "Start"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     },
     "Start": {
       "id": 2,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "Resume": {
       "id": 3,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "command": "Pause"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     }
   },
   "RVCOperationalState": {
     "Pause": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "command": "Resume"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     },
     "Resume": {
       "id": 3,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "command": "Pause"
+            }
+          },
+          {
+            "optional": true
+          }
+        ]
+      }
     },
     "GoHome": {
       "id": 128,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "ScenesManagement": {
@@ -2098,49 +2428,89 @@
                   "id": 1,
                   "name": "ValueUnsigned8",
                   "type": "int8u",
-                  "optional": true
+                  "optional": true,
+                  "conformance": {
+                    "optional": {
+                      "choice": "a"
+                    }
+                  }
                 },
                 {
                   "id": 2,
                   "name": "ValueSigned8",
                   "type": "int8s",
-                  "optional": true
+                  "optional": true,
+                  "conformance": {
+                    "optional": {
+                      "choice": "a"
+                    }
+                  }
                 },
                 {
                   "id": 3,
                   "name": "ValueUnsigned16",
                   "type": "int16u",
-                  "optional": true
+                  "optional": true,
+                  "conformance": {
+                    "optional": {
+                      "choice": "a"
+                    }
+                  }
                 },
                 {
                   "id": 4,
                   "name": "ValueSigned16",
                   "type": "int16s",
-                  "optional": true
+                  "optional": true,
+                  "conformance": {
+                    "optional": {
+                      "choice": "a"
+                    }
+                  }
                 },
                 {
                   "id": 5,
                   "name": "ValueUnsigned32",
                   "type": "int32u",
-                  "optional": true
+                  "optional": true,
+                  "conformance": {
+                    "optional": {
+                      "choice": "a"
+                    }
+                  }
                 },
                 {
                   "id": 6,
                   "name": "ValueSigned32",
                   "type": "int32s",
-                  "optional": true
+                  "optional": true,
+                  "conformance": {
+                    "optional": {
+                      "choice": "a"
+                    }
+                  }
                 },
                 {
                   "id": 7,
                   "name": "ValueUnsigned64",
                   "type": "int64u",
-                  "optional": true
+                  "optional": true,
+                  "conformance": {
+                    "optional": {
+                      "choice": "a"
+                    }
+                  }
                 },
                 {
                   "id": 8,
                   "name": "ValueSigned64",
                   "type": "int64s",
-                  "optional": true
+                  "optional": true,
+                  "conformance": {
+                    "optional": {
+                      "choice": "a"
+                    }
+                  }
                 }
               ]
             }
@@ -2275,7 +2645,10 @@
           "type": "int8u",
           "max": 254
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "Groupcast": {
@@ -2331,7 +2704,17 @@
             "per_group": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "LeaveGroup": {
       "id": 1,
@@ -2350,7 +2733,17 @@
           "length": 20,
           "min_length": 1
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "UpdateGroupKey": {
       "id": 3,
@@ -2375,7 +2768,17 @@
           "length": 16,
           "min_length": 16
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "ConfigureAuxiliaryACL": {
       "id": 4,
@@ -2390,7 +2793,19 @@
           "name": "UseAuxiliaryACL",
           "type": "boolean"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "LN"
+            }
+          }
+        ]
+      }
     },
     "GroupcastTesting": {
       "id": 5,
@@ -2415,25 +2830,44 @@
           "default": "60",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     }
   },
   "HEPAFilterMonitoring": {
     "ResetCondition": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "ActivatedCarbonFilterMonitoring": {
     "ResetCondition": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "WaterTankLevelMonitoring": {
     "ResetCondition": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "BooleanStateConfiguration": {
@@ -2450,7 +2884,12 @@
             "audible": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "SPRS"
+        }
+      }
     },
     "EnableDisableAlarm": {
       "id": 1,
@@ -2465,7 +2904,19 @@
             "audible": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "VIS"
+            },
+            {
+              "feature": "AUD"
+            }
+          ]
+        }
+      }
     }
   },
   "ValveConfigurationandControl": {
@@ -2544,11 +2995,17 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "CancelBoost": {
       "id": 1,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": true
+      }
     }
   },
   "CommodityPrice": {
@@ -2566,7 +3023,10 @@
             "components": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "GetDetailedForecastRequest": {
       "id": 2,
@@ -2582,7 +3042,12 @@
             "components": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "feature": "FORE"
+        }
+      }
     }
   },
   "Messages": {
@@ -2702,11 +3167,21 @@
             "grid_optimization": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "PA"
+        }
+      }
     },
     "CancelPowerAdjustRequest": {
       "id": 1,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "PA"
+        }
+      }
     },
     "StartTimeAdjustRequest": {
       "id": 2,
@@ -2726,7 +3201,12 @@
             "grid_optimization": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "STA"
+        }
+      }
     },
     "PauseRequest": {
       "id": 3,
@@ -2746,11 +3226,21 @@
             "grid_optimization": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "PAU"
+        }
+      }
     },
     "ResumeRequest": {
       "id": 4,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "PAU"
+        }
+      }
     },
     "ModifyForecastRequest": {
       "id": 5,
@@ -2795,7 +3285,12 @@
             "grid_optimization": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "FA"
+        }
+      }
     },
     "RequestConstraintBasedForecast": {
       "id": 6,
@@ -2850,11 +3345,31 @@
             "grid_optimization": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CON"
+        }
+      }
     },
     "CancelRequest": {
       "id": 7,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "STA"
+            },
+            {
+              "feature": "FA"
+            },
+            {
+              "feature": "CON"
+            }
+          ]
+        }
+      }
     },
     "PowerRangeAdjustRequest": {
       "id": 8,
@@ -2893,17 +3408,44 @@
             "grid_optimization": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "PRA"
+            }
+          }
+        ]
+      }
     },
     "CancelPowerRangeAdjustRequest": {
       "id": 9,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "PRA"
+            }
+          }
+        ]
+      }
     }
   },
   "EnergyEVSE": {
     "Disable": {
       "id": 1,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "EnableCharging": {
       "id": 2,
@@ -2926,7 +3468,10 @@
           "type": "int64s",
           "min": 0
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "EnableDischarging": {
       "id": 3,
@@ -2943,11 +3488,19 @@
           "type": "int64s",
           "min": 0
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "V2X"
+        }
+      }
     },
     "StartDiagnostics": {
       "id": 4,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "SetTargets": {
       "id": 5,
@@ -3008,15 +3561,30 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "PREF"
+        }
+      }
     },
     "GetTargets": {
       "id": 6,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "PREF"
+        }
+      }
     },
     "ClearTargets": {
       "id": 7,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "PREF"
+        }
+      }
     }
   },
   "EnergyEVSEMode": {
@@ -3028,7 +3596,10 @@
           "name": "NewMode",
           "type": "int8u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     }
   },
   "WaterHeaterMode": {
@@ -3040,7 +3611,10 @@
           "name": "NewMode",
           "type": "int8u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     }
   },
   "DeviceEnergyManagementMode": {
@@ -3052,7 +3626,10 @@
           "name": "NewMode",
           "type": "int8u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     }
   },
   "ElectricalAlarm": {
@@ -3082,7 +3659,12 @@
             "voltage_quality": 512
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "RESET"
+        }
+      }
     },
     "ModifyEnabledAlarms": {
       "id": 1,
@@ -3110,7 +3692,10 @@
             "voltage_quality": 512
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "SetElectricalAlarmThresholds": {
       "id": 128,
@@ -3203,7 +3788,12 @@
           "default": "-4611686018427387904",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "ADJUST"
+        }
+      }
     }
   },
   "ElectricalProtectionAlarm": {
@@ -3225,7 +3815,10 @@
             "self_test": 64
           }
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     }
   },
   "DoorLock": {
@@ -3265,7 +3858,10 @@
           "type": "octet_string",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "SetWeekDaySchedule": {
       "id": 11,
@@ -3322,7 +3918,12 @@
           "type": "int8u",
           "max": 59
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "WDSCH"
+        }
+      }
     },
     "GetWeekDaySchedule": {
       "id": 12,
@@ -3340,7 +3941,12 @@
           "type": "int16u",
           "min": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "WDSCH"
+        }
+      }
     },
     "ClearWeekDaySchedule": {
       "id": 13,
@@ -3358,7 +3964,12 @@
           "type": "int16u",
           "min": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "WDSCH"
+        }
+      }
     },
     "SetYearDaySchedule": {
       "id": 14,
@@ -3386,7 +3997,12 @@
           "name": "LocalEndTime",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "YDSCH"
+        }
+      }
     },
     "GetYearDaySchedule": {
       "id": 15,
@@ -3404,7 +4020,12 @@
           "type": "int16u",
           "min": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "YDSCH"
+        }
+      }
     },
     "ClearYearDaySchedule": {
       "id": 16,
@@ -3422,7 +4043,12 @@
           "type": "int16u",
           "min": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "YDSCH"
+        }
+      }
     },
     "SetHolidaySchedule": {
       "id": 17,
@@ -3457,7 +4083,12 @@
             "passage": 4
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HDSCH"
+        }
+      }
     },
     "GetHolidaySchedule": {
       "id": 18,
@@ -3469,7 +4100,12 @@
           "min": 1,
           "max": 253
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HDSCH"
+        }
+      }
     },
     "ClearHolidaySchedule": {
       "id": 19,
@@ -3481,7 +4117,12 @@
           "min": 1,
           "max": 254
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HDSCH"
+        }
+      }
     },
     "SetUser": {
       "id": 26,
@@ -3560,7 +4201,12 @@
             "tri": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "USR"
+        }
+      }
     },
     "GetUser": {
       "id": 27,
@@ -3571,7 +4217,12 @@
           "type": "int16u",
           "min": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "USR"
+        }
+      }
     },
     "ClearUser": {
       "id": 29,
@@ -3582,7 +4233,12 @@
           "type": "int16u",
           "min": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "USR"
+        }
+      }
     },
     "SetCredential": {
       "id": 34,
@@ -3672,7 +4328,12 @@
             "remote_only_user": 9
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "USR"
+        }
+      }
     },
     "GetCredentialStatus": {
       "id": 36,
@@ -3706,7 +4367,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "USR"
+        }
+      }
     },
     "ClearCredential": {
       "id": 38,
@@ -3741,7 +4407,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "USR"
+        }
+      }
     },
     "UnboltDoor": {
       "id": 39,
@@ -3752,7 +4423,12 @@
           "type": "octet_string",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "UBOLT"
+        }
+      }
     },
     "SetAliroReaderConfig": {
       "id": 40,
@@ -3786,11 +4462,21 @@
           "length": 16,
           "min_length": 16
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "ALIRO"
+        }
+      }
     },
     "ClearAliroReaderConfig": {
       "id": 41,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "ALIRO"
+        }
+      }
     }
   },
   "WindowCovering": {
@@ -3814,7 +4500,26 @@
           "name": "LiftValue",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "optional": {
+              "and": [
+                {
+                  "feature": "LF"
+                },
+                {
+                  "feature": "ABS"
+                }
+              ]
+            }
+          }
+        ]
+      }
     },
     "GoToLiftPercentage": {
       "id": 5,
@@ -3824,7 +4529,28 @@
           "name": "LiftPercent100thsValue",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "and": [
+                {
+                  "feature": "LF"
+                },
+                {
+                  "feature": "PA_LF"
+                }
+              ]
+            }
+          },
+          {
+            "optional": {
+              "feature": "LF"
+            }
+          }
+        ]
+      }
     },
     "GoToTiltValue": {
       "id": 7,
@@ -3834,7 +4560,26 @@
           "name": "TiltValue",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "optional": {
+              "and": [
+                {
+                  "feature": "TL"
+                },
+                {
+                  "feature": "ABS"
+                }
+              ]
+            }
+          }
+        ]
+      }
     },
     "GoToTiltPercentage": {
       "id": 8,
@@ -3844,13 +4589,41 @@
           "name": "TiltPercent100thsValue",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "mandatory": {
+              "and": [
+                {
+                  "feature": "TL"
+                },
+                {
+                  "feature": "PA_TL"
+                }
+              ]
+            }
+          },
+          {
+            "optional": {
+              "feature": "TL"
+            }
+          }
+        ]
+      }
     }
   },
   "ClosureControl": {
     "Stop": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "not": {
+            "feature": "IS"
+          }
+        }
+      }
     },
     "MoveTo": {
       "id": 1,
@@ -3893,7 +4666,12 @@
     },
     "Calibrate": {
       "id": 2,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "CL"
+        }
+      }
     }
   },
   "ClosureDimension": {
@@ -3961,7 +4739,12 @@
             "high": 3
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "PS"
+        }
+      }
     }
   },
   "ServiceArea": {
@@ -3984,7 +4767,19 @@
           "name": "SkippedArea",
           "type": "int32u"
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "or": [
+            {
+              "attribute": "CurrentArea"
+            },
+            {
+              "attribute": "Progress"
+            }
+          ]
+        }
+      }
     }
   },
   "Thermostat": {
@@ -4070,7 +4865,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "SCH"
+        }
+      }
     },
     "GetWeeklySchedule": {
       "id": 2,
@@ -4099,11 +4899,21 @@
             "cool_setpoint_present": 2
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "SCH"
+        }
+      }
     },
     "ClearWeeklySchedule": {
       "id": 3,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "SCH"
+        }
+      }
     },
     "SetActiveScheduleRequest": {
       "id": 5,
@@ -4114,7 +4924,12 @@
           "type": "octet_string",
           "length": 16
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MSCH"
+        }
+      }
     },
     "SetActivePresetRequest": {
       "id": 6,
@@ -4126,7 +4941,12 @@
           "nullable": true,
           "length": 16
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "PRES"
+        }
+      }
     },
     "AddThermostatSuggestion": {
       "id": 7,
@@ -4150,7 +4970,19 @@
           "min": 30,
           "max": 1440
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "TSUGGEST"
+            }
+          }
+        ]
+      }
     },
     "RemoveThermostatSuggestion": {
       "id": 8,
@@ -4160,7 +4992,19 @@
           "name": "UniqueID",
           "type": "int8u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": {
+              "feature": "TSUGGEST"
+            }
+          }
+        ]
+      }
     },
     "AtomicRequest": {
       "id": 254,
@@ -4220,7 +5064,12 @@
           "default": "1",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "STEP"
+        }
+      }
     }
   },
   "Humidistat": {
@@ -4330,7 +5179,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HS"
+        }
+      }
     },
     "MoveHue": {
       "id": 1,
@@ -4371,7 +5225,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HS"
+        }
+      }
     },
     "StepHue": {
       "id": 2,
@@ -4419,7 +5278,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HS"
+        }
+      }
     },
     "MoveToSaturation": {
       "id": 3,
@@ -4459,7 +5323,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HS"
+        }
+      }
     },
     "MoveSaturation": {
       "id": 4,
@@ -4500,7 +5369,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HS"
+        }
+      }
     },
     "StepSaturation": {
       "id": 5,
@@ -4548,7 +5422,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HS"
+        }
+      }
     },
     "MoveToHueAndSaturation": {
       "id": 6,
@@ -4596,7 +5475,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "HS"
+        }
+      }
     },
     "MoveToColor": {
       "id": 7,
@@ -4644,7 +5528,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "XY"
+        }
+      }
     },
     "MoveColor": {
       "id": 8,
@@ -4681,7 +5570,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "XY"
+        }
+      }
     },
     "StepColor": {
       "id": 9,
@@ -4727,7 +5621,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "XY"
+        }
+      }
     },
     "MoveToColorTemperature": {
       "id": 10,
@@ -4765,7 +5664,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CT"
+        }
+      }
     },
     "EnhancedMoveToHue": {
       "id": 64,
@@ -4816,7 +5720,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "EHUE"
+        }
+      }
     },
     "EnhancedMoveHue": {
       "id": 65,
@@ -4857,7 +5766,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "EHUE"
+        }
+      }
     },
     "EnhancedStepHue": {
       "id": 66,
@@ -4906,7 +5820,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "EHUE"
+        }
+      }
     },
     "EnhancedMoveToHueAndSaturation": {
       "id": 67,
@@ -4953,7 +5872,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "EHUE"
+        }
+      }
     },
     "ColorLoopSet": {
       "id": 68,
@@ -5022,7 +5946,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CL"
+        }
+      }
     },
     "StopMoveStep": {
       "id": 71,
@@ -5045,7 +5974,22 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "HS"
+            },
+            {
+              "feature": "XY"
+            },
+            {
+              "feature": "CT"
+            }
+          ]
+        }
+      }
     },
     "MoveColorTemperature": {
       "id": 75,
@@ -5098,7 +6042,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CT"
+        }
+      }
     },
     "StepColorTemperature": {
       "id": 76,
@@ -5159,7 +6108,12 @@
             "execute_if_off": 1
           }
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CT"
+        }
+      }
     }
   },
   "DynamicLighting": {
@@ -5624,7 +6578,12 @@
           "type": "octet_string",
           "length": 254
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "PC"
+        }
+      }
     }
   },
   "ThreadNetworkDirectory": {
@@ -5673,7 +6632,19 @@
           "type": "char_string",
           "id": 0
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "CL"
+            },
+            {
+              "feature": "LI"
+            }
+          ]
+        }
+      }
     },
     "ChangeChannelByNumber": {
       "id": 2,
@@ -5688,7 +6659,10 @@
           "type": "int16u",
           "id": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "SkipChannel": {
       "id": 3,
@@ -5698,7 +6672,10 @@
           "type": "int16s",
           "id": 0
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "GetProgramGuide": {
       "id": 4,
@@ -5825,7 +6802,12 @@
           "optional": true,
           "id": 6
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "EG"
+        }
+      }
     },
     "RecordProgram": {
       "id": 6,
@@ -5861,7 +6843,19 @@
           "type": "octet_string",
           "id": 3
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "and": [
+            {
+              "feature": "RP"
+            },
+            {
+              "feature": "EG"
+            }
+          ]
+        }
+      }
     },
     "CancelRecordProgram": {
       "id": 7,
@@ -5897,7 +6891,19 @@
           "type": "octet_string",
           "id": 3
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "and": [
+            {
+              "feature": "RP"
+            },
+            {
+              "feature": "EG"
+            }
+          ]
+        }
+      }
     }
   },
   "TargetNavigator": {
@@ -5921,27 +6927,45 @@
   "MediaPlayback": {
     "Play": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "Pause": {
       "id": 1,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "Stop": {
       "id": 2,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": true
+      }
     },
     "StartOver": {
       "id": 3,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "Previous": {
       "id": 4,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "Next": {
       "id": 5,
-      "args": []
+      "args": [],
+      "conformance": {
+        "optional": true
+      }
     },
     "Rewind": {
       "id": 6,
@@ -5952,7 +6976,12 @@
           "optional": true,
           "id": 0
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "VS"
+        }
+      }
     },
     "FastForward": {
       "id": 7,
@@ -5963,7 +6992,12 @@
           "optional": true,
           "id": 0
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "VS"
+        }
+      }
     },
     "SkipForward": {
       "id": 8,
@@ -5973,7 +7007,10 @@
           "type": "int64u",
           "id": 0
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "SkipBackward": {
       "id": 9,
@@ -5983,7 +7020,10 @@
           "type": "int64u",
           "id": 0
         }
-      ]
+      ],
+      "conformance": {
+        "optional": true
+      }
     },
     "Seek": {
       "id": 11,
@@ -5993,7 +7033,12 @@
           "type": "int64u",
           "id": 0
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "AS"
+        }
+      }
     },
     "ActivateAudioTrack": {
       "id": 12,
@@ -6008,7 +7053,12 @@
           "type": "int8u",
           "id": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "AT"
+        }
+      }
     },
     "ActivateTextTrack": {
       "id": 13,
@@ -6018,11 +7068,21 @@
           "type": "char_string",
           "id": 0
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "TT"
+        }
+      }
     },
     "DeactivateTextTrack": {
       "id": 14,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "TT"
+        }
+      }
     }
   },
   "MediaInput": {
@@ -6057,7 +7117,12 @@
           "name": "Name",
           "type": "char_string"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "NU"
+        }
+      }
     }
   },
   "LowPower": {
@@ -6344,7 +7409,12 @@
           "optional": true,
           "id": 4
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "CS"
+        }
+      }
     },
     "LaunchURL": {
       "id": 1,
@@ -6583,7 +7653,12 @@
           ],
           "id": 2
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "UP"
+        }
+      }
     }
   },
   "AudioOutput": {
@@ -6610,7 +7685,12 @@
           "name": "Name",
           "type": "char_string"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "NU"
+        }
+      }
     }
   },
   "ApplicationLauncher": {
@@ -6755,11 +7835,21 @@
           "type": "char_string",
           "length": 6
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "PM"
+        }
+      }
     },
     "ResetPIN": {
       "id": 1,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "PM"
+        }
+      }
     },
     "Enable": {
       "id": 3,
@@ -6785,7 +7875,12 @@
           "type": "int32u",
           "default": "300"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "ST"
+        }
+      }
     },
     "SetScreenDailyTime": {
       "id": 6,
@@ -6796,15 +7891,30 @@
           "type": "int32u",
           "max": 86400
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "ST"
+        }
+      }
     },
     "BlockUnratedContent": {
       "id": 7,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "BU"
+        }
+      }
     },
     "UnblockUnratedContent": {
       "id": 8,
-      "args": []
+      "args": [],
+      "conformance": {
+        "mandatory": {
+          "feature": "BU"
+        }
+      }
     },
     "SetOnDemandRatingThreshold": {
       "id": 9,
@@ -6815,7 +7925,12 @@
           "type": "char_string",
           "length": 8
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "OCR"
+        }
+      }
     },
     "SetScheduledContentRatingThreshold": {
       "id": 10,
@@ -6826,7 +7941,12 @@
           "type": "char_string",
           "length": 8
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "SCR"
+        }
+      }
     },
     "AddBlockChannels": {
       "id": 11,
@@ -6861,7 +7981,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "BC"
+        }
+      }
     },
     "RemoveBlockChannels": {
       "id": 12,
@@ -6872,7 +7997,12 @@
           "type": "int16u",
           "array": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "BC"
+        }
+      }
     },
     "AddBlockApplications": {
       "id": 13,
@@ -6895,7 +8025,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "BA"
+        }
+      }
     },
     "RemoveBlockApplications": {
       "id": 14,
@@ -6918,7 +8053,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "BA"
+        }
+      }
     },
     "SetBlockContentTimeWindow": {
       "id": 15,
@@ -6983,7 +8123,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "BTW"
+        }
+      }
     },
     "RemoveBlockContentTimeWindow": {
       "id": 16,
@@ -6994,7 +8139,12 @@
           "type": "int16u",
           "array": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "BTW"
+        }
+      }
     }
   },
   "ContentAppObserver": {
@@ -7073,7 +8223,19 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "and": [
+            {
+              "feature": "TWODCART"
+            },
+            {
+              "feature": "USERDEFINED"
+            }
+          ]
+        }
+      }
     },
     "UpdateTwoDCartesianZone": {
       "id": 2,
@@ -7135,7 +8297,19 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "and": [
+            {
+              "feature": "TWODCART"
+            },
+            {
+              "feature": "USERDEFINED"
+            }
+          ]
+        }
+      }
     },
     "RemoveZone": {
       "id": 3,
@@ -7145,7 +8319,12 @@
           "name": "ZoneID",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "USERDEFINED"
+        }
+      }
     },
     "CreateOrUpdateTrigger": {
       "id": 4,
@@ -7260,7 +8439,12 @@
           "min": 8,
           "max": 32
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "ADO"
+        }
+      }
     },
     "AudioStreamDeallocate": {
       "id": 2,
@@ -7270,7 +8454,12 @@
           "name": "AudioStreamID",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "ADO"
+        }
+      }
     },
     "VideoStreamAllocate": {
       "id": 3,
@@ -7380,7 +8569,12 @@
           "type": "boolean",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "VDO"
+        }
+      }
     },
     "VideoStreamModify": {
       "id": 5,
@@ -7402,7 +8596,26 @@
           "type": "boolean",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "and": [
+            {
+              "feature": "VDO"
+            },
+            {
+              "or": [
+                {
+                  "feature": "WMARK"
+                },
+                {
+                  "feature": "OSD"
+                }
+              ]
+            }
+          ]
+        }
+      }
     },
     "VideoStreamDeallocate": {
       "id": 6,
@@ -7412,7 +8625,12 @@
           "name": "VideoStreamID",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "VDO"
+        }
+      }
     },
     "SnapshotStreamAllocate": {
       "id": 7,
@@ -7490,7 +8708,12 @@
           "type": "boolean",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "SNP"
+        }
+      }
     },
     "SnapshotStreamModify": {
       "id": 9,
@@ -7512,7 +8735,26 @@
           "type": "boolean",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "and": [
+            {
+              "feature": "SNP"
+            },
+            {
+              "or": [
+                {
+                  "feature": "WMARK"
+                },
+                {
+                  "feature": "OSD"
+                }
+              ]
+            }
+          ]
+        }
+      }
     },
     "SnapshotStreamDeallocate": {
       "id": 10,
@@ -7522,7 +8764,12 @@
           "name": "SnapshotStreamID",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "SNP"
+        }
+      }
     },
     "SetStreamPriorities": {
       "id": 11,
@@ -7569,7 +8816,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "SNP"
+        }
+      }
     }
   },
   "CameraAVSettingsUserLevelManagement": {
@@ -7600,7 +8852,22 @@
           "max": 100,
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "MPAN"
+            },
+            {
+              "feature": "MTILT"
+            },
+            {
+              "feature": "MZOOM"
+            }
+          ]
+        }
+      }
     },
     "MPTZRelativeMove": {
       "id": 1,
@@ -7632,7 +8899,22 @@
           "default": "0",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "or": [
+            {
+              "feature": "MPAN"
+            },
+            {
+              "feature": "MTILT"
+            },
+            {
+              "feature": "MZOOM"
+            }
+          ]
+        }
+      }
     },
     "MPTZMoveToPreset": {
       "id": 2,
@@ -7643,7 +8925,12 @@
           "type": "int8u",
           "min": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MPRESETS"
+        }
+      }
     },
     "MPTZSavePreset": {
       "id": 3,
@@ -7661,7 +8948,12 @@
           "type": "char_string",
           "length": 32
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MPRESETS"
+        }
+      }
     },
     "MPTZRemovePreset": {
       "id": 4,
@@ -7672,7 +8964,12 @@
           "type": "int8u",
           "min": 1
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "MPRESETS"
+        }
+      }
     },
     "DPTZSetViewport": {
       "id": 5,
@@ -7709,7 +9006,12 @@
             }
           ]
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "DPTZ"
+        }
+      }
     },
     "DPTZRelativeMove": {
       "id": 6,
@@ -7742,7 +9044,12 @@
           "default": "0",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "optional": {
+          "feature": "DPTZ"
+        }
+      }
     }
   },
   "WebRTCTransportProvider": {
@@ -9035,7 +10342,12 @@
           "name": "NodeID",
           "type": "int64u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "REMCONDETECT"
+        }
+      }
     },
     "ActivateAnalysisStream": {
       "id": 4,
@@ -9057,7 +10369,12 @@
           "type": "int16u",
           "optional": true
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "REMCONDETECT"
+        }
+      }
     },
     "DeactivateAnalysisStream": {
       "id": 5,
@@ -9067,7 +10384,12 @@
           "name": "AnalysisStreamID",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "REMCONDETECT"
+        }
+      }
     },
     "RemoveAnalysisStream": {
       "id": 6,
@@ -9077,7 +10399,12 @@
           "name": "AnalysisStreamID",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "mandatory": {
+          "feature": "REMCONDETECT"
+        }
+      }
     }
   },
   "CommodityTariff": {
@@ -9742,7 +11069,17 @@
   "JointFabricAdministrator": {
     "ICACCSRRequest": {
       "id": 0,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "AddICAC": {
       "id": 2,
@@ -9753,7 +11090,17 @@
           "type": "long_octet_string",
           "length": 400
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "OpenJointCommissioningWindow": {
       "id": 4,
@@ -9790,15 +11137,45 @@
           "length": 32,
           "min_length": 16
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "TransferAnchorRequest": {
       "id": 5,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "TransferAnchorComplete": {
       "id": 7,
-      "args": []
+      "args": [],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     },
     "AnnounceJointFabricAdministrator": {
       "id": 8,
@@ -9808,7 +11185,17 @@
           "name": "EndpointID",
           "type": "int16u"
         }
-      ]
+      ],
+      "conformance": {
+        "otherwise": [
+          {
+            "provisional": true
+          },
+          {
+            "mandatory": true
+          }
+        ]
+      }
     }
   },
   "TLSCertificateManagement": {
