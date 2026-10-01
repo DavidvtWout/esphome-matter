@@ -37,6 +37,7 @@
                 filelock
                 ninja
                 platformdirs
+                pytest
               ]);
             doCheck = false;
           }

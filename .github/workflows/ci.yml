@@ -7,6 +7,7 @@ on:
     paths:
       - "components/**"
       - "tests/**"
+      - "tools/test"
       - "tools/validate-configs"
       - ".github/workflows/ci.yml"
 
@@ -14,6 +15,7 @@ on:
     paths:
       - "components/**"
       - "tests/**"
+      - "tools/test"
       - "tools/validate-configs"
       - ".github/workflows/ci.yml"
 
@@ -44,7 +46,10 @@ jobs:
       - name: Install ESPHome
         run: |
           python -m venv .venv
-          .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}"
+          .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}" pytest
+
+      - name: Run unit tests
+        run: tools/test
 
       - name: Validate all test configs
         run: tools/validate-configs
