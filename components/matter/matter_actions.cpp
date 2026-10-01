@@ -95,6 +95,19 @@ void register_client_request_callbacks() {
 
 void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
                          chip::CommandId command, const char *command_data) {
+  esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
+  auto *cluster_ptr = esp_matter::cluster::get(endpoint_id, cluster);
+  if (cluster_ptr == nullptr ||
+      esp_matter::command::get(cluster_ptr, command,
+                               esp_matter::COMMAND_FLAG_ACCEPTED) == nullptr) {
+    ESP_LOGW(
+        TAG,
+        "Cannot send unavailable command: endpoint=%u cluster=%lu command=%lu",
+        endpoint_id, static_cast<unsigned long>(cluster),
+        static_cast<unsigned long>(command));
+    return;
+  }
+
   auto &binding_table = chip::app::Clusters::Binding::Table::GetInstance();
   std::string node_ids;
   for (const auto &entry : binding_table) {
@@ -127,7 +140,6 @@ void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
   req.command_path.mCommandId = command;
   req.request_data =
       const_cast<char *>(command_data != nullptr ? command_data : "{}");
-  esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
   esp_err_t err = esp_matter::client::cluster_update(endpoint_id, &req);
   if (err != ESP_OK) {
     ESP_LOGW(TAG, "cluster_update failed: %s", esp_err_to_name(err));
@@ -143,6 +155,16 @@ void send_event(uint16_t endpoint_id, chip::ClusterId cluster,
   chip::EventNumber event_number;
 
   esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
+  auto *cluster_ptr = esp_matter::cluster::get(endpoint_id, cluster);
+  if (cluster_ptr == nullptr ||
+      esp_matter::event::get(cluster_ptr, event) == nullptr) {
+    ESP_LOGW(TAG,
+             "Cannot send unavailable event: endpoint=%u cluster=%lu event=%lu",
+             endpoint_id, static_cast<unsigned long>(cluster),
+             static_cast<unsigned long>(event));
+    return;
+  }
+
   CHIP_ERROR err = chip::app::EventManagement::GetInstance().LogEvent(
       &writer, options, event_number);
   if (err != CHIP_NO_ERROR) {
