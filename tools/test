@@ -11,4 +11,4 @@ else
 fi
 
 cd "${repo_dir}"
-exec "${python_bin}" -m pytest tests/unit "$@"
+exec "${python_bin}" -m pytest --color=yes tests/unit "$@"

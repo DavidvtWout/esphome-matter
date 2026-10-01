@@ -926,7 +926,7 @@
     },
     "attributes": {
       "0": {
-        "define": "DEVICE_LIST",
+        "define": "DEVICE_TYPE_LIST",
         "name": "DeviceTypeList",
         "type": "array",
         "server": true,

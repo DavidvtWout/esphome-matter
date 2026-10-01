@@ -53,6 +53,13 @@
   "Scenes Management": {
     "sdkconfig_option": "CONFIG_SUPPORT_SCENES_CLUSTER"
   },
+  "Descriptor": {
+    "attributes": {
+      "0": {
+        "define": "DEVICE_TYPE_LIST"
+      }
+    }
+  },
   "Oven Cavity Operational State": {
     "sdkconfig_option": "CONFIG_SUPPORT_OPERATIONAL_STATE_OVEN_CLUSTER"
   },

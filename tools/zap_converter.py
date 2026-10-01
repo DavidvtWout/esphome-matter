@@ -812,7 +812,16 @@ def apply_cluster_overrides(
     for cluster_name, override in overrides.items():
         if cluster_name not in clusters_by_name:
             raise ValueError(f"Unknown cluster override: {cluster_name}")
-        clusters_by_name[cluster_name].update(override)
+        cluster = clusters_by_name[cluster_name]
+        for attribute_id, attribute_override in override.get("attributes", {}).items():
+            if attribute_id not in cluster.get("attributes", {}):
+                raise ValueError(
+                    f"Unknown attribute override: {cluster_name}.{attribute_id}"
+                )
+            cluster["attributes"][attribute_id].update(attribute_override)
+        cluster.update(
+            {key: value for key, value in override.items() if key != "attributes"}
+        )
 
 
 def post_process_clusters(
