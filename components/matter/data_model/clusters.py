@@ -83,26 +83,32 @@ class Cluster:
     @classmethod
     def from_dict(cls, data: dict):
         name = data["name"]
-        sdkconfig_option = _sdkconfig_option(name)
+
         camel_case_name = (
             name.replace("/", "").replace(" ", "").replace("-", "").replace(".", "")
+        )
+        sdkconfig_option = data.get(
+            "sdkconfig_option",
+            f"CONFIG_SUPPORT_{
+                name.replace(' ', '_')
+                .replace('/', '_')
+                .replace('.', '_')
+                .replace('-', '')
+                .upper()
+            }_CLUSTER",
         )
 
         _features = []
         for bit, feature_data in data.get("features", {}).items():
             _features.append(Feature.from_dict(int(bit), feature_data))
 
-        # TODO: are there more exceptions?
-        if camel_case_name.endswith("ConcentrationMeasurement"):
-            chip_fqn = "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster"
-            chip_include = "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
-        else:
-            chip_class = f"{camel_case_name}Cluster"
-            chip_fqn = f"chip::app::Clusters::{chip_class}"
-            cluster_path = snake_case(camel_case_name).replace("_", "-")
-            chip_include = (
-                f"#include <app/clusters/{cluster_path}-server/{chip_class}.h>"
-            )
+        chip_class = f"{camel_case_name}Cluster"
+        cluster_path = snake_case(camel_case_name).replace("_", "-")
+        chip_fqn = data.get("chip_fqn", f"chip::app::Clusters::{chip_class}")
+        chip_include = data.get(
+            "chip_include",
+            f"#include <app/clusters/{cluster_path}-server/{chip_class}.h>",
+        )
 
         espm_namespace = data.get(
             "esp_matter_namespace",
@@ -122,15 +128,15 @@ class Cluster:
             revision=data.get("revision", 1),
             features=tuple(_features),
             attributes=tuple(
-                Attribute.from_dict(camel_case_name, int(attribute_id), attribute)
+                Attribute.from_dict(int(attribute_id), attribute)
                 for attribute_id, attribute in data.get("attributes", {}).items()
             ),
             commands=tuple(
-                Command.from_dict(camel_case_name, command_name, command)
+                Command.from_dict(command_name, command)
                 for command_name, command in data.get("commands", {}).items()
             ),
             events=tuple(
-                Event.from_dict(camel_case_name, event_name, event)
+                Event.from_dict(event_name, event)
                 for event_name, event in data.get("events", {}).items()
             ),
             sdkconfig_option=sdkconfig_option,
@@ -139,23 +145,23 @@ class Cluster:
             espm_namespace=espm_namespace,
         )
 
-    def get_attribute(self, name: str) -> Attribute | None:
-        for attribute in self.attributes:
-            if not attribute.server:
-                continue
-            if name in (attribute.name, attribute.conf_key, attribute.id):
-                return attribute
-        return None
-
     def get_feature(self, name_or_code: str) -> Feature | None:
         for feature in self.features:
-            if name_or_code in (feature.name, feature.code, feature.namespace):
+            if name_or_code in (feature.name, feature.code, feature.conf_key):
                 return feature
         return None
 
-    def get_command(self, name: str) -> Command | None:
+    def get_attribute(self, name_or_id: str | int) -> Attribute | None:
+        for attribute in self.attributes:
+            if not attribute.server:
+                continue
+            if name_or_id in (attribute.name, attribute.conf_key, attribute.id):
+                return attribute
+        return None
+
+    def get_command(self, name_or_id: str | int) -> Command | None:
         for command in self.commands:
-            if name in (command.name, snake_case(command.name), command.id):
+            if name_or_id in (command.name, command.conf_key, command.id):
                 return command
         return None
 
@@ -177,27 +183,6 @@ class Cluster:
                 cv.one_of(*(feature.conf_key for feature in self.features))
             )
         return schema
-
-
-def _sdkconfig_option(name: str) -> str:
-    """sdkconfig option name to enable compilation of the cluster in esp_matter."""
-    sdkconfig_name = (
-        name.replace(" ", "_")
-        .replace("/", "_")
-        .replace(".", "_")
-        .replace("-", "")
-        .upper()
-    )
-    sdkconfig_name = sdkconfig_name.replace("WEBRTC", "WEB_RTC")
-    sdkconfig_name = sdkconfig_name.replace("TOTAL_VOLATILE_ORGANIC_COMPOUNDS", "TVOC")
-    sdkconfig_name = sdkconfig_name.replace("SCENES_MANAGEMENT", "SCENES")
-    sdkconfig_name = sdkconfig_name.replace(
-        "OVEN_CAVITY_OPERATIONAL_STATE", "OPERATIONAL_STATE_OVEN"
-    )
-    sdkconfig_name = sdkconfig_name.replace(
-        "RVC_OPERATIONAL_STATE", "OPERATIONAL_STATE_RVC"
-    )
-    return f"CONFIG_SUPPORT_{sdkconfig_name}_CLUSTER"
 
 
 def _load_clusters(

@@ -111,7 +111,7 @@ class Endpoint:
     def __init__(self, endpoint_id: int, config: dict):
         self._endpoint_id = endpoint_id
         self._config = config
-        self.usages: list[Attribute | Event] = []
+        self.usages: list[tuple[Cluster, Attribute | Event]] = []
         self.enabled_sdkconfig_options: set[str] = set()
         self.global_includes: set[str] = set()
         self._cluster_configs: defaultdict[str, _ClusterConfig] = defaultdict(
@@ -128,8 +128,8 @@ class Endpoint:
     def config(self) -> dict:
         return self._config
 
-    def register_usage(self, usage: Attribute | Event) -> None:
-        self.usages.append(usage)
+    def register_usage(self, cluster: Cluster, usage: Attribute | Event) -> None:
+        self.usages.append((cluster, usage))
 
     def _cluster_state(self, cluster: Cluster):
         enabled_codes = set()
@@ -187,12 +187,14 @@ class Endpoint:
 
     def resolve(self) -> None:
         usages_by_cluster = defaultdict(list)
-        for usage in self.usages:
+        clusters_by_id = {}
+        for cluster, usage in self.usages:
             if usage.conformance is not None:
-                usages_by_cluster[usage.cluster_name].append(usage)
+                clusters_by_id[cluster.id] = cluster
+                usages_by_cluster[cluster.id].append(usage)
 
-        for cluster_name, usages in usages_by_cluster.items():
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+        for cluster_id, usages in usages_by_cluster.items():
+            cluster = clusters_by_id[cluster_id]
             cluster_present, enabled_codes, disallowed_codes = self._cluster_state(
                 cluster
             )
@@ -579,10 +581,11 @@ def build_endpoints(matter_config: dict, full_config: Config) -> EndpointRegistr
             continue
         endpoint = endpoints.lookup(action[CONF_ENDPOINT])
         if action_type == "matter.send_event":
-            endpoint.register_usage(get_event_from_config(action))
+            cluster, event = get_event_from_config(action)
+            endpoint.register_usage(cluster, event)
         else:
-            _, attribute = get_attribute_from_config(action)
-            endpoint.register_usage(attribute)
+            cluster, attribute = get_attribute_from_config(action)
+            endpoint.register_usage(cluster, attribute)
         endpoint.resolve()
 
     CORE.data.setdefault(CONF_MATTER, {})[CONF_ENDPOINTS] = endpoints

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from ..util import snake_case
-from .commands import CommandArg
+from .commands import Field
 from .conformance import Conformance
 
 _PRIORITIES = {
@@ -13,22 +13,20 @@ _PRIORITIES = {
 
 @dataclass(frozen=True, slots=True)
 class Event:
-    cluster_name: str  # CamelCase
+    id: int
     name: str  # CamelCase
     conf_key: str  # snake_case
-    id: int
     priority: int
-    fields: tuple[CommandArg, ...] = ()
+    fields: tuple[Field, ...] = ()
     conformance: Conformance | None = None
 
     @classmethod
-    def from_dict(cls, cluster_name: str, name: str, data: dict):
+    def from_dict(cls, name: str, data: dict):
         return cls(
-            cluster_name=cluster_name,
+            id=data["id"],
             name=name,
             conf_key=snake_case(name),
-            id=data["id"],
             priority=_PRIORITIES[data.get("priority", "info")],
-            fields=tuple(CommandArg.from_dict(field) for field in data["fields"]),
+            fields=tuple(Field.from_dict(field) for field in data["fields"]),
             conformance=Conformance.from_dict(data.get("conformance")),
         )

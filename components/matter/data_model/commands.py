@@ -49,7 +49,7 @@ _ESP_MATTER_JSON_TYPES = {
 
 
 @dataclass(frozen=True, slots=True)
-class CommandArg:
+class Field:
     name: str  # CamelCase
     type: str
     id: int
@@ -182,19 +182,19 @@ class CommandArg:
 
 @dataclass(frozen=True, slots=True)
 class Command:
-    cluster_name: str  # CamelCase
-    name: str  # CamelCase
     id: int
+    name: str  # CamelCase
+    conf_key: str  # snake_case
     # optional: bool = False
-    args: tuple[CommandArg, ...] = ()
+    args: tuple[Field, ...] = ()
     conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
-    def from_dict(cls, cluster_name: str, name: str, data: dict):
+    def from_dict(cls, name: str, data: dict):
         return cls(
-            cluster_name=cluster_name,
-            name=name,
             id=data["id"],
-            args=tuple([CommandArg.from_dict(arg) for arg in data["args"]]),
+            name=name,
+            conf_key=snake_case(name),
+            args=tuple([Field.from_dict(arg) for arg in data["args"]]),
             conformance=Conformance.from_dict(data.get("conformance")),
         )

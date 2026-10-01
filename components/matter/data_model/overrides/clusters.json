@@ -1,4 +1,64 @@
 {
+  "Carbon Monoxide Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Carbon Dioxide Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Nitrogen Dioxide Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Ozone Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "PM2.5 Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Formaldehyde Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "PM1 Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "PM10 Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Total Volatile Organic Compounds Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>",
+    "sdkconfig_option": "CONFIG_SUPPORT_TVOC_CONCENTRATION_MEASUREMENT_CLUSTER"
+  },
+  "Radon Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Smoke Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "WebRTC Transport Provider": {
+    "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_PROVIDER_CLUSTER"
+  },
+  "WebRTC Transport Requestor": {
+    "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_REQUESTOR_CLUSTER"
+  },
+  "Scenes Management": {
+    "sdkconfig_option": "CONFIG_SUPPORT_SCENES_CLUSTER"
+  },
+  "Oven Cavity Operational State": {
+    "sdkconfig_option": "CONFIG_SUPPORT_OPERATIONAL_STATE_OVEN_CLUSTER"
+  },
+  "RVC Operational State": {
+    "sdkconfig_option": "CONFIG_SUPPORT_OPERATIONAL_STATE_RVC_CLUSTER"
+  },
   "Switch": {
     "esp_matter_namespace": "switch_cluster"
   }

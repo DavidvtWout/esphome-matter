@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Attribute:
-    cluster_name: str  # CamelCase
     id: int
     name: str  # CamelCase
     conf_key: str  # snake_case
@@ -29,16 +28,15 @@ class Attribute:
     conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
-    def from_dict(cls, cluster_name: str, attribute_id: int, data: dict):
+    def from_dict(cls, attribute_id: int, data: dict):
         name: str = data.get("name", data["define"])
         return cls(
-            cluster_name=cluster_name,
             id=attribute_id,
             name=name,
             conf_key=snake_case(name),
             type=data["type"],
-            writable=data["writable"],
-            optional=data["optional"],
+            writable=data.get("writable", False),
+            optional=data.get("optional", False),
             server=data.get("server", False),
             client=data.get("client", False),
             conformance=Conformance.from_dict(data.get("conformance")),

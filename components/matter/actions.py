@@ -20,7 +20,6 @@ from .data_model.attributes import Attribute, attribute_value_type
 from .data_model.clusters import (
     CLUSTERS,
     CLUSTERS_BY_CONF_KEY,
-    CLUSTERS_BY_NAME,
     Cluster,
 )
 from .data_model.commands import Command
@@ -135,14 +134,14 @@ async def matter_set_attribute_to_code(
 # ------------------------------------------------ #
 
 
-def get_command_from_config(config: Mapping) -> Command:
+def get_command_from_config(config: Mapping) -> tuple[Cluster, Command]:
     cluster_key = config[CONF_CLUSTER]
     command_key = config[CONF_COMMAND]
     cluster = CLUSTERS_BY_CONF_KEY.get(cluster_key)
     if cluster is not None:
         command = cluster.get_command(command_key)
         if command is not None:
-            return command
+            return cluster, command
     raise cv.Invalid(f"Unknown Matter command {cluster_key}.{command_key}")
 
 
@@ -173,7 +172,7 @@ def _normalize_send_command(config):
 
 
 def _validate_send_command(config):
-    command = get_command_from_config(config)
+    _, command = get_command_from_config(config)
     config[CONF_ARGUMENTS] = _validate_fields(config[CONF_ARGUMENTS], command.args)
     return config
 
@@ -210,10 +209,9 @@ SEND_COMMAND_SCHEMA = automation.maybe_conf(
 async def matter_send_command_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
-    command = get_command_from_config(config)
+    cluster, command = get_command_from_config(config)
     var = cg.new_Pvariable(action_id, template_arg)
     cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT])))
-    cluster = CLUSTERS_BY_NAME[command.cluster_name]
     cg.add(var.set_cluster_id(cluster.id))
     cg.add(var.set_command_id(command.id))
     cg.add(var.set_data(_build_data(config[CONF_ARGUMENTS], command.args)))
@@ -225,14 +223,14 @@ async def matter_send_command_to_code(
 # ------------------------------------------------ #
 
 
-def get_event_from_config(config: Mapping) -> Event:
+def get_event_from_config(config: Mapping) -> tuple[Cluster, Event]:
     cluster_key = config[CONF_CLUSTER]
     event_key = config[CONF_EVENT]
     cluster = CLUSTERS_BY_CONF_KEY.get(cluster_key)
     if cluster is not None:
         event = cluster.get_event(event_key)
         if event is not None:
-            return event
+            return cluster, event
     raise cv.Invalid(f"Unknown Matter event {cluster_key}.{event_key}")
 
 
@@ -249,7 +247,7 @@ def _normalize_send_event(config):
 
 
 def _validate_send_event(config):
-    event = get_event_from_config(config)
+    _, event = get_event_from_config(config)
     config[CONF_FIELDS] = _validate_fields(config[CONF_FIELDS], event.fields)
     return config
 
@@ -284,10 +282,9 @@ SEND_EVENT_SCHEMA = automation.maybe_conf(
 async def matter_send_event_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
-    event = get_event_from_config(config)
+    cluster, event = get_event_from_config(config)
     var = cg.new_Pvariable(action_id, template_arg)
     cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT])))
-    cluster = CLUSTERS_BY_NAME[event.cluster_name]
     cg.add(var.set_cluster_id(cluster.id))
     cg.add(var.set_event_id(event.id))
     cg.add(var.set_priority(event.priority))
@@ -360,29 +357,33 @@ def register_bound_command_actions():
             automation.register_action(
                 f"matter.{snake_case(cluster.name)}.{snake_case(command.name)}",
                 MatterSendCommandAction,
-                cv.All(_command_schema(command), _warn_deprecated_command(command)),
+                cv.All(
+                    _command_schema(command),
+                    _warn_deprecated_command(cluster, command),
+                ),
                 synchronous=True,
-            )(_make_send_command_to_code(command))
+            )(_make_send_command_to_code(cluster, command))
 
 
-def _make_send_command_to_code(command: Command):
+def _make_send_command_to_code(cluster: Cluster, command: Command):
     async def to_code(config, action_id: ID, template_arg: cg.TemplateArguments, args):
         return await _new_send_command_action(
             config,
             action_id,
             template_arg,
+            cluster,
             command,
         )
 
     to_code.__name__ = (
-        f"matter_{snake_case(command.cluster_name)}_{snake_case(command.name)}_to_code"
+        f"matter_{snake_case(cluster.name)}_{snake_case(command.name)}_to_code"
     )
     return to_code
 
 
-def _warn_deprecated_command(command: Command):
-    old_name = f"matter.{snake_case(command.cluster_name)}.{snake_case(command.name)}"
-    new_path = f"{snake_case(command.cluster_name)}.{snake_case(command.name)}"
+def _warn_deprecated_command(cluster: Cluster, command: Command):
+    old_name = f"matter.{snake_case(cluster.name)}.{snake_case(command.name)}"
+    new_path = f"{snake_case(cluster.name)}.{snake_case(command.name)}"
 
     def validator(config):
         _LOGGER.warning(
@@ -400,11 +401,11 @@ async def _new_send_command_action(
     config: ConfigType,
     action_id: ID,
     template_arg: cg.TemplateArguments,
+    cluster: Cluster,
     command: Command,
 ):
     var = cg.new_Pvariable(action_id, template_arg)
     cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
-    cluster = CLUSTERS_BY_NAME[command.cluster_name]
     cg.add(var.set_cluster_id(cluster.id))
     cg.add(var.set_command_id(command.id))
     cg.add(var.set_data(_build_data(config, command.args)))

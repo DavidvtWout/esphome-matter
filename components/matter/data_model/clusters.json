@@ -7708,7 +7708,8 @@
           "optional": true
         }
       }
-    }
+    },
+    "sdkconfig_option": "CONFIG_SUPPORT_OPERATIONAL_STATE_OVEN_CLUSTER"
   },
   "73": {
     "name": "Oven Mode",
@@ -9537,7 +9538,8 @@
           "optional": true
         }
       }
-    }
+    },
+    "sdkconfig_option": "CONFIG_SUPPORT_OPERATIONAL_STATE_RVC_CLUSTER"
   },
   "98": {
     "name": "Scenes Management",
@@ -9845,7 +9847,8 @@
           "optional": true
         }
       }
-    }
+    },
+    "sdkconfig_option": "CONFIG_SUPPORT_SCENES_CLUSTER"
   },
   "101": {
     "name": "Groupcast",
@@ -24521,7 +24524,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1037": {
     "name": "Carbon Dioxide Concentration Measurement",
@@ -24730,7 +24735,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1043": {
     "name": "Nitrogen Dioxide Concentration Measurement",
@@ -24939,7 +24946,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1045": {
     "name": "Ozone Concentration Measurement",
@@ -25148,7 +25157,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1066": {
     "name": "PM2.5 Concentration Measurement",
@@ -25357,7 +25368,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1067": {
     "name": "Formaldehyde Concentration Measurement",
@@ -25566,7 +25579,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1068": {
     "name": "PM1 Concentration Measurement",
@@ -25775,7 +25790,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1069": {
     "name": "PM10 Concentration Measurement",
@@ -25984,7 +26001,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1070": {
     "name": "Total Volatile Organic Compounds Concentration Measurement",
@@ -26193,7 +26212,10 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>",
+    "sdkconfig_option": "CONFIG_SUPPORT_TVOC_CONCENTRATION_MEASUREMENT_CLUSTER"
   },
   "1071": {
     "name": "Radon Concentration Measurement",
@@ -26402,7 +26424,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1072": {
     "name": "Soil Measurement",
@@ -27948,7 +27972,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
   "1104": {
     "name": "Network Identity Management",
@@ -33143,7 +33169,8 @@
           }
         ]
       }
-    }
+    },
+    "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_PROVIDER_CLUSTER"
   },
   "1364": {
     "name": "WebRTC Transport Requestor",
@@ -33303,7 +33330,8 @@
           }
         ]
       }
-    }
+    },
+    "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_REQUESTOR_CLUSTER"
   },
   "1365": {
     "name": "Push AV Stream Transport",
