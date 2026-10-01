@@ -189,12 +189,28 @@ class Endpoint:
         usages_by_cluster = defaultdict(list)
         clusters_by_id = {}
         for cluster, usage in self.usages:
+            clusters_by_id[cluster.id] = cluster
             if usage.conformance is not None:
-                clusters_by_id[cluster.id] = cluster
                 usages_by_cluster[cluster.id].append(usage)
 
-        for cluster_id, usages in usages_by_cluster.items():
-            cluster = clusters_by_id[cluster_id]
+        for cluster_name in self._config[CONF_CLUSTERS]:
+            cluster = CLUSTERS_BY_NAME[cluster_name]
+            clusters_by_id[cluster.id] = cluster
+
+        for config_key, device_config in self._config.items():
+            device_type = DEVICE_TYPES_BY_CONF_KEY.get(config_key)
+            if device_type is None:
+                continue
+            configured_features = device_config.get(CONF_WITH_FEATURES, ())
+            for cluster in device_type.server_clusters:
+                if cluster.required or any(
+                    cluster.get_feature(feature_name) is not None
+                    for feature_name in configured_features
+                ):
+                    clusters_by_id[cluster.id] = cluster
+
+        for cluster_id, cluster in clusters_by_id.items():
+            usages = usages_by_cluster[cluster_id]
             cluster_present, enabled_codes, disallowed_codes = self._cluster_state(
                 cluster
             )
@@ -221,7 +237,7 @@ class Endpoint:
                     f"from {usage_names}: {err}"
                 ) from err
 
-            invalid_codes = inferred_codes & disallowed_codes
+            invalid_codes = (enabled_codes | inferred_codes) & disallowed_codes
             if invalid_codes:
                 names = ", ".join(
                     cluster.get_feature(code).conf_key for code in sorted(invalid_codes)
@@ -586,6 +602,8 @@ def build_endpoints(matter_config: dict, full_config: Config) -> EndpointRegistr
         else:
             cluster, attribute = get_attribute_from_config(action)
             endpoint.register_usage(cluster, attribute)
+
+    for endpoint in endpoints:
         endpoint.resolve()
 
     CORE.data.setdefault(CONF_MATTER, {})[CONF_ENDPOINTS] = endpoints

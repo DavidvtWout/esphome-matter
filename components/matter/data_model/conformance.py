@@ -298,6 +298,11 @@ def resolve_feature_requirements(
     """Resolve unambiguous feature dependencies to a fixed point."""
     enabled = set(enabled_features)
     pending = list(requirements)
+    pending.extend(
+        conformance
+        for feature_code in enabled
+        if (conformance := feature_conformance.get(feature_code)) is not None
+    )
     resolved_features = set()
     deferred = 0
 
