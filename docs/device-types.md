@@ -33,6 +33,8 @@ matter:
 
 # Switches
 
+For a complete overview of supported actions, see the documentation on [actions](actions.md).
+
 The Matter switch device types are [`on_off_light_switch`](generated/device_types.md#on_off_light_switch), [`dimmer_switch`](generated/device_types.md#dimmer_switch) and [`color_dimmer_switch`](generated/device_types.md#color_dimmer_switch). Instead of mapping an esphome entity to the switch device type, esphome actions are mapped to the endpoint on which the switch is created.
 
 ```yaml
@@ -60,7 +62,66 @@ switch:
       matter.send_command: dimmer_endpoint.level_control.stop_with_on_off
 ```
 
-For a complete overview of supported actions, see the documentation on [actions](actions.md).
+### generic_switch
+
+This one is completely different from the other switch clusters. It doesn't support binding and works by sending events instead of commands.
+
+```yaml
+matter:
+  endpoints:
+    1:
+      generic_switch:
+      # The generic_switch must have either the latching_switch or momentary_switch feature enabled. In general,
+      # you don't need to explicitly enable features when using the generic_switch. Defined send_event actions
+      # already enable the corresponding features.
+      # The latching_switch and momentary_switch features are mutually exclusive, and exactly one must be enabled
+      # for the generic_switch to be valid. So a "bare" generic_switch must enable either one.
+      with_features:
+        - latching_switch
+        - momentary_switch
+        - momentary_switch_release
+        - momentary_switch_long_press
+        - momentary_switch_multi_press
+        # The action_switch is mutually exclusive with the momentary_switch_ "sub-features".
+        - action_switch
+
+some_automation:
+  # Sets the CurrentPosition attribute value. Usually 0 for off and 1 for on, but this is not defined in the Matter spec.
+  - matter.set_attribute:
+      path: switch_up_endpoint.switch.current_position
+      value: 1
+  # The following events can be emitted by this cluster:
+  - matter.send_event:
+      path: some_endpoint.switch.switch_latched
+      fields:
+        new_position:
+  - matter.send_event:
+      path: some_endpoint.switch.initial_press
+      fields:
+        new_position:
+  - matter.send_event:
+      path: some_endpoint.switch.long_press
+      fields:
+        new_position:
+  - matter.send_event:
+      path: some_endpoint.switch.short_release
+      fields:
+        previous_position:
+  - matter.send_event:
+      path: some_endpoint.switch.long_release
+      fields:
+        previous_position:
+  - matter.send_event:
+      path: some_endpoint.switch.multi_press_ongoing
+      fields:
+        new_position:
+        current_number_of_presses_counted:
+  - matter.send_event:
+      path: some_endpoint.switch.multi_press_complete
+      fields:
+        previous_position:
+        total_number_of_presses_counted:
+```
 
 # Simple sensor device types
 
