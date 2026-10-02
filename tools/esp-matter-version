@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+
+import ast
+from pathlib import Path
+
+component_file = Path(__file__).parents[1] / "components" / "matter" / "__init__.py"
+module = ast.parse(component_file.read_text())
+
+for statement in module.body:
+    if not isinstance(statement, ast.Assign):
+        continue
+    if not any(
+        isinstance(target, ast.Name) and target.id == "ESP_MATTER_VERSION"
+        for target in statement.targets
+    ):
+        continue
+    if isinstance(statement.value, ast.Constant) and isinstance(
+        statement.value.value, str
+    ):
+        print(statement.value.value)
+        break
+else:
+    raise SystemExit("ESP_MATTER_VERSION is not a string constant")

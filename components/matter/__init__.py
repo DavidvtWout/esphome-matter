@@ -39,6 +39,7 @@ AUTO_LOAD = ["network"]
 
 MIN_ESPHOME_THREAD_VERSION = "2026.6.0"
 MIN_ESPHOME_IDF_TOOLCHAIN_VERSION = "2026.9.0"
+ESP_MATTER_VERSION = "1.6.0~2"
 
 # Matter spec section 5.1.7.1: these passcodes are explicitly forbidden.
 _FORBIDDEN_PASSCODES = {
@@ -192,7 +193,7 @@ async def to_code(config: ConfigType):
 
     add_idf_component(
         name="davidvtwout/esp_matter",
-        ref="1.6.0~2",
+        ref=ESP_MATTER_VERSION,
     )
 
     cg.add_define("USE_MATTER")

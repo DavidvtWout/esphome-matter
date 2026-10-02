@@ -906,7 +906,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::LevelControlCluster",
+    "chip_include": "#include <app/clusters/level-control/LevelControlCluster.h>"
   },
   "28": {
     "name": "Pulse Width Modulation",
@@ -988,7 +990,9 @@
           ]
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::DescriptorCluster",
+    "chip_include": "#include <app/clusters/descriptor/DescriptorCluster.h>"
   },
   "30": {
     "name": "Binding",
@@ -1002,7 +1006,9 @@
         "writable": true,
         "optional": false
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::BindingCluster",
+    "chip_include": "#include <app/clusters/bindings/BindingCluster.h>"
   },
   "31": {
     "name": "Access Control",
@@ -9848,6 +9854,8 @@
         }
       }
     },
+    "chip_fqn": "chip::app::Clusters::ScenesManagementCluster",
+    "chip_include": "#include <app/clusters/scenes-server/ScenesManagementCluster.h>",
     "sdkconfig_option": "CONFIG_SUPPORT_SCENES_CLUSTER"
   },
   "101": {
@@ -22971,7 +22979,9 @@
           }
         }
       }
-    }
+    },
+    "chip_fqn": "ColorControlServer",
+    "chip_include": "#include <app/clusters/color-control-server/color-control-server.h>"
   },
   "769": {
     "name": "Ballast Configuration",
@@ -24315,7 +24325,9 @@
           ]
         }
       }
-    }
+    },
+    "chip_fqn": "chip::app::Clusters::OccupancySensingCluster",
+    "chip_include": "#include <app/clusters/occupancy-sensor-server/OccupancySensingCluster.h>"
   },
   "1036": {
     "name": "Carbon Monoxide Concentration Measurement",
