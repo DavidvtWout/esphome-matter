@@ -11,6 +11,79 @@ from xml.etree import ElementTree
 _DATA_MODEL_PATH = (
     Path(__file__).resolve().parent.parent / "components" / "matter" / "data_model"
 )
+# All of these are not supported by esp-matter as of Matter 1.6
+EXCLUDED_DEVICE_TYPES = {
+    "all_clusters_app_server_example",
+    "ambient_context_sensor",
+    "basic_video_player",
+    "camera_controller",
+    "casting_video_client",
+    "casting_video_player",
+    "content_app",
+    "door_lock_controller",
+    "electrical_circuit_breaker",
+    "electrical_distribution_enclosure",
+    "floodlight_camera",
+    "humidifier_dehumidifier",
+    "intercom",
+    "joint_fabric_administrator",
+    "meter_reference_point",
+    "network_infrastructure_manager",
+    "on_off_sensor",
+    "orphan_clusters",
+    "proximity_ranger",
+    "snapshot_camera",
+    "speaker",
+    "video_remote_control",
+    "window_covering_controller",
+}
+EXCLUDED_CLUSTERS = {
+    # Unsupported by esp-matter as of Matter 1.6:
+    "account_login",
+    "ambient_context_sensing",
+    "application_launcher",
+    "audio_output",
+    "ballast_configuration",
+    "channel",
+    "content_app_observer",
+    "content_control",
+    "content_launcher",
+    "dishwasher_alarm",
+    "dishwasher_mode",
+    "dynamic_lighting",
+    "fault_injection",
+    "joint_fabric_administrator",
+    "joint_fabric_datastore",
+    "low_power",
+    "media_input",
+    "media_playback",
+    "messages",
+    "oven_cavity_operational_state",
+    "oven_mode",
+    "power_source_configuration",
+    "proxy_configuration",
+    "proxy_discovery",
+    "proxy_valid",
+    "pulse_width_modulation",
+    "refrigerator_and_temperature_controlled_cabinet_mode",
+    "sample_mei",
+    "target_navigator",
+    "temperature_controlled_cabinet_topology",
+    "unit_testing",
+    "wakeon_lan",
+    "water_tank_level_monitoring",
+    # Will be added in Matter 1.7:
+    "ambient_sensing_union",
+    "av_analysis",
+    "electrical_alarm",
+    "electrical_distribution",
+    "electrical_protection_alarm",
+    "humidistat",
+    "network_identity_management",
+    "proximity_ranging",
+    "smoke_concentration_measurement",
+}
+
 sys.path.insert(0, str(_DATA_MODEL_PATH))
 try:
     from conformance import Choice, Conformance
@@ -31,6 +104,10 @@ def camel_case_to_snake_case(name: str) -> str:
 
 def camel_case(name: str) -> str:
     return name.replace("/", "").replace(" ", "").replace("-", "")
+
+
+def cluster_key(name: str) -> str:
+    return camel_case_to_snake_case(camel_case(name))
 
 
 def filter_none(data: dict) -> dict:
@@ -319,35 +396,8 @@ event_attrs = defaultdict(int)
 event_field_attrs = defaultdict(int)
 
 
-def parse_device_type_elem(elem) -> DeviceType | None:
+def parse_device_type_elem(elem) -> DeviceType:
     name = snake_case(elem.findtext("typeName"))
-    if name in (
-        "all_clusters_app_server_example",
-        "ambient_context_sensor",
-        "basic_video_player",
-        "camera_controller",
-        "casting_video_client",
-        "casting_video_player",
-        "content_app",
-        "door_lock_controller",
-        "electrical_circuit_breaker",
-        "electrical_distribution_enclosure",
-        "floodlight_camera",
-        "humidifier_dehumidifier",
-        "intercom",
-        "joint_fabric_administrator",
-        "meter_reference_point",
-        "network_infrastructure_manager",
-        "on_off_sensor",
-        "orphan_clusters",
-        "proximity_ranger",
-        "snapshot_camera",
-        "speaker",
-        "video_remote_control",
-        "window_covering_controller",
-    ):
-        # Not actually supported by esp_matter...
-        return None
 
     device_clusters = []
     for cluster_elem in elem.findall("./clusters/include"):
@@ -903,6 +953,8 @@ def post_process_device_types(
         for cluster_config in cluster_configs:
             cluster = raw_clusters_by_name.get(cluster_config.name)
             if not cluster:
+                if cluster_key(cluster_config.name) in EXCLUDED_CLUSTERS:
+                    continue
                 print(f"WARNING: {cluster_config.name} cluster not found!")
                 continue
 
@@ -983,6 +1035,11 @@ def generate_command_documentation(
     ]
     for cluster in sorted(clusters, key=lambda c: c.id):
         cluster_name = camel_case(cluster.name)
+        if cluster_key(cluster.name) in EXCLUDED_CLUSTERS:
+            lines.append(
+                f"# {cluster_name}\n\n> This cluster is not supported by esp-matter.\n"
+            )
+            continue
         client_commands = [c for c in cluster.commands if c.source == "client"]
         if not client_commands:
             continue
@@ -1027,6 +1084,12 @@ def generate_attribute_documentation(clusters: list[Cluster]) -> str:
         "The equivalent explicit `endpoint`, `cluster`, and `attribute` form is also supported.\n"
     ]
     for cluster in sorted(clusters, key=lambda c: c.id):
+        cluster_name = camel_case(cluster.name)
+        if cluster_key(cluster.name) in EXCLUDED_CLUSTERS:
+            lines.append(
+                f"# {cluster_name}\n\n> This cluster is not supported by esp-matter.\n"
+            )
+            continue
         attributes = [
             attribute
             for attribute in cluster.attributes
@@ -1034,7 +1097,6 @@ def generate_attribute_documentation(clusters: list[Cluster]) -> str:
         ]
         if not attributes:
             continue
-        cluster_name = camel_case(cluster.name)
         lines.append(
             f"# {cluster_name}\n\n{sanitize_description(cluster.description)}\n\n```yaml"
         )
@@ -1057,17 +1119,26 @@ def generate_attribute_documentation(clusters: list[Cluster]) -> str:
 
 
 def generate_device_type_documentation(
-    device_types: dict[str, dict], clusters: list[Cluster]
+    device_types: dict[str, dict],
+    raw_device_types: list[DeviceType],
+    clusters: list[Cluster],
 ) -> str:
     lines = [
         "This file is automatically generated by tools/zap_converter.py. Don't edit it.\n\n"
-        "The following examples list every supported Matter device type. Optional features "
+        "The following examples list every Matter device type. Optional features "
         "can be enabled with `with_features`. Features already required by a device type and "
         "features disallowed by it are omitted. Features inherited from required clusters "
         "are shown commented out unless they belong to an unresolved feature choice.\n"
     ]
     clusters_by_id = {cluster.id: cluster for cluster in clusters}
-    for device_type in device_types.values():
+    for raw_device_type in sorted(raw_device_types, key=lambda item: item.device_id):
+        name = raw_device_type.name
+        if name in EXCLUDED_DEVICE_TYPES:
+            lines.append(
+                f"# {name}\n\n> This device type is not supported by esp-matter.\n"
+            )
+            continue
+        device_type = device_types[str(raw_device_type.device_id)]
         features: dict[str, str | None] = {}
         inherited_features: dict[str, str | None] = {}
         feature_choices: list[tuple[Choice, dict[str, str | None]]] = []
@@ -1153,7 +1224,6 @@ def generate_device_type_documentation(
                         feature_choice_keys.add(choice_key)
                         feature_choices.append((choice, choice_features))
 
-        name = device_type["name"]
         lines.append(f"# {name}\n\n```yaml\nmatter:\n  endpoints:\n    1:")
         if features or inherited_features:
             lines.append(f"      {name}:\n        with_features:")
@@ -1272,6 +1342,11 @@ def generate_event_documentation(
     ]
     for cluster in sorted(clusters, key=lambda c: c.id):
         cluster_name = camel_case(cluster.name)
+        if cluster_key(cluster.name) in EXCLUDED_CLUSTERS:
+            lines.append(
+                f"# {cluster_name}\n\n> This cluster is not supported by esp-matter.\n"
+            )
+            continue
         events = [e for e in cluster.events if e.api_maturity != "provisional"]
         if not events:
             continue
@@ -1329,6 +1404,18 @@ def main():
     raw_device_types, raw_clusters, enums, bitmaps, structs = parse_data_model(
         args.data_model_path
     )
+    documentation_device_types = raw_device_types
+    documentation_clusters = raw_clusters
+    raw_device_types = [
+        device_type
+        for device_type in raw_device_types
+        if device_type.name not in EXCLUDED_DEVICE_TYPES
+    ]
+    raw_clusters = [
+        cluster
+        for cluster in raw_clusters
+        if cluster_key(cluster.name) not in EXCLUDED_CLUSTERS
+    ]
 
     field_resolver = FieldResolver(enums, bitmaps, structs)
     commands = post_process_commands(raw_clusters, field_resolver)
@@ -1354,13 +1441,17 @@ def main():
     documentation_path = Path(__file__).resolve().parent.parent / "docs" / "generated"
     documentation_path.mkdir(parents=True, exist_ok=True)
     with open(documentation_path / "commands.md", "w") as file:
-        file.write(generate_command_documentation(raw_clusters, commands))
+        file.write(generate_command_documentation(documentation_clusters, commands))
     # with open(documentation_path / "attributes.md", "w") as file:
-    #     file.write(generate_attribute_documentation(raw_clusters))
+    #     file.write(generate_attribute_documentation(documentation_clusters))
     with open(documentation_path / "device_types.md", "w") as file:
-        file.write(generate_device_type_documentation(device_types, raw_clusters))
+        file.write(
+            generate_device_type_documentation(
+                device_types, documentation_device_types, documentation_clusters
+            )
+        )
     with open(documentation_path / "events.md", "w") as file:
-        file.write(generate_event_documentation(raw_clusters, events))
+        file.write(generate_event_documentation(documentation_clusters, events))
 
     arg_types = defaultdict(int)
     for cl in commands.values():

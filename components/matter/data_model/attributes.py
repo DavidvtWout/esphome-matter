@@ -217,12 +217,4 @@ SENSOR_ATTRIBUTES = {
     "SoilMeasurement": {  # 0x0430
         "SoilMoistureMeasuredValue": SensorAttribute("soil_moisture", "percentage")
     },
-    # Not used by any device type?
-    "SmokeConcentrationMeasurement": {  # 0x0434
-        "MeasuredValue": SensorAttribute(
-            "smoke_concentration",
-            "concentration",
-            features=("NumericMeasurement",),
-        )
-    },
 }

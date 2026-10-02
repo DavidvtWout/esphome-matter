@@ -222,10 +222,6 @@
           "PARTS_LIST"
         ]
       },
-      "46": {
-        "name": "Power Source Configuration",
-        "client_locked": true
-      },
       "47": {
         "name": "Power Source",
         "client_locked": true
@@ -370,10 +366,6 @@
       },
       "45": {
         "name": "Unit Localization",
-        "client_locked": true
-      },
-      "46": {
-        "name": "Power Source Configuration",
         "client_locked": true
       },
       "48": {
@@ -931,17 +923,6 @@
         "server_locked": true,
         "client_locked": true
       },
-      "82": {
-        "name": "Refrigerator And Temperature Controlled Cabinet Mode",
-        "client_locked": true,
-        "features": {
-          "OO": {
-            "conformance": {
-              "disallowed": true
-            }
-          }
-        }
-      },
       "87": {
         "name": "Refrigerator Alarm",
         "client_locked": true
@@ -957,32 +938,6 @@
         "server": true,
         "server_locked": true,
         "client_locked": true
-      },
-      "72": {
-        "name": "Oven Cavity Operational State",
-        "client_locked": true
-      },
-      "73": {
-        "name": "Oven Mode",
-        "client_locked": true,
-        "features": {
-          "OO": {
-            "conformance": {
-              "disallowed": true
-            }
-          }
-        }
-      },
-      "82": {
-        "name": "Refrigerator And Temperature Controlled Cabinet Mode",
-        "client_locked": true,
-        "features": {
-          "OO": {
-            "conformance": {
-              "disallowed": true
-            }
-          }
-        }
       },
       "86": {
         "name": "Temperature Control",
@@ -1189,21 +1144,6 @@
       },
       "86": {
         "name": "Temperature Control",
-        "client_locked": true
-      },
-      "89": {
-        "name": "Dishwasher Mode",
-        "client_locked": true,
-        "features": {
-          "OO": {
-            "conformance": {
-              "disallowed": true
-            }
-          }
-        }
-      },
-      "93": {
-        "name": "Dishwasher Alarm",
         "client_locked": true
       },
       "96": {

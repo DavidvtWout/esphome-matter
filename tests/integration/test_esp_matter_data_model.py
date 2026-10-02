@@ -79,6 +79,18 @@ def _chip_header_path(esp_matter_source: Path, cluster: Cluster) -> Path:
     "cluster",
     CLUSTER_PARAMS,
 )
+def test_cluster_is_used_by_device_type(cluster: Cluster) -> None:
+    assert any(
+        device_type_cluster.id == cluster.id
+        for device_type in DEVICE_TYPES
+        for device_type_cluster in device_type.clusters
+    ), f"No device type refers to {cluster.conf_key}"
+
+
+@pytest.mark.parametrize(
+    "cluster",
+    CLUSTER_PARAMS,
+)
 def test_cluster_espm_namespace(
     esp_matter_source: Path,
     cluster: Cluster,

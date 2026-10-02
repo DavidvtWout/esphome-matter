@@ -48,10 +48,6 @@
     "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
     "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
   },
-  "Smoke Concentration Measurement": {
-    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
-    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
-  },
   "WebRTC Transport Provider": {
     "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_PROVIDER_CLUSTER"
   },
@@ -71,9 +67,6 @@
         "define": "DEVICE_TYPE_LIST"
       }
     }
-  },
-  "Oven Cavity Operational State": {
-    "sdkconfig_option": "CONFIG_SUPPORT_OPERATIONAL_STATE_OVEN_CLUSTER"
   },
   "RVC Operational State": {
     "sdkconfig_option": "CONFIG_SUPPORT_OPERATIONAL_STATE_RVC_CLUSTER"
