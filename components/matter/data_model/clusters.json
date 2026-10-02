@@ -1404,7 +1404,8 @@
           ]
         }
       }
-    }
+    },
+    "chip_include": null
   },
   "37": {
     "name": "Actions",
@@ -2145,7 +2146,8 @@
           }
         }
       }
-    }
+    },
+    "chip_include": null
   },
   "41": {
     "name": "OTA Software Update Provider",
@@ -3792,7 +3794,8 @@
           }
         }
       }
-    }
+    },
+    "chip_include": null
   },
   "50": {
     "name": "Diagnostic Logs",
@@ -4261,7 +4264,8 @@
           "optional": true
         }
       }
-    }
+    },
+    "chip_include": null
   },
   "53": {
     "name": "Thread Network Diagnostics",
@@ -5433,7 +5437,8 @@
           "optional": true
         }
       }
-    }
+    },
+    "chip_include": null
   },
   "55": {
     "name": "Ethernet Network Diagnostics",
@@ -5590,7 +5595,8 @@
           }
         }
       }
-    }
+    },
+    "chip_include": null
   },
   "56": {
     "name": "Time Synchronization",
@@ -7192,7 +7198,8 @@
         "id": 4,
         "args": []
       }
-    }
+    },
+    "chip_include": null
   },
   "64": {
     "name": "Fixed Label",

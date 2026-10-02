@@ -7,6 +7,27 @@
     "chip_fqn": "chip::app::Clusters::BindingCluster",
     "chip_include": "#include <app/clusters/bindings/BindingCluster.h>"
   },
+  "Access Control": {
+    "chip_include": null
+  },
+  "Basic Information": {
+    "chip_include": null
+  },
+  "Network Commissioning": {
+    "chip_include": null
+  },
+  "Software Diagnostics": {
+    "chip_include": null
+  },
+  "Wi-Fi Network Diagnostics": {
+    "chip_include": null
+  },
+  "Ethernet Network Diagnostics": {
+    "chip_include": null
+  },
+  "Group Key Management": {
+    "chip_include": null
+  },
   "Carbon Monoxide Concentration Measurement": {
     "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
     "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"

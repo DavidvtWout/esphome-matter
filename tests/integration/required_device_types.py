@@ -7,7 +7,7 @@ REQUIRED_DEVICE_TYPES = [
     # "bridged_node",
     # "ota_provider",
     "contact_sensor",
-    # "root_node",
+    "root_node",
     # "solar_power",
     # "battery_storage",
     # "secondary_network_interface",

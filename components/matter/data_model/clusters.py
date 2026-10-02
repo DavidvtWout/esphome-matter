@@ -63,9 +63,9 @@ class Cluster:
     conf_key: str
     sdkconfig_option: str
     # connectedhomeip fully qualified name. e.g.: chip::app::Clusters::TemperatureMeasurementCluster
-    chip_fqn: str
+    chip_fqn: str | None
     # connectedhomeip include. e.g.: #include <app/clusters/temperature-measure-server/TemperatureMeasurementCluster.h>
-    chip_include: str
+    chip_include: str | None
     # esp_matter class namespace. e.g.:
     espm_namespace: str
     # ----------------------------------- #

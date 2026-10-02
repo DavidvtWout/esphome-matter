@@ -111,6 +111,8 @@ def test_cluster_chip_include(
     esp_matter_source: Path,
     cluster: Cluster,
 ) -> None:
+    if cluster.chip_include is None:
+        pytest.skip("CHIP include is not required")
     chip_header = _chip_header_path(esp_matter_source, cluster)
     assert chip_header.is_file(), f"Missing CHIP header: {cluster.chip_include}"
 
@@ -123,6 +125,8 @@ def test_cluster_chip_fqn(
     esp_matter_source: Path,
     cluster: Cluster,
 ) -> None:
+    if cluster.chip_include is None or cluster.chip_fqn is None:
+        pytest.skip("CHIP class is not required")
     chip_header = _chip_header_path(esp_matter_source, cluster)
     if not chip_header.is_file():
         pytest.skip("CHIP include test failed")

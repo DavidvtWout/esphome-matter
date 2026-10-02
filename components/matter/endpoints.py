@@ -456,13 +456,19 @@ class Endpoint:
         if sensor_attribute.sensor_type is BinarySensor:
             args = [sensor, self._endpoint_id, cluster.id, attribute.id, converter]
             if sensor_attribute.code_driven:
-                self.global_includes.add(cluster.chip_include)
+                if cluster.chip_include is not None:
+                    self.global_includes.add(cluster.chip_include)
                 args.append(
                     cg.RawExpression("esphome::matter::update_boolean_state_attribute")
                 )
             cg.add(var.register_binary_sensor_attribute(*args))
         elif sensor_attribute.code_driven:
-            self.global_includes.add(cluster.chip_include)
+            if cluster.chip_include is not None:
+                self.global_includes.add(cluster.chip_include)
+            if cluster.chip_fqn is None:
+                raise cv.Invalid(
+                    f"Cluster {cluster.conf_key} does not define a CHIP class"
+                )
             cluster_type = cg.RawExpression(cluster.chip_fqn)
             value_type = cg.RawExpression(
                 {
