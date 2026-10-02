@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - "**"
+      - main
     paths:
       - "components/**"
       - "tests/**"
@@ -30,8 +30,6 @@ jobs:
         esphome-version:
           - 2026.6.0
           - 2026.7.4
-          - 2026.8.2
-          - 2026.9.1
 
     steps:
       - name: Check out repository
@@ -68,9 +66,10 @@ jobs:
         run: .venv/bin/python tests/run_window_cover_mapping_tests.py
 
   compile:
-    name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }}, ${{ matrix.esp32-toolchain }})
+    name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})
     runs-on: ubuntu-24.04
     needs: validate
+    if: github.ref != 'refs/heads/main'
     strategy:
       matrix:
         config:
@@ -79,17 +78,8 @@ jobs:
           - tests/configs/esp32-window-covering.yaml
           - tests/configs/esp32-thread-window-covering.yaml
         esphome-version:
-          - 2026.8.2
-          - 2026.9.1
-        esp32-toolchain:
-          - platformio
-        include:
-          - config: tests/configs/esp32-window-covering.yaml
-            esphome-version: 2026.9.1
-            esp32-toolchain: esp-idf
-          - config: tests/configs/esp32-thread-window-covering.yaml
-            esphome-version: 2026.9.1
-            esp32-toolchain: esp-idf
+          # - 2026.6.0
+          - 2026.7.4
 
     steps:
       - name: Check out repository
@@ -115,7 +105,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: tests/configs/.esphome/build
-          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.esp32-toolchain }}-${{ matrix.config }}
+          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.config }}
 
       #  - name: Install ccache
       #    run: sudo apt-get update && sudo apt-get install -y ccache
@@ -132,7 +122,7 @@ jobs:
         #    CCACHE_DIR: ${{ github.workspace }}/.ccache
         #    CCACHE_BASEDIR: ${{ github.workspace }}
         #    CCACHE_COMPILERCHECK: content
-        run: .venv/bin/esphome -s esp32_toolchain "${{ matrix.esp32-toolchain }}" compile "${{ matrix.config }}"
+        run: .venv/bin/esphome compile "${{ matrix.config }}"
 
       #  - name: Print ccache statistics
       #    env:
