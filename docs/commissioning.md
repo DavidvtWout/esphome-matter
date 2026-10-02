@@ -11,6 +11,56 @@ After flashing the device, a commission code is generated and shown (SetupQRCode
 [C][matter]:   Fabrics: none
 ```
 
+## Setup codes in Home Assistant
+
+Setup codes are printed at CONFIG level during the configuration dump. Those
+lines may be missed when connecting after boot or hidden by the configured log
+level. To receive the codes through the native ESPHome API, add:
+
+```yaml
+api: {}
+
+text_sensor:
+  - platform: matter
+    manual_pairing_code:
+      name: "Matter Setup Code"
+    qr_code:
+      name: "Matter QR Payload"
+```
+
+Merge these entries with your existing API and text sensor configuration. Both
+sensors are optional, but at least one must be configured. The optional
+`matter_id` selects the Matter component; it is inferred when omitted. The
+entities use the diagnostic category and are exposed by default. Their states
+are generated from the stored commissioning identity at startup and remain
+available when Home Assistant reconnects, without requiring a configuration
+dump. `manual_pairing_code` is the decimal setup code; `qr_code` is the raw
+`MT:` payload that can be encoded into a QR image.
+
+A code value does not indicate whether the commissioning window is open or
+whether Matter initialized successfully. After a Matter factory reset, the
+same original code is published again and can be used during the initial
+commissioning window. For an already commissioned device, use the controller's
+sharing flow and its temporary code to add another fabric.
+
+### Matter reset button
+
+To remove all stored Matter fabrics and restart for initial commissioning:
+
+```yaml
+button:
+  - platform: template
+    name: "Matter Factory Reset"
+    entity_category: config
+    icon: mdi:restore
+    on_press:
+      - matter.factory_reset:
+```
+
+This keeps the stored setup code, ESPHome preferences, and the configured
+Wi-Fi or Thread credentials. The device must be paired with its Matter
+controllers again afterward.
+
 # Commissioners
 
 ### matterjs-server / Home Assistant

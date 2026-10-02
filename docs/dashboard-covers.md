@@ -7,10 +7,13 @@ No local checkout or manual component copy is required on the Dashboard host.
 
 The cover work is published on the fork branch
 [`mrflo97/esphome-matter@vb-02-03-cover-schema`](https://github.com/mrflo97/esphome-matter/tree/vb-02-03-cover-schema).
-The example pins the tested implementation to commit
-[`2bce176054874102d8e4690e643d62f88a0a1954`](https://github.com/mrflo97/esphome-matter/commit/2bce176054874102d8e4690e643d62f88a0a1954).
-Use that revision for this hardware test; the upstream `main` branch is not
-the source of the tested cover changes.
+The example pins the implementation, including native setup-code text sensors,
+to commit
+[`528f470e035777fc5c11625ee534cd04f8a0d781`](https://github.com/mrflo97/esphome-matter/commit/528f470e035777fc5c11625ee534cd04f8a0d781).
+The cover implementation was hardware tested at
+[`2bce176054874102d8e4690e643d62f88a0a1954`](https://github.com/mrflo97/esphome-matter/commit/2bce176054874102d8e4690e643d62f88a0a1954);
+the new text sensors still need a build and hardware check. The upstream `main`
+branch is not the source of these fork changes.
 
 The hardware canary used **ESPHome 2026.8.2** with **ESP-IDF** and
 `esp32.toolchain: platformio`. Use those settings to reproduce its build.
@@ -63,7 +66,8 @@ The example includes your prepared local hardware package and adds:
 - IPv6 and the native ESPHome API;
 - the Matter lift-and-tilt endpoint;
 - `internal: true` on the physical backend using `!extend cover1`;
-- the coordinated `cover1_api` entity named `${cover1_name} ESPHome`.
+- the coordinated `cover1_api` entity named `${cover1_name} ESPHome`;
+- diagnostic text sensors for the stored Matter setup code and QR payload.
 
 The source configuration is:
 
@@ -72,7 +76,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/mrflo97/esphome-matter
-      ref: 2bce176054874102d8e4690e643d62f88a0a1954
+      ref: 528f470e035777fc5c11625ee534cd04f8a0d781
     components: [matter]
     refresh: never
   - source:
@@ -106,7 +110,11 @@ Use Home Assistant's **ESPHome integration** for the `${cover1_name} ESPHome`
 entity. It provides native position, tilt, Stop, and tilt-open/tilt-close
 services without commissioning Home Assistant to Matter.
 
-Commission Apple Home using the setup code printed in the device logs. If the
+Commission Apple Home using the setup code in Home Assistant's diagnostic
+entity `Matter Setup Code`, or the code printed in the device logs. The text
+sensor is available through ESPHome without commissioning Home Assistant to
+Matter. See [setup-code sensors](commissioning.md#setup-codes-in-home-assistant)
+for the YAML and Matter reset button. If the
 device already belongs to another Matter fabric, open a sharing/commissioning
 window in that controller and use its temporary code. A normal restart only
 reopens initial commissioning when no fabrics are stored. See

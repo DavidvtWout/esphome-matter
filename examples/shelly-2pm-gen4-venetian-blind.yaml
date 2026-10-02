@@ -25,7 +25,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/mrflo97/esphome-matter
-      ref: 2bce176054874102d8e4690e643d62f88a0a1954
+      ref: 528f470e035777fc5c11625ee534cd04f8a0d781
     components: [matter]
     refresh: never
   - source:
@@ -55,6 +55,14 @@ cover:
     name: "${cover1_name} ESPHome"
     device_class: blind
     cover_id: cover1
+
+# Home Assistant receives the stored commissioning codes through ESPHome.
+text_sensor:
+  - platform: matter
+    manual_pairing_code:
+      name: "Matter Setup Code"
+    qr_code:
+      name: "Matter QR Payload"
 
 # In BOTH physical button release handlers in the local base, use:
 # on_release:
