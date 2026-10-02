@@ -4,14 +4,14 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 import esphome.final_validate as fv
 from esphome.components import cover
-from esphome.const import CONF_ID, CONF_INTERNAL, CONF_NAME, CONF_PLATFORM
+from esphome.const import CONF_INTERNAL, CONF_NAME
 
-from .const import CONF_COVER_ID, CONF_ENDPOINTS
+from .const import CONF_COVER_ID, CONF_MATTER_ID
 from .types import MatterComponent, matter_ns
+from .validation import require_cover_mapping
 
 DEPENDENCIES = ["matter"]
 
-CONF_MATTER_ID = "matter_id"
 MatterNativeCover = matter_ns.class_("MatterNativeCover", cover.Cover, cg.Component)
 
 CONFIG_SCHEMA = (
@@ -28,34 +28,18 @@ CONFIG_SCHEMA = (
 
 def _final_validate(config):
     full_config = fv.full_config.get()
-    source_id = str(config[CONF_COVER_ID])
-    sources = [
-        item
-        for item in full_config.get("cover", [])
-        if str(item.get(CONF_ID)) == source_id
-    ]
-    if not sources or sources[0].get(CONF_PLATFORM) == "matter":
-        raise cv.Invalid("matter cover_id must refer to a backend cover")
-    if not sources[0].get(CONF_INTERNAL, False):
+    source = require_cover_mapping(
+        full_config, config[CONF_COVER_ID], config[CONF_MATTER_ID]
+    )
+    if not source.get(CONF_INTERNAL, False):
         raise cv.Invalid(
             "The backend of a Matter native cover must be internal: true so "
             "direct API commands cannot bypass command coordination"
         )
-    if config.get(CONF_NAME) == sources[0].get(CONF_NAME):
+    if config.get(CONF_NAME) == source.get(CONF_NAME):
         raise cv.Invalid(
             "The native cover must have a different name from its backend "
             "so web requests select the coordinated control entity"
-        )
-
-    endpoints = full_config.get("matter", {}).get(CONF_ENDPOINTS, {})
-    matches = [
-        endpoint
-        for endpoint in endpoints.values()
-        if str(endpoint.get("window_covering", {}).get(CONF_COVER_ID)) == source_id
-    ]
-    if len(matches) != 1:
-        raise cv.Invalid(
-            "matter cover_id must be mapped to exactly one Matter window_covering endpoint"
         )
 
 

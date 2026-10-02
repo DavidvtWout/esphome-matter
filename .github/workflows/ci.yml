@@ -30,6 +30,8 @@ jobs:
         esphome-version:
           - 2026.6.0
           - 2026.7.4
+          - 2026.8.2
+          - 2026.9.1
 
     steps:
       - name: Check out repository
@@ -56,16 +58,19 @@ jobs:
         run: .venv/bin/esphome config tests/configs/esp32-thread-window-covering.yaml
       - name: Test Window Covering schema validation
         run: .venv/bin/python tests/test_window_covering_schema.py
+      - name: Test cover and pairing-sensor configuration and code generation
+        run: .venv/bin/python tests/test_matter_platforms.py
       - name: Test Window Covering command queue ordering
         run: |
           c++ -std=c++17 -pthread tests/test_window_cover_command_queue.cpp -o /tmp/test_window_cover_command_queue
           /tmp/test_window_cover_command_queue
+      - name: Test Window Covering mapping state transitions
+        run: .venv/bin/python tests/run_window_cover_mapping_tests.py
 
   compile:
-    name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})
+    name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }}, ${{ matrix.esp32-toolchain }})
     runs-on: ubuntu-24.04
     needs: validate
-    if: github.ref != 'refs/heads/main'
     strategy:
       matrix:
         config:
@@ -74,8 +79,17 @@ jobs:
           - tests/configs/esp32-window-covering.yaml
           - tests/configs/esp32-thread-window-covering.yaml
         esphome-version:
-          # - 2026.6.0
-          - 2026.7.4
+          - 2026.8.2
+          - 2026.9.1
+        esp32-toolchain:
+          - platformio
+        include:
+          - config: tests/configs/esp32-window-covering.yaml
+            esphome-version: 2026.9.1
+            esp32-toolchain: esp-idf
+          - config: tests/configs/esp32-thread-window-covering.yaml
+            esphome-version: 2026.9.1
+            esp32-toolchain: esp-idf
 
     steps:
       - name: Check out repository
@@ -101,7 +115,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: tests/configs/.esphome/build
-          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.config }}
+          key: ${{ runner.os }}-build-${{ matrix.esphome-version }}-${{ matrix.esp32-toolchain }}-${{ matrix.config }}
 
       #  - name: Install ccache
       #    run: sudo apt-get update && sudo apt-get install -y ccache
@@ -118,7 +132,7 @@ jobs:
         #    CCACHE_DIR: ${{ github.workspace }}/.ccache
         #    CCACHE_BASEDIR: ${{ github.workspace }}
         #    CCACHE_COMPILERCHECK: content
-        run: .venv/bin/esphome compile "${{ matrix.config }}"
+        run: .venv/bin/esphome -s esp32_toolchain "${{ matrix.esp32-toolchain }}" compile "${{ matrix.config }}"
 
       #  - name: Print ccache statistics
       #    env:

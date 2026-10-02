@@ -11,14 +11,14 @@ For an existing Shelly 2PM Gen4 configuration, start with the
 
 ## Supported mappings
 
-| Cover | Required `features` | `end_product_type` |
+| Cover | Required `with_features` | `end_product_type` |
 |---|---|---|
-| Lift only | `Lift`, `PositionAwareLift` | `roller_shade` (default) |
-| Lift and tilt | `Lift`, `PositionAwareLift`, `Tilt`, `PositionAwareTilt` | `interior_venetian_blind` (default) or `exterior_venetian_blind` |
+| Lift only | `lift`, `position_aware_lift` | `roller_shade` (default) |
+| Lift and tilt | `lift`, `position_aware_lift`, `tilt`, `position_aware_tilt` | `interior_venetian_blind` (default) or `exterior_venetian_blind` |
 
 The backend must support position and Stop; a lift-and-tilt mapping must also
 support tilt. These capabilities are checked during device setup. Mapped covers
-do not support `AbsolutePosition`, tilt-only feature combinations, or arbitrary
+do not support `absolute_position`, tilt-only feature combinations, or arbitrary
 combinations of the features above.
 
 ### Lift-only cover
@@ -32,9 +32,9 @@ matter:
       window_covering:
         cover_id: roller_cover
         end_product_type: roller_shade
-        features:
-          - Lift
-          - PositionAwareLift
+        with_features:
+          - lift
+          - position_aware_lift
 ```
 
 ### Venetian blind
@@ -48,16 +48,18 @@ matter:
       window_covering:
         cover_id: blind_backend
         end_product_type: interior_venetian_blind
-        features:
-          - Lift
-          - PositionAwareLift
-          - Tilt
-          - PositionAwareTilt
+        with_features:
+          - lift
+          - position_aware_lift
+          - tilt
+          - position_aware_tilt
 ```
 
-The four features enable both position and tilt control. Setting only the end
-product type does not enable tilt. The schema supplies the appropriate Matter
-Window Covering type for each supported mapping.
+Use snake_case names under `with_features`, matching the upstream endpoint
+schema. The four features enable both position and tilt control. Setting only
+the end product type does not enable tilt. The schema supplies the appropriate
+Matter Window Covering type for each supported mapping. Cluster-level
+`with_features` cannot add capabilities beyond the mapped cover's feature set.
 
 ## Native ESPHome API alongside Matter
 
@@ -79,7 +81,8 @@ cover:
 
 This platform comes from the `matter` external component; no additional
 external `cover` component is needed. `cover_id` must reference an internal
-backend mapped to exactly one Matter Window Covering endpoint. The native
+backend mapped to exactly one Matter Window Covering endpoint. Each physical
+backend can be mapped only once, and a native proxy cannot be an endpoint backend. The native
 entity's name must differ from the backend's name so web requests select the
 coordinated entity. `matter_id` may identify the parent Matter component;
 ESPHome resolves it automatically when omitted.
@@ -153,6 +156,11 @@ On 2026-10-01, the user confirmed lift, tilt, and Stop on a Shelly 2PM Gen4
 (ESP32-C6) with Apple Home through Matter and Home Assistant through the native
 ESPHome API, after switching from Wi-Fi to Thread. The tested firmware used
 ESPHome 2026.8.2, ESP-IDF 5.5.5, and `davidvtwout/esp_matter` 1.6.0~2.
+
+The current revision adds schema and coordinator fixes after that canary. Those
+changes require a fresh hardware check before its earlier results can be applied
+to this revision. A subsequent ESPHome 2026.9.0 Dashboard build had one
+unexplained abort; its cause has not been identified.
 
 The canary had no wired wall buttons. Physical button interruption and the
 remaining retargeting checks still need hardware evidence. See the

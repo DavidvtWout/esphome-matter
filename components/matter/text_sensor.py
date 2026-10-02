@@ -2,16 +2,15 @@
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
+import esphome.final_validate as fv
 from esphome.components import text_sensor
 from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC
 
+from .const import CONF_MANUAL_PAIRING_CODE, CONF_MATTER_ID, CONF_QR_CODE
 from .types import MatterComponent
+from .validation import validate_unique_text_sensors
 
 DEPENDENCIES = ["matter"]
-
-CONF_MATTER_ID = "matter_id"
-CONF_MANUAL_PAIRING_CODE = "manual_pairing_code"
-CONF_QR_CODE = "qr_code"
 
 CONFIG_SCHEMA = cv.All(
     cv.Schema(
@@ -29,6 +28,13 @@ CONFIG_SCHEMA = cv.All(
     ),
     cv.has_at_least_one_key(CONF_MANUAL_PAIRING_CODE, CONF_QR_CODE),
 )
+
+
+def _final_validate(config):
+    validate_unique_text_sensors(config, fv.full_config.get())
+
+
+FINAL_VALIDATE_SCHEMA = _final_validate
 
 
 async def to_code(config):

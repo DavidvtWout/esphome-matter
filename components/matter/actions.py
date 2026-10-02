@@ -20,8 +20,8 @@ from .data_model.attributes import attribute_value_type
 from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME
 from .data_model.commands import COMMANDS, Command
 from .types import (
-    MatterComponent,
     MatterCancelCoverPendingAction,
+    MatterComponent,
     MatterEndpointRef,
     MatterFactoryResetAction,
     MatterSendCommandAction,

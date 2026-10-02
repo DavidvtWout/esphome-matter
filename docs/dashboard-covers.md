@@ -5,19 +5,19 @@ downloads the external `venetian_blinds` component. The cover implementation
 and its native ESPHome platform are both included in `components: [matter]`.
 No local checkout or manual component copy is required on the Dashboard host.
 
-The cover work is published on the fork branch
-[`mrflo97/esphome-matter@vb-02-03-cover-schema`](https://github.com/mrflo97/esphome-matter/tree/vb-02-03-cover-schema).
-The example pins the implementation, including native setup-code text sensors,
-to commit
-[`528f470e035777fc5c11625ee534cd04f8a0d781`](https://github.com/mrflo97/esphome-matter/commit/528f470e035777fc5c11625ee534cd04f8a0d781).
-The cover implementation was hardware tested at
-[`2bce176054874102d8e4690e643d62f88a0a1954`](https://github.com/mrflo97/esphome-matter/commit/2bce176054874102d8e4690e643d62f88a0a1954);
-the new text sensors still need a build and hardware check. The upstream `main`
-branch is not the source of these fork changes.
+During review, use the source revision shown in the example below. When the
+cover work is merged upstream, the same configuration can use
+`DavidvtWout/esphome-matter`. Pin a reviewed commit when deploying firmware;
+following a branch also picks up later configuration and implementation changes.
+
+The source follows upstream's `with_features` option with snake_case feature
+names. Earlier cover prototypes used `features` and CamelCase names; update
+those configurations when updating the component revision.
 
 The hardware canary used **ESPHome 2026.8.2** with **ESP-IDF** and
 `esp32.toolchain: platformio`. Use those settings to reproduce its build.
-Other Dashboard versions have not been verified on this physical cover.
+ESPHome 2026.9.0 has also booted on the device, but one unexplained abort was
+reported; the revised component still requires its own hardware checks.
 
 ## 1. Prepare the existing hardware package
 
@@ -76,9 +76,9 @@ external_components:
   - source:
       type: git
       url: https://github.com/mrflo97/esphome-matter
-      ref: 528f470e035777fc5c11625ee534cd04f8a0d781
+      ref: vb-02-03-cover-schema
     components: [matter]
-    refresh: never
+    refresh: 5min
   - source:
       type: git
       url: https://github.com/bruxy70/Venetian-Blinds-Control
@@ -88,17 +88,23 @@ external_components:
 ```
 
 Dashboard obtains the component sources and ESP-IDF build dependencies during
-validation/build. Both sources use full commit SHAs with `refresh: never`
-so rebuilding uses the same component revisions. To follow subsequent Matter
-development, change its `ref` to `vb-02-03-cover-schema` and its `refresh` to
-`5min`. Keep the Venetian backend pinned to its tested commit.
+validation/build. The Venetian backend uses a full commit SHA with
+`refresh: never` to preserve the tested motor behavior. For Matter, replace the
+branch ref with a reviewed full commit SHA and use `refresh: never` when
+freezing a deployment. To follow later development, use the branch ref and
+`refresh: 5min` shown above.
 
 After editing, use Dashboard's **Validate** and then **Install** actions. If
-you follow the branch and it was just updated, temporarily use `refresh: 0s`
+you follow a branch that was just updated, temporarily use `refresh: 0s`
 for one validation if the cache has not refreshed yet, or select the new commit
 SHA. Changing a ref selects a separate external-component cache. **Clean Build
 Files** is useful for a stale compiled build; it does not select a newer Git
 revision.
+
+For hosts with limited RAM, set `esphome.compile_process_limit: 1` to reduce
+parallel compilation. Matter's generated cluster code can require substantial
+memory; an operating-system-killed compiler needs more available memory or
+fewer concurrent jobs.
 
 See ESPHome's [external component documentation](https://esphome.io/components/external_components/)
 and [package documentation](https://esphome.io/components/packages/) for the

@@ -14,11 +14,11 @@ An existing ESPHome cover can be attached to a Matter Window Covering endpoint
 with `cover_id`. Mapped covers currently support normalized percentage
 positions in one of two feature combinations:
 
-- Lift only: `Lift` and `PositionAwareLift`
-- Venetian blind: `Lift`, `PositionAwareLift`, `Tilt`, and
-  `PositionAwareTilt`
+- Lift only: `lift` and `position_aware_lift`
+- Venetian blind: `lift`, `position_aware_lift`, `tilt`, and
+  `position_aware_tilt`
 
-`AbsolutePosition` is not supported because ESPHome cover positions are
+`absolute_position` is not supported because ESPHome cover positions are
 normalized percentages rather than physical measurements.
 
 ```yaml
@@ -28,11 +28,11 @@ matter:
       window_covering:
         cover_id: venetian_blind
         end_product_type: interior_venetian_blind
-        features:
-          - Lift
-          - PositionAwareLift
-          - Tilt
-          - PositionAwareTilt
+        with_features:
+          - lift
+          - position_aware_lift
+          - tilt
+          - position_aware_tilt
 ```
 
 The mapped cover must report position and support Stop. A Venetian-blind

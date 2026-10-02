@@ -8,16 +8,20 @@ ESPHome external component adding Matter 1.6 support.
 
 > This project is still in early-development so don't expect a perfectly working setup. Both
 > matter-over-wifi and matter-over-thread are now working. It's possible to commission a
-> device to a matter controller, but many features are still missing.
+> device to a matter controller, and lights, switches and sensors are mostly working.
+> Many other device types can also be created and interacted with using on_attribute triggers
+> and set_attribute actions.
 >
-> It is usable for testing, but the public YAML interface is not stable yet. The config schema
-> may still change and break existing configurations.
+> However, there are still some stability issues, mainly with reconnection after a restart which
+> may take up to a minute.
+>
+> Also, keep in mind that the config schema may still change and break existing configurations.
 
 That being said, esphome-matter is usable now, so give it a try!
 
 # Supported Hardware
 
-The component only supports `ESP32` targets built with the **ESP-IDF** framework; the Arduino framework is not
+The component only supports `ESP32` targets built with the **ESP-IDF** framework. The Arduino framework is not
 supported.
 
 Connectivity depends on which ESPHome networking components are configured:
@@ -28,44 +32,16 @@ Connectivity depends on which ESPHome networking components are configured:
 - **Matter-over-Ethernet**: Isn't supported yet and isn't actively being worked on. Feel free to implement it ;)
 - **BLE commissioning**: Currently broken, but this is something that I want to work on. The idea is that esphome-matter falls back to BLE commissioning (the default for most matter devices) when no `wifi`, `openthread`, or `ethernet` component is configured.
 
-Binding (for example, a button to a light) is working for matter-over-thread. For matter-over-wifi it also works but might be less stable because the CASE session is sometimes dropped.
+Binding (for example, a button to a light) is working but still has some stability issues. Sometimes it takes a few
+seconds before a command is successfully sent.
 
 So far, `ESP32-C3`, `ESP32-C5`, `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been tested and confirmed to work!
-
-See the [issue page](https://github.com/DavidvtWout/esphome-matter/issues) for bugs and features that are being worked on.
-
-# Compatibility with popular ecosystems
-
-esphome-matter based devices will show up as "uncertified test devices" in the ecosystems. This is because the devices are not certified by the Connectivity Standards Alliance (CSA) and are not part of the official Matter certification program. The devices should still be functional, but the ecosystems might inform or warn the user about the device not being certified during the commissioning process.
-
-### ESPHome-based devices created with esphome-matter have been tested with:
-
-- **Home Assistant (using matterjs-server)**: ✅️ Tested and working but requires enabling the "test-net DCL" option ([See Commissioning](#ecosystem-specific-settings))
-- **IKEA Home Smart**: ✅️
-- **Apple iOS (iPhone or iPad) and tvOS 16 (Apple TV) - "Home" app by Apple**: ✅️
-- **Google Home Ecosystem (Android or Google Nest smart speakers/display) - "Google Home" app**: ❓
-- **Samsung SmartThings (Station or Hub v2 and later)**: ❓
-- **Amazon Alexa (Amazon Echo)** :
-
-|Echo|Gen1|Gen2|Gen3|Gen4|Gen5|
-|---|---|---|---|---|---|
-|Wifi|X|❓|✅️|✅️|✅️|
-|Thread|X|X|X|❓|❓|
-
-- **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): ❓
-- **Homey Pro**: ❓
-- **LG ThinQ**: ❓
-- **Tuya Smart (SmartLife) app**: ❓
-- **Aqara Hubs**: ❓
-- **Flic**: ❓
-- **Yandex Smart Home**: ❓ (and for reference; Yandex is known to not allow pairing any Matter test devices)
-
-Please [report](https://github.com/DavidvtWout/esphome-matter/discussions/44)! any outdated or newly discovered information on compatible ecosystems, devices, and device types or issues.
 
 # Commissioning
 
 Because ESPHome devices already have their Wi-Fi or Thread credentials from your YAML configuration, commissioning
-works differently than with most other Matter devices. You still need to commission the device to a Matter fabric, but this does not happen over BLE (bluetooth) like with most matter devices.
+works differently than with most other Matter devices. You still need to commission the device to a Matter fabric, but
+this does not happen over BLE (bluetooth) like with most matter devices.
 
 After flashing, the device prints a setup code (`SetupQRCode`) to the logs on every boot:
 
@@ -78,7 +54,9 @@ After flashing, the device prints a setup code (`SetupQRCode`) to the logs on ev
 [C][matter]:   Fabrics: none
 ```
 
-Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device. Keep in mind that the commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't joined any fabrics yet.
+Copy the `SetupQRCode` or open the link and scan the QR-code to commission the device. Keep in mind that the
+commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't
+joined any fabrics yet.
 
 You can also expose the stored setup code and QR payload as native ESPHome text
 sensors. Home Assistant then receives them after connecting, independently of
@@ -97,14 +75,23 @@ Both sensors are optional diagnostic entities. `qr_code` contains the `MT:`
 payload, not a rendered image. See [commissioning](docs/commissioning.md#setup-codes-in-home-assistant)
 for configuration and reset behavior.
 
-Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers should have the option to share the device. This generates a temporary commissioning code and re-opens the commissioning window. If you lose access to the Matter controller, you can do a Matter factory reset (see [Example config](#example-config)).
+Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers
+should be able to share the device. This generates a temporary commissioning code and re-opens the commissioning window.
+If you lose access to the Matter controller, you can do a Matter factory reset (see [Example config](#example-config)).
 
 ### Ecosystem specific settings
 
 - **Home Assistant / matterjs server**: Start the matterjs-server with: `matterjs-server --enable-test-net-dcl=true`. Commission the device with the `Commission existing device` option.
 - **Home Assistant Matter app (HA-OS only)**: Check the "Enable test-net DCL usage" box under Settings -> Apps -> Matter Server -> Configuration. If you do not do this, pairing will fail.
+- **Google Home**: Doesn't automatically accept devices with the "test" vendor ID. Follow the [Tasmota guide](https://tasmota.github.io/docs/Matter-with-Google/) to add esphome-matter devices.
 
-So far, **IKEA Home smart**, **Apple Home** and the **Android Matter Commissioning API** have been confirmed to accept commissioning right away.
+So far, **IKEA Home Smart**, **Apple Home**, and **Amazon Alexa** have been confirmed to accept esphome-matter devices
+without any special configuration steps. Keep in mind that "accepting" a device doesn't mean supporting it properly. For
+example, IKEA Home Smart only supports a very limited subset of Matter device types. To get most out of the device, share
+it with a fabric that is controlled by Home Assistant.
+
+Please [report](https://github.com/DavidvtWout/esphome-matter/discussions/44) any outdated or newly discovered information
+on compatible ecosystems, devices, and device types or issues.
 
 # Example config
 
@@ -137,9 +124,12 @@ wifi: ...
 openthread: ...
 
 matter:
-  # vendor and product name can be at most 32 characters.
   # vendor_name: defaults to ESPHome
-  # product_name: defaults to esphome.name
+  # vendor_id: defaults to 0xFFF1 (test vendor)
+  # product_name: defaults to esphome.name (truncated to 32 characters)
+  # product_id: defaults to 0x8000 (test product)
+  # hardware_version: defaults to 0
+  # hardware_version_string: defaults to TEST_VERSION
 
   endpoints:
     1:
@@ -245,9 +235,8 @@ directly must call `matter.cover.cancel_pending` before `cover.stop`.
 See [cover configuration and reporting](docs/covers.md),
 [ESPHome Dashboard setup](docs/dashboard-covers.md), and the
 [Shelly 2PM Gen4 device example](examples/shelly-2pm-gen4-venetian-blind.yaml).
-The Dashboard guide selects the fork's cover branch while upstream integration
-is pending. Lift, tilt, and Stop have been verified on a Shelly 2PM Gen4 over
-Wi-Fi and Thread; physical wall-button checks are still pending.
+Lift, tilt, and Stop have been verified on a Shelly 2PM Gen4 over Wi-Fi and
+Thread; physical wall-button checks are still pending.
 
 # Lights
 
@@ -319,8 +308,6 @@ matter.send_command: some_endpoint.level_control.stop_with_on_off
 # Current Limitations
 
 - As this is based on [Espressif's SDK for Matter (esp-matter)](https://components.espressif.com/components/espressif/esp_matter/) any features/functions not supported there in upstream first can not be supported in this project.
-- Only one device type is supported per endpoint.
-- Matter-over-Ethernet has not been verified.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
 - Mapped covers support normalized lift positions, with optional tilt. Absolute
   positions and tilt-only mappings are unsupported. Current-position reports
@@ -332,6 +319,6 @@ matter.send_command: some_endpoint.level_control.stop_with_on_off
 - [Espressif's SDK for Matter (esp-matter) GitHub repo](https://github.com/espressif/esp-matter)
   - [Espressif's SDK for Matter (esp-matter) page on ESP Component Registry](https://components.espressif.com/components/espressif/esp_matter/)
   - [Espressif's SDK for Matter (esp-matter) Programming Guide / Documentation](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/)
-- [connectedhomeip (espressif's fork)](https://github.com/espressif/connectedhomeip)
+- [connectedhomeip](https://github.com/DavidvtWout/connectedhomeip)
 - [Matter specification (CSA)](https://csa-iot.org/developer-resource/specifications-download-request/)
 - [CSA source code implementations for the Matter project](https://github.com/project-chip)

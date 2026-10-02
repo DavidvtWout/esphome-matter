@@ -12,9 +12,9 @@ from esphome.const import CONF_LIGHT_ID
 from ..const import (
     CONF_COVER_ID,
     CONF_END_PRODUCT_TYPE,
-    CONF_FEATURES,
     CONF_MAX_LEVEL,
     CONF_MIN_LEVEL,
+    CONF_WITH_FEATURES,
 )
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
@@ -22,29 +22,38 @@ from .clusters import CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster, Feature
 from .units import percentage
 
 _LOGGER = logging.getLogger(__name__)
+_DEVICE_TYPES_FILE = Path(__file__).resolve().parent / "device_types.json"
 
 
 def _parse_cluster_include(data: dict) -> Cluster:
     cluster = CLUSTERS_BY_ID[data["id"]]
     required = data.get("required", False)
-    enabled_features = data.get("features", ())
+    mandatory_features = set()
+    disallowed_features = set()
+    for code, conformance in data.get("features", {}).items():
+        if conformance == "mandatory":
+            mandatory_features.add(code)
+        elif conformance == "disallowed":
+            disallowed_features.add(code)
+
+    def _replace(f):
+        if f.code in mandatory_features:
+            return replace(f, mandatory=True)
+        elif f.code in disallowed_features:
+            return replace(f, disallowed=True)
+        else:
+            return f
 
     features = []
     choice_features = []
     for feature in cluster.features:
-        if feature.code in enabled_features:
-            feature = replace(feature, enabled=True)
-        features.append(feature)
+        features.append(_replace(feature))
     for choice in cluster.choice_features:
         new_choice_features = []
         for feature in choice.features:
-            if feature.code in enabled_features:
-                feature = replace(feature, enabled=True)
-            new_choice_features.append(feature)
+            new_choice_features.append(_replace(feature))
         # Remove choice features if device type already solves the choice by enabling any of the choice features.
-        if choice.max != 1 or not any(
-            feature.enabled for feature in new_choice_features
-        ):
+        if not any(feature.mandatory for feature in new_choice_features):
             choice_features.append(replace(choice, features=tuple(new_choice_features)))
         else:
             features.extend(new_choice_features)
@@ -113,56 +122,6 @@ class DeviceType:
                 clusters.add(CLUSTERS_BY_NAME[sensor_attribute.cluster.name])
         return clusters
 
-    # TODO: fix this mess...
-    # def implicit_features(self, config: dict) -> set[str]:
-    #     features = set()
-    #     configured_cluster_ids = {
-    #         cluster.id for cluster in self.configured_server_clusters(config)
-    #     }
-    #     for cluster in self.server_clusters:
-    #         if cluster.id not in configured_cluster_ids:
-    #             continue
-    #         features.update(
-    #             feature.name
-    #             for feature in cluster.features
-    #             if feature.code in cluster.enabled_features
-    #         )
-    #     for sensor_attribute in self.sensor_attributes:
-    #         if config.get(sensor_attribute.conf_key) is not None:
-    #             features.update(sensor_attribute.features)
-    #     return features
-
-    def _validate_features(self, config: dict) -> dict:
-        # enabled_features = list(config.get(CONF_FEATURES, ()))
-        # for feature in sorted(self.implicit_features(config)):
-        #     if feature not in enabled_features:
-        #         enabled_features.append(feature)
-        #
-        # enabled_feature_set = frozenset(enabled_features)
-        # for cluster in self.configured_server_clusters(config):
-        #     for item in cluster.features:
-        #         if not isinstance(item, FeatureChoice):
-        #             continue
-        #         selected = enabled_feature_set.intersection(
-        #             feature.name for feature in item.features
-        #         )
-        #         if len(selected) < item.min:
-        #             choices = ", ".join(feature.name for feature in item.features)
-        #             raise cv.Invalid(
-        #                 f"Cluster {cluster.name} requires at least {item.min} of "
-        #                 f"these features: {choices}"
-        #             )
-        #         if item.max is not None and len(selected) > item.max:
-        #             choices = ", ".join(feature.name for feature in item.features)
-        #             raise cv.Invalid(
-        #                 f"Cluster {cluster.name} allows at most {item.max} of "
-        #                 f"these features: {choices}"
-        #             )
-
-        # if enabled_features:
-        #     config[CONF_FEATURES] = enabled_features
-        return config
-
     @property
     def schema_key(self):
         return cv.Optional(self.conf_key)
@@ -175,9 +134,12 @@ class DeviceType:
             for sensor_attribute in self.sensor_attributes
         }
 
-        if features := self.get_features():
-            schema[cv.Optional(CONF_FEATURES)] = cv.ensure_list(
-                cv.one_of(*(feature.name for feature in features))
+        # TODO: validate complex conform rules for features. The ensures that the user
+        #  can't create invalid device_type configs that result in runtime errors.
+        if self.get_features():
+            # Features must be given in snake_case. e.g.: "average_measurement"
+            schema[cv.Optional(CONF_WITH_FEATURES, default=list)] = cv.ensure_list(
+                cv.one_of(*(feature.conf_key for feature in self.get_features()))
             )
 
         # TODO: replace with something better
@@ -192,7 +154,7 @@ class DeviceType:
             schema[cv.Optional(CONF_MIN_LEVEL, default=1)] = level
             schema[cv.Optional(CONF_MAX_LEVEL, default=254)] = level
 
-        # If a device type is a simple sensor with only a single sensor attribute the config may be simplified from;
+        # If a device type is a simple sensor with only a single sensor attribute, the config may be simplified from;
         #   temperature_sensor:
         #     temperature: sensor_id
         # to;
@@ -213,7 +175,7 @@ class DeviceType:
 
     def schema(self):
         # TODO: only maybe_empty if there are no clusters or features for which a mandatory choice must be made.
-        return cv.All(maybe_empty(self._schema()), self._validate_features)
+        return maybe_empty(self._schema())
 
 
 class WindowCoveringDeviceType(DeviceType):
@@ -224,9 +186,9 @@ class WindowCoveringDeviceType(DeviceType):
     percentage positions, not absolute physical measurements.
     """
 
-    _LIFT_FEATURES = frozenset(("Lift", "PositionAwareLift"))
+    _LIFT_FEATURES = frozenset(("lift", "position_aware_lift"))
     _VENETIAN_FEATURES = _LIFT_FEATURES | frozenset(
-        ("Tilt", "PositionAwareTilt")
+        ("tilt", "position_aware_tilt")
     )
     _END_PRODUCT_TYPES: ClassVar[dict[str, int]] = {
         "roller_shade": 0x00,
@@ -242,13 +204,19 @@ class WindowCoveringDeviceType(DeviceType):
         )
         return schema
 
+    def schema(self):
+        return cv.All(super().schema(), self._validate_features)
+
     def _validate_features(self, config: dict) -> dict:
-        config = super()._validate_features(config)
-        features = frozenset(config.get(CONF_FEATURES, ()))
+        # Generic endpoints can also configure features through clusters.
+        # Restrict only mapped covers, whose capabilities belong to one backend.
+        if CONF_COVER_ID not in config:
+            return config
+        features = frozenset(config.get(CONF_WITH_FEATURES, ()))
 
         dependencies = {
-            "PositionAwareLift": "Lift",
-            "PositionAwareTilt": "Tilt",
+            "position_aware_lift": "lift",
+            "position_aware_tilt": "tilt",
         }
         for feature, required_feature in dependencies.items():
             if feature in features and required_feature not in features:
@@ -256,21 +224,18 @@ class WindowCoveringDeviceType(DeviceType):
                     f"Window Covering feature {feature} requires {required_feature}"
                 )
 
-        if CONF_COVER_ID not in config:
-            return config
-
-        if "AbsolutePosition" in features:
+        if "absolute_position" in features:
             raise cv.Invalid(
                 "Mapped ESPHome covers use normalized percentage positions; "
-                "AbsolutePosition is not supported"
+                "absolute_position is not supported"
             )
 
         supported = (self._LIFT_FEATURES, self._VENETIAN_FEATURES)
         if features not in supported:
             raise cv.Invalid(
-                "A mapped Window Covering must enable either Lift + "
-                "PositionAwareLift, or Lift + PositionAwareLift + Tilt + "
-                "PositionAwareTilt"
+                "A mapped Window Covering must enable either lift + "
+                "position_aware_lift, or lift + position_aware_lift + tilt + "
+                "position_aware_tilt"
             )
 
         end_product_type = config.get(CONF_END_PRODUCT_TYPE)
@@ -296,7 +261,7 @@ class WindowCoveringDeviceType(DeviceType):
         if CONF_COVER_ID not in config:
             return []
 
-        features = frozenset(config[CONF_FEATURES])
+        features = frozenset(config[CONF_WITH_FEATURES])
         # Matter Window Covering Type: RollerShade=0x00,
         # TiltBlindLiftAndTilt=0x08.
         window_covering_type = (
@@ -358,7 +323,7 @@ DEVICE_TYPE_OVERRIDES = {
 
 
 def _load_device_types(
-    device_types_file: Path = Path(__file__).resolve().parent / "device_types.json",
+    device_types_file: Path = _DEVICE_TYPES_FILE,
 ) -> tuple[DeviceType, ...]:
     device_types: list[DeviceType] = []
 

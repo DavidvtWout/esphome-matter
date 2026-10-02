@@ -31,7 +31,10 @@ text_sensor:
 Merge these entries with your existing API and text sensor configuration. Both
 sensors are optional, but at least one must be configured. The optional
 `matter_id` selects the Matter component; it is inferred when omitted. The
-entities use the diagnostic category and are exposed by default. Their states
+entities use the diagnostic category and are exposed by default. Configure each
+code kind at most once for a Matter component; the two kinds can be in the same
+platform entry or separate entries. Their values are commissioning credentials,
+so expose them only through the device interfaces you intend to trust. Their states
 are generated from the stored commissioning identity at startup and remain
 available when Home Assistant reconnects, without requiring a configuration
 dump. `manual_pairing_code` is the decimal setup code; `qr_code` is the raw

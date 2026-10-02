@@ -147,6 +147,11 @@ retargeting to the current position during motion remain checks for the next
 hardware test. Keep firmware backups, addresses, credentials, and detailed
 device logs in private deployment records.
 
+The current revision changes schema validation and command coordination after
+that canary. Its host tests and builds do not extend the earlier hardware
+evidence to this revision. A subsequent ESPHome 2026.9.0 Dashboard build had
+one unexplained abort; its cause remains unknown.
+
 ### Record for each additional device
 
 Before flashing another deployed blind, record privately:
@@ -161,13 +166,18 @@ Before flashing another deployed blind, record privately:
 
 ## First-cover test sequence
 
-The native command-queue tests cover latest-value coalescing, Stop barriers,
-detached-work invalidation, and per-axis generations. They do not emulate the
-full ESPHome backend or Matter-thread scheduler; hardware tests exercise those
-combined lift/tilt transitions. The completed canary provides evidence for its
-specific backend, firmware, and controllers. When testing another cover, keep
-a known-good firmware/configuration backup and recovery procedure, and verify
-one device at a time:
+The host tests compile the production command queue and cover mapping against
+simulated ESPHome and Matter interfaces. They cover Stop barriers, asynchronous
+backend stopping, lift overshoot and no-op retargeting, coalesced state reports,
+stale target reconciliation, scheduling retry, and native proxy control.
+Configuration tests validate the public schemas and generate native-cover and
+setup-code sensor wiring for both Wi-Fi and Thread fixtures.
+
+These tests do not reproduce the full SDK, real RTOS scheduling, controller
+subscriptions, or a physical motor. The completed canary provides evidence for
+its specific backend, firmware, and controllers. When testing another cover,
+keep a known-good firmware/configuration backup and recovery procedure, and
+verify one device at a time:
 
 1. Commission the cover and check reported lift/tilt positions without moving
    it.

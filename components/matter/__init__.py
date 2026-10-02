@@ -1,3 +1,5 @@
+import logging
+
 import esphome.codegen as cg
 import esphome.config_validation as cv
 import esphome.final_validate as fv
@@ -11,10 +13,7 @@ from esphome.const import (
     CONF_ID,
     Framework,
 )
-from esphome.const import (
-    __version__ as ESPHOME_VERSION,
-)
-from esphome.core import CORE
+from esphome.core import CORE, HexInt
 from esphome.coroutine import CoroPriority, coroutine_with_priority
 from esphome.types import ConfigType
 
@@ -26,6 +25,9 @@ from .endpoints import (
     register_endpoints,
 )
 from .types import MatterComponent
+from .validation import validate_cancel_pending_actions, validate_cover_mappings
+
+_LOGGER = logging.getLogger(__name__)
 
 register_bound_command_actions()
 
@@ -61,11 +63,27 @@ def _validate_passcode(value):
     return value
 
 
-def _validate_basic_information_name(value):
-    value = cv.string_strict(value)
-    if not (0 < len(value) <= 32):
-        raise cv.Invalid("Matter vendor and product names must be 1 to 32 characters")
-    return value
+def _configure_basic_information(config):
+    for config_option, define in (
+        (CONF_VENDOR_NAME, "CHIP_DEVICE_CONFIG_DEVICE_VENDOR_NAME"),
+        (CONF_PRODUCT_NAME, "CHIP_DEVICE_CONFIG_DEVICE_PRODUCT_NAME"),
+        (
+            CONF_HARDWARE_VERSION_STRING,
+            "CHIP_DEVICE_CONFIG_DEFAULT_DEVICE_HARDWARE_VERSION_STRING",
+        ),
+    ):
+        if value := config.get(config_option):
+            cg.add_build_flag(f'-D{define}=\\"{value}\\"')
+
+    for config_option, sdk_option in (
+        (CONF_VENDOR_ID, "CONFIG_DEVICE_VENDOR_ID"),
+        (CONF_PRODUCT_ID, "CONFIG_DEVICE_PRODUCT_ID"),
+        (CONF_HARDWARE_VERSION, "CONFIG_DEFAULT_DEVICE_HARDWARE_VERSION"),
+    ):
+        if value := config.get(config_option):
+            if sdk_option.endswith("_ID"):
+                value = HexInt(value)
+            add_idf_sdkconfig_option(sdk_option, value)
 
 
 def _require_vfs_select(config):
@@ -84,18 +102,39 @@ def _require_platformio_toolchain(config):
     return config
 
 
+def _truncate(string: str, length: int):
+    if len(string) > length:
+        _LOGGER.warning(f"{string} got truncated to {length} characters")
+        return string[:length]
+    return string
+
+
 CONFIG_SCHEMA = cv.All(
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(MatterComponent),
-            cv.Optional(
-                CONF_VENDOR_NAME, default="ESPHome"
-            ): _validate_basic_information_name,
-            cv.Optional(
-                CONF_PRODUCT_NAME, default=lambda: CORE.name[:32]
-            ): _validate_basic_information_name,
             cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
             cv.Optional(CONF_PASSCODE): _validate_passcode,
+            # Vendor name
+            cv.Optional(CONF_VENDOR_NAME, default="ESPHome"): cv.All(
+                cv.string_strict, cv.Length(min=1, max=32)
+            ),
+            # Vendor ID
+            cv.Optional(CONF_VENDOR_ID): cv.int_range(min=1, max=0xFFFE),
+            # Product name
+            cv.Optional(
+                CONF_PRODUCT_NAME,
+                default=lambda: _truncate(CORE.name, 32),
+            ): cv.All(cv.string_strict, cv.Length(min=1, max=32)),
+            # Product ID
+            cv.Optional(CONF_PRODUCT_ID): cv.int_range(min=1, max=0xFFFE),
+            # Hardware version
+            cv.Optional(CONF_HARDWARE_VERSION): cv.int_range(min=0, max=0xFFFF),
+            # Hardware version string
+            cv.Optional(CONF_HARDWARE_VERSION_STRING): cv.All(
+                cv.string_strict, cv.Length(min=0, max=64)
+            ),
+            # Endpoints
             cv.Optional(CONF_ENDPOINTS, default={}): cv.Schema(
                 {
                     cv.int_range(min=0, max=65534): ENDPOINT_SCHEMA,
@@ -124,6 +163,8 @@ def _final_validate(config: dict):
         )
 
     light_restore_warning(config, full_config)
+    validate_cover_mappings(config, full_config)
+    validate_cancel_pending_actions(full_config)
 
 
 FINAL_VALIDATE_SCHEMA = _final_validate
@@ -182,12 +223,7 @@ async def to_code(config: ConfigType):
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
     if CONF_PASSCODE in config:
         cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
-    cg.add_build_flag(
-        f'-DCHIP_DEVICE_CONFIG_DEVICE_VENDOR_NAME=\\"{config[CONF_VENDOR_NAME]}\\"'
-    )
-    cg.add_build_flag(
-        f'-DCHIP_DEVICE_CONFIG_DEVICE_PRODUCT_NAME=\\"{config[CONF_PRODUCT_NAME]}\\"'
-    )
+    _configure_basic_information(config)
 
     use_openthread = "openthread" in CORE.loaded_integrations
     use_wifi = "wifi" in CORE.loaded_integrations

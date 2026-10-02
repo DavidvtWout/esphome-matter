@@ -28,7 +28,7 @@ state publications; target positions describe the requested destination.
 For a single-motor Venetian blind, the coordinator performs lift before tilt.
 
 See [covers](covers.md) for supported features and the native ESPHome API
-entity, and [Window Covering commands](commands-full.md#windowcovering) for
+entity, and [Window Covering commands](generated/commands.md#windowcovering) for
 outgoing command syntax. Absolute-position commands are not supported by
 mapped ESPHome covers.
 

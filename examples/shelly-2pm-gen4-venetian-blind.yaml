@@ -12,6 +12,9 @@ substitutions:
   open_duration: "38500ms"
   close_duration: "37800ms"
 
+esphome:
+  compile_process_limit: 1
+
 esp32:
   toolchain: platformio
 
@@ -25,9 +28,9 @@ external_components:
   - source:
       type: git
       url: https://github.com/mrflo97/esphome-matter
-      ref: 528f470e035777fc5c11625ee534cd04f8a0d781
+      ref: vb-02-03-cover-schema
     components: [matter]
-    refresh: never
+    refresh: 5min
   - source:
       type: git
       url: https://github.com/bruxy70/Venetian-Blinds-Control
@@ -41,11 +44,11 @@ matter:
       window_covering:
         cover_id: cover1
         end_product_type: interior_venetian_blind
-        features:
-          - Lift
-          - PositionAwareLift
-          - Tilt
-          - PositionAwareTilt
+        with_features:
+          - lift
+          - position_aware_lift
+          - tilt
+          - position_aware_tilt
 
 cover:
   - id: !extend cover1

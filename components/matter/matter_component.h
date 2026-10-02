@@ -72,8 +72,7 @@ public:
   void register_light(light::LightState *light, uint16_t endpoint_id);
 #endif // USE_LIGHT
 #ifdef USE_COVER
-  void map_cover_to_endpoint(cover::Cover *cover, uint16_t endpoint_id,
-                             bool supports_tilt);
+  void map_cover_to_endpoint(cover::Cover *cover, uint16_t endpoint_id, bool supports_tilt);
   void cancel_cover_pending_commands(cover::Cover *cover);
   MatterCoverMapping *get_cover_mapping(cover::Cover *cover);
 #endif // USE_COVER
@@ -147,16 +146,15 @@ public:
 
 #ifdef USE_COVER
 template <typename... Ts>
-class MatterCancelCoverPendingAction : public Action<Ts...>,
-                                       public Parented<MatterComponent> {
-public:
+class MatterCancelCoverPendingAction final : public Action<Ts...>, public Parented<MatterComponent> {
+ public:
   void set_cover(cover::Cover *cover) { this->cover_ = cover; }
 
   void play(Ts... x) override {
     this->parent_->cancel_cover_pending_commands(this->cover_);
   }
 
-protected:
+ protected:
   cover::Cover *cover_{nullptr};
 };
 #endif // USE_COVER
