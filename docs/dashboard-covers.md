@@ -76,9 +76,9 @@ external_components:
   - source:
       type: git
       url: https://github.com/mrflo97/esphome-matter
-      ref: vb-02-03-cover-schema
+      ref: 578688af444fb5a9c635ab199083712af727899e
     components: [matter]
-    refresh: 5min
+    refresh: never
   - source:
       type: git
       url: https://github.com/bruxy70/Venetian-Blinds-Control
@@ -88,11 +88,11 @@ external_components:
 ```
 
 Dashboard obtains the component sources and ESP-IDF build dependencies during
-validation/build. The Venetian backend uses a full commit SHA with
-`refresh: never` to preserve the tested motor behavior. For Matter, replace the
-branch ref with a reviewed full commit SHA and use `refresh: never` when
-freezing a deployment. To follow later development, use the branch ref and
-`refresh: 5min` shown above.
+validation/build. Both sources use full commit SHAs with `refresh: never`.
+The Venetian pin preserves the tested motor behavior. The Matter pin includes
+the reviewed schema and coordinator fixes; those fixes still need a fresh
+hardware check. To follow later development, use
+`ref: vb-02-03-cover-schema` and `refresh: 5min` for the Matter source.
 
 After editing, use Dashboard's **Validate** and then **Install** actions. If
 you follow a branch that was just updated, temporarily use `refresh: 0s`

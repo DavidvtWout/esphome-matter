@@ -28,9 +28,9 @@ external_components:
   - source:
       type: git
       url: https://github.com/mrflo97/esphome-matter
-      ref: vb-02-03-cover-schema
+      ref: 578688af444fb5a9c635ab199083712af727899e
     components: [matter]
-    refresh: 5min
+    refresh: never
   - source:
       type: git
       url: https://github.com/bruxy70/Venetian-Blinds-Control
