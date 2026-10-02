@@ -26,6 +26,15 @@ class WindowCoveringSchemaTest(unittest.TestCase):
         config = self.validate(["Lift"])
         self.assertNotIn(CONF_END_PRODUCT_TYPE, config)
 
+    def test_unmapped_end_product_type_is_applied(self):
+        config = self.validate(
+            ["Lift"],
+            **{CONF_END_PRODUCT_TYPE: "exterior_venetian_blind"},
+        )
+        self.assertEqual(
+            self.device_type.config_constructor_args(config), ["0x0D"]
+        )
+
     def test_lift_only_mapping_uses_roller_metadata(self):
         config = self.validate(
             ["Lift", "PositionAwareLift"], **{CONF_COVER_ID: "cover"}

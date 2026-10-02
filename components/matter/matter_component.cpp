@@ -18,6 +18,9 @@
 #include <string>
 
 #include <app/server/Server.h>
+#ifdef USE_OPENTHREAD
+#include <app/server/Dnssd.h>
+#endif // USE_OPENTHREAD
 #include <crypto/CHIPCryptoPAL.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <platform/ESP32/ThreadStackManagerImpl.h>
@@ -352,6 +355,22 @@ void MatterComponent::setup() {
   } else {
     ESP_LOGD(TAG, "Matter started successfully");
   }
+
+#ifdef USE_OPENTHREAD
+  // ESPHome owns Thread, so CONFIG_ESP_MATTER_ENABLE_OPENTHREAD is disabled.
+  // esp_matter::start() consequently skips advertising existing fabrics.
+  // Start the advertiser on the Matter task after its server is initialized;
+  // the DNS-SD bridge registers these services with ESPHome's SRP client.
+  CHIP_ERROR advertising_error = chip::DeviceLayer::PlatformMgr().ScheduleWork(
+      [](intptr_t) { chip::app::DnssdServer::Instance().StartServer(); }, 0);
+  if (advertising_error != CHIP_NO_ERROR) {
+    ESP_LOGE(TAG, "Failed to schedule Thread Matter service advertising: "
+                  "0x%08" PRIx32,
+             static_cast<uint32_t>(advertising_error.AsInteger()));
+    this->mark_failed();
+    return;
+  }
+#endif // USE_OPENTHREAD
 
   esp_matter::client::binding_manager_init();
   replay_attribute_triggers(this);

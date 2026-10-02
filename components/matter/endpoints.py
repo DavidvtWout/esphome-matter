@@ -301,8 +301,10 @@ class Endpoint:
 
         lines.extend(
             (
-                f"if (esp_matter::endpoint::{device_type.namespace}::add(endpoint, &{config_var}) != ESP_OK)",
+                f"if (auto err = esp_matter::endpoint::{device_type.namespace}::add(endpoint, &{config_var}); err != ESP_OK) {{",
+                f'  ESP_LOGE("matter", "Failed to add {device_type.name} device type on endpoint %u: %d", esp_matter::endpoint::get_id(endpoint), static_cast<int>(err));',
                 "  return false;",
+                "}",
             )
         )
         return lines
@@ -380,8 +382,10 @@ class Endpoint:
             lines.append(f"{config_var}.feature_flags = {' | '.join(feature_flags)};")
         lines.extend(
             (
-                f"if ({cluster_ns}::create(endpoint, &{config_var}, esp_matter::CLUSTER_FLAG_SERVER) == nullptr)",
+                f"if ({cluster_ns}::create(endpoint, &{config_var}, esp_matter::CLUSTER_FLAG_SERVER) == nullptr) {{",
+                f'  ESP_LOGE("matter", "Failed to create {cluster.name} cluster on endpoint %u", esp_matter::endpoint::get_id(endpoint));',
                 "  return false;",
+                "}",
             )
         )
         return lines
@@ -424,15 +428,32 @@ class Endpoint:
             lines.extend(
                 (
                     f"auto *{cluster_var} = esp_matter::cluster::get(endpoint, {cluster.id});",
-                    f"if ({cluster_var} == nullptr)",
+                    f"if ({cluster_var} == nullptr) {{",
+                    f'  ESP_LOGE("matter", "Missing {cluster.name} cluster on endpoint %u", esp_matter::endpoint::get_id(endpoint));',
                     "  return false;",
+                    "}",
                 )
             )
             for feature in direct_features:
+                # esp-matter persists Window Covering ConfigStatus. On later
+                # boots, adding a position-aware feature may leave its status
+                # bit unchanged and return ESP_ERR_NOT_FINISHED after creating
+                # the feature's attributes and command. That is success here.
+                allow_unchanged = (
+                    cluster.name == "WindowCovering"
+                    and feature.name in ("PositionAwareLift", "PositionAwareTilt")
+                )
+                failed_if = (
+                    "err != ESP_OK && err != ESP_ERR_NOT_FINISHED"
+                    if allow_unchanged
+                    else "err != ESP_OK"
+                )
                 lines.extend(
                     (
-                        f"if (esphome::matter::add_feature({cluster_var}, esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::add) != ESP_OK)",
+                        f"if (auto err = esphome::matter::add_feature({cluster_var}, esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::add); {failed_if}) {{",
+                        f'  ESP_LOGE("matter", "Failed to add {cluster.name}.{feature.name} on endpoint %u: %d", esp_matter::endpoint::get_id(endpoint), static_cast<int>(err));',
                         "  return false;",
+                        "}",
                     )
                 )
 

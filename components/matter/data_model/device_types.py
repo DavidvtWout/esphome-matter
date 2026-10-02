@@ -307,7 +307,7 @@ class WindowCoveringDeviceType(DeviceType):
         ]
 
     def config_constructor_args(self, config: dict) -> list[str]:
-        if CONF_COVER_ID not in config:
+        if CONF_END_PRODUCT_TYPE not in config:
             return []
         end_product_type = self._END_PRODUCT_TYPES[config[CONF_END_PRODUCT_TYPE]]
         return [f"0x{end_product_type:02X}"]

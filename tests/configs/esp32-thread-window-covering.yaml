@@ -1,0 +1,61 @@
+esphome:
+  name: matter-ci-thread-cover
+
+esp32:
+  toolchain: platformio
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+openthread:
+  network_key: 0xdfd34f0f05cad978ec4e32b0413038ff
+  network_name: matter-ci-thread-cover
+  pan_id: 0x1235
+  channel: 15
+
+matter:
+  endpoints:
+    1:
+      window_covering:
+        cover_id: simulated_venetian_blind
+        end_product_type: interior_venetian_blind
+        features:
+          - Lift
+          - PositionAwareLift
+          - Tilt
+          - PositionAwareTilt
+
+cover:
+  - platform: template
+    id: simulated_venetian_blind
+    name: Simulated Venetian Blind
+    internal: true
+    optimistic: true
+    has_position: true
+    position_action:
+      - logger.log:
+          format: "Matter requested lift position %.2f"
+          args: [pos]
+    tilt_action:
+      - logger.log:
+          format: "Matter requested tilt position %.2f"
+          args: [tilt]
+    stop_action:
+      - logger.log: "Matter requested Stop"
+
+script:
+  - id: local_cover_stop
+    then:
+      - matter.cover.cancel_pending:
+          cover_id: simulated_venetian_blind
+      - cover.stop: simulated_venetian_blind

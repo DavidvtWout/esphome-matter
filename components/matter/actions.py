@@ -4,6 +4,7 @@ import logging
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import automation
+from esphome.components import cover
 from esphome.const import (
     CONF_ATTRIBUTE,
     CONF_COMMAND,
@@ -20,6 +21,7 @@ from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME
 from .data_model.commands import COMMANDS, Command
 from .types import (
     MatterComponent,
+    MatterCancelCoverPendingAction,
     MatterEndpointRef,
     MatterFactoryResetAction,
     MatterSendCommandAction,
@@ -39,6 +41,25 @@ _LOGGER = logging.getLogger(__name__)
 async def matter_factory_reset_to_code(config, action_id, template_arg, args):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
+    return var
+
+
+@automation.register_action(
+    "matter.cover.cancel_pending",
+    MatterCancelCoverPendingAction,
+    cv.Schema(
+        {
+            cv.GenerateID(): cv.use_id(MatterComponent),
+            cv.Required(CONF_COVER_ID): cv.use_id(cover.Cover),
+        }
+    ),
+    synchronous=True,
+)
+async def matter_cover_cancel_pending_to_code(config, action_id, template_arg, args):
+    var = cg.new_Pvariable(action_id, template_arg)
+    await cg.register_parented(var, config[CONF_ID])
+    cover_var = await cg.get_variable(config[CONF_COVER_ID])
+    cg.add(var.set_cover(cover_var))
     return var
 
 

@@ -61,6 +61,8 @@ public:
 #ifdef USE_COVER
   void map_cover_to_endpoint(cover::Cover *cover, uint16_t endpoint_id,
                              bool supports_tilt);
+  void cancel_cover_pending_commands(cover::Cover *cover);
+  MatterCoverMapping *get_cover_mapping(cover::Cover *cover);
 #endif // USE_COVER
 #ifdef USE_SENSOR
   void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id,
@@ -107,6 +109,9 @@ private:
 
   std::vector<MatterEndpointRegistration> endpoint_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;
+#ifdef USE_COVER
+  std::vector<MatterCoverMapping *> cover_mappings_;
+#endif // USE_COVER
   std::vector<MatterAttributeCallbackRegistration> attribute_callbacks_;
 };
 
@@ -119,6 +124,22 @@ class MatterFactoryResetAction : public Action<Ts...>,
 public:
   void play(Ts... x) override { this->parent_->factory_reset(); }
 };
+
+#ifdef USE_COVER
+template <typename... Ts>
+class MatterCancelCoverPendingAction : public Action<Ts...>,
+                                       public Parented<MatterComponent> {
+public:
+  void set_cover(cover::Cover *cover) { this->cover_ = cover; }
+
+  void play(Ts... x) override {
+    this->parent_->cancel_cover_pending_commands(this->cover_);
+  }
+
+protected:
+  cover::Cover *cover_{nullptr};
+};
+#endif // USE_COVER
 
 } // namespace esphome::matter
 
