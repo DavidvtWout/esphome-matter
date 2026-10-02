@@ -56,7 +56,7 @@ bool MatterCoverMapping::validate() {
   return valid;
 }
 
-void MatterCoverMapping::register_callbacks() {
+void MatterCoverMapping::initialize() {
   using namespace chip::app::Clusters::WindowCovering;
   this->SetEndpoint(this->endpoint_id());
   SetDefaultDelegate(this->endpoint_id(), this);

@@ -355,7 +355,7 @@ void MatterComponent::setup() {
 
   esp_matter::client::binding_manager_init();
   replay_attribute_triggers(this);
-  this->register_endpoint_callbacks_();
+  this->initialize_endpoint_mappings_();
 }
 
 bool MatterComponent::validate_mappings_() {

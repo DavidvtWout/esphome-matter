@@ -68,7 +68,7 @@ class Attribute:
 
 @dataclass
 class CommandArg:
-    id: int | None  # Also named fieldId on some args...
+    id: int  # Also named fieldId on some args...
     name: str  # CamelCase
     type: str
     min: int | None = None
@@ -223,7 +223,7 @@ def parse_command_arg_elem(elem) -> CommandArg:
         command_arg_attrs[key] += 1
     id_ = int(v, 0) if (v := elem.get("id")) else None
     if id_ is None:
-        id_ = int(v, 0) if (v := elem.get("field_id")) else None
+        id_ = int(v, 0) if (v := elem.get("fieldId")) else None
 
     # Translate Matter bullshit types to actual types. We can't deduce meaningful information from
     # these types anyway because Matter is very inconsistant in naming types...
@@ -507,6 +507,10 @@ def post_process_commands(
             args = []
             for arg in command.args:
                 args.append(resolve_arg(arg))
+            # Some command args don't set an id at all...
+            for i, arg in enumerate(args):
+                if arg.get("id") is None:
+                    arg["id"] = i
             commands[cluster_name][command.name] = filter_none(
                 {
                     "id": command.code,
@@ -515,6 +519,34 @@ def post_process_commands(
             )
 
     return commands
+
+
+def apply_command_overrides(commands: dict, overrides: dict) -> None:
+    for cluster_name, cluster_overrides in overrides.items():
+        if cluster_name not in commands:
+            raise ValueError(f"Unknown command override cluster: {cluster_name}")
+
+        for command_name, command_overrides in cluster_overrides.items():
+            if command_name not in commands[cluster_name]:
+                raise ValueError(
+                    f"Unknown command override: {cluster_name}.{command_name}"
+                )
+
+            command = commands[cluster_name][command_name]
+            for key, value in command_overrides.items():
+                if key != "args":
+                    command[key] = value
+                    continue
+
+                args_by_name = {arg["name"]: arg for arg in command["args"]}
+                for arg_override in value:
+                    arg_name = arg_override["name"]
+                    if arg_name not in args_by_name:
+                        raise ValueError(
+                            "Unknown command argument override: "
+                            f"{cluster_name}.{command_name}.{arg_name}"
+                        )
+                    args_by_name[arg_name].update(arg_override)
 
 
 def post_process_clusters(raw_clusters: list[Cluster]) -> list[dict]:
@@ -678,9 +710,10 @@ def command_arg_to_doc(arg: CommandArg, command_args: list[dict]) -> str:
     if "enum_values" in arg_dict:
         comment_str = "enum: " + ", ".join(arg_dict["enum_values"])
 
-    optional_str = "# " if optional else ""
     if "default" in arg_dict:
+        optional = True
         comment_str = f"default: {arg_dict['default']} "
+    optional_str = "# " if optional else ""
     comment_str = f"# {comment_str}" if comment_str else ""
     return "\n".join(
         [
@@ -780,6 +813,9 @@ def main():
     with open(args.output_path / "clusters.json", "w") as file:
         json.dump(clusters, file, indent=2)
 
+    with open(args.output_path / "overrides" / "commands.json") as file:
+        command_overrides = json.load(file)
+    apply_command_overrides(commands, command_overrides)
     with open(args.output_path / "commands.json", "w") as file:
         json.dump(commands, file, indent=2)
 

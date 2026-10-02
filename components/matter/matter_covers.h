@@ -22,8 +22,7 @@ public:
                      bool supports_tilt);
 
   bool validate() override;
-  void register_callbacks() override;
-  MatterCoverMapping *as_cover_mapping() override { return this; }
+  void initialize() override;
 
   CHIP_ERROR HandleMovement(
       chip::app::Clusters::WindowCovering::WindowCoveringType type) override;

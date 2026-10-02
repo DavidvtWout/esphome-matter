@@ -100,9 +100,9 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
 
 // Wires ESPHome entities to Matter attributes. Must run after
 // esp_matter::start().
-void MatterComponent::register_endpoint_callbacks_() {
+void MatterComponent::initialize_endpoint_mappings_() {
   for (auto *mapping : this->mappings_) {
-    mapping->register_callbacks();
+    mapping->initialize();
   }
 }
 

@@ -45,7 +45,13 @@ esphome-matter based devices will show up as "uncertified test devices" in the e
 - **Apple iOS (iPhone or iPad) and tvOS 16 (Apple TV) - "Home" app by Apple**: ✅️
 - **Google Home Ecosystem (Android or Google Nest smart speakers/display) - "Google Home" app**: ❓
 - **Samsung SmartThings (Station or Hub v2 and later)**: ❓
-- **Amazon Alexa (Amazon Echo)** : ❓
+- **Amazon Alexa (Amazon Echo)** :
+
+|Echo|Gen1|Gen2|Gen3|Gen4|Gen5|
+|---|---|---|---|---|---|
+|Wifi|X|❓|✅️|✅️|✅️|
+|Thread|X|X|X|❓|❓|
+
 - **OpenHAB - Matter Binding** (openHAB Matter Client in openHAB 5.0): ❓
 - **Homey Pro**: ❓
 - **LG ThinQ**: ❓
@@ -143,7 +149,7 @@ binary_sensor:
       matter.send_command:
         path: dimmer_endpoint.on_off.on
     on_press:
-      # Pressing up can turn on a light
+      # Pressing up can turn on a light. If you don't want this, remove "_with_on_off".
       matter.send_command:
         path: dimmer_endpoint.level_control.move_with_on_off
         arguments:
@@ -194,10 +200,6 @@ light:
     name: "User LED"
     output: user_led_pin
     id: user_led
-    # It's recommended to set `internal: true` for lights, since this hides the entity from
-    # Home Assistant. Without it, both HA and matter try to own the light's state. If both
-    # issue a command at nearly the same time, they enter a feedback loop and the light
-    # toggles on/off indefinitely.
     internal: true
 
 # A Matter factory reset wipes all fabrics and re-opens the commissioning window.
@@ -211,6 +213,11 @@ button:
 
 More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
 
+# Lights
+
+All four Matter lights are now fully supported by esphome-matter! See [docs/lights.md](./docs/lights.md) for more information.
+Also check out [examples/extended-color-light.yaml](./examples/extended-color-light.yaml) for an example of how to configure a light in esphome-matter.
+
 # Sensors
 
 Matter can expose many ESPHome sensor values. To expose a sensor, first create a device type that supports it and then map sensor ids to it. The supported sensor device types include `temperature_sensor`, `humidity_sensor`, `light_sensor`, `pressure_sensor`, `flow_sensor`, `contact_sensor`, `occupancy_sensor`, and `air_quality_sensor`. See [docs/device-types.md](docs/device-types.md) for a more complete overview of how to configure these sensors.
@@ -221,9 +228,9 @@ The [all-sensors example](examples/all-sensors.yaml) also shows how to expose al
 
 See [docs/actions.md](./docs/actions.md) for a more complete overview of available actions.
 
-### OnOff cluster
+### OnOff
 
-OnOff commands are used for simple binary devices such as lights, plugs and relays.
+[OnOff commands](./docs/actions.md#onoff-cluster) are used for simple binary devices such as lights, plugs and relays.
 
 ```yaml
 # Turn off, turn on, or toggle a bound device.
@@ -240,9 +247,9 @@ matter.send_command:
     # on_off_control: 0
 ```
 
-### LevelControl cluster
+### LevelControl
 
-LevelControl commands are used for dimming. YAML values can be percentages or raw Matter brightness levels, normally `0` to `254`.
+[LevelControl commands](./docs/actions.md#levelcontrol-cluster) are used for dimming. YAML values can be percentages or raw Matter brightness levels, normally `0` to `254`.
 
 The following commands also have a version without `_with_on_off`. These commands don't turn on or off the light.
 
@@ -275,10 +282,16 @@ matter.send_command: some_endpoint.level_control.stop_with_on_off
 
 # Current Limitations
 
+- As this is based on [Espressif's SDK for Matter (esp-matter)](https://components.espressif.com/components/espressif/esp_matter/) any features/functions not supported there in upstream first can not be supported in this project.
+- Only one device type is supported per endpoint.
+- Matter-over-Ethernet has not been verified.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
 
 # See Also
 
-- [esp-matter](https://github.com/espressif/esp-matter)
+- [Espressif's SDK for Matter (esp-matter) GitHub repo](https://github.com/espressif/esp-matter)
+  - [Espressif's SDK for Matter (esp-matter) page on ESP Component Registry](https://components.espressif.com/components/espressif/esp_matter/)
+  - [Espressif's SDK for Matter (esp-matter) Programming Guide / Documentation](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/)
 - [connectedhomeip (espressif's fork)](https://github.com/espressif/connectedhomeip)
 - [Matter specification (CSA)](https://csa-iot.org/developer-resource/specifications-download-request/)
+- [CSA source code implementations for the Matter project](https://github.com/project-chip)

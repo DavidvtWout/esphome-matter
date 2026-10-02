@@ -11,9 +11,6 @@
 
 namespace esphome::matter {
 
-class MatterLightMapping;
-class MatterCoverMapping;
-
 using MatterEndpointBuildFn = bool (*)(esp_matter::endpoint_t *);
 
 struct MatterEndpointRegistration {
@@ -42,9 +39,7 @@ public:
   virtual ~MatterEndpointMappingBase() = default;
 
   virtual bool validate() { return true; }
-  virtual void register_callbacks() {}
-  virtual MatterLightMapping *as_light_mapping() { return nullptr; }
-  virtual MatterCoverMapping *as_cover_mapping() { return nullptr; }
+  virtual void initialize() {}
 
   uint16_t endpoint_id() const { return this->endpoint_id_; }
 

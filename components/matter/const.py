@@ -6,6 +6,8 @@ CONF_ENDPOINTS = "endpoints"
 # device_types.json and don't have a CONF key configured here.
 CONF_EXTRA_CLUSTERS = "extra_clusters"
 CONF_FEATURES = "features"
+CONF_MIN_LEVEL = "min_level"
+CONF_MAX_LEVEL = "max_level"
 CONF_ON_ATTRIBUTE = "on_attribute"
 CONF_COVER_ID = "cover_id"
 CONF_END_PRODUCT_TYPE = "end_product_type"

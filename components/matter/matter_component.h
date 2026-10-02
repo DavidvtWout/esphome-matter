@@ -38,13 +38,25 @@ public:
   // Register attribute update actions
   void register_attribute_trigger(MatterAttributeTriggerBase *trigger) {
     this->attribute_triggers_.push_back(trigger);
+    this->register_attribute_callback(
+        trigger->endpoint_id(), trigger->cluster_id(), trigger->attribute_id(),
+        [trigger](const esp_matter_attr_val_t &value) {
+          trigger->dispatch(value);
+        });
   }
+  void register_attribute_callback(uint16_t endpoint_id, uint32_t cluster_id,
+                                   uint32_t attribute_id,
+                                   MatterAttributeCallback callback);
+  void dispatch_attribute_update(uint16_t endpoint_id, uint32_t cluster_id,
+                                 uint32_t attribute_id,
+                                 const esp_matter_attr_val_t &value);
+  void replay_attribute_callback(uint16_t endpoint_id, uint32_t cluster_id,
+                                 uint32_t attribute_id);
   std::vector<MatterAttributeTriggerBase *> attribute_triggers_;
 
   // Register ESPHome entities
 #ifdef USE_LIGHT
-  void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
-  MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
+  void register_light(light::LightState *light, uint16_t endpoint_id);
 #endif // USE_LIGHT
 #ifdef USE_COVER
   void map_cover_to_endpoint(cover::Cover *cover, uint16_t endpoint_id,
@@ -88,13 +100,14 @@ private:
 
   // Defined in matter_endpoints.cpp
   bool create_endpoints_(esp_matter::node_t *node);
-  void register_endpoint_callbacks_();
+  void initialize_endpoint_mappings_();
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
 
   std::vector<MatterEndpointRegistration> endpoint_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;
+  std::vector<MatterAttributeCallbackRegistration> attribute_callbacks_;
 };
 
 extern MatterComponent *

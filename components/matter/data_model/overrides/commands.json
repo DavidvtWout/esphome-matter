@@ -1,0 +1,374 @@
+{
+  "Identify": {
+    "Identify": {
+      "args": [
+        {
+          "name": "IdentifyTime",
+          "unit": "seconds"
+        }
+      ]
+    }
+  },
+  "OnOff": {
+    "OnWithTimedOff": {
+      "args": [
+        {
+          "name": "OnTime",
+          "unit": "seconds",
+          "multiplier": 10
+        },
+        {
+          "name": "OffWaitTime",
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    }
+  },
+  "LevelControl": {
+    "MoveToLevel": {
+      "args": [
+        {
+          "name": "Level",
+          "unit": "percentage",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "Move": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "percentage_rate",
+          "multiplier": 254
+        }
+      ]
+    },
+    "Step": {
+      "args": [
+        {
+          "name": "StepSize",
+          "unit": "percentage",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveToLevelWithOnOff": {
+      "args": [
+        {
+          "name": "Level",
+          "unit": "percentage",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveWithOnOff": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "percentage_rate",
+          "multiplier": 254
+        }
+      ]
+    },
+    "StepWithOnOff": {
+      "args": [
+        {
+          "name": "StepSize",
+          "unit": "percentage",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    }
+  },
+  "ColorControl": {
+    "MoveToHue": {
+      "args": [
+        {
+          "name": "Hue",
+          "unit": "hue",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveHue": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "hue_rate",
+          "multiplier": 254
+        }
+      ]
+    },
+    "StepHue": {
+      "args": [
+        {
+          "name": "StepSize",
+          "unit": "hue",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveToSaturation": {
+      "args": [
+        {
+          "name": "Saturation",
+          "unit": "saturation",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveSaturation": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "saturation_rate",
+          "multiplier": 254
+        }
+      ]
+    },
+    "StepSaturation": {
+      "args": [
+        {
+          "name": "StepSize",
+          "unit": "saturation",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveToHueAndSaturation": {
+      "args": [
+        {
+          "name": "Hue",
+          "unit": "hue",
+          "multiplier": 254
+        },
+        {
+          "name": "Saturation",
+          "unit": "saturation",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveToColor": {
+      "args": [
+        {
+          "name": "ColorX",
+          "unit": "xy_colour",
+          "multiplier": 65536
+        },
+        {
+          "name": "ColorY",
+          "unit": "xy_colour",
+          "multiplier": 65536
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveColor": {
+      "args": [
+        {
+          "name": "RateX",
+          "unit": "xy_colour_rate",
+          "multiplier": 65536
+        },
+        {
+          "name": "RateY",
+          "unit": "xy_colour_rate",
+          "multiplier": 65536
+        }
+      ]
+    },
+    "StepColor": {
+      "args": [
+        {
+          "name": "StepX",
+          "unit": "xy_colour",
+          "multiplier": 65536
+        },
+        {
+          "name": "StepY",
+          "unit": "xy_colour",
+          "multiplier": 65536
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveToColorTemperature": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "ColorLoopSet": {
+      "args": [
+        {
+          "name": "Time",
+          "unit": "seconds"
+        },
+        {
+          "name": "StartHue",
+          "unit": "hue",
+          "multiplier": 65535
+        }
+      ]
+    },
+    "EnhancedMoveToHue": {
+      "args": [
+        {
+          "name": "EnhancedHue",
+          "unit": "hue",
+          "multiplier": 65535
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "EnhancedMoveHue": {
+      "args": [
+        {
+          "name": "Rate",
+          "unit": "hue_rate",
+          "multiplier": 65535
+        }
+      ]
+    },
+    "EnhancedStepHue": {
+      "args": [
+        {
+          "name": "StepSize",
+          "unit": "hue",
+          "multiplier": 65535
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "EnhancedMoveToHueAndSaturation": {
+      "args": [
+        {
+          "name": "EnhancedHue",
+          "unit": "hue",
+          "multiplier": 65535
+        },
+        {
+          "name": "Saturation",
+          "unit": "saturation",
+          "multiplier": 254
+        },
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        }
+      ]
+    },
+    "MoveColorTemperature": {
+      "args": [
+        {
+          "name": "ColorTemperatureMinimumMireds",
+          "default": 0
+        },
+        {
+          "name": "ColorTemperatureMaximumMireds",
+          "default": 0
+        }
+      ]
+    },
+    "StepColorTemperature": {
+      "args": [
+        {
+          "name": "TransitionTime",
+          "default": 0,
+          "unit": "seconds",
+          "multiplier": 10
+        },
+        {
+          "name": "ColorTemperatureMinimumMireds",
+          "default": 0
+        },
+        {
+          "name": "ColorTemperatureMaximumMireds",
+          "default": 0
+        }
+      ]
+    }
+  }
+}

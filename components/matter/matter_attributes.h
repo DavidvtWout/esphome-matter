@@ -5,12 +5,15 @@
 #include "esphome/core/helpers.h"
 #ifdef USE_MATTER
 
+#include "matter_conversions.h"
+
 #include <esp_matter.h>
 
 #include <cstdint>
 #include <functional>
 #include <string>
 #include <utility>
+#include <variant>
 
 namespace esphome::matter {
 
@@ -18,24 +21,27 @@ class MatterComponent;
 
 void defer_to_main_loop(MatterComponent *component, std::function<void()> &&f);
 
-bool convert_attribute_value(const esp_matter_attr_val_t &value, bool &out);
-bool convert_attribute_value(const esp_matter_attr_val_t &value, float &out);
-bool convert_attribute_value(const esp_matter_attr_val_t &value, int64_t &out);
-bool convert_attribute_value(const esp_matter_attr_val_t &value, uint64_t &out);
-bool convert_attribute_value(const esp_matter_attr_val_t &value,
-                             std::string &out);
+using MatterAttributeValue =
+    std::variant<bool, float, int64_t, uint64_t, std::string>;
 
 void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, bool value);
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, float value);
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, int64_t value);
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, uint64_t value);
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, const std::string &value);
+                         uint32_t attribute_id, MatterAttributeValue value);
 void replay_attribute_triggers(MatterComponent *component);
+
+using MatterAttributeCallback =
+    std::function<void(const esp_matter_attr_val_t &)>;
+
+struct MatterAttributeCallbackRegistration {
+  uint16_t endpoint_id;
+  uint32_t cluster_id;
+  uint32_t attribute_id;
+  MatterAttributeCallback callback;
+
+  bool matches(uint16_t endpoint, uint32_t cluster, uint32_t attribute) const {
+    return this->endpoint_id == endpoint && this->cluster_id == cluster &&
+           this->attribute_id == attribute;
+  }
+};
 
 class MatterAttributeDispatchGuard {
 public:
@@ -88,7 +94,7 @@ public:
     if (value.is_null())
       return;
     T converted{};
-    if (!convert_attribute_value(value, converted))
+    if (!conversion::convert_attribute_value(value, converted))
       return;
 
     {

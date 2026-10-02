@@ -18,7 +18,7 @@ esphome:
 matter:
   endpoints:
     ${endpoint_id}:
-      color_temperature_light:
+      extended_color_light:
       on_attribute:
         on_off.on_off:
           light.control:

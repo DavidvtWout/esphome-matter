@@ -8,7 +8,6 @@
 #include <platform/CHIPDeviceLayer.h>
 
 #include <cinttypes>
-#include <variant>
 
 static const char *const TAG = "matter";
 
@@ -16,74 +15,6 @@ namespace esphome::matter {
 
 void defer_to_main_loop(MatterComponent *component, std::function<void()> &&f) {
   component->defer_to_main_loop(std::move(f));
-}
-
-bool convert_attribute_value(const esp_matter_attr_val_t &value, bool &out) {
-  if (value.get_base_type() != ESP_MATTER_VAL_TYPE_BOOLEAN)
-    return false;
-  out = value.val.b;
-  return true;
-}
-
-bool convert_attribute_value(const esp_matter_attr_val_t &value, float &out) {
-  if (value.get_base_type() != ESP_MATTER_VAL_TYPE_FLOAT)
-    return false;
-  out = value.val.f;
-  return true;
-}
-
-bool convert_attribute_value(const esp_matter_attr_val_t &value, int64_t &out) {
-  switch (value.get_base_type()) {
-  case ESP_MATTER_VAL_TYPE_INT8:
-    out = value.val.i8;
-    return true;
-  case ESP_MATTER_VAL_TYPE_INT16:
-    out = value.val.i16;
-    return true;
-  case ESP_MATTER_VAL_TYPE_INT32:
-    out = value.val.i32;
-    return true;
-  case ESP_MATTER_VAL_TYPE_INT64:
-    out = value.val.i64;
-    return true;
-  default:
-    return false;
-  }
-}
-
-bool convert_attribute_value(const esp_matter_attr_val_t &value,
-                             uint64_t &out) {
-  switch (value.get_base_type()) {
-  case ESP_MATTER_VAL_TYPE_UINT8:
-  case ESP_MATTER_VAL_TYPE_ENUM8:
-  case ESP_MATTER_VAL_TYPE_BITMAP8:
-    out = value.val.u8;
-    return true;
-  case ESP_MATTER_VAL_TYPE_UINT16:
-  case ESP_MATTER_VAL_TYPE_ENUM16:
-  case ESP_MATTER_VAL_TYPE_BITMAP16:
-    out = value.val.u16;
-    return true;
-  case ESP_MATTER_VAL_TYPE_UINT32:
-  case ESP_MATTER_VAL_TYPE_BITMAP32:
-    out = value.val.u32;
-    return true;
-  case ESP_MATTER_VAL_TYPE_UINT64:
-    out = value.val.u64;
-    return true;
-  default:
-    return false;
-  }
-}
-
-bool convert_attribute_value(const esp_matter_attr_val_t &value,
-                             std::string &out) {
-  auto type = value.get_base_type();
-  if (type != ESP_MATTER_VAL_TYPE_CHAR_STRING &&
-      type != ESP_MATTER_VAL_TYPE_LONG_CHAR_STRING)
-    return false;
-  out.assign(reinterpret_cast<const char *>(value.val.a.b), value.val.a.s);
-  return true;
 }
 
 namespace {
@@ -104,9 +35,6 @@ bool is_attribute_update_echo(uint16_t endpoint_id, uint32_t cluster_id,
          active_attribute_dispatch.cluster_id == cluster_id &&
          active_attribute_dispatch.attribute_id == attribute_id;
 }
-
-using AttributeActionValue =
-    std::variant<bool, float, int64_t, uint64_t, std::string>;
 
 std::string format_attribute_value(const esp_matter_attr_val_t &value) {
   if (value.is_null())
@@ -158,13 +86,13 @@ struct AttributeActionUpdate {
   uint16_t endpoint_id;
   uint32_t cluster_id;
   uint32_t attribute_id;
-  AttributeActionValue value;
+  MatterAttributeValue value;
 };
 
 void set_attribute_value_on_matter_thread(uint16_t endpoint_id,
                                           uint32_t cluster_id,
                                           uint32_t attribute_id,
-                                          const AttributeActionValue &value) {
+                                          const MatterAttributeValue &value) {
   esp_matter_val_type_t type = esp_matter::attribute::get_val_type(
       endpoint_id, cluster_id, attribute_id);
   if (type == ESP_MATTER_VAL_TYPE_INVALID) {
@@ -274,25 +202,6 @@ void update_attribute_action_on_matter_thread(intptr_t context) {
   delete update;
 }
 
-template <typename T>
-void schedule_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                              uint32_t attribute_id, T value) {
-  if (is_attribute_update_echo(endpoint_id, cluster_id, attribute_id))
-    return;
-
-  auto *update =
-      new AttributeActionUpdate{endpoint_id, cluster_id, attribute_id,
-                                AttributeActionValue(std::move(value))};
-  CHIP_ERROR err = chip::DeviceLayer::PlatformMgr().ScheduleWork(
-      update_attribute_action_on_matter_thread,
-      reinterpret_cast<intptr_t>(update));
-  if (err != CHIP_NO_ERROR) {
-    ESP_LOGE(TAG, "Failed to schedule Matter attribute update: %s",
-             err.AsString());
-    delete update;
-  }
-}
-
 } // namespace
 
 MatterAttributeDispatchGuard::MatterAttributeDispatchGuard(
@@ -311,28 +220,51 @@ MatterAttributeDispatchGuard::~MatterAttributeDispatchGuard() {
 }
 
 void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, bool value) {
-  schedule_attribute_value(endpoint_id, cluster_id, attribute_id, value);
+                         uint32_t attribute_id, MatterAttributeValue value) {
+  if (is_attribute_update_echo(endpoint_id, cluster_id, attribute_id))
+    return;
+
+  auto *update = new AttributeActionUpdate{endpoint_id, cluster_id,
+                                           attribute_id, std::move(value)};
+  CHIP_ERROR err = chip::DeviceLayer::PlatformMgr().ScheduleWork(
+      update_attribute_action_on_matter_thread,
+      reinterpret_cast<intptr_t>(update));
+  if (err != CHIP_NO_ERROR) {
+    ESP_LOGE(TAG, "Failed to schedule Matter attribute update: %s",
+             err.AsString());
+    delete update;
+  }
 }
 
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, float value) {
-  schedule_attribute_value(endpoint_id, cluster_id, attribute_id, value);
+void MatterComponent::register_attribute_callback(
+    uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+    MatterAttributeCallback callback) {
+  this->attribute_callbacks_.push_back(
+      {endpoint_id, cluster_id, attribute_id, std::move(callback)});
 }
 
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, int64_t value) {
-  schedule_attribute_value(endpoint_id, cluster_id, attribute_id, value);
+void MatterComponent::dispatch_attribute_update(
+    uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+    const esp_matter_attr_val_t &value) {
+  if (value.is_null())
+    return;
+  for (const auto &registration : this->attribute_callbacks_) {
+    if (!registration.matches(endpoint_id, cluster_id, attribute_id))
+      continue;
+    registration.callback(value);
+  }
 }
 
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, uint64_t value) {
-  schedule_attribute_value(endpoint_id, cluster_id, attribute_id, value);
-}
-
-void set_attribute_value(uint16_t endpoint_id, uint32_t cluster_id,
-                         uint32_t attribute_id, const std::string &value) {
-  schedule_attribute_value(endpoint_id, cluster_id, attribute_id, value);
+// Can be used to trigger an attribute callback manually. Particularly useful
+// for restoring state of ESPHome entities after a restart.
+void MatterComponent::replay_attribute_callback(uint16_t endpoint_id,
+                                                uint32_t cluster_id,
+                                                uint32_t attribute_id) {
+  esp_matter_attr_val_t value;
+  if (esp_matter::attribute::get_val(endpoint_id, cluster_id, attribute_id,
+                                     &value) == ESP_OK)
+    this->dispatch_attribute_update(endpoint_id, cluster_id, attribute_id,
+                                    value);
 }
 
 void replay_attribute_triggers(MatterComponent *component) {
@@ -363,24 +295,8 @@ endpoint_attribute_update_cb(esp_matter::attribute::callback_type_t type,
            ", attribute=0x%08" PRIx32 ", value=%s",
            endpoint_id, cluster_id, attribute_id, value.c_str());
 
-  for (auto *trigger : global_matter_component->attribute_triggers_) {
-    if (trigger->matches(endpoint_id, cluster_id, attribute_id))
-      trigger->dispatch(*val);
-  }
-
-#ifdef USE_LIGHT
-  MatterLightMapping *ml =
-      global_matter_component->get_light_mapping_by_endpoint(endpoint_id);
-  if (ml == nullptr)
-    return ESP_OK;
-  // This callback runs in the Matter thread; ESPHome entities are main-loop
-  // only.
-  esp_matter_attr_val_t val_copy = *val;
-  global_matter_component->defer_to_main_loop(
-      [ml, cluster_id, attribute_id, val_copy]() {
-        ml->apply_matter_update(cluster_id, attribute_id, val_copy);
-      });
-#endif // USE_LIGHT
+  global_matter_component->dispatch_attribute_update(endpoint_id, cluster_id,
+                                                     attribute_id, *val);
   return ESP_OK;
 }
 

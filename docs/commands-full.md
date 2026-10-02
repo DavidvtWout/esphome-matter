@@ -105,7 +105,7 @@ matter.send_command:
   path: some_endpoint.level_control.move_to_level
   arguments:
     level:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off, couple_color_temp_to_level
     # options_override: # bitmap: execute_if_off, couple_color_temp_to_level
 
@@ -124,7 +124,7 @@ matter.send_command:
   arguments:
     step_mode: # enum: up, down
     step_size:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off, couple_color_temp_to_level
     # options_override: # bitmap: execute_if_off, couple_color_temp_to_level
 
@@ -140,7 +140,7 @@ matter.send_command:
   path: some_endpoint.level_control.move_to_level_with_on_off
   arguments:
     level:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off, couple_color_temp_to_level
     # options_override: # bitmap: execute_if_off, couple_color_temp_to_level
 
@@ -159,7 +159,7 @@ matter.send_command:
   arguments:
     step_mode: # enum: up, down
     step_size:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off, couple_color_temp_to_level
     # options_override: # bitmap: execute_if_off, couple_color_temp_to_level
 
@@ -345,7 +345,7 @@ This cluster is used to manage global aspects of the Commissioning flow.
 matter.send_command:
   path: some_endpoint.general_commissioning.arm_fail_safe
   arguments:
-    expiry_length_seconds: # default: 900
+    # expiry_length_seconds: # default: 900
     breadcrumb:
 
 # This command is used to set the regulatory configuration for the device.
@@ -500,8 +500,8 @@ Accurate time is required for a number of reasons, including scheduling, display
 matter.send_command:
   path: some_endpoint.time_synchronization.set_utc_time
   arguments:
-    utc_time: # default: 0
-    granularity: # default: 0x00
+    # utc_time: # default: 0
+    # granularity: # default: 0x00
     # time_source: # default: 0x00
 
 # This command is used to set the TrustedTimeSource attribute.
@@ -1179,8 +1179,8 @@ matter.send_command: some_endpoint.device_energy_management.cancel_request
 matter.send_command:
   path: some_endpoint.device_energy_management.power_range_adjust_request
   arguments:
-    min_power: # default: 0
-    max_power: # default: 4611686018427387904
+    # min_power: # default: 0
+    # max_power: # default: 4611686018427387904
     duration:
     cause: # enum: local_optimization, grid_optimization
 
@@ -1642,7 +1642,7 @@ An interface for controlling a fan in a heating/cooling system.
 matter.send_command:
   path: some_endpoint.fan_control.step
   arguments:
-    direction: # default: 0x00
+    # direction: # default: 0x00
     # wrap: # default: 0
     # lowest_off: # default: 1
 ```
@@ -1675,7 +1675,7 @@ matter.send_command:
   arguments:
     hue:
     direction: # enum: shortest, longest, up, down
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1694,7 +1694,7 @@ matter.send_command:
   arguments:
     step_mode: # enum: up, down
     step_size:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1703,7 +1703,7 @@ matter.send_command:
   path: some_endpoint.color_control.move_to_saturation
   arguments:
     saturation:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1722,7 +1722,7 @@ matter.send_command:
   arguments:
     step_mode: # enum: up, down
     step_size:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1732,7 +1732,7 @@ matter.send_command:
   arguments:
     hue:
     saturation:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1742,7 +1742,7 @@ matter.send_command:
   arguments:
     color_x:
     color_y:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1761,7 +1761,7 @@ matter.send_command:
   arguments:
     step_x:
     step_y:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1770,7 +1770,7 @@ matter.send_command:
   path: some_endpoint.color_control.move_to_color_temperature
   arguments:
     color_temperature_mireds:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1780,7 +1780,7 @@ matter.send_command:
   arguments:
     enhanced_hue:
     direction: # enum: shortest, longest, up, down
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1799,7 +1799,7 @@ matter.send_command:
   arguments:
     step_mode: # enum: up, down
     step_size:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1809,7 +1809,7 @@ matter.send_command:
   arguments:
     enhanced_hue:
     saturation:
-    transition_time:
+    # transition_time: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1838,8 +1838,8 @@ matter.send_command:
   arguments:
     move_mode: # enum: stop, up, down
     rate:
-    color_temperature_minimum_mireds:
-    color_temperature_maximum_mireds:
+    # color_temperature_minimum_mireds: # default: 0
+    # color_temperature_maximum_mireds: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 
@@ -1849,9 +1849,9 @@ matter.send_command:
   arguments:
     step_mode: # enum: up, down
     step_size:
-    transition_time:
-    color_temperature_minimum_mireds:
-    color_temperature_maximum_mireds:
+    # transition_time: # default: 0
+    # color_temperature_minimum_mireds: # default: 0
+    # color_temperature_maximum_mireds: # default: 0
     # options_mask: # bitmap: execute_if_off
     # options_override: # bitmap: execute_if_off
 ```
@@ -2299,7 +2299,7 @@ matter.send_command:
   path: some_endpoint.content_control.add_bonus_time
   arguments:
     # pin_code:
-    bonus_time: # default: 300
+    # bonus_time: # default: 300
 
 # The purpose of this command is to set the ScreenDailyTime attribute.
 matter.send_command:
@@ -2796,7 +2796,7 @@ matter.send_command:
   path: some_endpoint.commissioner_control.commission_node
   arguments:
     request_id:
-    response_timeout_seconds: # default: 30
+    # response_timeout_seconds: # default: 30
 ```
 
 # JointFabricDatastore

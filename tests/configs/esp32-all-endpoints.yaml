@@ -37,6 +37,8 @@ matter:
     4:
       dimmable_light:
         light_id: dimmable_status_light
+        min_level: 10%
+        max_level: 90%
     100:
       temperature_sensor:
         temperature: internal_temp
