@@ -58,6 +58,23 @@ Copy the `SetupQRCode` or open the link and scan the QR-code to commission the d
 commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't
 joined any fabrics yet.
 
+You can also expose the stored setup code and QR payload as native ESPHome text
+sensors. Home Assistant then receives them after connecting, independently of
+the boot logs:
+
+```yaml
+text_sensor:
+  - platform: matter
+    manual_pairing_code:
+      name: "Matter Setup Code"
+    qr_code:
+      name: "Matter QR Payload"
+```
+
+Both sensors are optional diagnostic entities. `qr_code` contains the `MT:`
+payload, not a rendered image. See [commissioning](docs/commissioning.md#setup-codes-in-home-assistant)
+for configuration and reset behavior.
+
 Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers
 should be able to share the device. This generates a temporary commissioning code and re-opens the commissioning window.
 If you lose access to the Matter controller, you can do a Matter factory reset (see [Example config](#example-config)).
