@@ -38,6 +38,7 @@ public:
       : endpoint_id_(endpoint_id) {}
   virtual ~MatterEndpointMappingBase() = default;
 
+  virtual bool validate() { return true; }
   virtual void initialize() {}
 
   uint16_t endpoint_id() const { return this->endpoint_id_; }

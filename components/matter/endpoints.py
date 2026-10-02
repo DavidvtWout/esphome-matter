@@ -5,10 +5,8 @@ from dataclasses import dataclass, field
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import automation
-from esphome.components import light
 from esphome.components.binary_sensor import BinarySensor
 from esphome.components.esp32 import add_idf_sdkconfig_option
-from esphome.components.sensor import Sensor
 from esphome.config import Config
 from esphome.const import CONF_LIGHT_ID, CONF_RESTORE_MODE, CONF_TRIGGER_ID
 from esphome.core import ID
@@ -27,11 +25,12 @@ from .types import MatterAttributeTrigger, MatterEndpointRef
 from .util import maybe_empty, snake_case
 
 _LOGGER = logging.getLogger(__name__)
+_CLUSTERS_BY_CONF_KEY = {snake_case(cluster.name): cluster for cluster in CLUSTERS}
 
 
 def light_restore_warning(matter_config: dict, full_config: Config):
     for endpoint_config in matter_config.get(CONF_ENDPOINTS, {}).values():
-        for conf_key, device_config in endpoint_config.items():
+        for device_config in endpoint_config.values():
             if not isinstance(device_config, dict):
                 continue
             light_id = device_config.get(CONF_LIGHT_ID)
@@ -94,6 +93,24 @@ def _validate_on_attribute_forms(config):
     return config
 
 
+def _validate_mapped_window_covering_features(config):
+    window_covering = config.get("window_covering", {})
+    if CONF_COVER_ID not in window_covering:
+        return config
+    cluster_features = set(
+        config[CONF_CLUSTERS].get("window_covering", {}).get(CONF_WITH_FEATURES, ())
+    )
+    mapped_features = set(window_covering[CONF_WITH_FEATURES])
+    if cluster_features - mapped_features:
+        raise cv.Invalid(
+            "Mapped Window Covering features must be declared on the "
+            "window_covering device type; cluster features cannot add "
+            "capabilities beyond the configured cover mapping",
+            path=[CONF_CLUSTERS, "window_covering", CONF_WITH_FEATURES],
+        )
+    return config
+
+
 ENDPOINT_SCHEMA = cv.All(
     cv.Schema(
         {
@@ -108,6 +125,7 @@ ENDPOINT_SCHEMA = cv.All(
         | {device_type.schema_key: device_type.schema() for device_type in DEVICE_TYPES}
     ),
     _validate_on_attribute_forms,
+    _validate_mapped_window_covering_features,
 )
 
 
@@ -130,7 +148,7 @@ class Endpoint:
         self._cluster_configs: defaultdict[str, _ClusterConfig] = defaultdict(
             _ClusterConfig
         )
-        self._device_types: list[DeviceType] = []
+        self._device_types: list[tuple[DeviceType, dict]] = []
         self._light_variables = {}
 
     async def register(self, var):
@@ -166,9 +184,9 @@ class Endpoint:
                 await self._configure_device_type(var, device_type, device_config)
 
         for cluster_name, config in self._config[CONF_CLUSTERS].items():
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+            cluster = _CLUSTERS_BY_CONF_KEY[cluster_name]
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
-            cluster_config = self._cluster_configs[cluster_name]
+            cluster_config = self._cluster_configs[cluster.name]
             for configured_feature in config.get(CONF_WITH_FEATURES, ()):
                 if feature := cluster.get_feature(configured_feature):
                     cluster_config.enabled_features[feature.name] = True
@@ -211,7 +229,7 @@ class Endpoint:
         self, var, device_type: DeviceType, device_config: dict
     ):
         """Collect the endpoint structure and register its runtime entity mappings."""
-        self._device_types.append(device_type)
+        self._device_types.append((device_type, device_config))
 
         for cluster in device_type.server_clusters:
             # Enable all clusters and not only the enabled ones because esp_matter doesn't correctly guard endpoint compilation...
@@ -233,6 +251,16 @@ class Endpoint:
             light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
             self._light_variables[device_type.name] = light_
             cg.add(var.register_light(light_, self._endpoint_id))
+        if CONF_COVER_ID in device_config:
+            cover_ = await cg.get_variable(device_config[CONF_COVER_ID])
+            supports_tilt = "position_aware_tilt" in device_config.get(
+                CONF_WITH_FEATURES, ()
+            )
+            cg.add(
+                var.map_cover_to_endpoint(
+                    cover_, self._endpoint_id, supports_tilt
+                )
+            )
 
         # Register extra features
         for enabled_feature in device_config.get(CONF_WITH_FEATURES, ()):
@@ -241,11 +269,17 @@ class Endpoint:
                     cluster_config = self._cluster_configs[cluster.name]
                     cluster_config.enabled_features[feature.name] = True
 
-    def _make_device_type_lines(self, device_type: DeviceType, index: int):
+    def _make_device_type_lines(
+        self, device_type: DeviceType, device_config: dict, index: int
+    ):
         config_var = f"device_config_{index}"
+        constructor_args = ", ".join(
+            device_type.config_constructor_args(device_config)
+        )
         lines = [
-            f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{}};"
+            f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{{constructor_args}}};"
         ]
+        lines.extend(device_type.config_lines(device_config, config_var))
 
         device_config = self._config[device_type.conf_key]
         if min_level := device_config.get(CONF_MIN_LEVEL):
@@ -263,10 +297,14 @@ class Endpoint:
                 lines.extend(
                     (
                         f"auto {traits_var} = {light}->get_traits();",
-                        f"{config_var}.color_control_color_temperature.color_temp_physical_min_mireds = "
-                        f"esphome::matter::conversion::to_matter::color_temperature({traits_var}.get_min_mireds());",
-                        f"{config_var}.color_control_color_temperature.color_temp_physical_max_mireds = "
-                        f"esphome::matter::conversion::to_matter::color_temperature({traits_var}.get_max_mireds());",
+                        (
+                            f"{config_var}.color_control_color_temperature.color_temp_physical_min_mireds = "
+                            f"esphome::matter::conversion::to_matter::color_temperature({traits_var}.get_min_mireds());"
+                        ),
+                        (
+                            f"{config_var}.color_control_color_temperature.color_temp_physical_max_mireds = "
+                            f"esphome::matter::conversion::to_matter::color_temperature({traits_var}.get_max_mireds());"
+                        ),
                     )
                 )
 
@@ -292,8 +330,10 @@ class Endpoint:
 
         lines.extend(
             (
-                f"if (esp_matter::endpoint::{device_type.namespace}::add(endpoint, &{config_var}) != ESP_OK)",
+                f"if (auto err = esp_matter::endpoint::{device_type.namespace}::add(endpoint, &{config_var}); err != ESP_OK) {{",
+                f'  ESP_LOGE("matter", "Failed to add {device_type.name} device type on endpoint %u: %d", esp_matter::endpoint::get_id(endpoint), static_cast<int>(err));',
                 "  return false;",
+                "}",
             )
         )
         return lines
@@ -371,18 +411,22 @@ class Endpoint:
             lines.append(f"{config_var}.feature_flags = {' | '.join(feature_flags)};")
         lines.extend(
             (
-                f"if ({cluster_ns}::create(endpoint, &{config_var}, esp_matter::CLUSTER_FLAG_SERVER) == nullptr)",
+                f"if ({cluster_ns}::create(endpoint, &{config_var}, esp_matter::CLUSTER_FLAG_SERVER) == nullptr) {{",
+                f'  ESP_LOGE("matter", "Failed to create {cluster.name} cluster on endpoint %u", esp_matter::endpoint::get_id(endpoint));',
                 "  return false;",
+                "}",
             )
         )
         return lines
 
     def _make_build_callback(self) -> str:
-        """ """
+        """Build the endpoint's device types, clusters, and features."""
         lines = ["[](esp_matter::endpoint_t *endpoint) -> bool {"]
 
-        for index, device_type in enumerate(self._device_types):
-            lines.extend(self._make_device_type_lines(device_type, index))
+        for index, (device_type, device_config) in enumerate(self._device_types):
+            lines.extend(
+                self._make_device_type_lines(device_type, device_config, index)
+            )
 
         for cluster_name, cluster_config in self._cluster_configs.items():
             if not cluster_config.created:
@@ -409,15 +453,32 @@ class Endpoint:
             lines.extend(
                 (
                     f"auto *{cluster_var} = esp_matter::cluster::get(endpoint, {cluster.id});",
-                    f"if ({cluster_var} == nullptr)",
+                    f"if ({cluster_var} == nullptr) {{",
+                    f'  ESP_LOGE("matter", "Missing {cluster.name} cluster on endpoint %u", esp_matter::endpoint::get_id(endpoint));',
                     "  return false;",
+                    "}",
                 )
             )
             for feature in direct_features:
+                # esp-matter persists Window Covering ConfigStatus. On later
+                # boots, adding a position-aware feature may leave its status
+                # bit unchanged and return ESP_ERR_NOT_FINISHED after creating
+                # the feature's attributes and command. That is success here.
+                allow_unchanged = (
+                    cluster.name == "WindowCovering"
+                    and feature.name in ("PositionAwareLift", "PositionAwareTilt")
+                )
+                failed_if = (
+                    "err != ESP_OK && err != ESP_ERR_NOT_FINISHED"
+                    if allow_unchanged
+                    else "err != ESP_OK"
+                )
                 lines.extend(
                     (
-                        f"if (esphome::matter::add_feature({cluster_var}, esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::add) != ESP_OK)",
+                        f"if (auto err = esphome::matter::add_feature({cluster_var}, esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::add); {failed_if}) {{",
+                        f'  ESP_LOGE("matter", "Failed to add {cluster.name}.{feature.name} on endpoint %u: %d", esp_matter::endpoint::get_id(endpoint), static_cast<int>(err));',
                         "  return false;",
+                        "}",
                     )
                 )
 

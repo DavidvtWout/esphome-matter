@@ -43,3 +43,21 @@ And like this for an uncommissioned device;
 ```
 
 Sadly, `ot-ctl` is pure trash and shows deleted records for a whole week and doesn't allow you to filter on anything. So I would recomment to enable [SRP Advertising Proxy](https://deepwiki.com/openthread/ot-br-posix/6.3-srp-advertising-proxy) in OTBR (I think this is done for most builds anyway?). This proxies the SRP services to the backbone interface via mdns. These can then be discovered with `mdns-scanner`, `avahi-browse` or other mdns discovery tools.
+
+### Commissioned devices after reboot
+
+Check that each stored fabric has an operational `_matter._tcp` service,
+in addition to the ESPHome `_esphomelib._tcp` service. A reachable ESPHome API
+alone does not confirm that a Matter controller can rediscover the device.
+
+ESPHome manages the OpenThread stack and SRP client. The Matter component
+disables `CONFIG_ESP_MATTER_ENABLE_OPENTHREAD` to avoid initializing a second
+stack. In esp-matter 1.6, this also skips startup advertisements for stored
+fabrics, so the component schedules `DnssdServer::StartServer()` after
+`esp_matter::start()` succeeds. The DNS-SD bridge adds these services to
+ESPHome's SRP client.
+
+After switching from Wi-Fi to Thread, controllers may retain the old address
+or subscription. Check the new IPv6 service records and confirm the controller
+reconnects. If a cover connects but displays unexpected positions, see
+[cover reporting](../covers.md#position-reporting).

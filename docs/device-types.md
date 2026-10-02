@@ -31,6 +31,13 @@ matter:
           - color_loop # Color loop is supported.
 ```
 
+# Covers
+
+[`window_covering`](generated/device_types.md#window_covering) maps an existing
+ESPHome cover with position and Stop support. It supports lift only, or lift and
+tilt for Venetian blinds. See [covers](covers.md) for configuration, supported
+features, and native ESPHome control.
+
 # Switches
 
 The Matter switch device types are [`on_off_light_switch`](generated/device_types.md#on_off_light_switch), [`dimmer_switch`](generated/device_types.md#dimmer_switch) and [`color_dimmer_switch`](generated/device_types.md#color_dimmer_switch). Instead of mapping an esphome entity to the switch device type, esphome actions are mapped to the endpoint on which the switch is created.
@@ -188,7 +195,6 @@ The following device types are untested. Many of them can still successfully be 
 - [`video_doorbell`](generated/device_types.md#video_doorbell)
 - [`chime`](generated/device_types.md#chime)
 - [`doorbell`](generated/device_types.md#doorbell)
-- [`window_covering`](generated/device_types.md#window_covering)
 - [`closure`](generated/device_types.md#closure)
 - [`closure_panel`](generated/device_types.md#closure_panel)
 - [`closure_controller`](generated/device_types.md#closure_controller)

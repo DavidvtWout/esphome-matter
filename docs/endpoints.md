@@ -7,3 +7,6 @@ Beneath an endpoint are clusters. Clusters are collections of attributes and com
 To make cluster management more convenient, Matter defines device types. For example, the `Dimmable Light` creates clusters such as `OnOff` and `LevelControl`. Different device types may define the same clusters, so if you're not sure, it's best to assign only a single device type to each endpoint.
 
 For all supported device types, see the documentation on [device types](device-types.md).
+
+A `window_covering` endpoint can map an existing ESPHome cover using `cover_id`.
+See [covers](covers.md) for lift, tilt, and native ESPHome control.

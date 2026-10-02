@@ -13,9 +13,6 @@ from esphome.const import (
     CONF_ID,
     Framework,
 )
-from esphome.const import (
-    __version__ as ESPHOME_VERSION,
-)
 from esphome.core import CORE, HexInt
 from esphome.coroutine import CoroPriority, coroutine_with_priority
 from esphome.types import ConfigType
@@ -28,6 +25,7 @@ from .endpoints import (
     register_endpoints,
 )
 from .types import MatterComponent
+from .validation import validate_cancel_pending_actions, validate_cover_mappings
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -126,7 +124,7 @@ CONFIG_SCHEMA = cv.All(
             # Product name
             cv.Optional(
                 CONF_PRODUCT_NAME,
-                default=_truncate(CORE.name, 32),
+                default=lambda: _truncate(CORE.name, 32),
             ): cv.All(cv.string_strict, cv.Length(min=1, max=32)),
             # Product ID
             cv.Optional(CONF_PRODUCT_ID): cv.int_range(min=1, max=0xFFFE),
@@ -165,6 +163,8 @@ def _final_validate(config: dict):
         )
 
     light_restore_warning(config, full_config)
+    validate_cover_mappings(config, full_config)
+    validate_cancel_pending_actions(full_config)
 
 
 FINAL_VALIDATE_SCHEMA = _final_validate

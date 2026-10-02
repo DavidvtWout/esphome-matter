@@ -1,0 +1,86 @@
+esphome:
+  name: matter-ci-window-covering
+  compile_process_limit: 2
+
+substitutions:
+  esp32_toolchain: platformio
+
+esp32:
+  toolchain: ${esp32_toolchain}
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+wifi:
+  ssid: ci-test-network
+  password: ci-test-password
+
+matter:
+  id: matter_bridge
+  endpoints:
+    1:
+      window_covering:
+        cover_id: simulated_venetian_blind
+        end_product_type: interior_venetian_blind
+        with_features:
+          - lift
+          - position_aware_lift
+          - tilt
+          - position_aware_tilt
+
+# This template cover records commands and updates state without defining any
+# relay, motor, or GPIO output. It is safe to use as a protocol test fixture.
+cover:
+  - platform: template
+    id: simulated_venetian_blind
+    name: Simulated Venetian Blind
+    internal: true
+    optimistic: true
+    has_position: true
+    position_action:
+      - logger.log:
+          format: "Matter requested lift position %.2f"
+          args: [pos]
+    tilt_action:
+      - logger.log:
+          format: "Matter requested tilt position %.2f"
+          args: [tilt]
+    stop_action:
+      - logger.log: "Matter requested Stop"
+  - platform: matter
+    id: native_venetian_blind
+    name: Native Venetian Blind
+    cover_id: simulated_venetian_blind
+
+text_sensor:
+  - platform: matter
+    manual_pairing_code:
+      id: matter_manual_code
+      name: Matter Setup Code
+    qr_code:
+      id: matter_qr_payload
+      name: Matter QR Payload
+
+script:
+  - id: local_cover_stop
+    then:
+      - matter.cover.cancel_pending:
+          cover_id: simulated_venetian_blind
+      - cover.stop: simulated_venetian_blind
+  - id: coordinated_cover_move
+    then:
+      - cover.control:
+          id: native_venetian_blind
+          position: 50%
+          tilt: 25%
+      - cover.stop: native_venetian_blind

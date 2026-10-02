@@ -85,6 +85,45 @@ days_mask:
 days_mask: 65
 ```
 
+# Commissioning actions
+
+`matter.open_commissioning_window` opens a window using the stored setup code.
+An existing window is left unchanged. `matter.close_commissioning_window` closes
+the window early. Both actions keep existing Matter fabrics.
+
+```yaml
+matter.open_commissioning_window:
+```
+
+- **timeout** (*Optional*, time): How long the window remains open. Accepts
+  `3min` to `15min`; defaults to `15min`. Only applies to the open action.
+- **id** (*Optional*, ID): The Matter component. Automatically resolved when
+  omitted. Supported by both actions.
+
+See [commissioning buttons](commissioning.md#commissioning-buttons) for a button
+example and setup-code behavior.
+
+# Local cover actions
+
+### `matter.cover.cancel_pending`
+
+Cancels pending lift and tilt commands for a mapped cover. This action does not
+stop the motor; use it immediately before stopping the backend directly:
+
+```yaml
+on_release:
+  - matter.cover.cancel_pending:
+      cover_id: blind_backend
+  - cover.stop: blind_backend
+```
+
+- **cover_id** (**Required**, ID): The backend cover mapped to the Matter endpoint.
+- **id** (*Optional*, ID): The Matter component. Automatically resolved when
+  omitted.
+
+Stopping a native `cover: platform: matter` entity already cancels pending
+commands. See [Stop handling](covers.md#lift-tilt-and-stop) for details.
+
 # set_attribute
 
 The `matter.set_attribute` action can be used to set an attribute on a cluster.
@@ -125,6 +164,14 @@ The value is a raw matter value, usually some kind of integer. More complicated 
 # Cluster commands
 
 For an extensive list of commands, see [generated/commands](generated/commands.md)
+
+
+### WindowCovering cluster
+
+See the [command reference](generated/commands.md#windowcovering) for outgoing
+Window Covering commands. `matter.send_command` controls bound Matter devices.
+To move this device's own cover, use ESPHome cover actions as described in
+[covers](covers.md#lift-tilt-and-stop).
 
 ### Identify cluster
 

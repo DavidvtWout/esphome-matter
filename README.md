@@ -58,8 +58,12 @@ Copy the `SetupQRCode` or open the link and scan the QR-code to commission the d
 commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't
 joined any fabrics yet.
 
+To read the setup code in Home Assistant after boot, add a
+[Matter text sensor](docs/commissioning.md#setup-codes-in-home-assistant).
+
 Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers
 should be able to share the device. This generates a temporary commissioning code and re-opens the commissioning window.
+Alternatively, an [ESPHome button](docs/commissioning.md#commissioning-buttons) can open a window using the stored setup code.
 If you lose access to the Matter controller, you can do a Matter factory reset (see [Example config](#example-config)).
 
 ### Ecosystem specific settings
@@ -203,6 +207,14 @@ button:
 
 More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
 
+# Covers
+
+Existing ESPHome covers can be exposed to Matter with lift position, Stop, and
+optional tilt control for Venetian blinds. A native ESPHome cover entity is
+also available. See [covers](docs/covers.md) for configuration and local Stop
+handling, or the [Dashboard guide](docs/dashboard-covers.md) for the Shelly
+2PM Gen4 example.
+
 # Lights
 
 All four Matter lights are now fully supported by esphome-matter! See [docs/lights.md](./docs/lights.md) for more information.
@@ -274,6 +286,8 @@ matter.send_command: some_endpoint.level_control.stop_with_on_off
 
 - As this is based on [Espressif's SDK for Matter (esp-matter)](https://components.espressif.com/components/espressif/esp_matter/) any features/functions not supported there in upstream first can not be supported in this project.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
+- Mapped covers support lift positions with optional tilt. Absolute positions
+  and tilt-only mappings are unsupported. See [covers](docs/covers.md).
 
 # See Also
 
