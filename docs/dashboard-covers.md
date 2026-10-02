@@ -1,41 +1,22 @@
 # Covers in ESPHome Dashboard
 
-Dashboard can download the Matter component directly from Git, just as it
-downloads the external `venetian_blinds` component. The cover implementation
-and its native ESPHome platform are both included in `components: [matter]`.
-No local checkout or manual component copy is required on the Dashboard host.
+The [Shelly 2PM Gen4 example](../examples/shelly-2pm-gen4-venetian-blind.yaml)
+adds Matter and native ESPHome control to an existing, calibrated Venetian blind.
+Dashboard downloads both external components from Git. The example needs your
+local hardware package for GPIOs, relay protection, networking, OTA, and `cover1`.
 
-During review, use the source revision shown in the example below. When the
-cover work is merged upstream, the same configuration can use
-`DavidvtWout/esphome-matter`. Pin a reviewed commit when deploying firmware;
-following a branch also picks up later configuration and implementation changes.
+## Prepare the hardware package
 
-The source follows upstream's `with_features` option with snake_case feature
-names. Earlier cover prototypes used `features` and CamelCase names; update
-those configurations when updating the component revision.
+Copy your working base to `common/shelly_2pm_gen4_matter_base.yaml` in the
+Dashboard configuration directory. Keep its pins, protection, calibration,
+network settings, and child-lock conditions. The copy lets you update one device
+before changing the shared base.
 
-The hardware canary used **ESPHome 2026.8.2** with **ESP-IDF** and
-`esp32.toolchain: platformio`. Use those settings to reproduce its build.
-ESPHome 2026.9.0 has also booted on the device, but one unexplained abort was
-reported; the revised component still requires its own hardware checks.
+Move the `matter` and `venetian_blinds` external-component sources out of the
+copied base; the device example supplies them. Keep any unrelated sources.
 
-## 1. Prepare the existing hardware package
-
-For a Shelly 2PM Gen4 with an existing working Venetian blind configuration,
-copy its local base file to `common/shelly_2pm_gen4_matter_base.yaml` in your
-Dashboard configuration directory. This gives the test device its own package
-while other devices continue to use their existing base.
-
-Keep the test device's GPIO assignments, relay protections, measured travel
-times, child-lock condition, and network configuration. The example below
-expects the backend cover ID `cover1`. Adapt the IDs if your base differs.
-Wi-Fi and Thread are both supported; the network credentials remain in your
-local `secrets.yaml`.
-
-Remove the `external_components:` block from this copied base. The device YAML
-below provides both Git sources, replacing any local `../components` path.
-
-In the copied base, replace **both** physical button `on_release` handlers with:
+In both physical button release handlers, cancel pending Matter commands before
+stopping the backend:
 
 ```yaml
 on_release:
@@ -44,103 +25,42 @@ on_release:
   - cover.stop: cover1
 ```
 
-Keep the existing `on_press` handlers and their child-lock conditions for the
-first physical button test. Any other script that stops `cover1` directly also
-needs the cancellation action immediately before Stop. Edit these handlers in
-the base itself: adding an `on_release` through `!extend` would append another
-automation rather than reliably put cancellation before the existing Stop.
+Update any other script that stops `cover1` directly in the same way. Edit the
+existing handlers in the base: adding an `on_release` through `!extend` appends
+an automation and will not put cancellation before the existing Stop. The
+cancellation action requires Matter, so use this base with the Matter device YAML.
 
-The cancellation action requires a configured Matter component, so keep this
-copied base paired with the Matter-enabled device YAML.
+## Add the device YAML
 
-## 2. Use the device YAML
+Copy the [example](../examples/shelly-2pm-gen4-venetian-blind.yaml) into Dashboard.
+Set the existing device name, cover name, child-lock helper, and measured travel
+times. Adapt `cover1` if your backend has a different ID.
 
-Copy [the device example](../examples/shelly-2pm-gen4-venetian-blind.yaml) into
-Dashboard. Set the device name, cover name, Home Assistant child-lock helper,
-and measured open/close durations for the device you will test. Retain its
-existing name when updating an installed ESPHome device.
+The example extends the package's `esp32` settings with `toolchain: platformio`
+and marks `cover1` internal. The `cover1_api` entity provides native ESPHome
+control through the same command handling as Matter. See [covers](covers.md)
+for the endpoint and native cover options.
 
-The example includes your prepared local hardware package and adds:
+Both Git sources are pinned to specific commits. The Matter source uses this
+fork while the cover changes await upstream review. To update it, replace its
+`ref` with the commit you want to build. The `matter` component includes the
+cover and text sensor platforms; no separate external components are needed.
 
-- Git sources for `matter` and the pinned Venetian backend;
-- IPv6 and the native ESPHome API;
-- the Matter lift-and-tilt endpoint;
-- `internal: true` on the physical backend using `!extend cover1`;
-- the coordinated `cover1_api` entity named `${cover1_name} ESPHome`;
-- diagnostic text sensors for the stored Matter setup code and QR payload.
+Use **Validate**, then **Install**. The example limits compilation to one job
+to reduce RAM use. **Clean Build Files** clears compiled output; it does not
+update a pinned Git revision. See ESPHome's
+[external component](https://esphome.io/components/external_components/) and
+[package](https://esphome.io/components/packages/) documentation for details.
 
-The source configuration is:
+## Connect the controllers
 
-```yaml
-external_components:
-  - source:
-      type: git
-      url: https://github.com/mrflo97/esphome-matter
-      ref: 578688af444fb5a9c635ab199083712af727899e
-    components: [matter]
-    refresh: never
-  - source:
-      type: git
-      url: https://github.com/bruxy70/Venetian-Blinds-Control
-      ref: 41abbe36877efa85db346913bf4b889aca72b643
-    components: [venetian_blinds]
-    refresh: never
-```
+Use Home Assistant's ESPHome integration for the `${cover1_name} ESPHome` entity.
+The `Matter Setup Code` diagnostic entity supplies the code for initial Matter
+commissioning. See [commissioning](commissioning.md) for adding a controller or
+sharing an already commissioned device.
 
-Dashboard obtains the component sources and ESP-IDF build dependencies during
-validation/build. Both sources use full commit SHAs with `refresh: never`.
-The Venetian pin preserves the tested motor behavior. The Matter pin includes
-the reviewed schema and coordinator fixes; those fixes still need a fresh
-hardware check. To follow later development, use
-`ref: vb-02-03-cover-schema` and `refresh: 5min` for the Matter source.
-
-After editing, use Dashboard's **Validate** and then **Install** actions. If
-you follow a branch that was just updated, temporarily use `refresh: 0s`
-for one validation if the cache has not refreshed yet, or select the new commit
-SHA. Changing a ref selects a separate external-component cache. **Clean Build
-Files** is useful for a stale compiled build; it does not select a newer Git
-revision.
-
-For hosts with limited RAM, set `esphome.compile_process_limit: 1` to reduce
-parallel compilation. Matter's generated cluster code can require substantial
-memory; an operating-system-killed compiler needs more available memory or
-fewer concurrent jobs.
-
-See ESPHome's [external component documentation](https://esphome.io/components/external_components/)
-and [package documentation](https://esphome.io/components/packages/) for the
-source caching and `!extend` behavior.
-
-## 3. Connect and test the physical buttons
-
-Use Home Assistant's **ESPHome integration** for the `${cover1_name} ESPHome`
-entity. It provides native position, tilt, Stop, and tilt-open/tilt-close
-services without commissioning Home Assistant to Matter.
-
-Commission Apple Home using the setup code in Home Assistant's diagnostic
-entity `Matter Setup Code`, or the code printed in the device logs. The text
-sensor is available through ESPHome without commissioning Home Assistant to
-Matter. See [setup-code sensors](commissioning.md#setup-codes-in-home-assistant)
-for the YAML and Matter reset button. If the
-device already belongs to another Matter fabric, open a sharing/commissioning
-window in that controller and use its temporary code. A normal restart only
-reopens initial commissioning when no fabrics are stored. See
-[commissioning](commissioning.md) for details.
-
-With someone watching the blind, test a short movement first:
-
-1. Press and release each wired direction button; verify release stops motion
-   and both Home Assistant and Apple Home receive the resulting state.
-2. Start lift from Apple Home, request tilt while lift moves, then stop with a
-   physical button release. Verify the waiting tilt never starts afterward.
-3. Repeat Stop from the native Home Assistant cover, then from Matter.
-4. Check the child-lock helper blocks button presses as before. The existing
-   child-lock condition applies to local buttons; it does not block remote
-   Matter or native API commands.
-5. Reboot and confirm that both the native entity and Apple Home reconnect.
-   On Thread, each stored fabric should advertise an operational
-   `_matter._tcp` service; see [Thread debugging](dev/thread-debugging.md).
-
-The earlier Shelly canary already passed lift, tilt, and Stop over Wi-Fi and
-Thread, but it had no wired buttons. This sequence supplies that remaining
-hardware evidence. Use the [backend test sequence](venetian-blind-backend-contract.md#first-cover-test-sequence)
-for retargeting and additional interruption checks.
+Start with a short movement and Stop, then check tilt and each wired button.
+The package's child-lock conditions still apply only to the actions they guard;
+they do not automatically block remote commands. See the
+[hardware checks](dev/cover-testing.md#hardware-checks) for lift/tilt interruption
+and retargeting checks.

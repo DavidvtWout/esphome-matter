@@ -33,30 +33,10 @@ matter:
 
 # Covers
 
-`window_covering` maps an existing ESPHome cover with position and Stop
-support. Enable `lift` and `position_aware_lift` for a roller shade; add `tilt`
-and `position_aware_tilt` for a Venetian blind whose backend supports tilt.
-Mapped covers use normalized percentages, so `absolute_position` is unsupported.
-
-```yaml
-matter:
-  endpoints:
-    1:
-      window_covering:
-        cover_id: blind_backend
-        end_product_type: interior_venetian_blind
-        with_features:
-          - lift
-          - position_aware_lift
-          - tilt
-          - position_aware_tilt
-```
-
-Lift, tilt, and Stop have been verified on a Shelly 2PM Gen4 (ESP32-C6)
-over Wi-Fi and Thread with Apple Home and Home Assistant. For native ESPHome
-API control, expose an internal backend through `cover: platform: matter`.
-See [covers](covers.md) for configuration, supported end product types,
-physical button Stop handling, and the remaining hardware checks.
+[`window_covering`](generated/device_types.md#window_covering) maps an existing
+ESPHome cover with position and Stop support. It supports lift only, or lift and
+tilt for Venetian blinds. See [covers](covers.md) for configuration, supported
+features, and native ESPHome control.
 
 # Switches
 

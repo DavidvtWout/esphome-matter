@@ -13,56 +13,44 @@ After flashing the device, a commission code is generated and shown (SetupQRCode
 
 ## Setup codes in Home Assistant
 
-Setup codes are printed at CONFIG level during the configuration dump. Those
-lines may be missed when connecting after boot or hidden by the configured log
-level. To receive the codes through the native ESPHome API, add:
+Setup codes are printed at CONFIG log level during startup. To read them after
+boot through the [native ESPHome API](https://esphome.io/components/api/), add a
+Matter text sensor:
 
 ```yaml
-api: {}
-
 text_sensor:
   - platform: matter
     manual_pairing_code:
       name: "Matter Setup Code"
-    qr_code:
-      name: "Matter QR Payload"
 ```
 
-Merge these entries with your existing API and text sensor configuration. Both
-sensors are optional, but at least one must be configured. The optional
-`matter_id` selects the Matter component; it is inferred when omitted. The
-entities use the diagnostic category and are exposed by default. Configure each
-code kind at most once for a Matter component; the two kinds can be in the same
-platform entry or separate entries. Their values are commissioning credentials,
-so expose them only through the device interfaces you intend to trust. Their states
-are generated from the stored commissioning identity at startup and remain
-available when Home Assistant reconnects, without requiring a configuration
-dump. `manual_pairing_code` is the decimal setup code; `qr_code` is the raw
-`MT:` payload that can be encoded into a QR image.
+### Configuration variables
 
-A code value does not indicate whether the commissioning window is open or
-whether Matter initialized successfully. After a Matter factory reset, the
-same original code is published again and can be used during the initial
-commissioning window. For an already commissioned device, use the controller's
-sharing flow and its temporary code to add another fabric.
+- **manual_pairing_code** (*Optional*): The decimal setup code.
+- **qr_code** (*Optional*): The raw `MT:` payload, which can be encoded as a QR image.
+- **matter_id** (*Optional*, ID): The Matter component. Automatically resolved
+  when omitted.
 
-### Matter reset button
+Configure at least one code sensor, and at most one of each kind per Matter
+component. Both accept the standard [text sensor options](https://esphome.io/components/text_sensor/)
+and default to the diagnostic entity category. Values remain available when
+Home Assistant reconnects. A code value does not indicate whether the
+commissioning window is open; see [Persistence](#persistence) below.
 
-To remove all stored Matter fabrics and restart for initial commissioning:
+## Matter reset button
+
+To remove all Matter fabrics and restart for initial commissioning:
 
 ```yaml
 button:
   - platform: template
     name: "Matter Factory Reset"
-    entity_category: config
-    icon: mdi:restore
     on_press:
       - matter.factory_reset:
 ```
 
-This keeps the stored setup code, ESPHome preferences, and the configured
-Wi-Fi or Thread credentials. The device must be paired with its Matter
-controllers again afterward.
+This keeps the stored setup code, ESPHome preferences, and Wi-Fi or Thread
+credentials. Pair the device with its Matter controllers again after the reset.
 
 # Commissioners
 
@@ -76,8 +64,7 @@ Or the `ENABLE_TEST_NET_DCL` environment variable should be set to `true`.
 
 For the Home Assistant Matter Server app, enable **Enable test-net DCL usage**
 under **Settings → Apps → Matter Server → Configuration**. Save and restart
-the Matter Server app so the running server uses the setting. This was needed
-when commissioning the cover canary with matterjs-server.
+the Matter Server app to apply the setting.
 
 When commissioning, use the "Commission existing device" option;
 
@@ -103,24 +90,8 @@ controller. The original code can be used again after a Matter factory reset.
 
 The fabric data is also stored on flash (nvs partition) and also survives ota updates. The fabric itself is independent of the hardware layer (wifi or thread). This means that it's even possible to commission a device over wifi and later substitute the wifi component with openthread (as long as the hardware supports both) and you don't need to re-commission!
 
-The Shelly cover canary retained its Apple Home and Home Assistant fabrics
-when switching from Wi-Fi to Thread. Keep the NVS partition and endpoint IDs
-stable across OTA updates. After a Thread reboot, check both the native
-ESPHome service and each fabric's operational Matter service; see
-[Thread debugging](dev/thread-debugging.md#commissioned-devices-after-reboot).
-
-## Covers with native Home Assistant control
-
-A cover can use Apple Home through Matter and Home Assistant through the
-native ESPHome API. Enable `api:`, keep the backend cover internal, and expose
-the coordinated `cover: platform: matter` entity. Home Assistant's ESPHome
-integration then provides position, tilt, Stop, and tilt-open/tilt-close
-services without joining an additional Matter fabric.
-
-Home Assistant Matter commissioning remains optional for this setup. If it
-was already commissioned, its Matter entity and the native ESPHome entity are
-separate representations of the same blind. See [covers](covers.md) and the
-[Dashboard guide](dashboard-covers.md) for the configuration.
+Keep the NVS partition and endpoint IDs stable across updates. For discovery
+problems after a Thread reboot, see [Thread debugging](dev/thread-debugging.md#commissioned-devices-after-reboot).
 
 # Multiple fabrics
 

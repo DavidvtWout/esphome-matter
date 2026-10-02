@@ -58,22 +58,8 @@ Copy the `SetupQRCode` or open the link and scan the QR-code to commission the d
 commissioning window remains open for only 15 minutes. A restart of the device will re-open the window if it hasn't
 joined any fabrics yet.
 
-You can also expose the stored setup code and QR payload as native ESPHome text
-sensors. Home Assistant then receives them after connecting, independently of
-the boot logs:
-
-```yaml
-text_sensor:
-  - platform: matter
-    manual_pairing_code:
-      name: "Matter Setup Code"
-    qr_code:
-      name: "Matter QR Payload"
-```
-
-Both sensors are optional diagnostic entities. `qr_code` contains the `MT:`
-payload, not a rendered image. See [commissioning](docs/commissioning.md#setup-codes-in-home-assistant)
-for configuration and reset behavior.
+To read the setup code in Home Assistant after boot, add a
+[Matter text sensor](docs/commissioning.md#setup-codes-in-home-assistant).
 
 Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers
 should be able to share the device. This generates a temporary commissioning code and re-opens the commissioning window.
@@ -222,21 +208,11 @@ More information about endpoints and a full list of supported device types can b
 
 # Covers
 
-Existing ESPHome covers can be exposed as Matter `window_covering` endpoints.
-Lift-only covers support position and Stop; Venetian blinds also support tilt.
-For a single-motor blind, lift completes before a waiting tilt is applied, and
-Stop cancels pending movement.
-
-To use Apple Home through Matter and Home Assistant through the native
-ESPHome API, keep the physical backend internal and expose a coordinated
-`cover: platform: matter` entity. Local automations that stop the backend
-directly must call `matter.cover.cancel_pending` before `cover.stop`.
-
-See [cover configuration and reporting](docs/covers.md),
-[ESPHome Dashboard setup](docs/dashboard-covers.md), and the
-[Shelly 2PM Gen4 device example](examples/shelly-2pm-gen4-venetian-blind.yaml).
-Lift, tilt, and Stop have been verified on a Shelly 2PM Gen4 over Wi-Fi and
-Thread; physical wall-button checks are still pending.
+Existing ESPHome covers can be exposed to Matter with lift position, Stop, and
+optional tilt control for Venetian blinds. A native ESPHome cover entity is
+also available. See [covers](docs/covers.md) for configuration and local Stop
+handling, or the [Dashboard guide](docs/dashboard-covers.md) for the Shelly
+2PM Gen4 example.
 
 # Lights
 
@@ -309,10 +285,8 @@ matter.send_command: some_endpoint.level_control.stop_with_on_off
 
 - As this is based on [Espressif's SDK for Matter (esp-matter)](https://components.espressif.com/components/espressif/esp_matter/) any features/functions not supported there in upstream first can not be supported in this project.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
-- Mapped covers support normalized lift positions, with optional tilt. Absolute
-  positions and tilt-only mappings are unsupported. Current-position reports
-  follow the backend's publications; controller apps may display the requested
-  destination during movement. See [covers](docs/covers.md).
+- Mapped covers support lift positions with optional tilt. Absolute positions
+  and tilt-only mappings are unsupported. See [covers](docs/covers.md).
 
 # See Also
 

@@ -89,9 +89,8 @@ days_mask: 65
 
 ### `matter.cover.cancel_pending`
 
-Cancel pending lift and tilt work for the physical ESPHome cover referenced by
-`cover_id`. This action does not stop the motor; use it immediately before a
-direct backend `cover.stop` in button releases or Stop scripts:
+Cancels pending lift and tilt commands for a mapped cover. This action does not
+stop the motor; use it immediately before stopping the backend directly:
 
 ```yaml
 on_release:
@@ -100,14 +99,12 @@ on_release:
   - cover.stop: blind_backend
 ```
 
-`cover_id` is the backend ID mapped by a Matter Window Covering endpoint,
-not the ID of the native proxy. The optional `id` selects the Matter component
-and is inferred when omitted. The action establishes cancellation before the
-backend can report idle, including a Stop exactly at the lift destination.
+- **cover_id** (**Required**, ID): The backend cover mapped to the Matter endpoint.
+- **id** (*Optional*, ID): The Matter component. Automatically resolved when
+  omitted.
 
-When an automation targets the coordinated `cover: platform: matter` entity,
-its `cover.stop` already performs this cancellation. See [covers](covers.md)
-for native API configuration and lift-then-tilt behavior.
+Stopping a native `cover: platform: matter` entity already cancels pending
+commands. See [Stop handling](covers.md#lift-tilt-and-stop) for details.
 
 # set_attribute
 
@@ -153,16 +150,10 @@ For an extensive list of commands, see [generated/commands](generated/commands.m
 
 ### WindowCovering cluster
 
-Mapped cover endpoints accept open/up, close/down, Stop, and percentage lift
-or tilt targets from Matter controllers. Lift-only mappings omit tilt;
-absolute lift/tilt value commands are unsupported by these mappings.
-
-For outgoing command syntax, see the
-[WindowCovering command reference](generated/commands.md#windowcovering).
-`matter.send_command` sends commands to bound Matter devices. To move this
-device's own blind from a local automation, use the native coordinated cover's
-ESPHome actions, or use the backend with the Stop cancellation ordering above.
-See [cover configuration](covers.md).
+See the [command reference](generated/commands.md#windowcovering) for outgoing
+Window Covering commands. `matter.send_command` controls bound Matter devices.
+To move this device's own cover, use ESPHome cover actions as described in
+[covers](covers.md#lift-tilt-and-stop).
 
 ### Identify cluster
 

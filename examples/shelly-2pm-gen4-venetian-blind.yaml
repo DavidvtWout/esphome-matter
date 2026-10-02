@@ -1,4 +1,4 @@
-# Device YAML for an EXISTING, calibrated Shelly 2PM Gen4 Venetian blind.
+# Device YAML for an existing, calibrated Shelly 2PM Gen4 Venetian blind.
 # Prepare your local hardware package as described in docs/dashboard-covers.md.
 # The package supplies GPIOs, protections, networking, OTA and cover1.
 packages:
@@ -67,7 +67,7 @@ text_sensor:
     qr_code:
       name: "Matter QR Payload"
 
-# In BOTH physical button release handlers in the local base, use:
+# In both physical button release handlers in the local base, use:
 # on_release:
 #   - matter.cover.cancel_pending:
 #       cover_id: cover1

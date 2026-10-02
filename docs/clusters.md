@@ -18,18 +18,9 @@ This cluster is present on almost all device types. The `Identify` command can b
 
 ## WindowCovering
 
-The `window_covering` device type creates this cluster. An ESPHome `cover_id`
-mapping updates current lift and optional tilt positions, accepts target
-positions and Stop, and publishes lift/tilt operational status.
-
-Matter positions use `Percent100ths`: `0` is open and `10000` is closed, the
-reverse of ESPHome's normalized convention. Current positions follow backend
-state publications; target positions describe the requested destination.
-For a single-motor Venetian blind, the coordinator performs lift before tilt.
-
-See [covers](covers.md) for supported features and the native ESPHome API
-entity, and [Window Covering commands](generated/commands.md#windowcovering) for
-outgoing command syntax. Absolute-position commands are not supported by
-mapped ESPHome covers.
+This cluster reports current and target lift/tilt positions and movement status.
+An ESPHome `cover_id` mapping accepts open, close, Stop, and percentage targets.
+See [covers](covers.md) for mapping and position reporting, or the
+[command reference](generated/commands.md#windowcovering) for outgoing commands.
 
 # Other

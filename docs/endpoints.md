@@ -8,54 +8,5 @@ To make cluster management more convenient, Matter defines device types. For exa
 
 For all supported device types, see the documentation on [device types](device-types.md).
 
-# ESPHome cover mapping
-
-An existing ESPHome cover can be attached to a Matter Window Covering endpoint
-with `cover_id`. Mapped covers currently support normalized percentage
-positions in one of two feature combinations:
-
-- Lift only: `lift` and `position_aware_lift`
-- Venetian blind: `lift`, `position_aware_lift`, `tilt`, and
-  `position_aware_tilt`
-
-`absolute_position` is not supported because ESPHome cover positions are
-normalized percentages rather than physical measurements.
-
-```yaml
-matter:
-  endpoints:
-    1:
-      window_covering:
-        cover_id: venetian_blind
-        end_product_type: interior_venetian_blind
-        with_features:
-          - lift
-          - position_aware_lift
-          - tilt
-          - position_aware_tilt
-```
-
-The mapped cover must report position and support Stop. A Venetian-blind
-mapping must also report tilt. Runtime capability checks are part of the cover
-mapping implementation.
-
-For lift-only mappings, `end_product_type` defaults to `roller_shade`. For
-lift-and-tilt mappings it defaults to `interior_venetian_blind`;
-`exterior_venetian_blind` is also accepted. These end product types describe the
-cover; tilt support still requires all four features listed above.
-
-The Matter adapter converts Matter's `0 = open`, `10000 = closed` percentages
-to ESPHome's normalized `1.0 = open`, `0.0 = closed` convention. For a
-single-motor Venetian backend it performs lift first and the final tilt second.
-See [Venetian blind backend contract](venetian-blind-backend-contract.md) for
-the tested backend semantics and safety boundaries.
-
-To expose the same backend through the native ESPHome API, set it
-`internal: true` and add a separate `cover: platform: matter` entity referencing
-that backend. Give the native entity a different name and map its backend to
-exactly one Window Covering endpoint. Direct backend Stop automations must
-call `matter.cover.cancel_pending` before `cover.stop`.
-
-See [covers](covers.md) for both feature combinations, the native entity,
-command ordering, and current-position reporting, or the
-[Dashboard guide](dashboard-covers.md) to load the component from Git.
+A `window_covering` endpoint can map an existing ESPHome cover using `cover_id`.
+See [covers](covers.md) for lift, tilt, and native ESPHome control.

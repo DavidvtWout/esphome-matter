@@ -46,34 +46,18 @@ Sadly, `ot-ctl` is pure trash and shows deleted records for a whole week and doe
 
 ### Commissioned devices after reboot
 
-Check that each retained fabric has an operational `_matter._tcp` service,
+Check that each stored fabric has an operational `_matter._tcp` service,
 in addition to the ESPHome `_esphomelib._tcp` service. A reachable ESPHome API
 alone does not confirm that a Matter controller can rediscover the device.
 
 ESPHome manages the OpenThread stack and SRP client. The Matter component
-therefore disables `CONFIG_ESP_MATTER_ENABLE_OPENTHREAD` to prevent esp-matter
-from initializing a second stack. In esp-matter 1.6, that setting also skips
-the startup advertisement of stored fabrics. The component explicitly
-schedules `DnssdServer::StartServer()` on the Matter task after
-`esp_matter::start()` succeeds. Its DNS-SD bridge then adds the operational
-services to ESPHome's existing SRP client.
+disables `CONFIG_ESP_MATTER_ENABLE_OPENTHREAD` to avoid initializing a second
+stack. In esp-matter 1.6, this also skips startup advertisements for stored
+fabrics, so the component schedules `DnssdServer::StartServer()` after
+`esp_matter::start()` succeeds. The DNS-SD bridge adds these services to
+ESPHome's SRP client.
 
-After a Wi-Fi-to-Thread update, controllers may temporarily hold the old
-address or subscription. Confirm the new IPv6 service records and a resumed
-Matter session before diagnosing the cover mapping itself. On the Shelly
-cover canary, the corrected startup advertised all retained fabrics and the
-native API, and the user confirmed movement over Thread on 2026-10-01.
-
-### Cover state over Thread
-
-Compare the backend/native ESPHome position with Window Covering's
-`CurrentPositionLiftPercent100ths` and `CurrentPositionTiltPercent100ths`,
-and compare the requested destination with the two `TargetPosition` attributes.
-ESPHome uses `1.0 = open`; Matter uses `0 = open` and `10000 = closed`.
-Opening/closing comes from `OperationalStatus`, independently of the target.
-
-Current positions should follow backend publications while moving. A
-controller's slider can still show its requested destination; that was observed
-in Apple Home while Home Assistant showed current-position updates. See
-[cover reporting](../covers.md#position-reporting) and the
-[Dashboard physical button checks](../dashboard-covers.md#3-connect-and-test-the-physical-buttons).
+After switching from Wi-Fi to Thread, controllers may retain the old address
+or subscription. Check the new IPv6 service records and confirm the controller
+reconnects. If a cover connects but displays unexpected positions, see
+[cover reporting](../covers.md#position-reporting).
