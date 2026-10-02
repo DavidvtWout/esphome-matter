@@ -23,7 +23,7 @@ network:
 
 openthread:
   network_key: 0xdfd34f0f05cad978ec4e32b0413038ff
-  network_name: matter-ci-thread-cover
+  network_name: matter-ci-cover
   pan_id: 0x1235
   channel: 15
 

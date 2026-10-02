@@ -47,6 +47,14 @@ class MatterPlatformTest(unittest.TestCase):
     def window_config(self):
         return self.raw["matter"]["endpoints"]["1"]["window_covering"]
 
+    def test_thread_fixture_network_names_fit_sdk_byte_limit(self):
+        # ESP-IDF asserts this bound before copying into OpenThread's fixed
+        # network-name buffer. Count encoded bytes, rather than characters.
+        for fixture in (THREAD_FIXTURE, ROOT / "tests/configs/esp32-thread.yaml"):
+            with self.subTest(fixture=fixture.name):
+                network_name = load_yaml(fixture)["openthread"]["network_name"]
+                self.assertLessEqual(len(network_name.encode("utf-8")), 16)
+
     def test_wifi_and_thread_generate_native_cover_and_pairing_sensors(self):
         for fixture in (WIFI_FIXTURE, THREAD_FIXTURE):
             with self.subTest(fixture=fixture.name):
