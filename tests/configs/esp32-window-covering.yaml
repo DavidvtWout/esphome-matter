@@ -1,0 +1,51 @@
+esphome:
+  name: matter-ci-window-covering
+
+esp32:
+  toolchain: platformio
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+
+network:
+  enable_ipv6: true
+
+wifi:
+  ssid: ci-test-network
+  password: ci-test-password
+
+matter:
+  endpoints:
+    1:
+      window_covering:
+        cover_id: simulated_venetian_blind
+        end_product_type: interior_venetian_blind
+        features:
+          - Lift
+          - PositionAwareLift
+          - Tilt
+          - PositionAwareTilt
+
+# This template cover records commands and updates state without defining any
+# relay, motor, or GPIO output. It is safe to use as a protocol test fixture.
+cover:
+  - platform: template
+    id: simulated_venetian_blind
+    name: Simulated Venetian Blind
+    optimistic: true
+    has_position: true
+    position_action:
+      - logger.log:
+          format: "Matter requested lift position %.2f"
+          args: [pos]
+    tilt_action:
+      - logger.log:
+          format: "Matter requested tilt position %.2f"
+          args: [tilt]
+    stop_action:
+      - logger.log: "Matter requested Stop"

@@ -291,6 +291,10 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
 
 void MatterComponent::setup() {
   global_matter_component = this;
+  if (!this->validate_mappings_()) {
+    this->mark_failed();
+    return;
+  }
   uint16_t discriminator;
   uint32_t passcode;
   if (!load_or_generate_commissioning_data(discriminator, passcode)) {
@@ -352,6 +356,13 @@ void MatterComponent::setup() {
   esp_matter::client::binding_manager_init();
   replay_attribute_triggers(this);
   this->register_endpoint_callbacks_();
+}
+
+bool MatterComponent::validate_mappings_() {
+  bool valid = true;
+  for (auto *mapping : this->mappings_)
+    valid = mapping->validate() && valid;
+  return valid;
 }
 
 void MatterComponent::factory_reset() {

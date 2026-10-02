@@ -5,10 +5,8 @@ from dataclasses import dataclass, field
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import automation
-from esphome.components import light
 from esphome.components.binary_sensor import BinarySensor
 from esphome.components.esp32 import add_idf_sdkconfig_option
-from esphome.components.sensor import Sensor
 from esphome.config import Config
 from esphome.const import CONF_LIGHT_ID, CONF_RESTORE_MODE, CONF_TRIGGER_ID
 from esphome.core import ID
@@ -31,7 +29,7 @@ _LOGGER = logging.getLogger(__name__)
 
 def light_restore_warning(matter_config: dict, full_config: Config):
     for endpoint_config in matter_config.get(CONF_ENDPOINTS, {}).values():
-        for conf_key, device_config in endpoint_config.items():
+        for device_config in endpoint_config.values():
             if not isinstance(device_config, dict):
                 continue
             light_id = device_config.get(CONF_LIGHT_ID)
@@ -132,7 +130,7 @@ class Endpoint:
         self._cluster_configs: defaultdict[str, _ClusterConfig] = defaultdict(
             _ClusterConfig
         )
-        self._device_types: list[DeviceType] = []
+        self._device_types: list[tuple[DeviceType, dict]] = []
 
     async def register(self, var):
         # Collect the complete endpoint structure before emitting its build callback.
@@ -187,7 +185,7 @@ class Endpoint:
         self, device_type: DeviceType, device_config: dict
     ):
         """Collect the endpoint structure and register its runtime entity mappings."""
-        self._device_types.append(device_type)
+        self._device_types.append((device_type, device_config))
 
         for cluster in device_type.server_clusters:
             # Enable all clusters and not only the enabled ones because esp_matter doesn't correctly guard endpoint compilation...
@@ -208,6 +206,16 @@ class Endpoint:
         if CONF_LIGHT_ID in device_config:
             light_ = await cg.get_variable(device_config[CONF_LIGHT_ID])
             cg.add(self._var.map_light_to_endpoint(light_, self._endpoint_id))
+        if CONF_COVER_ID in device_config:
+            cover_ = await cg.get_variable(device_config[CONF_COVER_ID])
+            supports_tilt = "PositionAwareTilt" in device_config.get(
+                CONF_FEATURES, ()
+            )
+            cg.add(
+                self._var.map_cover_to_endpoint(
+                    cover_, self._endpoint_id, supports_tilt
+                )
+            )
 
         # Register extra features
         for enabled_feature in device_config.get(CONF_FEATURES, ()):
@@ -216,11 +224,17 @@ class Endpoint:
                 if enabled_feature in (f.name for f in cluster.features):
                     cluster_config.enabled_features[enabled_feature] = True
 
-    def _make_device_type_lines(self, device_type: DeviceType, index: int):
+    def _make_device_type_lines(
+        self, device_type: DeviceType, device_config: dict, index: int
+    ):
         config_var = f"device_config_{index}"
+        constructor_args = ", ".join(
+            device_type.config_constructor_args(device_config)
+        )
         lines = [
-            f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{}};"
+            f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{{constructor_args}}};"
         ]
+        lines.extend(device_type.config_lines(device_config, config_var))
 
         # Configure cluster features
         for cluster in device_type.server_clusters:
@@ -332,8 +346,10 @@ class Endpoint:
     def _make_build_callback(self) -> str:
         lines = ["[](esp_matter::endpoint_t *endpoint) -> bool {"]
 
-        for index, device_type in enumerate(self._device_types):
-            lines.extend(self._make_device_type_lines(device_type, index))
+        for index, (device_type, device_config) in enumerate(self._device_types):
+            lines.extend(
+                self._make_device_type_lines(device_type, device_config, index)
+            )
 
         extra_clusters = [
             CLUSTERS_BY_NAME[cluster_name]

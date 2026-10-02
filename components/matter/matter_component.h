@@ -6,6 +6,7 @@
 #include "esphome/core/component.h"
 
 #include "matter_attributes.h"
+#include "matter_covers.h"
 #include "matter_endpoints.h"
 #include "matter_lights.h"
 #include "matter_sensors.h"
@@ -45,6 +46,10 @@ public:
   void map_light_to_endpoint(light::LightState *light, uint16_t endpoint_id);
   MatterLightMapping *get_light_mapping_by_endpoint(uint16_t endpoint_id);
 #endif // USE_LIGHT
+#ifdef USE_COVER
+  void map_cover_to_endpoint(cover::Cover *cover, uint16_t endpoint_id,
+                             bool supports_tilt);
+#endif // USE_COVER
 #ifdef USE_SENSOR
   void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id,
                                  uint32_t cluster_id, uint32_t attribute_id,
@@ -79,6 +84,8 @@ public:
   }
 
 private:
+  bool validate_mappings_();
+
   // Defined in matter_endpoints.cpp
   bool create_endpoints_(esp_matter::node_t *node);
   void register_endpoint_callbacks_();

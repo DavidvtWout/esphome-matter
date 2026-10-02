@@ -50,6 +50,10 @@ jobs:
         run: .venv/bin/esphome config tests/configs/esp32-thread.yaml
       - name: Check tests/configs/esp32-wifi.yaml
         run: .venv/bin/esphome config tests/configs/esp32-wifi.yaml
+      - name: Check tests/configs/esp32-window-covering.yaml
+        run: .venv/bin/esphome config tests/configs/esp32-window-covering.yaml
+      - name: Test Window Covering schema validation
+        run: .venv/bin/python tests/test_window_covering_schema.py
 
   compile:
     name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})
@@ -61,6 +65,7 @@ jobs:
         config:
           - tests/configs/esp32-thread.yaml
           - tests/configs/esp32-wifi.yaml
+          - tests/configs/esp32-window-covering.yaml
         esphome-version:
           # - 2026.6.0
           - 2026.7.4

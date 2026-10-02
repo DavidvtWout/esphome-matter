@@ -7,6 +7,8 @@ CONF_ENDPOINTS = "endpoints"
 CONF_EXTRA_CLUSTERS = "extra_clusters"
 CONF_FEATURES = "features"
 CONF_ON_ATTRIBUTE = "on_attribute"
+CONF_COVER_ID = "cover_id"
+CONF_END_PRODUCT_TYPE = "end_product_type"
 CONF_VENDOR_NAME = "vendor_name"
 CONF_PRODUCT_NAME = "product_name"
 
