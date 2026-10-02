@@ -1,0 +1,63 @@
+# Device YAML for an EXISTING, calibrated Shelly 2PM Gen4 Venetian blind.
+# Prepare your local hardware package as described in docs/dashboard-covers.md.
+# The package supplies GPIOs, protections, networking, OTA and cover1.
+packages:
+  shelly_base: !include common/shelly_2pm_gen4_matter_base.yaml
+
+substitutions:
+  # Use the existing name and measured durations of the device being updated.
+  devicename: "shelly-blind-test"
+  cover1_name: "Test Blind"
+  child_lock_entity_id: "input_boolean.blind_child_lock"
+  open_duration: "38500ms"
+  close_duration: "37800ms"
+
+esp32:
+  toolchain: platformio
+
+network:
+  enable_ipv6: true
+
+# Merge with any API settings (including encryption) in the local base.
+api: {}
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/mrflo97/esphome-matter
+      ref: 2bce176054874102d8e4690e643d62f88a0a1954
+    components: [matter]
+    refresh: never
+  - source:
+      type: git
+      url: https://github.com/bruxy70/Venetian-Blinds-Control
+      ref: 41abbe36877efa85db346913bf4b889aca72b643
+    components: [venetian_blinds]
+    refresh: never
+
+matter:
+  endpoints:
+    1:
+      window_covering:
+        cover_id: cover1
+        end_product_type: interior_venetian_blind
+        features:
+          - Lift
+          - PositionAwareLift
+          - Tilt
+          - PositionAwareTilt
+
+cover:
+  - id: !extend cover1
+    internal: true
+  - platform: matter
+    id: cover1_api
+    name: "${cover1_name} ESPHome"
+    device_class: blind
+    cover_id: cover1
+
+# In BOTH physical button release handlers in the local base, use:
+# on_release:
+#   - matter.cover.cancel_pending:
+#       cover_id: cover1
+#   - cover.stop: cover1

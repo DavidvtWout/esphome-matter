@@ -25,6 +25,33 @@ matter:
         light_id: light_id
 ```
 
+# Covers
+
+`window_covering` maps an existing ESPHome cover with position and Stop
+support. Enable `Lift` and `PositionAwareLift` for a roller shade; add `Tilt`
+and `PositionAwareTilt` for a Venetian blind whose backend supports tilt.
+Mapped covers use normalized percentages, so `AbsolutePosition` is unsupported.
+
+```yaml
+matter:
+  endpoints:
+    1:
+      window_covering:
+        cover_id: blind_backend
+        end_product_type: interior_venetian_blind
+        features:
+          - Lift
+          - PositionAwareLift
+          - Tilt
+          - PositionAwareTilt
+```
+
+Lift, tilt, and Stop have been verified on a Shelly 2PM Gen4 (ESP32-C6)
+over Wi-Fi and Thread with Apple Home and Home Assistant. For native ESPHome
+API control, expose an internal backend through `cover: platform: matter`.
+See [covers](covers.md) for configuration, supported end product types,
+physical button Stop handling, and the remaining hardware checks.
+
 # Switches
 
 The Matter switch device types are `on_off_light_switch`, `dimmer_switch` and `color_dimmer_switch`. Instead of mapping an esphome entity to the switch device type, esphome actions are mapped to the endpoint on which the switch is created.
@@ -174,7 +201,6 @@ The following device types are untested. Many of them can still successfully be 
 - video_doorbell
 - chime
 - doorbell
-- window_covering
 - closure
 - closure_panel
 - closure_controller

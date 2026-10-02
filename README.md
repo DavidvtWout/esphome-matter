@@ -213,6 +213,25 @@ button:
 
 More information about endpoints and a full list of supported device types can be found in [docs/endpoints.md](./docs/endpoints.md)
 
+# Covers
+
+Existing ESPHome covers can be exposed as Matter `window_covering` endpoints.
+Lift-only covers support position and Stop; Venetian blinds also support tilt.
+For a single-motor blind, lift completes before a waiting tilt is applied, and
+Stop cancels pending movement.
+
+To use Apple Home through Matter and Home Assistant through the native
+ESPHome API, keep the physical backend internal and expose a coordinated
+`cover: platform: matter` entity. Local automations that stop the backend
+directly must call `matter.cover.cancel_pending` before `cover.stop`.
+
+See [cover configuration and reporting](docs/covers.md),
+[ESPHome Dashboard setup](docs/dashboard-covers.md), and the
+[Shelly 2PM Gen4 device example](examples/shelly-2pm-gen4-venetian-blind.yaml).
+The Dashboard guide selects the fork's cover branch while upstream integration
+is pending. Lift, tilt, and Stop have been verified on a Shelly 2PM Gen4 over
+Wi-Fi and Thread; physical wall-button checks are still pending.
+
 # Lights
 
 All four Matter lights are now fully supported by esphome-matter! See [docs/lights.md](./docs/lights.md) for more information.
@@ -286,6 +305,10 @@ matter.send_command: some_endpoint.level_control.stop_with_on_off
 - Only one device type is supported per endpoint.
 - Matter-over-Ethernet has not been verified.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
+- Mapped covers support normalized lift positions, with optional tilt. Absolute
+  positions and tilt-only mappings are unsupported. Current-position reports
+  follow the backend's publications; controller apps may display the requested
+  destination during movement. See [covers](docs/covers.md).
 
 # See Also
 
