@@ -68,6 +68,9 @@ text_sensor:
       name: "Matter QR Payload"
 
 button:
+  - platform: restart
+    name: "Restart"
+    entity_category: config
   - platform: template
     name: "Matter Open Commissioning"
     entity_category: config
