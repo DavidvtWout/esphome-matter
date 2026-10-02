@@ -7,6 +7,12 @@ MatterComponent = matter_ns.class_("MatterComponent", cg.Component)
 MatterFactoryResetAction = matter_ns.class_(
     "MatterFactoryResetAction", automation.Action
 )
+MatterOpenCommissioningWindowAction = matter_ns.class_(
+    "MatterOpenCommissioningWindowAction", automation.Action
+)
+MatterCloseCommissioningWindowAction = matter_ns.class_(
+    "MatterCloseCommissioningWindowAction", automation.Action
+)
 MatterCancelCoverPendingAction = matter_ns.class_(
     "MatterCancelCoverPendingAction", automation.Action
 )

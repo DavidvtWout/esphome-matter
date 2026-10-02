@@ -17,6 +17,7 @@
 #include <nvs.h>
 #include <string>
 
+#include <app/server/CommissioningWindowManager.h>
 #include <app/server/Server.h>
 #ifdef USE_OPENTHREAD
 #include <app/server/Dnssd.h>
@@ -386,6 +387,7 @@ void MatterComponent::setup() {
   esp_matter::client::binding_manager_init();
   replay_attribute_triggers(this);
   this->initialize_endpoint_mappings_();
+  this->matter_started_ = true;
 }
 
 bool MatterComponent::validate_mappings_() {
@@ -406,6 +408,79 @@ void MatterComponent::factory_reset() {
     }
   }
   App.safe_reboot();
+}
+
+void MatterComponent::open_commissioning_window(uint16_t timeout_seconds) {
+  if (!this->matter_started_) {
+    ESP_LOGW(TAG, "Cannot open commissioning window: Matter is not ready");
+    return;
+  }
+  if (timeout_seconds < 180 || timeout_seconds > 900) {
+    ESP_LOGW(TAG, "Commissioning timeout must be between 180 and 900 seconds");
+    return;
+  }
+
+  CHIP_ERROR err = chip::DeviceLayer::PlatformMgr().ScheduleWork(
+      [](intptr_t timeout) {
+        auto &server = chip::Server::GetInstance();
+        auto &manager = server.GetCommissioningWindowManager();
+        if (manager.IsCommissioningWindowOpen()) {
+          ESP_LOGI(TAG, "Commissioning window is already open; keeping the active "
+                        "window");
+          return;
+        }
+        // Opening can reset pairing state even on failure, so check first.
+        if (!server.GetFailSafeContext().IsFailSafeFullyDisarmed()) {
+          ESP_LOGW(TAG, "Cannot open commissioning window: commissioning is in "
+                        "progress");
+          return;
+        }
+#if defined(USE_OPENTHREAD) || defined(USE_WIFI) || defined(USE_ETHERNET)
+        constexpr auto advertisement =
+            chip::CommissioningWindowAdvertisement::kDnssdOnly;
+#else
+        constexpr auto advertisement =
+            chip::CommissioningWindowAdvertisement::kAllSupported;
+#endif
+        CHIP_ERROR open_error = manager.OpenBasicCommissioningWindow(
+            chip::System::Clock::Seconds32(static_cast<uint32_t>(timeout)),
+            advertisement);
+        if (open_error != CHIP_NO_ERROR) {
+          ESP_LOGW(TAG, "Failed to open commissioning window: 0x%08" PRIx32,
+                   static_cast<uint32_t>(open_error.AsInteger()));
+          return;
+        }
+        ESP_LOGI(TAG, "Commissioning window opened for %" PRIu32
+                     " seconds using the stored setup code",
+                 static_cast<uint32_t>(timeout));
+      },
+      static_cast<intptr_t>(timeout_seconds));
+  if (err != CHIP_NO_ERROR) {
+    ESP_LOGW(TAG, "Failed to schedule commissioning window opening: 0x%08" PRIx32,
+             static_cast<uint32_t>(err.AsInteger()));
+  }
+}
+
+void MatterComponent::close_commissioning_window() {
+  if (!this->matter_started_) {
+    ESP_LOGW(TAG, "Cannot close commissioning window: Matter is not ready");
+    return;
+  }
+  CHIP_ERROR err = chip::DeviceLayer::PlatformMgr().ScheduleWork(
+      [](intptr_t) {
+        auto &manager =
+            chip::Server::GetInstance().GetCommissioningWindowManager();
+        if (!manager.IsCommissioningWindowOpen()) {
+          ESP_LOGD(TAG, "Commissioning window is already closed");
+          return;
+        }
+        manager.CloseCommissioningWindow();
+      },
+      0);
+  if (err != CHIP_NO_ERROR) {
+    ESP_LOGW(TAG, "Failed to schedule commissioning window closing: 0x%08" PRIx32,
+             static_cast<uint32_t>(err.AsInteger()));
+  }
 }
 
 void MatterComponent::generate_commissioning_codes_() {

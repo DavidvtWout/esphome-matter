@@ -85,6 +85,24 @@ days_mask:
 days_mask: 65
 ```
 
+# Commissioning actions
+
+`matter.open_commissioning_window` opens a window using the stored setup code.
+An existing window is left unchanged. `matter.close_commissioning_window` closes
+the window early. Both actions keep existing Matter fabrics.
+
+```yaml
+matter.open_commissioning_window:
+```
+
+- **timeout** (*Optional*, time): How long the window remains open. Accepts
+  `3min` to `15min`; defaults to `15min`. Only applies to the open action.
+- **id** (*Optional*, ID): The Matter component. Automatically resolved when
+  omitted. Supported by both actions.
+
+See [commissioning buttons](commissioning.md#commissioning-buttons) for a button
+example and setup-code behavior.
+
 # Local cover actions
 
 ### `matter.cover.cancel_pending`

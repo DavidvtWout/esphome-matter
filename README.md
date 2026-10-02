@@ -63,6 +63,7 @@ To read the setup code in Home Assistant after boot, add a
 
 Once the device has joined a fabric, the commissioning window won't be opened on restarts anymore. Matter controllers
 should be able to share the device. This generates a temporary commissioning code and re-opens the commissioning window.
+Alternatively, an [ESPHome button](docs/commissioning.md#commissioning-buttons) can open a window using the stored setup code.
 If you lose access to the Matter controller, you can do a Matter factory reset (see [Example config](#example-config)).
 
 ### Ecosystem specific settings

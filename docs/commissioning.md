@@ -37,6 +37,31 @@ and default to the diagnostic entity category. Values remain available when
 Home Assistant reconnects. A code value does not indicate whether the
 commissioning window is open; see [Persistence](#persistence) below.
 
+## Commissioning buttons
+
+These buttons open a commissioning window using the stored setup code, or close
+it early. Opening a window keeps existing fabrics and does not restart the device.
+
+```yaml
+button:
+  - platform: template
+    name: "Matter Open Commissioning"
+    on_press:
+      - matter.open_commissioning_window:
+  - platform: template
+    name: "Matter Close Commissioning"
+    on_press:
+      - matter.close_commissioning_window:
+```
+
+The window stays open for 15 minutes by default. The open action accepts an
+optional `timeout` between `3min` and `15min`; see [commissioning actions](actions.md#commissioning-actions).
+Use the setup code from the logs or text sensor to add a controller.
+
+Pressing Open while a window is already open leaves it unchanged, including its
+timeout and code. If a controller opened that window through its sharing flow,
+use the temporary code from that controller.
+
 ## Matter reset button
 
 To remove all Matter fabrics and restart for initial commissioning:
@@ -84,9 +109,11 @@ The IKEA system doesn't like it when a device has multiple endpoints. With the e
 
 The SetupQRCode is stored in flash and survives OTA updates. For a device with
 no stored fabrics, restarting reopens the initial commissioning window for
-15 minutes. Once the device has a fabric, a restart does not reopen that
-window: use the controller's sharing flow and its temporary code to add another
-controller. The original code can be used again after a Matter factory reset.
+15 minutes. Once the device has a fabric, a restart does not reopen that window.
+To add another controller, use the existing controller's sharing flow and its
+temporary code, or the [Open Commissioning button](#commissioning-buttons) and
+the stored setup code. A Matter factory reset also reopens initial commissioning
+with the original code.
 
 The fabric data is also stored on flash (nvs partition) and also survives ota updates. The fabric itself is independent of the hardware layer (wifi or thread). This means that it's even possible to commission a device over wifi and later substitute the wifi component with openthread (as long as the hardware supports both) and you don't need to re-commission!
 

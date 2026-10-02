@@ -35,6 +35,8 @@ public:
   }
 
   void factory_reset();
+  void open_commissioning_window(uint16_t timeout_seconds);
+  void close_commissioning_window();
 
 #ifdef USE_MATTER_TEXT_SENSOR
   void set_manual_pairing_code_sensor(text_sensor::TextSensor *sensor) {
@@ -119,6 +121,7 @@ private:
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
+  bool matter_started_{false};
   std::string manual_pairing_code_;
   std::string qr_code_;
 #ifdef USE_MATTER_TEXT_SENSOR
@@ -142,6 +145,28 @@ class MatterFactoryResetAction : public Action<Ts...>,
                                  public Parented<MatterComponent> {
 public:
   void play(Ts... x) override { this->parent_->factory_reset(); }
+};
+
+template <typename... Ts>
+class MatterOpenCommissioningWindowAction : public Action<Ts...>,
+                                           public Parented<MatterComponent> {
+public:
+  void set_timeout(uint16_t timeout_seconds) {
+    this->timeout_seconds_ = timeout_seconds;
+  }
+  void play(Ts... x) override {
+    this->parent_->open_commissioning_window(this->timeout_seconds_);
+  }
+
+protected:
+  uint16_t timeout_seconds_{900};
+};
+
+template <typename... Ts>
+class MatterCloseCommissioningWindowAction : public Action<Ts...>,
+                                            public Parented<MatterComponent> {
+public:
+  void play(Ts... x) override { this->parent_->close_commissioning_window(); }
 };
 
 #ifdef USE_COVER

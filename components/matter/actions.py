@@ -10,9 +10,10 @@ from esphome.const import (
     CONF_COMMAND,
     CONF_ID,
     CONF_PATH,
+    CONF_TIMEOUT,
     CONF_VALUE,
 )
-from esphome.core import CORE, ID
+from esphome.core import CORE, ID, TimePeriod
 from esphome.types import ConfigType
 
 from .const import *
@@ -21,9 +22,11 @@ from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME
 from .data_model.commands import COMMANDS, Command
 from .types import (
     MatterCancelCoverPendingAction,
+    MatterCloseCommissioningWindowAction,
     MatterComponent,
     MatterEndpointRef,
     MatterFactoryResetAction,
+    MatterOpenCommissioningWindowAction,
     MatterSendCommandAction,
     MatterSetAttributeAction,
 )
@@ -39,6 +42,43 @@ _LOGGER = logging.getLogger(__name__)
     synchronous=True,
 )
 async def matter_factory_reset_to_code(config, action_id, template_arg, args):
+    var = cg.new_Pvariable(action_id, template_arg)
+    await cg.register_parented(var, config[CONF_ID])
+    return var
+
+
+@automation.register_action(
+    "matter.open_commissioning_window",
+    MatterOpenCommissioningWindowAction,
+    cv.Schema(
+        {
+            cv.GenerateID(): cv.use_id(MatterComponent),
+            cv.Optional(CONF_TIMEOUT, default="15min"): cv.All(
+                cv.positive_time_period_seconds,
+                cv.Range(min=TimePeriod(seconds=180), max=TimePeriod(seconds=900)),
+            ),
+        }
+    ),
+    synchronous=True,
+)
+async def matter_open_commissioning_window_to_code(
+    config, action_id, template_arg, args
+):
+    var = cg.new_Pvariable(action_id, template_arg)
+    await cg.register_parented(var, config[CONF_ID])
+    cg.add(var.set_timeout(config[CONF_TIMEOUT].total_seconds))
+    return var
+
+
+@automation.register_action(
+    "matter.close_commissioning_window",
+    MatterCloseCommissioningWindowAction,
+    cv.Schema({cv.GenerateID(): cv.use_id(MatterComponent)}),
+    synchronous=True,
+)
+async def matter_close_commissioning_window_to_code(
+    config, action_id, template_arg, args
+):
     var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
     return var
