@@ -28,7 +28,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/mrflo97/esphome-matter
-      ref: 578688af444fb5a9c635ab199083712af727899e
+      ref: 576d70ed50075805f003202dec4891a5b9b295e6
     components: [matter]
     refresh: never
   - source:
@@ -66,6 +66,18 @@ text_sensor:
       name: "Matter Setup Code"
     qr_code:
       name: "Matter QR Payload"
+
+button:
+  - platform: template
+    name: "Matter Open Commissioning"
+    entity_category: config
+    on_press:
+      - matter.open_commissioning_window:
+  - platform: template
+    name: "Matter Close Commissioning"
+    entity_category: config
+    on_press:
+      - matter.close_commissioning_window:
 
 # In both physical button release handlers in the local base, use:
 # on_release:
