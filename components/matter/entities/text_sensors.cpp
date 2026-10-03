@@ -1,9 +1,9 @@
-#include "matter_text_sensors.h"
+#include "text_sensors.h"
 
 #ifdef USE_MATTER
 
 #ifdef USE_TEXT_SENSOR
-#include "matter_component.h"
+#include "../matter_component.h"
 
 #include <app/server/Server.h>
 #include <platform/CHIPDeviceLayer.h>

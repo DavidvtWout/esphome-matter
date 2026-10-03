@@ -1,5 +1,7 @@
 #pragma once
 
+// ESPHome text sensor integrations for Matter component state.
+
 #include "esphome/core/defines.h"
 
 #ifdef USE_MATTER

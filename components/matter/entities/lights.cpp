@@ -1,10 +1,10 @@
 #include "esphome/core/defines.h"
 #if defined(USE_MATTER) && defined(USE_LIGHT)
 
+#include "../matter_component.h"
+#include "../matter_conversions.h"
 #include "esphome/core/log.h"
-#include "matter_component.h"
-#include "matter_conversions.h"
-#include "matter_lights.h"
+#include "lights.h"
 
 #include <cmath>
 #include <esp_matter_cluster.h>

@@ -1,4 +1,5 @@
 #include "esphome/core/defines.h"
+// Override CHIP DNS-SD so it uses ESPHome-owned network stacks.
 #if defined(USE_MATTER) && (defined(USE_OPENTHREAD) || defined(USE_WIFI))
 
 #ifdef USE_OPENTHREAD

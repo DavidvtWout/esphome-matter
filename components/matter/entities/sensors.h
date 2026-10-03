@@ -3,8 +3,8 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 
-#include "matter_conversions.h"
-#include "matter_endpoints.h"
+#include "../matter_conversions.h"
+#include "../matter_endpoints.h"
 
 #ifdef USE_BINARY_SENSOR
 #include "esphome/components/binary_sensor/binary_sensor.h"

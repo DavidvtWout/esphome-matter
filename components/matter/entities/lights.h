@@ -3,9 +3,9 @@
 #include "esphome/core/defines.h"
 #if defined(USE_MATTER) && defined(USE_LIGHT)
 
+#include "../matter_endpoints.h"
 #include "esphome/components/light/light_state.h"
 #include "esphome/core/optional.h"
-#include "matter_endpoints.h"
 
 #include <esp_matter.h>
 

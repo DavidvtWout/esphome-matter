@@ -1,9 +1,9 @@
-#include "matter_sensors.h"
+#include "sensors.h"
 
 #if defined(USE_MATTER) && (defined(USE_SENSOR) || defined(USE_BINARY_SENSOR))
 
+#include "../matter_component.h"
 #include "esphome/core/log.h"
-#include "matter_component.h"
 
 #include <app/clusters/boolean-state-server/BooleanStateCluster.h>
 #include <platform/CHIPDeviceLayer.h>

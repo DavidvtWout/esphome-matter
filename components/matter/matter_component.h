@@ -2,14 +2,14 @@
 
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
+#include "entities/text_sensors.h"
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
-#include "matter_text_sensors.h"
 
+#include "entities/lights.h"
+#include "entities/sensors.h"
 #include "matter_attributes.h"
 #include "matter_endpoints.h"
-#include "matter_lights.h"
-#include "matter_sensors.h"
 
 #include <functional>
 #include <string>

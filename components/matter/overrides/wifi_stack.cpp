@@ -1,4 +1,5 @@
 #include "esphome/core/defines.h"
+// Override CHIP Wi-Fi initialization so ESPHome retains stack ownership.
 #if defined(USE_MATTER) && defined(USE_WIFI)
 
 #include "esphome/core/log.h"
