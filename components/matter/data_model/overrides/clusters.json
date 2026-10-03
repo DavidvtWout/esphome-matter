@@ -1,5 +1,106 @@
 {
+  "Level Control": {
+    "chip_fqn": "chip::app::Clusters::LevelControlCluster",
+    "chip_include": "#include <app/clusters/level-control/LevelControlCluster.h>"
+  },
+  "Binding": {
+    "chip_fqn": "chip::app::Clusters::BindingCluster",
+    "chip_include": "#include <app/clusters/bindings/BindingCluster.h>"
+  },
+  "Access Control": {
+    "chip_include": null
+  },
+  "Basic Information": {
+    "chip_include": null
+  },
+  "Network Commissioning": {
+    "chip_include": null
+  },
+  "Software Diagnostics": {
+    "chip_include": null
+  },
+  "Wi-Fi Network Diagnostics": {
+    "chip_include": null
+  },
+  "Ethernet Network Diagnostics": {
+    "chip_include": null
+  },
+  "Group Key Management": {
+    "chip_include": null
+  },
+  "Carbon Monoxide Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Carbon Dioxide Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Nitrogen Dioxide Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Ozone Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "PM2.5 Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Formaldehyde Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "PM1 Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "PM10 Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "Total Volatile Organic Compounds Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>",
+    "sdkconfig_option": "CONFIG_SUPPORT_TVOC_CONCENTRATION_MEASUREMENT_CLUSTER"
+  },
+  "Radon Concentration Measurement": {
+    "chip_fqn": "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster",
+    "chip_include": "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
+  },
+  "WebRTC Transport Provider": {
+    "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_PROVIDER_CLUSTER"
+  },
+  "WebRTC Transport Requestor": {
+    "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_REQUESTOR_CLUSTER"
+  },
+  "Scenes Management": {
+    "chip_fqn": "chip::app::Clusters::ScenesManagementCluster",
+    "chip_include": "#include <app/clusters/scenes-server/ScenesManagementCluster.h>",
+    "sdkconfig_option": "CONFIG_SUPPORT_SCENES_CLUSTER"
+  },
+  "Descriptor": {
+    "chip_fqn": "chip::app::Clusters::DescriptorCluster",
+    "chip_include": "#include <app/clusters/descriptor/DescriptorCluster.h>",
+    "attributes": {
+      "0": {
+        "define": "DEVICE_TYPE_LIST"
+      }
+    }
+  },
+  "RVC Operational State": {
+    "sdkconfig_option": "CONFIG_SUPPORT_OPERATIONAL_STATE_RVC_CLUSTER"
+  },
   "Switch": {
     "esp_matter_namespace": "switch_cluster"
+  },
+  "Color Control": {
+    "chip_fqn": "ColorControlServer",
+    "chip_include": "#include <app/clusters/color-control-server/color-control-server.h>"
+  },
+  "Occupancy Sensing": {
+    "chip_fqn": "chip::app::Clusters::OccupancySensingCluster",
+    "chip_include": "#include <app/clusters/occupancy-sensor-server/OccupancySensingCluster.h>"
   }
 }

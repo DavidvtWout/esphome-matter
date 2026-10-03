@@ -6,6 +6,14 @@ esphome:
       - matter.set_attribute:
           path: 4.on_off.on_off
           value: true
+      - matter.send_event:
+          path: generic_switch_endpoint.switch.initial_press
+          fields:
+            new_position: 1
+      - matter.send_event:
+          path: generic_switch_endpoint.switch.short_release
+          fields:
+            previous_position: 1
 
 esp32:
   toolchain: platformio
@@ -39,6 +47,9 @@ matter:
         light_id: dimmable_status_light
         min_level: 10%
         max_level: 90%
+    5:
+      id: generic_switch_endpoint
+      generic_switch:
     100:
       temperature_sensor:
         temperature: internal_temp

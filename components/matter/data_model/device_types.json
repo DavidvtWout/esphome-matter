@@ -1,13 +1,13 @@
-[
-  {
-    "id": 10,
+{
+  "10": {
     "name": "door_lock",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -18,10 +18,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -29,29 +30,64 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 257,
+      "257": {
         "name": "Door Lock",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "USR": "mandatory"
-        },
-        "ignored_features": [
-          "rfid_credential"
-        ]
+          "USR": {
+            "conformance": {
+              "mandatory": {
+                "and": [
+                  {
+                    "condition": "Matter"
+                  },
+                  {
+                    "or": [
+                      {
+                        "feature": "PIN"
+                      },
+                      {
+                        "feature": "RID"
+                      },
+                      {
+                        "feature": "FPG"
+                      },
+                      {
+                        "feature": "FACE"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "": {
+            "conformance": {
+              "otherwise": [
+                {
+                  "provisional": true
+                },
+                {
+                  "optional": true
+                }
+              ]
+            }
+          }
+        }
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 14,
+  "14": {
     "name": "aggregator",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -59,26 +95,25 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 37,
-        "name": "Actions"
+      "37": {
+        "name": "Actions",
+        "client_locked": true
       },
-      {
-        "id": 1873,
-        "name": "Commissioner Control"
+      "1873": {
+        "name": "Commissioner Control",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 15,
+  "15": {
     "name": "generic_switch",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -89,10 +124,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -100,31 +136,31 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 59,
+      "59": {
         "name": "Switch",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 64,
-        "name": "Fixed Label"
+      "64": {
+        "name": "Fixed Label",
+        "client_locked": true
       },
-      {
-        "id": 65,
-        "name": "User Label"
+      "65": {
+        "name": "User Label",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 17,
+  "17": {
     "name": "power_source",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -132,23 +168,23 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 47,
+      "47": {
         "name": "Power Source",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 18,
+  "18": {
     "name": "ota_requestor",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -156,29 +192,29 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 42,
-        "name": "OTA Software Update Requestor",
-        "required": true
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 41,
+      "41": {
         "name": "OTA Software Update Provider",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
+      },
+      "42": {
+        "name": "OTA Software Update Requestor",
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 19,
+  "19": {
     "name": "bridged_node",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -186,38 +222,34 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 46,
-        "name": "Power Source Configuration"
+      "47": {
+        "name": "Power Source",
+        "client_locked": true
       },
-      {
-        "id": 47,
-        "name": "Power Source"
-      },
-      {
-        "id": 57,
+      "57": {
         "name": "Bridged Device Basic Information",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "REACHABLE"
         ]
       },
-      {
-        "id": 60,
-        "name": "Administrator Commissioning"
+      "60": {
+        "name": "Administrator Commissioning",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 20,
+  "20": {
     "name": "ota_provider",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -225,28 +257,27 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 41,
+      "41": {
         "name": "OTA Software Update Provider",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
+      },
+      "42": {
+        "name": "OTA Software Update Requestor",
+        "server_locked": true
       }
-    ],
-    "client_clusters": [
-      {
-        "id": 42,
-        "name": "OTA Software Update Requestor"
-      }
-    ]
+    }
   },
-  {
-    "id": 21,
+  "21": {
     "name": "contact_sensor",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -257,10 +288,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -268,26 +300,26 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 69,
+      "69": {
         "name": "Boolean State",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "STATE_VALUE"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 22,
+  "22": {
     "name": "root_node",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -295,18 +327,20 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 31,
+      "31": {
         "name": "Access Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "ACL"
         ]
       },
-      {
-        "id": 40,
+      "40": {
         "name": "Basic Information",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DATA_MODEL_REVISION",
           "VENDOR_NAME",
@@ -321,100 +355,115 @@
           "SOFTWARE_VERSION_STRING"
         ]
       },
-      {
-        "id": 43,
-        "name": "Localization Configuration"
+      "43": {
+        "name": "Localization Configuration",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 44,
-        "name": "Time Format Localization"
+      "44": {
+        "name": "Time Format Localization",
+        "client_locked": true
       },
-      {
-        "id": 45,
-        "name": "Unit Localization"
+      "45": {
+        "name": "Unit Localization",
+        "client_locked": true
       },
-      {
-        "id": 46,
-        "name": "Power Source Configuration"
-      },
-      {
-        "id": 48,
+      "48": {
         "name": "General Commissioning",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_commands": [
           "SetRegulatoryConfig"
         ]
       },
-      {
-        "id": 49,
+      "49": {
         "name": "Network Commissioning",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 50,
-        "name": "Diagnostic Logs"
+      "50": {
+        "name": "Diagnostic Logs",
+        "client_locked": true
       },
-      {
-        "id": 51,
+      "51": {
         "name": "General Diagnostics",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "UP_TIME"
         ]
       },
-      {
-        "id": 52,
-        "name": "Software Diagnostics"
+      "52": {
+        "name": "Software Diagnostics",
+        "client_locked": true
       },
-      {
-        "id": 53,
-        "name": "Thread Network Diagnostics"
+      "53": {
+        "name": "Thread Network Diagnostics",
+        "client_locked": true
       },
-      {
-        "id": 54,
-        "name": "Wi-Fi Network Diagnostics"
+      "54": {
+        "name": "Wi-Fi Network Diagnostics",
+        "client_locked": true
       },
-      {
-        "id": 55,
-        "name": "Ethernet Network Diagnostics"
+      "55": {
+        "name": "Ethernet Network Diagnostics",
+        "client_locked": true
       },
-      {
-        "id": 56,
-        "name": "Time Synchronization"
+      "56": {
+        "name": "Time Synchronization",
+        "client_locked": true
       },
-      {
-        "id": 60,
+      "60": {
         "name": "Administrator Commissioning",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 62,
+      "62": {
         "name": "Operational Credentials",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 63,
+      "63": {
         "name": "Group Key Management",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 70,
+      "70": {
         "name": "ICD Management",
-        "ignored_features": [
-          "long_idle_time_support"
-        ]
+        "client_locked": true,
+        "features": {
+          "LITS": {
+            "conformance": {
+              "otherwise": [
+                {
+                  "provisional": true
+                },
+                {
+                  "mandatory": {
+                    "feature": "LIT"
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 23,
+  "23": {
     "name": "solar_power",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
+        "server": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -423,10 +472,11 @@
           "Identify"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "CLIENT_LIST",
           "DEVICE_TYPE_LIST",
@@ -434,17 +484,16 @@
           "SERVER_LIST"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 24,
+  "24": {
     "name": "battery_storage",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
+        "server": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -453,10 +502,11 @@
           "Identify"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "CLIENT_LIST",
           "DEVICE_TYPE_LIST",
@@ -464,18 +514,17 @@
           "SERVER_LIST"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 25,
+  "25": {
     "name": "secondary_network_interface",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -483,35 +532,35 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 49,
+      "49": {
         "name": "Network Commissioning",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 53,
-        "name": "Thread Network Diagnostics"
+      "53": {
+        "name": "Thread Network Diagnostics",
+        "client_locked": true
       },
-      {
-        "id": 54,
-        "name": "Wi-Fi Network Diagnostics"
+      "54": {
+        "name": "Wi-Fi Network Diagnostics",
+        "client_locked": true
       },
-      {
-        "id": 55,
-        "name": "Ethernet Network Diagnostics"
+      "55": {
+        "name": "Ethernet Network Diagnostics",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 39,
+  "39": {
     "name": "mode_select",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -519,28 +568,22 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 80,
+      "80": {
         "name": "Mode Select",
-        "required": true
+        "server": true,
+        "server_locked": true
       }
-    ],
-    "client_clusters": [
-      {
-        "id": 80,
-        "name": "Mode Select"
-      }
-    ]
+    }
   },
-  {
-    "id": 43,
+  "43": {
     "name": "fan",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -550,10 +593,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -570,10 +614,11 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -581,23 +626,23 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 514,
+      "514": {
         "name": "Fan Control",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 44,
+  "44": {
     "name": "air_quality_sensor",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -606,76 +651,89 @@
           "Identify"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 91,
+      "91": {
         "name": "Air Quality",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
+      "1026": {
+        "name": "Temperature Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1029,
-        "name": "Relative Humidity Measurement"
+      "1029": {
+        "name": "Relative Humidity Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1036,
-        "name": "Carbon Monoxide Concentration Measurement"
+      "1036": {
+        "name": "Carbon Monoxide Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1037,
-        "name": "Carbon Dioxide Concentration Measurement"
+      "1037": {
+        "name": "Carbon Dioxide Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1043,
-        "name": "Nitrogen Dioxide Concentration Measurement"
+      "1043": {
+        "name": "Nitrogen Dioxide Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1045,
-        "name": "Ozone Concentration Measurement"
+      "1045": {
+        "name": "Ozone Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1066,
-        "name": "PM2.5 Concentration Measurement"
+      "1066": {
+        "name": "PM2.5 Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1067,
-        "name": "Formaldehyde Concentration Measurement"
+      "1067": {
+        "name": "Formaldehyde Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1068,
-        "name": "PM1 Concentration Measurement"
+      "1068": {
+        "name": "PM1 Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1069,
-        "name": "PM10 Concentration Measurement"
+      "1069": {
+        "name": "PM10 Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1070,
-        "name": "Total Volatile Organic Compounds Concentration Measurement"
+      "1070": {
+        "name": "Total Volatile Organic Compounds Concentration Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1071,
-        "name": "Radon Concentration Measurement"
+      "1071": {
+        "name": "Radon Concentration Measurement",
+        "server": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 45,
+  "45": {
     "name": "air_purifier",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -684,239 +742,224 @@
           "Identify"
         ]
       },
-      {
-        "id": 4,
-        "name": "Groups"
+      "4": {
+        "name": "Groups",
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 113,
-        "name": "HEPA Filter Monitoring"
+      "113": {
+        "name": "HEPA Filter Monitoring",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 114,
-        "name": "Activated Carbon Filter Monitoring"
+      "114": {
+        "name": "Activated Carbon Filter Monitoring",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 514,
+      "514": {
         "name": "Fan Control",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 65,
+  "65": {
     "name": "water_freeze_detector",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 69,
+      "69": {
         "name": "Boolean State",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 128,
-        "name": "Boolean State Configuration"
+      "128": {
+        "name": "Boolean State Configuration",
+        "server": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 66,
+  "66": {
     "name": "water_valve",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 129,
+      "129": {
         "name": "Valve Configuration and Control",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 67,
+  "67": {
     "name": "water_leak_detector",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 69,
+      "69": {
         "name": "Boolean State",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 128,
-        "name": "Boolean State Configuration"
+      "128": {
+        "name": "Boolean State Configuration",
+        "server": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 68,
+  "68": {
     "name": "rain_sensor",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 69,
+      "69": {
         "name": "Boolean State",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 128,
-        "name": "Boolean State Configuration"
+      "128": {
+        "name": "Boolean State Configuration",
+        "server": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 69,
+  "69": {
     "name": "soil_sensor",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
+      "1026": {
+        "name": "Temperature Measurement",
+        "client_locked": true
       },
-      {
-        "id": 1072,
+      "1072": {
         "name": "Soil Measurement",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 112,
+  "112": {
     "name": "refrigerator",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 82,
-        "name": "Refrigerator And Temperature Controlled Cabinet Mode",
-        "features": {
-          "OO": "disallowed"
-        }
-      },
-      {
-        "id": 87,
-        "name": "Refrigerator Alarm"
+      "87": {
+        "name": "Refrigerator Alarm",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 113,
+  "113": {
     "name": "temperature_controlled_cabinet",
     "revision": 5,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 72,
-        "name": "Oven Cavity Operational State"
-      },
-      {
-        "id": 73,
-        "name": "Oven Mode",
-        "features": {
-          "OO": "disallowed"
-        }
-      },
-      {
-        "id": 82,
-        "name": "Refrigerator And Temperature Controlled Cabinet Mode",
-        "features": {
-          "OO": "disallowed"
-        }
-      },
-      {
-        "id": 86,
+      "86": {
         "name": "Temperature Control",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
+      "1026": {
+        "name": "Temperature Measurement",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 114,
+  "114": {
     "name": "room_air_conditioner",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -925,16 +968,21 @@
           "Identify"
         ]
       },
-      {
-        "id": 4,
-        "name": "Groups"
+      "4": {
+        "name": "Groups",
+        "client_locked": true
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "DF": "mandatory"
+          "DF": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "ON_OFF"
@@ -945,172 +993,176 @@
           "Toggle"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 98,
-        "name": "Scenes Management"
+      "98": {
+        "name": "Scenes Management",
+        "client_locked": true
       },
-      {
-        "id": 513,
+      "513": {
         "name": "Thermostat",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 514,
-        "name": "Fan Control"
+      "514": {
+        "name": "Fan Control",
+        "client_locked": true
       },
-      {
-        "id": 516,
-        "name": "Thermostat User Interface Configuration"
+      "516": {
+        "name": "Thermostat User Interface Configuration",
+        "client_locked": true
       },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
+      "1026": {
+        "name": "Temperature Measurement",
+        "client_locked": true
       },
-      {
-        "id": 1029,
-        "name": "Relative Humidity Measurement"
+      "1029": {
+        "name": "Relative Humidity Measurement",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 115,
+  "115": {
     "name": "laundry_washer",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
+        "client_locked": true,
         "features": {
-          "DF": "mandatory"
+          "DF": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 81,
+      "81": {
         "name": "Laundry Washer Mode",
+        "client_locked": true,
         "features": {
-          "OO": "disallowed"
+          "OO": {
+            "conformance": {
+              "disallowed": true
+            }
+          }
         }
       },
-      {
-        "id": 83,
-        "name": "Laundry Washer Controls"
+      "83": {
+        "name": "Laundry Washer Controls",
+        "client_locked": true
       },
-      {
-        "id": 86,
-        "name": "Temperature Control"
+      "86": {
+        "name": "Temperature Control",
+        "client_locked": true
       },
-      {
-        "id": 96,
+      "96": {
         "name": "Operational State",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 116,
+  "116": {
     "name": "robotic_vacuum_cleaner",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 84,
+      "84": {
         "name": "RVC Run Mode",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 85,
-        "name": "RVC Clean Mode"
+      "85": {
+        "name": "RVC Clean Mode",
+        "client_locked": true
       },
-      {
-        "id": 97,
+      "97": {
         "name": "RVC Operational State",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 336,
-        "name": "Service Area"
+      "336": {
+        "name": "Service Area",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 117,
+  "117": {
     "name": "dishwasher",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
+        "client_locked": true,
         "features": {
-          "DF": "mandatory"
+          "DF": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 86,
-        "name": "Temperature Control"
+      "86": {
+        "name": "Temperature Control",
+        "client_locked": true
       },
-      {
-        "id": 89,
-        "name": "Dishwasher Mode",
-        "features": {
-          "OO": "disallowed"
-        }
-      },
-      {
-        "id": 93,
-        "name": "Dishwasher Alarm"
-      },
-      {
-        "id": 96,
+      "96": {
         "name": "Operational State",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 118,
+  "118": {
     "name": "smoke_co_alarm",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -1119,256 +1171,296 @@
           "Identify"
         ]
       },
-      {
-        "id": 4,
-        "name": "Groups"
+      "4": {
+        "name": "Groups",
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 92,
+      "92": {
         "name": "Smoke CO Alarm",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
+      "1026": {
+        "name": "Temperature Measurement",
+        "client_locked": true
       },
-      {
-        "id": 1029,
-        "name": "Relative Humidity Measurement"
+      "1029": {
+        "name": "Relative Humidity Measurement",
+        "client_locked": true
       },
-      {
-        "id": 1036,
-        "name": "Carbon Monoxide Concentration Measurement"
+      "1036": {
+        "name": "Carbon Monoxide Concentration Measurement",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 119,
+  "119": {
     "name": "cook_surface",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 6,
+    "clusters": {
+      "6": {
         "name": "On/Off",
+        "server": true,
+        "client_locked": true,
         "features": {
-          "OFFONLY": "mandatory"
+          "OFFONLY": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 86,
-        "name": "Temperature Control"
+      "86": {
+        "name": "Temperature Control",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
+      "1026": {
+        "name": "Temperature Measurement",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 120,
+  "120": {
     "name": "cooktop",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "OFFONLY": "mandatory"
+          "OFFONLY": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 121,
+  "121": {
     "name": "microwave_oven",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 94,
+      "94": {
         "name": "Microwave Oven Mode",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 95,
+      "95": {
         "name": "Microwave Oven Control",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 96,
+      "96": {
         "name": "Operational State",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 514,
+      "514": {
         "name": "Fan Control",
+        "client_locked": true,
         "features": {
-          "WND": "disallowed",
-          "DIR": "disallowed"
+          "WND": {
+            "conformance": {
+              "disallowed": true
+            }
+          },
+          "DIR": {
+            "conformance": {
+              "disallowed": true
+            }
+          }
         }
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 122,
+  "122": {
     "name": "extractor_hood",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 113,
-        "name": "HEPA Filter Monitoring"
+      "113": {
+        "name": "HEPA Filter Monitoring",
+        "client_locked": true
       },
-      {
-        "id": 114,
-        "name": "Activated Carbon Filter Monitoring"
+      "114": {
+        "name": "Activated Carbon Filter Monitoring",
+        "client_locked": true
       },
-      {
-        "id": 514,
+      "514": {
         "name": "Fan Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "RCK": "disallowed",
-          "WND": "disallowed",
-          "DIR": "disallowed"
+          "RCK": {
+            "conformance": {
+              "disallowed": true
+            }
+          },
+          "WND": {
+            "conformance": {
+              "disallowed": true
+            }
+          },
+          "DIR": {
+            "conformance": {
+              "disallowed": true
+            }
+          }
         }
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 123,
+  "123": {
     "name": "oven",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 124,
+  "124": {
     "name": "laundry_dryer",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
+        "client_locked": true,
         "features": {
-          "DF": "mandatory"
+          "DF": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 74,
-        "name": "Laundry Dryer Controls"
+      "74": {
+        "name": "Laundry Dryer Controls",
+        "client_locked": true
       },
-      {
-        "id": 81,
+      "81": {
         "name": "Laundry Washer Mode",
+        "client_locked": true,
         "features": {
-          "": "disallowed"
+          "": {
+            "conformance": {
+              "disallowed": true
+            }
+          }
         }
       },
-      {
-        "id": 86,
-        "name": "Temperature Control"
+      "86": {
+        "name": "Temperature Control",
+        "client_locked": true
       },
-      {
-        "id": 96,
+      "96": {
         "name": "Operational State",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 145,
+  "145": {
     "name": "thread_border_router",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 53,
+      "53": {
         "name": "Thread Network Diagnostics",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1106,
+      "1106": {
         "name": "Thread Border Router Management",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 256,
+  "256": {
     "name": "on_off_light",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -1378,10 +1470,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -1398,12 +1491,17 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "ON_OFF",
@@ -1421,12 +1519,20 @@
           "OnWithTimedOff"
         ]
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
+        "client_locked": true,
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -1446,10 +1552,11 @@
           "StopWithOnOff"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -1457,36 +1564,10 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
-        "required": true,
-        "required_attributes": [
-          "SCENE_NAME_SUPPORT"
-        ],
-        "required_commands": [
-          "AddScene",
-          "AddSceneResponse",
-          "ViewScene",
-          "ViewSceneResponse",
-          "RemoveScene",
-          "RemoveSceneResponse",
-          "RemoveAllScenes",
-          "RemoveAllScenesResponse",
-          "StoreScene",
-          "StoreSceneResponse",
-          "RecallScene",
-          "GetSceneMembership",
-          "GetSceneMembershipResponse",
-          "CopyScene",
-          "CopySceneResponse"
-        ]
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 98,
-        "name": "Scenes Management",
+        "server": true,
+        "server_locked": true,
         "required_attributes": [
           "SCENE_NAME_SUPPORT"
         ],
@@ -1508,21 +1589,21 @@
           "CopySceneResponse"
         ]
       },
-      {
-        "id": 1030,
-        "name": "Occupancy Sensing"
+      "1030": {
+        "name": "Occupancy Sensing",
+        "server_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 257,
+  "257": {
     "name": "dimmable_light",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -1532,10 +1613,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -1552,12 +1634,17 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "ON_OFF",
@@ -1575,13 +1662,22 @@
           "OnWithTimedOff"
         ]
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory",
-          "OO": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -1601,10 +1697,11 @@
           "StopWithOnOff"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -1612,17 +1709,18 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 30,
+      "30": {
         "name": "Binding",
+        "client_locked": true,
         "required_attributes": [
           "BINDING"
         ]
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "SCENE_NAME_SUPPORT"
         ],
@@ -1643,24 +1741,23 @@
           "CopyScene",
           "CopySceneResponse"
         ]
+      },
+      "1030": {
+        "name": "Occupancy Sensing",
+        "server_locked": true
       }
-    ],
-    "client_clusters": [
-      {
-        "id": 1030,
-        "name": "Occupancy Sensing"
-      }
-    ]
+    }
   },
-  {
-    "id": 259,
+  "259": {
     "name": "on_off_light_switch",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "client": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -1670,43 +1767,9 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
-        "name": "Descriptor",
-        "required": true,
-        "required_attributes": [
-          "DEVICE_TYPE_LIST",
-          "SERVER_LIST",
-          "CLIENT_LIST",
-          "PARTS_LIST"
-        ]
-      },
-      {
-        "id": 30,
-        "name": "Binding",
-        "required": true,
-        "required_attributes": [
-          "BINDING"
-        ]
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 3,
-        "name": "Identify",
-        "required": true,
-        "required_attributes": [
-          "IDENTIFY_TIME",
-          "IDENTIFY_TYPE"
-        ],
-        "required_commands": [
-          "Identify",
-          "TriggerEffect"
-        ]
-      },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
+        "server_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -1723,14 +1786,36 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 98,
+      "29": {
+        "name": "Descriptor",
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      "30": {
+        "name": "Binding",
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      },
+      "98": {
         "name": "Scenes Management",
+        "server_locked": true,
         "required_attributes": [
           "SCENE_COUNT",
           "CURRENT_SCENE",
@@ -1754,17 +1839,18 @@
           "GetSceneMembershipResponse"
         ]
       }
-    ]
+    }
   },
-  {
-    "id": 260,
+  "260": {
     "name": "dimmer_switch",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "client": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -1774,43 +1860,9 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
-        "name": "Descriptor",
-        "required": true,
-        "required_attributes": [
-          "DEVICE_TYPE_LIST",
-          "SERVER_LIST",
-          "CLIENT_LIST",
-          "PARTS_LIST"
-        ]
-      },
-      {
-        "id": 30,
-        "name": "Binding",
-        "required": true,
-        "required_attributes": [
-          "BINDING"
-        ]
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 3,
-        "name": "Identify",
-        "required": true,
-        "required_attributes": [
-          "IDENTIFY_TIME",
-          "IDENTIFY_TYPE"
-        ],
-        "required_commands": [
-          "Identify",
-          "TriggerEffect"
-        ]
-      },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
+        "server_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -1827,19 +1879,42 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 98,
+      "29": {
+        "name": "Descriptor",
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      "30": {
+        "name": "Binding",
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      },
+      "98": {
         "name": "Scenes Management",
+        "server_locked": true,
         "required_attributes": [
           "SCENE_COUNT",
           "CURRENT_SCENE",
@@ -1863,17 +1938,18 @@
           "GetSceneMembershipResponse"
         ]
       }
-    ]
+    }
   },
-  {
-    "id": 261,
+  "261": {
     "name": "color_dimmer_switch",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "client": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -1883,43 +1959,9 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
-        "name": "Descriptor",
-        "required": true,
-        "required_attributes": [
-          "DEVICE_TYPE_LIST",
-          "SERVER_LIST",
-          "CLIENT_LIST",
-          "PARTS_LIST"
-        ]
-      },
-      {
-        "id": 30,
-        "name": "Binding",
-        "required": true,
-        "required_attributes": [
-          "BINDING"
-        ]
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 3,
-        "name": "Identify",
-        "required": true,
-        "required_attributes": [
-          "IDENTIFY_TIME",
-          "IDENTIFY_TYPE"
-        ],
-        "required_commands": [
-          "Identify",
-          "TriggerEffect"
-        ]
-      },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
+        "server_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -1936,19 +1978,42 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 98,
+      "29": {
+        "name": "Descriptor",
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      "30": {
+        "name": "Binding",
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
+        "required_attributes": [
+          "BINDING"
+        ]
+      },
+      "98": {
         "name": "Scenes Management",
+        "server_locked": true,
         "required_attributes": [
           "SCENE_NAME_SUPPORT"
         ],
@@ -1968,22 +2033,23 @@
           "GetSceneMembershipResponse"
         ]
       },
-      {
-        "id": 768,
+      "768": {
         "name": "Color Control",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 262,
+  "262": {
     "name": "light_sensor",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -1994,10 +2060,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -2005,35 +2072,35 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 30,
+      "30": {
         "name": "Binding",
+        "client_locked": true,
         "required_attributes": [
           "BINDING"
         ]
       },
-      {
-        "id": 1024,
+      "1024": {
         "name": "Illuminance Measurement",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "ILLUM_MEASURED_VALUE",
           "ILLUM_MIN_MEASURED_VALUE",
           "ILLUM_MAX_MEASURED_VALUE"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 263,
+  "263": {
     "name": "occupancy_sensor",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -2044,10 +2111,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -2055,34 +2123,34 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 30,
+      "30": {
         "name": "Binding",
+        "client_locked": true,
         "required_attributes": [
           "BINDING"
         ]
       },
-      {
-        "id": 1030,
+      "1030": {
         "name": "Occupancy Sensing",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "OCCUPANCY",
           "OCCUPANCY_SENSOR_TYPE"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 266,
+  "266": {
     "name": "on_off_plug_in_unit",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -2092,10 +2160,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -2112,12 +2181,17 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "ON_OFF",
@@ -2135,12 +2209,20 @@
           "OnWithTimedOff"
         ]
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
+        "client_locked": true,
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2160,10 +2242,11 @@
           "StopWithOnOff"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -2171,10 +2254,11 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "SCENE_NAME_SUPPORT"
         ],
@@ -2196,18 +2280,17 @@
           "CopySceneResponse"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 267,
+  "267": {
     "name": "dimmable_plug_in_unit",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -2217,10 +2300,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -2237,12 +2321,17 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "ON_OFF",
@@ -2260,13 +2349,22 @@
           "OnWithTimedOff"
         ]
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2286,10 +2384,11 @@
           "StopWithOnOff"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -2297,10 +2396,11 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "SCENE_NAME_SUPPORT"
         ],
@@ -2322,18 +2422,17 @@
           "CopySceneResponse"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 268,
+  "268": {
     "name": "color_temperature_light",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -2343,10 +2442,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -2363,12 +2463,17 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "ON_OFF",
@@ -2386,13 +2491,22 @@
           "OnWithTimedOff"
         ]
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2412,10 +2526,11 @@
           "StopWithOnOff"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -2423,10 +2538,11 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "SCENE_NAME_SUPPORT"
         ],
@@ -2448,12 +2564,17 @@
           "CopySceneResponse"
         ]
       },
-      {
-        "id": 768,
+      "768": {
         "name": "Color Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "CT": "mandatory"
+          "CT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "COLOR_CONTROL_REMAINING_TIME",
@@ -2475,18 +2596,17 @@
           "StepColorTemperature"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 269,
+  "269": {
     "name": "extended_color_light",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -2496,10 +2616,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -2516,12 +2637,17 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "ON_OFF",
@@ -2539,13 +2665,22 @@
           "OnWithTimedOff"
         ]
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "OO": "mandatory",
-          "LT": "mandatory"
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "CURRENT_LEVEL",
@@ -2565,10 +2700,11 @@
           "StopWithOnOff"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -2576,10 +2712,11 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "SCENE_NAME_SUPPORT"
         ],
@@ -2601,16 +2738,37 @@
           "CopySceneResponse"
         ]
       },
-      {
-        "id": 768,
+      "768": {
         "name": "Color Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "HS": "optional",
-          "EHUE": "optional",
-          "CL": "optional",
-          "XY": "mandatory",
-          "CT": "mandatory"
+          "HS": {
+            "conformance": {
+              "optional": true
+            }
+          },
+          "EHUE": {
+            "conformance": {
+              "optional": true
+            }
+          },
+          "CL": {
+            "conformance": {
+              "optional": true
+            }
+          },
+          "XY": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "CT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "COLOR_CONTROL_REMAINING_TIME",
@@ -2637,289 +2795,317 @@
           "StepColorTemperature"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 271,
+  "271": {
     "name": "mounted_on_off_control",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_commands": [
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
+        "client_locked": true,
         "features": {
-          "LT": "mandatory",
-          "OO": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
+        "client_locked": true,
         "required_commands": [
           "CopyScene"
         ]
+      },
+      "1030": {
+        "name": "Occupancy Sensing",
+        "server_locked": true
       }
-    ],
-    "client_clusters": [
-      {
-        "id": 1030,
-        "name": "Occupancy Sensing"
-      }
-    ]
+    }
   },
-  {
-    "id": 272,
+  "272": {
     "name": "mounted_dimmable_load_control",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_commands": [
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 8,
+      "8": {
         "name": "Level Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "LT": "mandatory",
-          "OO": "mandatory"
+          "LT": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "OO": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
+        "server": true,
+        "client_locked": true,
         "required_commands": [
           "CopyScene"
         ]
+      },
+      "1030": {
+        "name": "Occupancy Sensing",
+        "server_locked": true
       }
-    ],
-    "client_clusters": [
-      {
-        "id": 1030,
-        "name": "Occupancy Sensing"
-      }
-    ]
+    }
   },
-  {
-    "id": 321,
+  "321": {
     "name": "audio_doorbell",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 59,
+      "59": {
         "name": "Switch",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1361,
+      "1361": {
         "name": "Camera AV Stream Management",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "ADO": "mandatory",
-          "SNP": "disallowed",
-          "VDO": "disallowed"
+          "ADO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "SNP": {
+            "conformance": {
+              "disallowed": true
+            }
+          },
+          "VDO": {
+            "conformance": {
+              "disallowed": true
+            }
+          }
         }
       },
-      {
-        "id": 1363,
+      "1363": {
         "name": "WebRTC Transport Provider",
-        "required": true
+        "server": true,
+        "server_locked": true
       },
-      {
-        "id": 1364,
-        "name": "WebRTC Transport Requestor"
-      },
-      {
-        "id": 1365,
-        "name": "Push AV Stream Transport"
-      },
-      {
-        "id": 1366,
-        "name": "Chime"
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 1363,
-        "name": "WebRTC Transport Provider"
-      },
-      {
-        "id": 1364,
+      "1364": {
         "name": "WebRTC Transport Requestor",
-        "required": true
+        "client": true,
+        "client_locked": true
       },
-      {
-        "id": 1366,
+      "1365": {
+        "name": "Push AV Stream Transport",
+        "client_locked": true
+      },
+      "1366": {
         "name": "Chime",
-        "required": true
+        "client": true,
+        "client_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 322,
+  "322": {
     "name": "camera",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 1030,
-        "name": "Occupancy Sensing"
+      "1030": {
+        "name": "Occupancy Sensing",
+        "client_locked": true
       },
-      {
-        "id": 1360,
-        "name": "Zone Management"
+      "1360": {
+        "name": "Zone Management",
+        "client_locked": true
       },
-      {
-        "id": 1361,
+      "1361": {
         "name": "Camera AV Stream Management",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "ADO": "mandatory",
-          "SNP": "mandatory",
-          "VDO": "mandatory"
+          "ADO": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "SNP": {
+            "conformance": {
+              "mandatory": true
+            }
+          },
+          "VDO": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 1362,
-        "name": "Camera AV Settings User Level Management"
+      "1362": {
+        "name": "Camera AV Settings User Level Management",
+        "client_locked": true
       },
-      {
-        "id": 1363,
+      "1363": {
         "name": "WebRTC Transport Provider",
-        "required": true
+        "server": true,
+        "server_locked": true
       },
-      {
-        "id": 1364,
-        "name": "WebRTC Transport Requestor"
-      },
-      {
-        "id": 1365,
-        "name": "Push AV Stream Transport"
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 1363,
-        "name": "WebRTC Transport Provider"
-      },
-      {
-        "id": 1364,
+      "1364": {
         "name": "WebRTC Transport Requestor",
-        "required": true
+        "client": true,
+        "client_locked": true
+      },
+      "1365": {
+        "name": "Push AV Stream Transport",
+        "client_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 323,
+  "323": {
     "name": "video_doorbell",
     "revision": 1,
-    "server_clusters": [],
-    "client_clusters": []
+    "clusters": {}
   },
-  {
-    "id": 326,
+  "326": {
     "name": "chime",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 1366,
+      "1366": {
         "name": "Chime",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 328,
+  "328": {
     "name": "doorbell",
     "revision": null,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 30,
+      "30": {
         "name": "Binding",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 59,
+      "59": {
         "name": "Switch",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "MS": "mandatory"
+          "MS": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 1366,
+      },
+      "1366": {
         "name": "Chime",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 514,
+  "514": {
     "name": "window_covering",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -2929,9 +3115,9 @@
           "IdentifyQuery"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -2948,10 +3134,11 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -2959,97 +3146,105 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 258,
+      "258": {
         "name": "Window Covering",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 560,
+  "560": {
     "name": "closure",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "TAGLIST": "mandatory"
+          "TAGLIST": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 260,
+      "260": {
         "name": "Closure Control",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 561,
+  "561": {
     "name": "closure_panel",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "TAGLIST": "mandatory"
+          "TAGLIST": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         }
       },
-      {
-        "id": 261,
+      "261": {
         "name": "Closure Dimension",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 574,
+  "574": {
     "name": "closure_controller",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 30,
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "server_locked": true
+      },
+      "30": {
         "name": "Binding",
-        "required": true
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 260,
+      "260": {
         "name": "Closure Control",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 261,
-        "name": "Closure Dimension"
+      "261": {
+        "name": "Closure Dimension",
+        "server_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 769,
+  "769": {
     "name": "thermostat",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3060,9 +3255,9 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -3079,10 +3274,11 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -3090,51 +3286,50 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 30,
+      "30": {
         "name": "Binding",
+        "client_locked": true,
         "required_attributes": [
           "BINDING"
         ]
       },
-      {
-        "id": 513,
+      "513": {
         "name": "Thermostat",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 516,
-        "name": "Thermostat User Interface Configuration"
+      "514": {
+        "name": "Fan Control",
+        "server_locked": true
+      },
+      "516": {
+        "name": "Thermostat User Interface Configuration",
+        "client_locked": true
+      },
+      "1026": {
+        "name": "Temperature Measurement",
+        "server_locked": true
+      },
+      "1029": {
+        "name": "Relative Humidity Measurement",
+        "server_locked": true
+      },
+      "1030": {
+        "name": "Occupancy Sensing",
+        "server_locked": true
       }
-    ],
-    "client_clusters": [
-      {
-        "id": 514,
-        "name": "Fan Control"
-      },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
-      },
-      {
-        "id": 1029,
-        "name": "Relative Humidity Measurement"
-      },
-      {
-        "id": 1030,
-        "name": "Occupancy Sensing"
-      }
-    ]
+    }
   },
-  {
-    "id": 770,
+  "770": {
     "name": "temperature_sensor",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3145,10 +3340,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -3156,23 +3352,23 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 1026,
+      "1026": {
         "name": "Temperature Measurement",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 771,
+  "771": {
     "name": "pump",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3183,9 +3379,9 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
+        "client_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -3202,10 +3398,11 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "ON_OFF"
         ],
@@ -3215,14 +3412,15 @@
           "Toggle"
         ]
       },
-      {
-        "id": 8,
-        "name": "Level Control"
+      "8": {
+        "name": "Level Control",
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -3230,16 +3428,16 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 30,
+      "30": {
         "name": "Binding",
+        "client_locked": true,
         "required_attributes": [
           "BINDING"
         ]
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
+        "client_locked": true,
         "required_attributes": [
           "SCENE_COUNT",
           "CURRENT_SCENE",
@@ -3263,10 +3461,11 @@
           "GetSceneMembershipResponse"
         ]
       },
-      {
-        "id": 512,
+      "512": {
         "name": "Pump Configuration and Control",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "MAX_PRESSURE",
           "MAX_SPEED",
@@ -3277,47 +3476,29 @@
           "OperationMode"
         ]
       },
-      {
-        "id": 1026,
+      "1026": {
         "name": "Temperature Measurement"
       },
-      {
-        "id": 1027,
+      "1027": {
         "name": "Pressure Measurement"
       },
-      {
-        "id": 1028,
-        "name": "Flow Measurement"
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
-      },
-      {
-        "id": 1027,
-        "name": "Pressure Measurement"
-      },
-      {
-        "id": 1028,
+      "1028": {
         "name": "Flow Measurement"
       },
-      {
-        "id": 1030,
-        "name": "Occupancy Sensing"
+      "1030": {
+        "name": "Occupancy Sensing",
+        "server_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 772,
+  "772": {
     "name": "pump_controller",
     "revision": 4,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3328,43 +3509,9 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
-        "name": "Descriptor",
-        "required": true,
-        "required_attributes": [
-          "DEVICE_TYPE_LIST",
-          "SERVER_LIST",
-          "CLIENT_LIST",
-          "PARTS_LIST"
-        ]
-      },
-      {
-        "id": 30,
-        "name": "Binding",
-        "required": true,
-        "required_attributes": [
-          "BINDING"
-        ]
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 3,
-        "name": "Identify",
-        "required_attributes": [
-          "IDENTIFY_TIME",
-          "IDENTIFY_TYPE"
-        ],
-        "required_commands": [
-          "Identify",
-          "IdentifyQuery",
-          "TriggerEffect"
-        ]
-      },
-      {
-        "id": 4,
+      "4": {
         "name": "Groups",
+        "server_locked": true,
         "required_attributes": [
           "GROUP_NAME_SUPPORT"
         ],
@@ -3381,26 +3528,41 @@
           "AddGroupIfIdentifying"
         ]
       },
-      {
-        "id": 6,
+      "6": {
         "name": "On/Off",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 8,
-        "name": "Level Control"
+      "8": {
+        "name": "Level Control",
+        "server_locked": true
       },
-      {
-        "id": 30,
+      "29": {
+        "name": "Descriptor",
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
+        "required_attributes": [
+          "DEVICE_TYPE_LIST",
+          "SERVER_LIST",
+          "CLIENT_LIST",
+          "PARTS_LIST"
+        ]
+      },
+      "30": {
         "name": "Binding",
-        "required": true,
+        "server": true,
+        "client": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "BINDING"
         ]
       },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
+        "server_locked": true,
         "required_attributes": [
           "SCENE_COUNT",
           "CURRENT_SCENE",
@@ -3424,34 +3586,35 @@
           "GetSceneMembershipResponse"
         ]
       },
-      {
-        "id": 512,
+      "512": {
         "name": "Pump Configuration and Control",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
+      "1026": {
+        "name": "Temperature Measurement",
+        "server_locked": true
       },
-      {
-        "id": 1027,
-        "name": "Pressure Measurement"
+      "1027": {
+        "name": "Pressure Measurement",
+        "server_locked": true
       },
-      {
-        "id": 1028,
-        "name": "Flow Measurement"
+      "1028": {
+        "name": "Flow Measurement",
+        "server_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 773,
+  "773": {
     "name": "pressure_sensor",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3462,10 +3625,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -3473,23 +3637,23 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 1027,
+      "1027": {
         "name": "Pressure Measurement",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 774,
+  "774": {
     "name": "flow_sensor",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3500,10 +3664,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -3511,23 +3676,23 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 1028,
+      "1028": {
         "name": "Flow Measurement",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 775,
+  "775": {
     "name": "humidity_sensor",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3538,10 +3703,11 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -3549,22 +3715,22 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 1029,
+      "1029": {
         "name": "Relative Humidity Measurement",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 777,
+  "777": {
     "name": "heat_pump",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
+        "server": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3573,22 +3739,22 @@
           "Identify"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "CLIENT_LIST",
           "DEVICE_TYPE_LIST",
           "PARTS_LIST",
           "SERVER_LIST"
         ]
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 513,
+      },
+      "513": {
         "name": "Thermostat",
+        "client": true,
+        "server_locked": true,
         "required_attributes": [
           "CONTROL_SEQUENCE_OF_OPERATION",
           "LOCAL_TEMPERATURE",
@@ -3598,100 +3764,104 @@
           "SetpointRaiseLower"
         ]
       }
-    ]
+    }
   },
-  {
-    "id": 778,
+  "778": {
     "name": "thermostat_controller",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client": true,
+        "server_locked": true
+      },
+      "4": {
+        "name": "Groups",
+        "client": true,
+        "server_locked": true
+      },
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 30,
+      "30": {
         "name": "Binding",
-        "required": true
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 4,
-        "name": "Groups"
+      "98": {
+        "name": "Scenes Management",
+        "client": true,
+        "server_locked": true
       },
-      {
-        "id": 98,
-        "name": "Scenes Management"
-      },
-      {
-        "id": 513,
+      "513": {
         "name": "Thermostat",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ]
+    }
   },
-  {
-    "id": 1292,
+  "1292": {
     "name": "evse",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 3,
-        "name": "Identify"
+    "clusters": {
+      "3": {
+        "name": "Identify",
+        "client_locked": true
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 153,
+      "153": {
         "name": "Energy EVSE",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 157,
+      "157": {
         "name": "Energy EVSE Mode",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1026,
-        "name": "Temperature Measurement"
+      "1026": {
+        "name": "Temperature Measurement",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 1293,
+  "1293": {
     "name": "device_energy_management",
     "revision": 2,
-    "server_clusters": [
-      {
-        "id": 152,
+    "clusters": {
+      "152": {
         "name": "Device Energy Management",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 159,
-        "name": "Device Energy Management Mode"
+      "159": {
+        "name": "Device Energy Management Mode",
+        "server": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 1295,
+  "1295": {
     "name": "water_heater",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
+        "server": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3700,10 +3870,11 @@
           "Identify"
         ]
       },
-      {
-        "id": 29,
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "CLIENT_LIST",
           "DEVICE_TYPE_LIST",
@@ -3711,10 +3882,11 @@
           "SERVER_LIST"
         ]
       },
-      {
-        "id": 148,
+      "148": {
         "name": "Water Heater Management",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "BOOST_STATE",
           "HEATER_TYPES",
@@ -3725,10 +3897,11 @@
           "CancelBoost"
         ]
       },
-      {
-        "id": 158,
+      "158": {
         "name": "Water Heater Mode",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "CURRENT_MODE",
           "SUPPORTED_MODES"
@@ -3738,10 +3911,11 @@
           "ChangeToModeResponse"
         ]
       },
-      {
-        "id": 513,
+      "513": {
         "name": "Thermostat",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "CONTROL_SEQUENCE_OF_OPERATION",
           "LOCAL_TEMPERATURE",
@@ -3751,112 +3925,118 @@
           "SetpointRaiseLower"
         ]
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 1296,
+  "1296": {
     "name": "electrical_sensor",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 144,
-        "name": "Electrical Power Measurement"
+      "144": {
+        "name": "Electrical Power Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 145,
-        "name": "Electrical Energy Measurement"
+      "145": {
+        "name": "Electrical Energy Measurement",
+        "server": true,
+        "client_locked": true
       },
-      {
-        "id": 156,
+      "156": {
         "name": "Power Topology",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 1297,
+  "1297": {
     "name": "electrical_utility_meter",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 2822,
+    "clusters": {
+      "2822": {
         "name": "Meter Identification",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 1299,
+  "1299": {
     "name": "electrical_energy_tariff",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "features": {
-          "TAGLIST": "mandatory"
+          "TAGLIST": {
+            "conformance": {
+              "mandatory": true
+            }
+          }
         },
         "required_attributes": [
           "TAG_LIST"
         ]
       },
-      {
-        "id": 149,
-        "name": "Commodity Price"
+      "149": {
+        "name": "Commodity Price",
+        "client_locked": true
       },
-      {
-        "id": 1792,
-        "name": "Commodity Tariff"
+      "1792": {
+        "name": "Commodity Tariff",
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 1300,
+  "1300": {
     "name": "electrical_meter",
     "revision": 1,
-    "server_clusters": [
-      {
-        "id": 29,
+    "clusters": {
+      "29": {
         "name": "Descriptor",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 144,
+      "144": {
         "name": "Electrical Power Measurement",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 145,
+      "145": {
         "name": "Electrical Energy Measurement",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 2823,
+      "2823": {
         "name": "Commodity Metering",
-        "required": true
+        "server": true,
+        "server_locked": true,
+        "client_locked": true
       }
-    ],
-    "client_clusters": []
+    }
   },
-  {
-    "id": 2112,
+  "2112": {
     "name": "control_bridge",
     "revision": 3,
-    "server_clusters": [
-      {
-        "id": 3,
+    "clusters": {
+      "3": {
         "name": "Identify",
-        "required": true,
+        "server": true,
+        "client": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "IDENTIFY_TIME",
           "IDENTIFY_TYPE"
@@ -3867,10 +4047,29 @@
           "TriggerEffect"
         ]
       },
-      {
-        "id": 29,
+      "4": {
+        "name": "Groups",
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
+      },
+      "6": {
+        "name": "On/Off",
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
+      },
+      "8": {
+        "name": "Level Control",
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
+      },
+      "29": {
         "name": "Descriptor",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "DEVICE_TYPE_LIST",
           "SERVER_LIST",
@@ -3878,63 +4077,35 @@
           "PARTS_LIST"
         ]
       },
-      {
-        "id": 30,
+      "30": {
         "name": "Binding",
-        "required": true,
+        "server": true,
+        "server_locked": true,
+        "client_locked": true,
         "required_attributes": [
           "BINDING"
         ]
-      }
-    ],
-    "client_clusters": [
-      {
-        "id": 3,
-        "name": "Identify",
-        "required": true,
-        "required_attributes": [
-          "IDENTIFY_TIME",
-          "IDENTIFY_TYPE"
-        ],
-        "required_commands": [
-          "Identify",
-          "IdentifyQuery",
-          "TriggerEffect"
-        ]
       },
-      {
-        "id": 4,
-        "name": "Groups",
-        "required": true
-      },
-      {
-        "id": 6,
-        "name": "On/Off",
-        "required": true
-      },
-      {
-        "id": 8,
-        "name": "Level Control",
-        "required": true
-      },
-      {
-        "id": 98,
+      "98": {
         "name": "Scenes Management",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 768,
+      "768": {
         "name": "Color Control",
-        "required": true
+        "client": true,
+        "server_locked": true,
+        "client_locked": true
       },
-      {
-        "id": 1024,
-        "name": "Illuminance Measurement"
+      "1024": {
+        "name": "Illuminance Measurement",
+        "server_locked": true
       },
-      {
-        "id": 1030,
-        "name": "Occupancy Sensing"
+      "1030": {
+        "name": "Occupancy Sensing",
+        "server_locked": true
       }
-    ]
+    }
   }
-]
+}

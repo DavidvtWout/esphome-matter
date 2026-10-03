@@ -7,12 +7,18 @@ on:
     paths:
       - "components/**"
       - "tests/**"
+      - "tools/esp-matter-version"
+      - "tools/run_tests"
+      - "tools/validate-configs"
       - ".github/workflows/ci.yml"
 
   pull_request:
     paths:
       - "components/**"
       - "tests/**"
+      - "tools/esp-matter-version"
+      - "tools/run_tests"
+      - "tools/validate-configs"
       - ".github/workflows/ci.yml"
 
 permissions:
@@ -42,14 +48,53 @@ jobs:
       - name: Install ESPHome
         run: |
           python -m venv .venv
-          .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}"
+          .venv/bin/python -m pip install "esphome==${{ matrix.esphome-version }}" pytest
 
-      - name: Check tests/configs/esp32-all-endpoints.yaml
-        run: .venv/bin/esphome config tests/configs/esp32-all-endpoints.yaml
-      - name: Check tests/configs/esp32-thread.yaml
-        run: .venv/bin/esphome config tests/configs/esp32-thread.yaml
-      - name: Check tests/configs/esp32-wifi.yaml
-        run: .venv/bin/esphome config tests/configs/esp32-wifi.yaml
+      - name: Run unit tests
+        run: tools/run_tests
+
+      - name: Validate all test configs
+        run: tools/validate-configs
+
+  integration:
+    name: Validate esp-matter data model
+    runs-on: ubuntu-24.04
+    needs: validate
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+      - name: Install ESPHome
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install "esphome==2026.7.4" pytest
+
+      - name: Read esp-matter version
+        id: esp-matter
+        run: echo "version=$(tools/esp-matter-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache esp-matter source
+        id: esp-matter-cache
+        uses: actions/cache@v6
+        with:
+          path: .cache/esp-matter
+          key: esp-matter-${{ runner.os }}-${{ steps.esp-matter.outputs.version }}
+
+      - name: Resolve esp-matter source
+        if: steps.esp-matter-cache.outputs.cache-hit != 'true'
+        run: |
+          .venv/bin/esphome compile tests/configs/esp32-wifi.yaml
+          mkdir -p .cache
+          cp -a tests/configs/.esphome/build/matter-ci-wifi/managed_components/davidvtwout__esp_matter .cache/esp-matter
+
+      - name: Run integration tests
+        env:
+          ESP_MATTER_SOURCE: .cache/esp-matter
+        run: .venv/bin/python -m pytest --color=yes tests/integration
 
   compile:
     name: Compile ${{ matrix.config }} (ESPHome ${{ matrix.esphome-version }})

@@ -12,50 +12,40 @@ from ..const import CONF_MAX_LEVEL, CONF_MIN_LEVEL, CONF_WITH_FEATURES
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
 from .clusters import CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster, Feature
+from .conformance import Conformance
 from .units import percentage
 
 _LOGGER = logging.getLogger(__name__)
 
 
-def _parse_cluster_include(data: dict) -> Cluster:
-    cluster = CLUSTERS_BY_ID[data["id"]]
-    required = data.get("required", False)
-    mandatory_features = set()
-    disallowed_features = set()
-    for code, conformance in data.get("features", {}).items():
-        if conformance == "mandatory":
-            mandatory_features.add(code)
-        elif conformance == "disallowed":
-            disallowed_features.add(code)
+def _parse_cluster_include(cluster_id: int, data: dict) -> Cluster:
+    cluster = CLUSTERS_BY_ID[cluster_id]
+    include_conformance = {
+        code: Conformance.from_dict(feature_data.get("conformance"))
+        for code, feature_data in data.get("features", {}).items()
+    }
 
-    def _replace(f):
-        if f.code in mandatory_features:
-            return replace(f, mandatory=True)
-        elif f.code in disallowed_features:
-            return replace(f, disallowed=True)
-        else:
-            return f
+    def compose(feature: Feature) -> Feature:
+        refinement = include_conformance.get(feature.code)
+        if refinement is None:
+            return feature
+        conformance = (
+            feature.conformance.compose(refinement)
+            if feature.conformance is not None
+            else refinement
+        )
+        return replace(feature, conformance=conformance)
 
-    features = []
-    choice_features = []
-    for feature in cluster.features:
-        features.append(_replace(feature))
-    for choice in cluster.choice_features:
-        new_choice_features = []
-        for feature in choice.features:
-            new_choice_features.append(_replace(feature))
-        # Remove choice features if device type already solves the choice by enabling any of the choice features.
-        if not any(feature.mandatory for feature in new_choice_features):
-            choice_features.append(replace(choice, features=tuple(new_choice_features)))
-        else:
-            features.extend(new_choice_features)
+    features = tuple(compose(feature) for feature in cluster.features)
 
-    # TODO: also update attribute and command info
+    # TODO: also update attribute, command and event info
     return replace(
         cluster,
-        required=required,
-        features=tuple(features),
-        choice_features=tuple(choice_features),
+        features=features,
+        server=data.get("server", False),
+        client=data.get("client", False),
+        server_locked=data.get("server_locked", False),
+        client_locked=data.get("client_locked", False),
     )
 
 
@@ -63,16 +53,19 @@ def _parse_cluster_include(data: dict) -> Cluster:
 class DeviceType:
     id: int
     name: str  # snake_case
-    server_clusters: tuple[Cluster, ...] = ()
+    clusters: tuple[Cluster, ...] = ()
     sensor_attributes: tuple[SensorAttribute, ...] = ()
 
     @classmethod
-    def from_dict(cls, data: dict):
-        server_clusters = tuple(
-            [_parse_cluster_include(c) for c in data["server_clusters"]]
+    def from_dict(cls, device_type_id: int, data: dict):
+        clusters = tuple(
+            _parse_cluster_include(int(cluster_id), cluster_data)
+            for cluster_id, cluster_data in data["clusters"].items()
         )
         sensor_attributes = []
-        for cluster in server_clusters:
+        for cluster in clusters:
+            if cluster.server_locked and not cluster.server:
+                continue
             for attribute_name, sensor_attribute in SENSOR_ATTRIBUTES.get(
                 cluster.name, {}
             ).items():
@@ -86,8 +79,8 @@ class DeviceType:
 
         return cls(
             name=data["name"],
-            id=data["id"],
-            server_clusters=server_clusters,
+            id=device_type_id,
+            clusters=clusters,
             sensor_attributes=tuple(sensor_attributes),
         )
 
@@ -99,6 +92,22 @@ class DeviceType:
     @property
     def conf_key(self) -> str:
         return self.name
+
+    @property
+    def server_clusters(self) -> tuple[Cluster, ...]:
+        return tuple(
+            cluster
+            for cluster in self.clusters
+            if cluster.server or not cluster.server_locked
+        )
+
+    @property
+    def client_clusters(self) -> tuple[Cluster, ...]:
+        return tuple(
+            cluster
+            for cluster in self.clusters
+            if cluster.client or not cluster.client_locked
+        )
 
     def get_features(self) -> set[Feature]:
         """Get all features that the clusters of this device type supports."""
@@ -213,11 +222,13 @@ def _load_device_types(
     with open(device_types_file, "r") as file:
         contents = json.load(file)
 
-    for device_type_data in contents:
+    for device_type_id, device_type_data in contents.items():
         device_type_class = DEVICE_TYPE_OVERRIDES.get(
             device_type_data["name"], DeviceType
         )
-        device_types.append(device_type_class.from_dict(device_type_data))
+        device_types.append(
+            device_type_class.from_dict(int(device_type_id), device_type_data)
+        )
 
     return tuple(device_types)
 

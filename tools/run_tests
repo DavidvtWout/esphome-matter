@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+if [[ -x "${repo_dir}/.venv/bin/python" ]]; then
+  python_bin="${repo_dir}/.venv/bin/python"
+else
+  python_bin="$(command -v python)"
+fi
+
+cd "${repo_dir}"
+
+"${python_bin}" -m pytest --color=yes tests/unit "$@"
+
+shopt -s nullglob
+esp_matter_components=(
+  tests/configs/.esphome/build/*/managed_components/davidvtwout__esp_matter
+)
+if ((${#esp_matter_components[@]})); then
+  exec "${python_bin}" -m pytest --color=yes tests/integration "$@"
+else
+  echo "Skipping esp-matter integration tests; compile a test config to resolve its source."
+fi

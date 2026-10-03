@@ -1,6 +1,22 @@
 import re
+from collections.abc import Iterator, Mapping, Sequence
 
 import esphome.config_validation as cv
+from esphome.types import ConfigFragmentType
+
+
+def iter_matter_actions(
+    config: ConfigFragmentType,
+) -> Iterator[tuple[str, Mapping]]:
+    """Yield all Matter actions from a configuration fragment."""
+    if isinstance(config, Mapping):
+        for key, value in config.items():
+            if isinstance(key, str) and key.startswith("matter."):
+                yield key, value
+            yield from iter_matter_actions(value)
+    elif isinstance(config, Sequence) and not isinstance(config, (str, bytes)):
+        for value in config:
+            yield from iter_matter_actions(value)
 
 
 def snake_case(name: str) -> str:

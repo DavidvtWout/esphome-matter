@@ -1,6 +1,6 @@
 import json
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import esphome.config_validation as cv
@@ -8,22 +8,29 @@ import esphome.config_validation as cv
 from ..const import CONF_WITH_FEATURES
 from ..util import snake_case
 from .attributes import Attribute
+from .commands import Command
+from .conformance import Conformance
+from .events import Event
 
 _LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
 class Feature:
+    bit: int
     code: str
     name: str  # CamelCase
-    # Can be set to True by DeviceType config
-    mandatory: bool = False
-    disallowed: bool = False
+    conformance: Conformance | None = field(default=None, compare=False, hash=False)
 
     @classmethod
-    def from_dict(cls, code: str, data: dict):
+    def from_dict(cls, bit: int, data: dict):
         name = data["name"].replace("/", "").replace(" ", "").replace("-", "")
-        return cls(code=code, name=name)
+        return cls(
+            bit=bit,
+            code=data["code"],
+            name=name,
+            conformance=Conformance.from_dict(data.get("conformance")),
+        )
 
     @property
     def namespace(self) -> str:
@@ -33,24 +40,6 @@ class Feature:
     @property
     def conf_key(self):
         return snake_case(self.name)
-
-
-@dataclass(frozen=True, slots=True)
-class FeatureChoice:
-    min: int
-    max: int | None
-    features: tuple[Feature, ...]
-
-    @classmethod
-    def from_dict(cls, data: dict):
-        return cls(
-            min=data["min"],
-            max=data.get("max"),
-            features=tuple(
-                Feature.from_dict(code, feature)
-                for code, feature in data["features"].items()
-            ),
-        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -65,52 +54,61 @@ class Cluster:
     name: str
     revision: int
     features: tuple[Feature, ...]
-    choice_features: tuple[FeatureChoice, ...]
-    server_attributes: tuple[Attribute, ...]
+    attributes: tuple[Attribute, ...]
+    commands: tuple[Command, ...]
+    events: tuple[Event, ...]
     # ----------------------------------- #
     # Derived attributes                  #
     # ----------------------------------- #
+    conf_key: str
     sdkconfig_option: str
     # connectedhomeip fully qualified name. e.g.: chip::app::Clusters::TemperatureMeasurementCluster
-    chip_fqn: str
+    chip_fqn: str | None
     # connectedhomeip include. e.g.: #include <app/clusters/temperature-measure-server/TemperatureMeasurementCluster.h>
-    chip_include: str
+    chip_include: str | None
     # esp_matter class namespace. e.g.:
     espm_namespace: str
     # ----------------------------------- #
     # Set by DeviceType                   #
     # ----------------------------------- #
-    required: bool = False
+    server: bool = False
+    client: bool = False
+    server_locked: bool = False
+    client_locked: bool = False
+
+    @property
+    def required(self) -> bool:
+        return self.server and self.server_locked
 
     @classmethod
     def from_dict(cls, data: dict):
         name = data["name"]
-        sdkconfig_option = _sdkconfig_option(name)
+
         camel_case_name = (
             name.replace("/", "").replace(" ", "").replace("-", "").replace(".", "")
         )
+        sdkconfig_option = data.get(
+            "sdkconfig_option",
+            f"CONFIG_SUPPORT_{
+                name.replace(' ', '_')
+                .replace('/', '_')
+                .replace('.', '_')
+                .replace('-', '')
+                .upper()
+            }_CLUSTER",
+        )
 
         _features = []
-        _choice_features = []
-        for code, feature_data in data.get("features", {}).items():
-            if code.startswith("choice "):
-                choice = FeatureChoice.from_dict(feature_data)
-                _choice_features.append(choice)
-                _features.extend(choice.features)
-            else:
-                _features.append(Feature.from_dict(code, feature_data))
+        for bit, feature_data in data.get("features", {}).items():
+            _features.append(Feature.from_dict(int(bit), feature_data))
 
-        # TODO: are there more exceptions?
-        if camel_case_name.endswith("ConcentrationMeasurement"):
-            chip_fqn = "chip::app::Clusters::ConcentrationMeasurement::ConcentrationMeasurementCluster"
-            chip_include = "#include <app/clusters/concentration-measurement-server/ConcentrationMeasurementCluster.h>"
-        else:
-            chip_class = f"{camel_case_name}Cluster"
-            chip_fqn = f"chip::app::Clusters::{chip_class}"
-            cluster_path = snake_case(camel_case_name).replace("_", "-")
-            chip_include = (
-                f"#include <app/clusters/{cluster_path}-server/{chip_class}.h>"
-            )
+        chip_class = f"{camel_case_name}Cluster"
+        cluster_path = snake_case(camel_case_name).replace("_", "-")
+        chip_fqn = data.get("chip_fqn", f"chip::app::Clusters::{chip_class}")
+        chip_include = data.get(
+            "chip_include",
+            f"#include <app/clusters/{cluster_path}-server/{chip_class}.h>",
+        )
 
         espm_namespace = data.get(
             "esp_matter_namespace",
@@ -125,12 +123,21 @@ class Cluster:
             id=data["id"],
             _name=name,
             name=camel_case_name,
+            conf_key=snake_case(camel_case_name),
             # Some lack a revision. Assuming it's 1...
             revision=data.get("revision", 1),
             features=tuple(_features),
-            choice_features=tuple(_choice_features),
-            server_attributes=tuple(
-                Attribute.from_dict(a) for a in data.get("server_attributes", ())
+            attributes=tuple(
+                Attribute.from_dict(int(attribute_id), attribute)
+                for attribute_id, attribute in data.get("attributes", {}).items()
+            ),
+            commands=tuple(
+                Command.from_dict(command_name, command)
+                for command_name, command in data.get("commands", {}).items()
+            ),
+            events=tuple(
+                Event.from_dict(event_name, event)
+                for event_name, event in data.get("events", {}).items()
             ),
             sdkconfig_option=sdkconfig_option,
             chip_fqn=chip_fqn,
@@ -138,28 +145,35 @@ class Cluster:
             espm_namespace=espm_namespace,
         )
 
-    def get_attribute(self, name: str) -> Attribute:
-        for attribute in self.server_attributes:
-            if attribute.name == name:
-                return attribute
-        raise KeyError(f"Cluster {self.name} has no attribute {name}")
-
     def get_feature(self, name_or_code: str) -> Feature | None:
         for feature in self.features:
-            if name_or_code in (feature.name, feature.code, feature.namespace):
+            if name_or_code in (feature.name, feature.code, feature.conf_key):
                 return feature
         return None
 
-    def is_choice_feature(self, feature: Feature) -> bool:
-        for choice in self.choice_features:
-            for f in choice.features:
-                if f.name == feature.name:
-                    return True
-        return False
+    def get_attribute(self, name_or_id: str | int) -> Attribute | None:
+        for attribute in self.attributes:
+            if not attribute.server:
+                continue
+            if name_or_id in (attribute.name, attribute.conf_key, attribute.id):
+                return attribute
+        return None
+
+    def get_command(self, name_or_id: str | int) -> Command | None:
+        for command in self.commands:
+            if name_or_id in (command.name, command.conf_key, command.id):
+                return command
+        return None
+
+    def get_event(self, name: str) -> Event | None:
+        for event in self.events:
+            if name in (event.name, event.conf_key, event.id):
+                return event
+        return None
 
     @property
     def schema_key(self):
-        return cv.Optional(snake_case(self.name))
+        return cv.Optional(self.conf_key)
 
     def schema(self):
         schema = {}
@@ -171,38 +185,20 @@ class Cluster:
         return schema
 
 
-def _sdkconfig_option(name: str) -> str:
-    """sdkconfig option name to enable compilation of the cluster in esp_matter."""
-    sdkconfig_name = (
-        name.replace(" ", "_")
-        .replace("/", "_")
-        .replace(".", "_")
-        .replace("-", "")
-        .upper()
-    )
-    sdkconfig_name = sdkconfig_name.replace("WEBRTC", "WEB_RTC")
-    sdkconfig_name = sdkconfig_name.replace("TOTAL_VOLATILE_ORGANIC_COMPOUNDS", "TVOC")
-    sdkconfig_name = sdkconfig_name.replace("SCENES_MANAGEMENT", "SCENES")
-    sdkconfig_name = sdkconfig_name.replace(
-        "OVEN_CAVITY_OPERATIONAL_STATE", "OPERATIONAL_STATE_OVEN"
-    )
-    sdkconfig_name = sdkconfig_name.replace(
-        "RVC_OPERATIONAL_STATE", "OPERATIONAL_STATE_RVC"
-    )
-    return f"CONFIG_SUPPORT_{sdkconfig_name}_CLUSTER"
-
-
 def _load_clusters(
     clusters_file: Path = Path(__file__).resolve().parent / "clusters.json",
 ) -> tuple[Cluster, ...]:
     clusters: list[Cluster] = []
     with open(clusters_file, "r") as file:
         contents = json.load(file)
-    for clusters_data in contents:
-        clusters.append(Cluster.from_dict(clusters_data))
+    for cluster_id, cluster_data in contents.items():
+        clusters.append(Cluster.from_dict({"id": int(cluster_id), **cluster_data}))
     return tuple(clusters)
 
 
 CLUSTERS: tuple[Cluster, ...] = _load_clusters()
 CLUSTERS_BY_ID: dict[int, Cluster] = {cluster.id: cluster for cluster in CLUSTERS}
 CLUSTERS_BY_NAME: dict[str, Cluster] = {cluster.name: cluster for cluster in CLUSTERS}
+CLUSTERS_BY_CONF_KEY: dict[str, Cluster] = {
+    cluster.conf_key: cluster for cluster in CLUSTERS
+}

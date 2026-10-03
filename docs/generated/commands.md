@@ -177,6 +177,10 @@ matter.send_command:
     frequency:
 ```
 
+# PulseWidthModulation
+
+> This cluster is not supported by esp-matter.
+
 # AccessControl
 
 The Access Control Cluster exposes a data model view of a
@@ -335,6 +339,10 @@ matter.send_command:
     # metadata_for_node:
     endpoint:
 ```
+
+# PowerSourceConfiguration
+
+> This cluster is not supported by esp-matter.
 
 # GeneralCommissioning
 
@@ -672,6 +680,18 @@ matter.send_command:
 matter.send_command: some_endpoint.group_key_management.key_set_read_all_indices
 ```
 
+# ProxyConfiguration
+
+> This cluster is not supported by esp-matter.
+
+# ProxyDiscovery
+
+> This cluster is not supported by esp-matter.
+
+# ProxyValid
+
+> This cluster is not supported by esp-matter.
+
 # ICDManagement
 
 Allows servers to ensure that listed clients are notified when a server is available for communication.
@@ -703,27 +723,15 @@ matter.send_command:
 
 # OvenCavityOperationalState
 
-This cluster supports remotely monitoring and, where supported, changing the operational state of an Oven.
-
-```yaml
-# This command SHALL be supported if the device supports remotely stopping the operation.
-matter.send_command: some_endpoint.oven_cavity_operational_state.stop
-
-# This command SHALL be supported if the device supports remotely starting the operation.
-matter.send_command: some_endpoint.oven_cavity_operational_state.start
-```
+> This cluster is not supported by esp-matter.
 
 # OvenMode
 
-Attributes and commands for selecting a mode from a list of supported options.
+> This cluster is not supported by esp-matter.
 
-```yaml
-# This command is used to change device modes.
-matter.send_command:
-  path: some_endpoint.oven_mode.change_to_mode
-  arguments:
-    new_mode:
-```
+# TemperatureControlledCabinetTopology
+
+> This cluster is not supported by esp-matter.
 
 # ModeSelect
 
@@ -751,15 +759,7 @@ matter.send_command:
 
 # RefrigeratorAndTemperatureControlledCabinetMode
 
-Attributes and commands for selecting a mode from a list of supported options.
-
-```yaml
-# This command is used to change device modes.
-matter.send_command:
-  path: some_endpoint.refrigerator_and_temperature_controlled_cabinet_mode.change_to_mode
-  arguments:
-    new_mode:
-```
+> This cluster is not supported by esp-matter.
 
 # RVCRunMode
 
@@ -800,15 +800,7 @@ matter.send_command:
 
 # DishwasherMode
 
-Attributes and commands for selecting a mode from a list of supported options.
-
-```yaml
-# This command is used to change device modes.
-matter.send_command:
-  path: some_endpoint.dishwasher_mode.change_to_mode
-  arguments:
-    new_mode:
-```
+> This cluster is not supported by esp-matter.
 
 # SmokeCOAlarm
 
@@ -821,21 +813,7 @@ matter.send_command: some_endpoint.smoke_co_alarm.self_test_request
 
 # DishwasherAlarm
 
-Attributes and commands for configuring the Dishwasher alarm.
-
-```yaml
-# This command resets active and latched alarms (if possible).
-matter.send_command:
-  path: some_endpoint.dishwasher_alarm.reset
-  arguments:
-    # alarms: # default: 0x00000000
-
-# This command allows a client to request that an alarm be enabled or suppressed at the server.
-matter.send_command:
-  path: some_endpoint.dishwasher_alarm.modify_enabled_alarms
-  arguments:
-    # mask: # default: 0x00000000
-```
+> This cluster is not supported by esp-matter.
 
 # MicrowaveOvenControl
 
@@ -1026,12 +1004,7 @@ matter.send_command: some_endpoint.activated_carbon_filter_monitoring.reset_cond
 
 # WaterTankLevelMonitoring
 
-This generic cluster provides an interface to the current condition of a resource.
-
-```yaml
-# Upon receipt, the device SHALL reset the Condition and ChangeIndicator attributes, indicating full resource availability and readiness for use, as initially configured.
-matter.send_command: some_endpoint.water_tank_level_monitoring.reset_condition
-```
+> This cluster is not supported by esp-matter.
 
 # BooleanStateConfiguration
 
@@ -1102,27 +1075,7 @@ matter.send_command:
 
 # Messages
 
-This cluster provides an interface for passing messages to be presented by a device.
-
-```yaml
-# Upon receipt, this SHALL cause the message in the passed fields to be appended to the Messages attribute.
-matter.send_command:
-  path: some_endpoint.messages.present_messages_request
-  arguments:
-    message_id:
-    priority: # enum: low, medium, high, critical
-    # message_control: # bitmap: confirmation_required, response_required, reply_message, message_confirmed, message_protected
-    start_time:
-    duration:
-    message_text:
-    # responses:
-
-# This command will cancel the message IDs specified.
-matter.send_command:
-  path: some_endpoint.messages.cancel_messages_request
-  arguments:
-    message_i_ds:
-```
+> This cluster is not supported by esp-matter.
 
 # DeviceEnergyManagement
 
@@ -1265,48 +1218,15 @@ matter.send_command:
 
 # ElectricalAlarm
 
-This cluster is a derived cluster of the Alarm Base cluster and provides the alarm definition related to Electrical Sensor device type.
+> This cluster is not supported by esp-matter.
 
-```yaml
-# This command resets active and latched alarms (if possible).
-matter.send_command:
-  path: some_endpoint.electrical_alarm.reset
-  arguments:
-    # alarms: # bitmap: over_voltage, under_voltage, swapped_polarity, loss_of_measurement, loss_of_grid_power, power_imported, power_exported, over_frequency, under_frequency, over_power, under_power, over_current, under_current, frequency_quality, voltage_quality
+# ElectricalDistribution
 
-# This command allows a client to request that an alarm be enabled or suppressed at the server.
-matter.send_command:
-  path: some_endpoint.electrical_alarm.modify_enabled_alarms
-  arguments:
-    # mask: # bitmap: over_voltage, under_voltage, swapped_polarity, loss_of_measurement, loss_of_grid_power, power_imported, power_exported, over_frequency, under_frequency, over_power, under_power, over_current, under_current, frequency_quality, voltage_quality
-
-# This command will set the alarm thresholds for the specified values.
-matter.send_command:
-  path: some_endpoint.electrical_alarm.set_electrical_alarm_thresholds
-  arguments:
-    # over_voltage_threshold: # default: 4611686018427387904
-    # under_voltage_threshold: # default: 0
-    # over_frequency_threshold: # default: 1000000
-    # under_frequency_threshold: # default: 0
-    # over_power_threshold: # default: 4611686018427387904
-    # under_power_threshold: # default: -4611686018427387904
-    # over_current_threshold: # default: 4611686018427387904
-    # under_current_threshold: # default: -4611686018427387904
-    # power_import_threshold: # default: 4611686018427387904
-    # power_export_threshold: # default: -4611686018427387904
-```
+> This cluster is not supported by esp-matter.
 
 # ElectricalProtectionAlarm
 
-This cluster is a derived cluster of the Alarm Base cluster and provides the alarm definition related to the Electrical Protection device type.
-
-```yaml
-# This command allows a client to request that an alarm be enabled or suppressed at the server.
-matter.send_command:
-  path: some_endpoint.electrical_protection_alarm.modify_enabled_alarms
-  arguments:
-    # mask: # bitmap: short_circuit_fault, over_load_fault, over_voltage_fault, voltage_surge_fault, residual_current_fault, arc_fault, self_test
-```
+> This cluster is not supported by esp-matter.
 
 # DoorLock
 
@@ -1649,20 +1569,7 @@ matter.send_command:
 
 # Humidistat
 
-This cluster specifies an interface to control the humidity of an environment.
-
-```yaml
-# This command will set the specified settings to new values.
-matter.send_command:
-  path: some_endpoint.humidistat.set_settings
-  arguments:
-    # user_setpoint:
-    # mode: # enum: off, humidifier, dehumidifier, auto, fan_only
-    # mist_type: # bitmap: mist_cold, mist_warm
-    # continuous:
-    # sleep:
-    # optimal:
-```
+> This cluster is not supported by esp-matter.
 
 # ColorControl
 
@@ -1856,86 +1763,33 @@ matter.send_command:
     # options_override: # bitmap: execute_if_off
 ```
 
+# BallastConfiguration
+
+> This cluster is not supported by esp-matter.
+
 # DynamicLighting
 
-This cluster provides a means to activate and control dynamic lighting effects on a light.
+> This cluster is not supported by esp-matter.
 
-```yaml
-# This command will start the specified effect.
-matter.send_command:
-  path: some_endpoint.dynamic_lighting.start_effect
-  arguments:
-    effect_id:
-    speed:
-    color_mode: # enum: level, xy, xy_and_level, hs, hs_and_level, ehue, ehue_and_level
-    color_palette:
+# AmbientContextSensing
 
-# This command will stop the current effect.
-matter.send_command: some_endpoint.dynamic_lighting.stop_effect
-```
+> This cluster is not supported by esp-matter.
+
+# AmbientSensingUnion
+
+> This cluster is not supported by esp-matter.
 
 # ProximityRanging
 
-This cluster enables the configuration of proximity ranging sessions and reporting of proximity ranging data.
+> This cluster is not supported by esp-matter.
 
-```yaml
-# This command allows the Client to request the start of a ranging session.
-matter.send_command:
-  path: some_endpoint.proximity_ranging.start_ranging_request
-  arguments:
-    technology: # enum: bluetooth_channel_sounding, wi_fi_round_trip_time_ranging, wi_fi_next_generation_ranging, ble_beacon_rssi_ranging
-    # wi_fi_ranging_device_role_config:
-    # ble_ranging_device_role_config:
-    # blt_channel_sounding_device_role_config:
-    # frequency_band: # bitmap: 2_g4, 3_g65, 5_g, 6_g, 60_g, s1_g, 45_g
-    # bandwidth: # bitmap: 1_m_hz, 2_m_hz, 4_m_hz, 8_m_hz, 16_m_hz, 20_m_hz, 40_m_hz, 80_m_hz, 160_m_hz, 320_m_hz
-    security_mode: # enum: secure_ranging, open_ranging
-    trigger:
-    # reporting_condition:
+# SmokeConcentrationMeasurement
 
-# Upon receipt of a StopRangingRequest command that contains a SessionID that matches an active ranging session, the Server SHALL terminate the corresponding ranging session.
-matter.send_command:
-  path: some_endpoint.proximity_ranging.stop_ranging_request
-  arguments:
-    session_id:
-```
+> This cluster is not supported by esp-matter.
 
 # NetworkIdentityManagement
 
-This cluster manages the identities and credentials of devices that connect to a managed network.
-
-```yaml
-# Adds an entry with the specified Client Identity to the Client Table.
-matter.send_command:
-  path: some_endpoint.network_identity_management.add_client
-  arguments:
-    client_identity:
-
-# Removes the specified client from the Client Table and from the network.
-matter.send_command:
-  path: some_endpoint.network_identity_management.remove_client
-  arguments:
-    # client_index:
-    # client_identifier:
-
-# Resolves the full identity certificate for a Network Identity or Network Client Identity.
-matter.send_command:
-  path: some_endpoint.network_identity_management.query_identity
-  arguments:
-    # network_identity_index:
-    # network_identity_type: # enum: ecdsa
-    # client_index:
-    # identifier:
-
-# Imports a Network Administrator Shared Secret (NASS) and derives and activates the corresponding Network Identity for PDC authentication.
-matter.send_command:
-  path: some_endpoint.network_identity_management.import_admin_secret
-  arguments:
-    network_administrator_shared_secret:
-
-# Exports the current Network Administrator Shared Secret.
-matter.send_command: some_endpoint.network_identity_management.export_admin_secret
-```
+> This cluster is not supported by esp-matter.
 
 # WiFiNetworkManagement
 
@@ -1995,177 +1849,29 @@ matter.send_command:
     extended_pan_id:
 ```
 
+# WakeonLAN
+
+> This cluster is not supported by esp-matter.
+
 # Channel
 
-This cluster provides an interface for controlling the current Channel on a device.
-
-```yaml
-# Change the channel on the media player to the channel case-insensitive exact matching the value passed as an argument.
-matter.send_command:
-  path: some_endpoint.channel.change_channel
-  arguments:
-    match:
-
-# Change the channel on the media plaeyer to the channel with the given Number in the ChannelList attribute.
-matter.send_command:
-  path: some_endpoint.channel.change_channel_by_number
-  arguments:
-    major_number:
-    minor_number:
-
-# This command provides channel up and channel down functionality, but allows channel index jumps of size Count. When the value of the increase or decrease is larger than the number of channels remaining in the given direction, then the behavior SHALL be to return to the beginning (or end) of the channel list and continue. For example, if the current channel is at index 0 and count value of -1 is given, then the current channel should change to the last channel.
-matter.send_command:
-  path: some_endpoint.channel.skip_channel
-  arguments:
-    count:
-
-# This command retrieves the program guide. It accepts several filter parameters to return specific schedule and program information from a content app. The command shall receive in response a ProgramGuideResponse.
-matter.send_command:
-  path: some_endpoint.channel.get_program_guide
-  arguments:
-    # start_time:
-    # end_time:
-    # channel_list:
-    # page_token:
-    # recording_flag: # bitmap: scheduled, record_series, recorded
-    # external_id_list:
-    # data:
-
-# Record a specific program or series when it goes live. This functionality enables DVR recording features.
-matter.send_command:
-  path: some_endpoint.channel.record_program
-  arguments:
-    program_identifier:
-    should_record_series:
-    external_id_list:
-    data:
-
-# Cancel recording for a specific program or series.
-matter.send_command:
-  path: some_endpoint.channel.cancel_record_program
-  arguments:
-    program_identifier:
-    should_record_series:
-    external_id_list:
-    data:
-```
+> This cluster is not supported by esp-matter.
 
 # TargetNavigator
 
-This cluster provides an interface for UX navigation within a set of targets on a device or endpoint.
-
-```yaml
-# Upon receipt, this SHALL navigation the UX to the target identified.
-matter.send_command:
-  path: some_endpoint.target_navigator.navigate_target
-  arguments:
-    target:
-    # data:
-```
+> This cluster is not supported by esp-matter.
 
 # MediaPlayback
 
-This cluster provides an interface for controlling Media Playback (PLAY, PAUSE, etc) on a media device such as a TV or Speaker.
-
-```yaml
-# Upon receipt, this SHALL play media.
-matter.send_command: some_endpoint.media_playback.play
-
-# Upon receipt, this SHALL pause media.
-matter.send_command: some_endpoint.media_playback.pause
-
-# Upon receipt, this SHALL stop media. User experience is context-specific. This will often navigate the user back to the location where media was originally launched.
-matter.send_command: some_endpoint.media_playback.stop
-
-# Upon receipt, this SHALL Start Over with the current media playback item.
-matter.send_command: some_endpoint.media_playback.start_over
-
-# Upon receipt, this SHALL cause the handler to be invoked for "Previous". User experience is context-specific. This will often Go back to the previous media playback item.
-matter.send_command: some_endpoint.media_playback.previous
-
-# Upon receipt, this SHALL cause the handler to be invoked for "Next". User experience is context-specific. This will often Go forward to the next media playback item.
-matter.send_command: some_endpoint.media_playback.next
-
-# Upon receipt, this SHALL Rewind through media. Different Rewind speeds can be used on the TV based upon the number of sequential calls to this function. This is to avoid needing to define every speed now (multiple fast, slow motion, etc).
-matter.send_command:
-  path: some_endpoint.media_playback.rewind
-  arguments:
-    # audio_advance_unmuted:
-
-# Upon receipt, this SHALL Advance through media. Different FF speeds can be used on the TV based upon the number of sequential calls to this function. This is to avoid needing to define every speed now (multiple fast, slow motion, etc).
-matter.send_command:
-  path: some_endpoint.media_playback.fast_forward
-  arguments:
-    # audio_advance_unmuted:
-
-# Upon receipt, this SHALL Skip forward in the media by the given number of seconds, using the data as follows:
-matter.send_command:
-  path: some_endpoint.media_playback.skip_forward
-  arguments:
-    delta_position_milliseconds:
-
-# Upon receipt, this SHALL Skip backward in the media by the given number of seconds, using the data as follows:
-matter.send_command:
-  path: some_endpoint.media_playback.skip_backward
-  arguments:
-    delta_position_milliseconds:
-
-# Upon receipt, this SHALL Skip backward in the media by the given number of seconds, using the data as follows:
-matter.send_command:
-  path: some_endpoint.media_playback.seek
-  arguments:
-    position:
-
-# Upon receipt, the server SHALL set the active Audio Track to the one identified by the TrackID in the Track catalog for the streaming media. If the TrackID does not exist in the Track catalog, OR does not correspond to the streaming media OR no media is being streamed at the time of receipt of this command, the server will return an error status of INVALID_ARGUMENT.
-matter.send_command:
-  path: some_endpoint.media_playback.activate_audio_track
-  arguments:
-    track_id:
-    audio_output_index:
-
-# Upon receipt, the server SHALL set the active Text Track to the one identified by the TrackID in the Track catalog for the streaming media. If the TrackID does not exist in the Track catalog, OR does not correspond to the streaming media OR no media is being streamed at the time of receipt of this command, the server SHALL return an error status of INVALID_ARGUMENT.
-matter.send_command:
-  path: some_endpoint.media_playback.activate_text_track
-  arguments:
-    track_id:
-
-# If a Text Track is active (i.e. being displayed), upon receipt of this command, the server SHALL stop displaying it.
-matter.send_command: some_endpoint.media_playback.deactivate_text_track
-```
+> This cluster is not supported by esp-matter.
 
 # MediaInput
 
-This cluster provides an interface for controlling the Input Selector on a media device such as a TV.
-
-```yaml
-# Upon receipt, this command SHALL change the media input on the device to the input at a specific index in the Input List.
-matter.send_command:
-  path: some_endpoint.media_input.select_input
-  arguments:
-    index:
-
-# Upon receipt, this command SHALL display the active status of the input list on screen.
-matter.send_command: some_endpoint.media_input.show_input_status
-
-# Upon receipt, this command SHALL hide the input list from the screen.
-matter.send_command: some_endpoint.media_input.hide_input_status
-
-# Upon receipt, this command SHALL rename the input at a specific index in the Input List.
-matter.send_command:
-  path: some_endpoint.media_input.rename_input
-  arguments:
-    index:
-    name:
-```
+> This cluster is not supported by esp-matter.
 
 # LowPower
 
-This cluster provides an interface for managing low power mode on a device.
-
-```yaml
-# This command SHALL put the device into low power mode.
-matter.send_command: some_endpoint.low_power.sleep
-```
+> This cluster is not supported by esp-matter.
 
 # KeypadInput
 
@@ -2181,199 +1887,27 @@ matter.send_command:
 
 # ContentLauncher
 
-This cluster provides an interface for launching content on a media player device such as a TV or Speaker.
-
-```yaml
-# Upon receipt, this SHALL launch the specified content with optional search criteria.
-matter.send_command:
-  path: some_endpoint.content_launcher.launch_content
-  arguments:
-    search:
-    auto_play:
-    # data:
-    # playback_preferences:
-    # use_current_context:
-
-# Upon receipt, this SHALL launch content from the specified URL.
-matter.send_command:
-  path: some_endpoint.content_launcher.launch_url
-  arguments:
-    content_url:
-    # display_string:
-    # branding_information:
-```
+> This cluster is not supported by esp-matter.
 
 # AudioOutput
 
-This cluster provides an interface for controlling the Output on a media device such as a TV.
-
-```yaml
-# Upon receipt, this SHALL change the output on the device to the output at a specific index in the Output List.
-matter.send_command:
-  path: some_endpoint.audio_output.select_output
-  arguments:
-    index:
-
-# Upon receipt, this SHALL rename the output at a specific index in the Output List.
-matter.send_command:
-  path: some_endpoint.audio_output.rename_output
-  arguments:
-    index:
-    name:
-```
+> This cluster is not supported by esp-matter.
 
 # ApplicationLauncher
 
-This cluster provides an interface for launching content on a media player device such as a TV or Speaker.
-
-```yaml
-# Upon receipt of this command, the server SHALL launch the application with optional data.
-matter.send_command:
-  path: some_endpoint.application_launcher.launch_app
-  arguments:
-    # application:
-    # data:
-
-# Upon receipt of this command, the server SHALL stop the application if it is running.
-matter.send_command:
-  path: some_endpoint.application_launcher.stop_app
-  arguments:
-    # application:
-
-# Upon receipt of this command, the server SHALL hide the application.
-matter.send_command:
-  path: some_endpoint.application_launcher.hide_app
-  arguments:
-    # application:
-```
+> This cluster is not supported by esp-matter.
 
 # AccountLogin
 
-This cluster provides commands that facilitate user account login on a Content App or a node. For example, a Content App running on a Video Player device, which is represented as an endpoint (see [TV Architecture]), can use this cluster to help make the user account on the Content App match the user account on the Client.
-
-```yaml
-# The purpose of this command is to determine if the active user account of the given Content App matches the active user account of a given Commissionee, and when it does, return a Setup PIN which can be used for password-authenticated session establishment (PASE) with the Commissionee.
-matter.send_command:
-  path: some_endpoint.account_login.get_setup_pin
-  arguments:
-    temp_account_identifier:
-
-# The purpose of this command is to allow the Content App to assume the user account of a given Commissionee by leveraging the Setup PIN input by the user during the commissioning process.
-matter.send_command:
-  path: some_endpoint.account_login.login
-  arguments:
-    temp_account_identifier:
-    setup_pin:
-    # node:
-
-# The purpose of this command is to instruct the Content App to clear the current user account.
-matter.send_command:
-  path: some_endpoint.account_login.logout
-  arguments:
-    # node:
-```
+> This cluster is not supported by esp-matter.
 
 # ContentControl
 
-This cluster is used for managing the content control (including "parental control") settings on a media device such as a TV, or Set-top Box.
-
-```yaml
-# The purpose of this command is to update the PIN used for protecting configuration of the content control settings.
-matter.send_command:
-  path: some_endpoint.content_control.update_pin
-  arguments:
-    old_pin:
-    new_pin:
-
-# The purpose of this command is to reset the PIN.
-matter.send_command: some_endpoint.content_control.reset_pin
-
-# The purpose of this command is to turn on the Content Control feature on a media device.
-matter.send_command: some_endpoint.content_control.enable
-
-# The purpose of this command is to turn off the Content Control feature on a media device.
-matter.send_command: some_endpoint.content_control.disable
-
-# The purpose of this command is to add the extra screen time for the user.
-matter.send_command:
-  path: some_endpoint.content_control.add_bonus_time
-  arguments:
-    # pin_code:
-    # bonus_time: # default: 300
-
-# The purpose of this command is to set the ScreenDailyTime attribute.
-matter.send_command:
-  path: some_endpoint.content_control.set_screen_daily_time
-  arguments:
-    screen_time:
-
-# The purpose of this command is to specify whether programs with no Content rating must be blocked by this media device.
-matter.send_command: some_endpoint.content_control.block_unrated_content
-
-# The purpose of this command is to specify whether programs with no Content rating must be blocked by this media device.
-matter.send_command: some_endpoint.content_control.unblock_unrated_content
-
-# The purpose of this command is to set the OnDemandRatingThreshold attribute.
-matter.send_command:
-  path: some_endpoint.content_control.set_on_demand_rating_threshold
-  arguments:
-    rating:
-
-# The purpose of this command is to set ScheduledContentRatingThreshold attribute.
-matter.send_command:
-  path: some_endpoint.content_control.set_scheduled_content_rating_threshold
-  arguments:
-    rating:
-
-# The purpose of this command is to set BlockChannelList attribute.
-matter.send_command:
-  path: some_endpoint.content_control.add_block_channels
-  arguments:
-    channels:
-
-# The purpose of this command is to remove channels from the BlockChannelList attribute.
-matter.send_command:
-  path: some_endpoint.content_control.remove_block_channels
-  arguments:
-    channel_indexes:
-
-# The purpose of this command is to set applications to the BlockApplicationList attribute.
-matter.send_command:
-  path: some_endpoint.content_control.add_block_applications
-  arguments:
-    applications:
-
-# The purpose of this command is to remove applications from the BlockApplicationList attribute.
-matter.send_command:
-  path: some_endpoint.content_control.remove_block_applications
-  arguments:
-    applications:
-
-# The purpose of this command is to set the BlockContentTimeWindow attribute.
-matter.send_command:
-  path: some_endpoint.content_control.set_block_content_time_window
-  arguments:
-    time_window:
-
-# The purpose of this command is to remove the selected time windows from the BlockContentTimeWindow attribute.
-matter.send_command:
-  path: some_endpoint.content_control.remove_block_content_time_window
-  arguments:
-    time_window_indexes:
-```
+> This cluster is not supported by esp-matter.
 
 # ContentAppObserver
 
-This cluster provides an interface for sending targeted commands to an Observer of a Content App on a Video Player device such as a Streaming Media Player, Smart TV or Smart Screen. The cluster server for Content App Observer is implemented by an endpoint that communicates with a Content App, such as a Casting Video Client. The cluster client for Content App Observer is implemented by a Content App endpoint. A Content App is informed of the NodeId of an Observer when a binding is set on the Content App. The Content App can then send the ContentAppMessage to the Observer (server cluster), and the Observer responds with a ContentAppMessageResponse.
-
-```yaml
-# Upon receipt, the data field MAY be parsed and interpreted.
-matter.send_command:
-  path: some_endpoint.content_app_observer.content_app_message
-  arguments:
-    # data:
-    encoding_hint:
-```
+> This cluster is not supported by esp-matter.
 
 # ZoneManagement
 
@@ -2717,47 +2251,7 @@ matter.send_command:
 
 # AVAnalysis
 
-This server cluster provides an interface for controlling events pertaining to AV analysis.
-
-```yaml
-# This command SHALL enable the generation of PerceivedContext events for the set of ambient context triggers that are provided, should they be detected.
-matter.send_command:
-  path: some_endpoint.av_analysis.enable_context_triggers
-  arguments:
-    context_triggers:
-
-# This command will disable the generation of PerceivedContext events for the set of ambient context triggers that are provided, should they be detected.
-matter.send_command:
-  path: some_endpoint.av_analysis.disable_context_triggers
-  arguments:
-    context_triggers:
-
-# This command will cause the Analysis Node to establish a video stream with a StreamUsage of Analysis Value with the identified camera.
-matter.send_command:
-  path: some_endpoint.av_analysis.establish_analysis_stream
-  arguments:
-    node_id:
-
-# This command will cause the Analysis Node to activate either a WebRTC livestream or PushAV recording stream with a StreamUsage of Analysis Value with the identified camera.
-matter.send_command:
-  path: some_endpoint.av_analysis.activate_analysis_stream
-  arguments:
-    analysis_stream_id:
-    # web_rtc_endpoint_id:
-    # push_av_endpoint_id:
-
-# This command will cause the Analysis Node to deactivate either a WebRTC livestream or PushAV recording stream with a StreamUsage of Analysis Value with the identified camera.
-matter.send_command:
-  path: some_endpoint.av_analysis.deactivate_analysis_stream
-  arguments:
-    analysis_stream_id:
-
-# This command will cause the Analysis Node to remove a previously allocated video stream.
-matter.send_command:
-  path: some_endpoint.av_analysis.remove_analysis_stream
-  arguments:
-    analysis_stream_id:
-```
+> This cluster is not supported by esp-matter.
 
 # CommodityTariff
 
@@ -2801,195 +2295,11 @@ matter.send_command:
 
 # JointFabricDatastore
 
-The Joint Fabric Datastore Cluster is a cluster that provides a mechanism for the Joint Fabric Administrators to manage the set of Nodes, Groups, and Group membership among Nodes in the Joint Fabric.
-
-```yaml
-# Upon receipt, this SHALL add a KeySet to the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.add_key_set
-  arguments:
-    group_key_set:
-
-# Upon receipt, this SHALL update a KeySet in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.update_key_set
-  arguments:
-    group_key_set:
-
-# Upon receipt, this SHALL remove a KeySet from the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.remove_key_set
-  arguments:
-    group_key_set_id:
-
-# Upon receipt, this SHALL add a group to the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.add_group
-  arguments:
-    group_id:
-    friendly_name:
-    group_key_set_id:
-    group_cat:
-    group_cat_version:
-    group_permission: # enum: view, operate, manage, administer
-
-# Upon receipt, this SHALL update a group in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.update_group
-  arguments:
-    group_id:
-    friendly_name:
-    group_key_set_id:
-    group_cat:
-    group_cat_version:
-    group_permission: # enum: view, operate, manage, administer
-
-# Upon receipt, this SHALL remove a group from the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.remove_group
-  arguments:
-    group_id:
-
-# Upon receipt, this SHALL add an admin to the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.add_admin
-  arguments:
-    node_id:
-    friendly_name:
-    vendor_id:
-    icac:
-
-# Upon receipt, this SHALL update an admin entry in the AdminList attribute.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.update_admin
-  arguments:
-    node_id:
-    # friendly_name:
-    # icac:
-
-# Upon receipt, this SHALL remove an admin from the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.remove_admin
-  arguments:
-    node_id:
-
-# Upon receipt, this SHALL add a node to the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.add_pending_node
-  arguments:
-    node_id:
-    friendly_name:
-
-# Upon receipt, this SHALL request that Datastore information relating to a Node of the accessing fabric is refreshed.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.refresh_node
-  arguments:
-    node_id:
-
-# Upon receipt, this SHALL update the friendly name for a node in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.update_node
-  arguments:
-    node_id:
-    friendly_name:
-
-# Upon receipt, this SHALL remove a node from the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.remove_node
-  arguments:
-    node_id:
-
-# Upon receipt, this SHALL update the state of an endpoint for a node in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.update_endpoint_for_node
-  arguments:
-    endpoint_id:
-    node_id:
-    friendly_name:
-
-# Upon receipt, this SHALL add a Group ID to an endpoint for a node in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.add_group_id_to_endpoint_for_node
-  arguments:
-    node_id:
-    endpoint_id:
-    group_id:
-
-# Upon receipt, this SHALL remove a Group ID from an endpoint for a node in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.remove_group_id_from_endpoint_for_node
-  arguments:
-    node_id:
-    endpoint_id:
-    group_id:
-
-# Upon receipt, this SHALL add a binding to an endpoint for a node in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.add_binding_to_endpoint_for_node
-  arguments:
-    node_id:
-    endpoint_id:
-    binding:
-
-# Upon receipt, this SHALL remove a binding from an endpoint for a node in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.remove_binding_from_endpoint_for_node
-  arguments:
-    list_id:
-    endpoint_id:
-    node_id:
-
-# Upon receipt, this SHALL add an ACL to a node in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.add_acl_to_node
-  arguments:
-    node_id:
-    acl_entry:
-
-# Upon receipt, this SHALL remove an ACL from a node in the Joint Fabric Datastore Cluster of the accessing fabric.
-matter.send_command:
-  path: some_endpoint.joint_fabric_datastore.remove_acl_from_node
-  arguments:
-    list_id:
-    node_id:
-```
+> This cluster is not supported by esp-matter.
 
 # JointFabricAdministrator
 
-An instance of the Joint Fabric Administrator Cluster only applies to Joint Fabric Administrator nodes fulfilling the role of Anchor CA.
-
-```yaml
-# This command SHALL be generated during Joint Commissioning Method and subsequently be responded in the form of an ICACCSRResponse command.
-matter.send_command: some_endpoint.joint_fabric_administrator.icaccsr_request
-
-# This command SHALL be generated and executed during Joint Commissioning Method and subsequently be responded in the form of an ICACResponse command.
-matter.send_command:
-  path: some_endpoint.joint_fabric_administrator.add_icac
-  arguments:
-    icac_value:
-
-# This command SHALL fail with a InvalidAdministratorFabricIndex status code sent back to the initiator if the AdministratorFabricIndex attribute has the value of null.
-matter.send_command:
-  path: some_endpoint.joint_fabric_administrator.open_joint_commissioning_window
-  arguments:
-    commissioning_timeout:
-    pake_passcode_verifier:
-    discriminator:
-    iterations:
-    salt:
-
-# This command SHALL be sent by a candidate Joint Fabric Anchor Administrator to the current Joint Fabric Anchor Administrator to request transfer of the Anchor Fabric.
-matter.send_command: some_endpoint.joint_fabric_administrator.transfer_anchor_request
-
-# This command SHALL indicate the completion of the transfer of the Anchor Fabric to another Joint Fabric Ecosystem Administrator.
-matter.send_command: some_endpoint.joint_fabric_administrator.transfer_anchor_complete
-
-# This command SHALL be used for communicating to client the endpoint that holds the Joint Fabric Administrator Cluster.
-matter.send_command:
-  path: some_endpoint.joint_fabric_administrator.announce_joint_fabric_administrator
-  arguments:
-    endpoint_id:
-```
+> This cluster is not supported by esp-matter.
 
 # TLSCertificateManagement
 
@@ -3086,247 +2396,12 @@ matter.send_command:
 
 # UnitTesting
 
-The Test Cluster is meant to validate the generated code
-
-```yaml
-# Simple command without any parameters and without a specific response.
-# To aid in unit testing, this command will re-initialize attribute storage to defaults.
-matter.send_command: some_endpoint.unit_testing.test
-
-# Simple command without any parameters and without a specific response not handled by the server
-matter.send_command: some_endpoint.unit_testing.test_not_handled
-
-# Simple command without any parameters and with a specific response
-matter.send_command: some_endpoint.unit_testing.test_specific
-
-# Simple command that should not be added to the server.
-matter.send_command: some_endpoint.unit_testing.test_unknown_command
-
-# Command that takes two arguments and returns their sum.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_add_arguments
-  arguments:
-    arg1:
-    arg2:
-
-# Command that takes an argument which is bool
-matter.send_command:
-  path: some_endpoint.unit_testing.test_simple_argument_request
-  arguments:
-    arg1:
-
-# Command that takes various arguments that are arrays, including an array of structs which have a list member.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_struct_array_argument_request
-  arguments:
-    arg1:
-    arg2:
-    arg3: # enum: unspecified, value_a, value_b, value_c
-    arg4:
-    arg5: # enum: unspecified, value_a, value_b, value_c
-    arg6:
-
-# Command that takes an argument which is struct. The response echoes the
-# 'b' field of the single arg.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_struct_argument_request
-  arguments:
-    arg1:
-
-# Command that takes an argument which is nested struct. The response
-# echoes the 'b' field of ar1.c.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_nested_struct_argument_request
-  arguments:
-    arg1:
-
-# Command that takes an argument which is a list of structs. The response
-# returns false if there is some struct in the list whose 'b' field is
-# false, and true otherwise (including if the list is empty).
-matter.send_command:
-  path: some_endpoint.unit_testing.test_list_struct_argument_request
-  arguments:
-    arg1:
-
-# Command that takes an argument which is a list of INT8U. The response
-# returns false if the list contains a 0 in it, true otherwise (including
-# if the list is empty).
-matter.send_command:
-  path: some_endpoint.unit_testing.test_list_int8_u_argument_request
-  arguments:
-    arg1:
-
-# Command that takes an argument which is a Nested Struct List. The
-# response returns false if there is some struct in arg1 (either directly
-# in arg1.c or in the arg1.d list) whose 'b' field is false, and true
-# otherwise.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_nested_struct_list_argument_request
-  arguments:
-    arg1:
-
-# Command that takes an argument which is a list of Nested Struct List.
-# The response returns false if there is some struct in arg1 (either
-# directly in as the 'c' field of an entry 'd' list of an entry) whose 'b'
-# field is false, and true otherwise (including if the list is empty).
-matter.send_command:
-  path: some_endpoint.unit_testing.test_list_nested_struct_list_argument_request
-  arguments:
-    arg1:
-
-# Command that takes an argument which is a list of INT8U and expects a
-# response that reverses the list.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_list_int8_u_reverse_request
-  arguments:
-    arg1:
-
-# Command that sends a vendor id and an enum. The server is expected to
-# echo them back.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_enums_request
-  arguments:
-    arg1:
-    arg2: # enum: unspecified, value_a, value_b, value_c
-
-# Command that takes an argument which is nullable and optional. The
-# response returns a boolean indicating whether the argument was present,
-# if that's true a boolean indicating whether the argument was null, and
-# if that' false the argument it received.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_nullable_optional_request
-  arguments:
-    # arg1:
-
-# Command that takes various arguments which can be nullable and/or optional. The
-# response returns information about which things were received and what
-# their state was.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_complex_nullable_optional_request
-  arguments:
-    nullable_int:
-    # optional_int:
-    # nullable_optional_int:
-    nullable_string:
-    # optional_string:
-    # nullable_optional_string:
-    nullable_struct:
-    # optional_struct:
-    # nullable_optional_struct:
-    nullable_list: # enum: unspecified, value_a, value_b, value_c
-    # optional_list: # enum: unspecified, value_a, value_b, value_c
-    # nullable_optional_list: # enum: unspecified, value_a, value_b, value_c
-
-# Command that takes an argument which is a struct. The response echoes
-# the struct back.
-matter.send_command:
-  path: some_endpoint.unit_testing.simple_struct_echo_request
-  arguments:
-    arg1:
-
-# Command that just responds with a success status if the timed invoke
-# conditions are met.
-matter.send_command: some_endpoint.unit_testing.timed_invoke_request
-
-# Command that takes an optional argument which is bool. It responds with a success value if the optional is set to any value.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_simple_optional_argument_request
-  arguments:
-    # arg1:
-
-# Command that takes identical arguments to the fields of the TestEvent and logs the TestEvent to the buffer. Command returns an event ID as the response.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_emit_test_event_request
-  arguments:
-    arg1:
-    arg2: # enum: unspecified, value_a, value_b, value_c
-    arg3:
-
-# Command that takes identical arguments to the fields of the TestFabricScopedEvent and logs the TestFabricScopedEvent to the buffer. Command returns an event ID as the response.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_emit_test_fabric_scoped_event_request
-  arguments:
-    arg1:
-
-# Command that responds after sleepBeforeResponseTimeMs with an octet_string the size requested with fillCharacter.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_batch_helper_request
-  arguments:
-    sleep_before_response_time_ms:
-    size_of_response_buffer:
-    fill_character:
-
-# Second command that responds after sleepBeforeResponseTimeMs with an octet_string the size requested with fillCharacter.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_second_batch_helper_request
-  arguments:
-    sleep_before_response_time_ms:
-    size_of_response_buffer:
-    fill_character:
-
-# Command that takes an argument which is an octet string. The response echoes
-# the string back. If the string is large then it would require a session that
-# supports large payloads.
-matter.send_command:
-  path: some_endpoint.unit_testing.string_echo_request
-  arguments:
-    payload:
-
-# Command that takes arguments that are global structs/enums and the
-# response just echoes them back.
-matter.send_command:
-  path: some_endpoint.unit_testing.global_echo_request
-  arguments:
-    field1:
-    field2: # enum: some_value, some_other_value, final_value
-
-# Command that returns Success if the CommandFlags pass all checks at the IM layer.
-# Otherwise, return appropriate StatusCode back.
-matter.send_command: some_endpoint.unit_testing.test_check_command_flags
-
-# Command having a different MEI vendor ID than the cluster. Also emits TestDifferentVendorMeiEvent.
-matter.send_command:
-  path: some_endpoint.unit_testing.test_different_vendor_mei_request
-  arguments:
-    arg1:
-```
+> This cluster is not supported by esp-matter.
 
 # FaultInjection
 
-The Fault Injection Cluster provide a means for a test harness to configure faults(for example triggering a fault in the system).
-
-```yaml
-# Configure a fault to be triggered deterministically
-matter.send_command:
-  path: some_endpoint.fault_injection.fail_at_fault
-  arguments:
-    type: # enum: unspecified, system_fault, inet_fault, chip_fault, cert_fault
-    id:
-    num_calls_to_skip:
-    num_calls_to_fail:
-    take_mutex:
-
-# Configure a fault to be triggered randomly, with a given probability defined as a percentage
-matter.send_command:
-  path: some_endpoint.fault_injection.fail_randomly_at_fault
-  arguments:
-    type: # enum: unspecified, system_fault, inet_fault, chip_fault, cert_fault
-    id:
-    percentage:
-```
+> This cluster is not supported by esp-matter.
 
 # SampleMEI
 
-The Sample MEI cluster showcases a cluster manufacturer extensions
-
-```yaml
-# Simple command without any parameters and without a response.
-matter.send_command: some_endpoint.sample_mei.ping
-
-# Command that takes two uint8 arguments and returns their sum.
-matter.send_command:
-  path: some_endpoint.sample_mei.add_arguments
-  arguments:
-    arg1:
-    arg2:
-```
+> This cluster is not supported by esp-matter.

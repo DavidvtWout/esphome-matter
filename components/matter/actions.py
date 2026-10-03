@@ -1,5 +1,6 @@
 import json
 import logging
+from collections.abc import Mapping
 
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -15,14 +16,20 @@ from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .const import *
-from .data_model.attributes import attribute_value_type
-from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME
-from .data_model.commands import COMMANDS, Command
+from .data_model.attributes import Attribute, attribute_value_type
+from .data_model.clusters import (
+    CLUSTERS,
+    CLUSTERS_BY_CONF_KEY,
+    Cluster,
+)
+from .data_model.commands import Command
+from .data_model.events import Event
 from .types import (
     MatterComponent,
     MatterEndpointRef,
     MatterFactoryResetAction,
     MatterSendCommandAction,
+    MatterSendEventAction,
     MatterSetAttributeAction,
 )
 from .util import snake_case
@@ -47,30 +54,16 @@ async def matter_factory_reset_to_code(config, action_id, template_arg, args):
 # ------------------------------------------------ #
 
 
-def _find_attribute(config):
-    cluster_key = config[CONF_CLUSTER]
-    attribute_key = config[CONF_ATTRIBUTE]
-    for cluster in CLUSTERS:
-        if snake_case(cluster.name) != cluster_key:
-            continue
-        for attribute in cluster.server_attributes:
-            if (
-                attribute.name is not None
-                and snake_case(attribute.name) == attribute_key
-            ):
-                return cluster, attribute
-        break
-    raise cv.Invalid(f"Unknown Matter attribute {cluster_key}.{attribute_key}")
-
-
-def _validate_set_attribute(config):
-    _, attribute = _find_attribute(config)
-    if attribute_value_type(attribute) is None:
+def get_attribute_from_config(config: Mapping) -> tuple[Cluster, Attribute]:
+    cluster = CLUSTERS_BY_CONF_KEY.get(config[CONF_CLUSTER])
+    if cluster is None:
+        raise cv.Invalid(f"Unknown Matter cluster {config[CONF_CLUSTER]}")
+    attribute = cluster.get_attribute(config[CONF_ATTRIBUTE])
+    if attribute is None:
         raise cv.Invalid(
-            f"Matter attribute {config[CONF_CLUSTER]}.{config[CONF_ATTRIBUTE]} "
-            "does not have a supported scalar type"
+            f"Unknown Matter attribute {config[CONF_CLUSTER]}.{config[CONF_ATTRIBUTE]}"
         )
-    return config
+    return cluster, attribute
 
 
 def _normalize_set_attribute(config):
@@ -78,13 +71,23 @@ def _normalize_set_attribute(config):
         parts = config.pop(CONF_PATH).split(".")
         if len(parts) != 3 or not all(parts):
             raise cv.Invalid(
-                "Matter set_attribute path must use the form endpoint.cluster.attribute"
+                "matter.set_attribute path must use the form 'endpoint.cluster.attribute'"
             )
         endpoint, config[CONF_CLUSTER], config[CONF_ATTRIBUTE] = parts
         try:
             config[CONF_ENDPOINT] = cv.uint16_t(endpoint)
         except cv.Invalid:
             config[CONF_ENDPOINT] = cv.use_id(MatterEndpointRef)(endpoint)
+    return config
+
+
+def _validate_set_attribute(config):
+    _, attribute = get_attribute_from_config(config)
+    if attribute_value_type(attribute) is None:
+        raise cv.Invalid(
+            f"Matter attribute {config[CONF_CLUSTER]}.{config[CONF_ATTRIBUTE]} "
+            "does not have a supported scalar type"
+        )
     return config
 
 
@@ -114,7 +117,7 @@ def _normalize_set_attribute(config):
 async def matter_set_attribute_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
-    cluster, attribute = _find_attribute(config)
+    cluster, attribute = get_attribute_from_config(config)
     value_type = attribute_value_type(attribute)
     action_template_arg = cg.TemplateArguments(value_type, *template_arg)
     var = cg.new_Pvariable(action_id, action_template_arg)
@@ -131,6 +134,17 @@ async def matter_set_attribute_to_code(
 # ------------------------------------------------ #
 
 
+def get_command_from_config(config: Mapping) -> tuple[Cluster, Command]:
+    cluster_key = config[CONF_CLUSTER]
+    command_key = config[CONF_COMMAND]
+    cluster = CLUSTERS_BY_CONF_KEY.get(cluster_key)
+    if cluster is not None:
+        command = cluster.get_command(command_key)
+        if command is not None:
+            return cluster, command
+    raise cv.Invalid(f"Unknown Matter command {cluster_key}.{command_key}")
+
+
 def _parse_endpoint(value):
     try:
         return cv.uint16_t(value)
@@ -145,24 +159,12 @@ def _validate_command_name(value):
     return cv.string_strict(value)
 
 
-def _find_command(config):
-    cluster_key = config[CONF_CLUSTER]
-    command_key = config[CONF_COMMAND]
-    for command in COMMANDS:
-        if (
-            snake_case(command.cluster_name) == cluster_key
-            and snake_case(command.name) == command_key
-        ):
-            return command
-    raise cv.Invalid(f"Unknown Matter command {cluster_key}.{command_key}")
-
-
 def _normalize_send_command(config):
     if CONF_PATH in config:
         parts = config.pop(CONF_PATH).split(".")
         if len(parts) != 3 or not all(parts):
             raise cv.Invalid(
-                "Matter send_command path must use the form endpoint.cluster.command"
+                "matter.send_command path must use the form 'endpoint.cluster.command'"
             )
         endpoint, config[CONF_CLUSTER], config[CONF_COMMAND] = parts
         config[CONF_ENDPOINT] = _parse_endpoint(endpoint)
@@ -170,11 +172,8 @@ def _normalize_send_command(config):
 
 
 def _validate_send_command(config):
-    command = _find_command(config)
-    schema = {}
-    for arg in command.args:
-        schema[arg.schema_key] = arg.schema
-    config[CONF_ARGUMENTS] = cv.Schema(schema)(config[CONF_ARGUMENTS])
+    _, command = get_command_from_config(config)
+    config[CONF_ARGUMENTS] = _validate_fields(config[CONF_ARGUMENTS], command.args)
     return config
 
 
@@ -210,13 +209,86 @@ SEND_COMMAND_SCHEMA = automation.maybe_conf(
 async def matter_send_command_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
-    command = _find_command(config)
+    cluster, command = get_command_from_config(config)
     var = cg.new_Pvariable(action_id, template_arg)
     cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT])))
-    cluster = CLUSTERS_BY_NAME[command.cluster_name]
     cg.add(var.set_cluster_id(cluster.id))
     cg.add(var.set_command_id(command.id))
-    cg.add(var.set_data(_build_data(config[CONF_ARGUMENTS], command)))
+    cg.add(var.set_data(_build_data(config[CONF_ARGUMENTS], command.args)))
+    return var
+
+
+# ------------------------------------------------ #
+#  matter.send_event                               #
+# ------------------------------------------------ #
+
+
+def get_event_from_config(config: Mapping) -> tuple[Cluster, Event]:
+    cluster_key = config[CONF_CLUSTER]
+    event_key = config[CONF_EVENT]
+    cluster = CLUSTERS_BY_CONF_KEY.get(cluster_key)
+    if cluster is not None:
+        event = cluster.get_event(event_key)
+        if event is not None:
+            return cluster, event
+    raise cv.Invalid(f"Unknown Matter event {cluster_key}.{event_key}")
+
+
+def _normalize_send_event(config):
+    if CONF_PATH in config:
+        parts = config.pop(CONF_PATH).split(".")
+        if len(parts) != 3 or not all(parts):
+            raise cv.Invalid(
+                "matter.send_event path must use the form 'endpoint.cluster.event'"
+            )
+        endpoint, config[CONF_CLUSTER], config[CONF_EVENT] = parts
+        config[CONF_ENDPOINT] = _parse_endpoint(endpoint)
+    return config
+
+
+def _validate_send_event(config):
+    _, event = get_event_from_config(config)
+    config[CONF_FIELDS] = _validate_fields(config[CONF_FIELDS], event.fields)
+    return config
+
+
+SEND_EVENT_SCHEMA = automation.maybe_conf(
+    CONF_PATH,
+    cv.All(
+        cv.Schema(
+            {
+                cv.Inclusive(CONF_ENDPOINT, "explicit_event_path"): cv.Any(
+                    cv.use_id(MatterEndpointRef), cv.uint16_t
+                ),
+                cv.Inclusive(CONF_CLUSTER, "explicit_event_path"): cv.string_strict,
+                cv.Inclusive(CONF_EVENT, "explicit_event_path"): cv.string_strict,
+                cv.Optional(CONF_PATH): cv.string_strict,
+                cv.Optional(CONF_FIELDS, default={}): dict,
+            }
+        ),
+        cv.has_exactly_one_key(CONF_PATH, CONF_ENDPOINT),
+        _normalize_send_event,
+        _validate_send_event,
+    ),
+)
+
+
+@automation.register_action(
+    "matter.send_event",
+    MatterSendEventAction,
+    SEND_EVENT_SCHEMA,
+    synchronous=True,
+)
+async def matter_send_event_to_code(
+    config: ConfigType, action_id: ID, template_arg, args
+):
+    cluster, event = get_event_from_config(config)
+    var = cg.new_Pvariable(action_id, template_arg)
+    cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT])))
+    cg.add(var.set_cluster_id(cluster.id))
+    cg.add(var.set_event_id(event.id))
+    cg.add(var.set_priority(event.priority))
+    cg.add(var.set_data(_build_data(config[CONF_FIELDS], event.fields)))
     return var
 
 
@@ -240,7 +312,7 @@ async def matter_raw_send_command_to_code(
     config: ConfigType, action_id: ID, template_arg, args
 ):
     """The matter._send_command action is an escape hatch to send arbitrary commands that have not
-    yet been implemented by esphome-matter. It doesn't support data formatting so you have to
+    yet been implemented by esphome-matter. It doesn't support data formatting, so you have to
     provide an esp-matter compatible string yourself.
 
       matter._send_command:
@@ -254,7 +326,7 @@ async def matter_raw_send_command_to_code(
       esp32:
         framework:
           sdkconfig_options:
-            CONFIG_SUPPORT_<cluster_name>_CLUSTER=y  # For example CONFIG_SUPPORT_MICROWAVE_OVEN_CONTROL_CLUSTER
+            CONFIG_SUPPORT_<cluster_name>_CLUSTER=y  # For example, CONFIG_SUPPORT_MICROWAVE_OVEN_CONTROL_CLUSTER
 
     """
     var = cg.new_Pvariable(action_id, template_arg)
@@ -280,33 +352,38 @@ def register_bound_command_actions():
     Legacy actions are named after the snake_case cluster and command names:
       matter.cluster_name.command_name
     """
-    for command in COMMANDS:
-        automation.register_action(
-            f"matter.{snake_case(command.cluster_name)}.{snake_case(command.name)}",
-            MatterSendCommandAction,
-            cv.All(_command_schema(command), _warn_deprecated_command(command)),
-            synchronous=True,
-        )(_make_send_command_to_code(command))
+    for cluster in CLUSTERS:
+        for command in cluster.commands:
+            automation.register_action(
+                f"matter.{snake_case(cluster.name)}.{snake_case(command.name)}",
+                MatterSendCommandAction,
+                cv.All(
+                    _command_schema(command),
+                    _warn_deprecated_command(cluster, command),
+                ),
+                synchronous=True,
+            )(_make_send_command_to_code(cluster, command))
 
 
-def _make_send_command_to_code(command: Command):
+def _make_send_command_to_code(cluster: Cluster, command: Command):
     async def to_code(config, action_id: ID, template_arg: cg.TemplateArguments, args):
         return await _new_send_command_action(
             config,
             action_id,
             template_arg,
+            cluster,
             command,
         )
 
     to_code.__name__ = (
-        f"matter_{snake_case(command.cluster_name)}_{snake_case(command.name)}_to_code"
+        f"matter_{snake_case(cluster.name)}_{snake_case(command.name)}_to_code"
     )
     return to_code
 
 
-def _warn_deprecated_command(command: Command):
-    old_name = f"matter.{snake_case(command.cluster_name)}.{snake_case(command.name)}"
-    new_path = f"{snake_case(command.cluster_name)}.{snake_case(command.name)}"
+def _warn_deprecated_command(cluster: Cluster, command: Command):
+    old_name = f"matter.{snake_case(cluster.name)}.{snake_case(command.name)}"
+    new_path = f"{snake_case(cluster.name)}.{snake_case(command.name)}"
 
     def validator(config):
         _LOGGER.warning(
@@ -324,36 +401,15 @@ async def _new_send_command_action(
     config: ConfigType,
     action_id: ID,
     template_arg: cg.TemplateArguments,
+    cluster: Cluster,
     command: Command,
 ):
     var = cg.new_Pvariable(action_id, template_arg)
     cg.add(var.set_endpoint_id(_resolve_endpoint_id(config[CONF_ENDPOINT_ID])))
-    cluster = CLUSTERS_BY_NAME[command.cluster_name]
     cg.add(var.set_cluster_id(cluster.id))
     cg.add(var.set_command_id(command.id))
-    cg.add(var.set_data(_build_data(config, command)))
+    cg.add(var.set_data(_build_data(config, command.args)))
     return var
-
-
-def _resolve_endpoint_id(endpoint_id: ID | int) -> int:
-    if not isinstance(endpoint_id, ID):
-        return endpoint_id
-    endpoint_ids = CORE.data.get(CONF_MATTER, {}).get(KEY_ENDPOINT_ID_MAP, {})
-    if endpoint_id in endpoint_ids:
-        return endpoint_ids[endpoint_id]
-    raise cv.Invalid(f"Unknown Matter endpoint id '{endpoint_id}'")
-
-
-def _build_data(arguments, command: Command) -> str:
-    """Creates a date payload that's compatible with esp_matter::client::request_handle.request_data.
-
-    It's JSON formatted crap... Here's an example:
-
-       {"0:U8":0,"1:U16":10}
-
-    This means that the first field is an uint8 with a value of 0 and the second field is uint16 with value 10.
-    """
-    return json.dumps({arg.data_key: arguments[arg.schema_key] for arg in command.args})
 
 
 def _command_schema(command: Command):
@@ -373,3 +429,29 @@ def _command_schema(command: Command):
         return schema
     else:
         return automation.maybe_conf(CONF_ENDPOINT_ID, schema)
+
+
+# ------------------------------------------------ #
+#  Helper functions                                #
+# ------------------------------------------------ #
+
+
+def _validate_fields(values, fields):
+    return cv.Schema({field.schema_key: field.schema for field in fields})(values)
+
+
+def _build_data(values, fields) -> str:
+    """Creates a data payload compatible with esp-matter's JSON-to-TLV format.
+
+    It's JSON formatted crap... Here's an example:
+
+       {"0:U8":0,"1:U16":10}
+
+    This means that the first field is an uint8 with a value of 0 and the second field is uint16 with value 10.
+    """
+    return json.dumps({field.data_key: values[field.schema_key] for field in fields})
+
+
+def _resolve_endpoint_id(endpoint_id: ID | int) -> int:
+    endpoints = CORE.data.get(CONF_MATTER, {}).get(CONF_ENDPOINTS)
+    return endpoints.lookup(endpoint_id).endpoint_id

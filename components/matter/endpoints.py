@@ -10,53 +10,39 @@ from esphome.components.binary_sensor import BinarySensor
 from esphome.components.esp32 import add_idf_sdkconfig_option
 from esphome.components.sensor import Sensor
 from esphome.config import Config
-from esphome.const import CONF_LIGHT_ID, CONF_RESTORE_MODE, CONF_TRIGGER_ID
-from esphome.core import ID
+from esphome.const import CONF_ID, CONF_LIGHT_ID, CONF_RESTORE_MODE, CONF_TRIGGER_ID
+from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
+from .actions import get_attribute_from_config, get_event_from_config
 from .const import *
-from .data_model.attributes import SensorAttribute, attribute_value_type
+from .data_model.attributes import Attribute, SensorAttribute, attribute_value_type
 from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME, Cluster
+from .data_model.conformance import (
+    ConformanceDisposition,
+    ConformanceError,
+    resolve_feature_requirements,
+)
 from .data_model.device_types import (
     DEVICE_TYPES,
     DEVICE_TYPES_BY_CONF_KEY,
     DEVICE_TYPES_BY_ID,
     DeviceType,
 )
+from .data_model.events import Event
 from .types import MatterAttributeTrigger, MatterEndpointRef
-from .util import maybe_empty, snake_case
+from .util import iter_matter_actions, maybe_empty, snake_case
 
 _LOGGER = logging.getLogger(__name__)
-
-
-def light_restore_warning(matter_config: dict, full_config: Config):
-    for endpoint_config in matter_config.get(CONF_ENDPOINTS, {}).values():
-        for conf_key, device_config in endpoint_config.items():
-            if not isinstance(device_config, dict):
-                continue
-            light_id = device_config.get(CONF_LIGHT_ID)
-            if light_id is None:
-                continue
-            try:
-                light_path = full_config.get_path_for_id(light_id)[:-1]
-                light_config = full_config.get_config_for_path(light_path)
-            except KeyError:
-                continue
-            restore_mode = light_config[CONF_RESTORE_MODE]
-            if restore_mode != "ALWAYS_OFF":
-                _LOGGER.warning(
-                    "Light '%s' is exposed through Matter with restore mode %s and should use "
-                    "restore_mode: ALWAYS_OFF so Matter can restore its power-on state",
-                    light_id,
-                    restore_mode,
-                )
 
 
 def _on_attribute_schema():
     options = {}
     for cluster in CLUSTERS:
         attributes = {}
-        for attribute in cluster.server_attributes:
+        for attribute in cluster.attributes:
+            if not attribute.server:
+                continue
             if attribute.name is None:
                 continue
             value_type = attribute_value_type(attribute)
@@ -81,7 +67,9 @@ def _validate_on_attribute_forms(config):
     for cluster in CLUSTERS:
         cluster_key = snake_case(cluster.name)
         nested = configured.get(cluster_key, {})
-        for attribute in cluster.server_attributes:
+        for attribute in cluster.attributes:
+            if not attribute.server:
+                continue
             if attribute.name is None:
                 continue
             attribute_key = snake_case(attribute.name)
@@ -123,25 +111,172 @@ class Endpoint:
     def __init__(self, endpoint_id: int, config: dict):
         self._endpoint_id = endpoint_id
         self._config = config
-
+        self.usages: list[tuple[Cluster, Attribute | Event]] = []
         self.enabled_sdkconfig_options: set[str] = set()
         self.global_includes: set[str] = set()
-
         self._cluster_configs: defaultdict[str, _ClusterConfig] = defaultdict(
             _ClusterConfig
         )
         self._device_types: list[DeviceType] = []
         self._light_variables = {}
 
+    @property
+    def endpoint_id(self) -> int:
+        return self._endpoint_id
+
+    @property
+    def config(self) -> dict:
+        return self._config
+
+    def register_usage(self, cluster: Cluster, usage: Attribute | Event) -> None:
+        self.usages.append((cluster, usage))
+
+    def _cluster_state(self, cluster: Cluster):
+        enabled_codes = set()
+        cluster_present = False
+        device_features = []
+
+        explicit_cluster_config = self._config[CONF_CLUSTERS].get(
+            snake_case(cluster.name)
+        )
+        if explicit_cluster_config is not None:
+            cluster_present = True
+            for feature_name in explicit_cluster_config.get(CONF_WITH_FEATURES, ()):
+                feature = cluster.get_feature(feature_name)
+                if feature is not None:
+                    enabled_codes.add(feature.code)
+
+        for config_key, device_config in self._config.items():
+            device_type = DEVICE_TYPES_BY_CONF_KEY.get(config_key)
+            if device_type is None:
+                continue
+            for device_cluster in device_type.server_clusters:
+                if device_cluster.name != cluster.name:
+                    continue
+                cluster_present |= device_cluster.required
+                device_features.extend(device_cluster.features)
+            for feature_name in device_config.get(CONF_WITH_FEATURES, ()):
+                feature = cluster.get_feature(feature_name)
+                if feature is not None:
+                    enabled_codes.add(feature.code)
+
+        # A mandatory feature can make another conditional feature mandatory, so
+        # evaluate the composed cluster/device-type conformance to a fixed point.
+        changed = True
+        while changed:
+            changed = False
+            for feature in device_features:
+                if feature.conformance is None or feature.code in enabled_codes:
+                    continue
+                if (
+                    feature.conformance.disposition(enabled_codes)
+                    is ConformanceDisposition.MANDATORY
+                ):
+                    enabled_codes.add(feature.code)
+                    changed = True
+
+        disallowed_codes = {
+            feature.code
+            for feature in device_features
+            if feature.conformance is not None
+            and feature.conformance.disposition(enabled_codes)
+            is ConformanceDisposition.DISALLOWED
+        }
+
+        return cluster_present, enabled_codes, disallowed_codes
+
+    def resolve(self) -> None:
+        usages_by_cluster = defaultdict(list)
+        clusters_by_id = {}
+        for cluster, usage in self.usages:
+            clusters_by_id[cluster.id] = cluster
+            if usage.conformance is not None:
+                usages_by_cluster[cluster.id].append(usage)
+
+        for cluster_name in self._config[CONF_CLUSTERS]:
+            cluster = CLUSTERS_BY_NAME[cluster_name]
+            clusters_by_id[cluster.id] = cluster
+
+        for config_key, device_config in self._config.items():
+            device_type = DEVICE_TYPES_BY_CONF_KEY.get(config_key)
+            if device_type is None:
+                continue
+            configured_features = device_config.get(CONF_WITH_FEATURES, ())
+            for cluster in device_type.server_clusters:
+                if cluster.required or any(
+                    cluster.get_feature(feature_name) is not None
+                    for feature_name in configured_features
+                ):
+                    clusters_by_id[cluster.id] = cluster
+
+        for cluster_id, cluster in clusters_by_id.items():
+            usages = usages_by_cluster[cluster_id]
+            cluster_present, enabled_codes, disallowed_codes = self._cluster_state(
+                cluster
+            )
+            if not cluster_present:
+                usage_names = ", ".join(usage.name for usage in usages)
+                raise cv.Invalid(
+                    f"Matter endpoint {self._endpoint_id} does not contain the "
+                    f"{cluster.name} cluster required by: {usage_names}"
+                )
+
+            feature_conformance = {
+                feature.code: feature.conformance for feature in cluster.features
+            }
+            try:
+                inferred_codes = resolve_feature_requirements(
+                    [usage.conformance for usage in usages],
+                    feature_conformance,
+                    enabled_codes,
+                )
+            except ConformanceError as err:
+                usage_names = ", ".join(usage.name for usage in usages)
+                raise cv.Invalid(
+                    f"Cannot resolve features for endpoint {self._endpoint_id} "
+                    f"from {usage_names}: {err}"
+                ) from err
+
+            invalid_codes = (enabled_codes | inferred_codes) & disallowed_codes
+            if invalid_codes:
+                names = ", ".join(
+                    cluster.get_feature(code).conf_key for code in sorted(invalid_codes)
+                )
+                raise cv.Invalid(
+                    f"Matter elements on endpoint {self._endpoint_id} require "
+                    f"features disallowed by its device type: {names}"
+                )
+
+            resulting_codes = enabled_codes | inferred_codes
+            choices = defaultdict(list)
+            for feature in cluster.features:
+                if feature.conformance is not None and feature.conformance.choice:
+                    choices[feature.conformance.choice].append(feature)
+            for choice, features in choices.items():
+                selected = [
+                    feature.conf_key
+                    for feature in features
+                    if feature.code in resulting_codes
+                ]
+                if choice.max is not None and len(selected) > choice.max:
+                    raise cv.Invalid(
+                        f"Matter endpoint {self._endpoint_id} selects conflicting "
+                        f"{cluster.name} features: {', '.join(selected)}"
+                    )
+
+            cluster_config = self._cluster_configs[cluster.name]
+            for code in inferred_codes:
+                cluster_config.enabled_features[cluster.get_feature(code).name] = True
+
     async def register(self, var):
         """Registers an endpoint using the register_endpoint function in matter_component.h.
 
-        Using ESPHome codegen, a function is build and registered that adds device types and clusters to an endpoint.
+        Using ESPHome codegen, a function is built and registered that adds device types and clusters to an endpoint.
         These functions are called just before Matter is started.
 
         Sadly, device type and cluster creation is quite complicated and not easily generalizable for all device types.
         For example, most optional clusters must be created after the device type has been created. However, the
-        Electrical Sensor is an exception to this rule. The matter spec defines that this device type must of at least
+        Electrical Sensor is an exception to this rule. The matter spec defines that this device type must have at least
         one of the "ElectricalEnergyMeasurement" or "ElectricalPowerMeasurement" clusters. esp-matter enforces this
         by adding a "with_clusters" argument to the electrical_sensor config.
 
@@ -151,7 +286,7 @@ class Endpoint:
         Because of all of these complications, the endpoint creation process is a bit of a mess now. The mandatory
         clusters of a device type are always created by esp-matter (except for the binding cluster...).
         The same is true for cluster attributes. Mandatory attributes are always created, some optional attributes are
-        created through config options and some are created after the cluster.
+        created through config options, and some are created after the cluster.
         This whole process could have easily been made more generalizable by esp-matter, but they decided not to...
 
         In the future I might bypass esp-matter entirely for endpoint creation and use connectedhomeip directly.
@@ -183,7 +318,9 @@ class Endpoint:
         for cluster in CLUSTERS:
             cluster_key = snake_case(cluster.name)
             cluster_config = configured_clusters.get(cluster_key, {})
-            for attribute in cluster.server_attributes:
+            for attribute in cluster.attributes:
+                if not attribute.server:
+                    continue
                 if attribute.name is None:
                     continue
                 value_type = attribute_value_type(attribute)
@@ -281,7 +418,7 @@ class Endpoint:
                 if not enabled:
                     continue
                 feature = features_by_name[feature_name]
-                if cluster.is_choice_feature(feature):
+                if feature.conformance is not None and feature.conformance.choice:
                     feature_flags.append(
                         f"esp_matter::cluster::{cluster.espm_namespace}::feature::{feature.namespace}::get_id()"
                     )
@@ -319,13 +456,19 @@ class Endpoint:
         if sensor_attribute.sensor_type is BinarySensor:
             args = [sensor, self._endpoint_id, cluster.id, attribute.id, converter]
             if sensor_attribute.code_driven:
-                self.global_includes.add(cluster.chip_include)
+                if cluster.chip_include is not None:
+                    self.global_includes.add(cluster.chip_include)
                 args.append(
                     cg.RawExpression("esphome::matter::update_boolean_state_attribute")
                 )
             cg.add(var.register_binary_sensor_attribute(*args))
         elif sensor_attribute.code_driven:
-            self.global_includes.add(cluster.chip_include)
+            if cluster.chip_include is not None:
+                self.global_includes.add(cluster.chip_include)
+            if cluster.chip_fqn is None:
+                raise cv.Invalid(
+                    f"Cluster {cluster.conf_key} does not define a CHIP class"
+                )
             cluster_type = cg.RawExpression(cluster.chip_fqn)
             value_type = cg.RawExpression(
                 {
@@ -401,7 +544,10 @@ class Endpoint:
                 for feature_name, enabled in cluster_config.enabled_features.items()
                 if enabled
                 and feature_name in features_by_name
-                and not cluster.is_choice_feature(features_by_name[feature_name])
+                and (
+                    features_by_name[feature_name].conformance is None
+                    or features_by_name[feature_name].conformance.choice is None
+                )
             ]
             if not direct_features:
                 continue
@@ -425,6 +571,51 @@ class Endpoint:
         return "\n".join(lines)
 
 
+class EndpointRegistry:
+    def __init__(self):
+        self._endpoints: list[Endpoint] = []
+        self._lookup: dict[int | ID, Endpoint] = {}
+
+    def register(self, endpoint: Endpoint):
+        self._endpoints.append(endpoint)
+        self._lookup[endpoint.endpoint_id] = endpoint
+        self._lookup[endpoint.config[CONF_ID]] = endpoint
+
+    def lookup(self, endpoint_reference: int | ID) -> Endpoint:
+        endpoint = self._lookup.get(endpoint_reference)
+        if endpoint is None:
+            raise cv.Invalid(f"Unknown Matter endpoint '{endpoint_reference}'")
+        return endpoint
+
+    def __iter__(self):
+        return iter(self._endpoints)
+
+
+def build_endpoints(matter_config: dict, full_config: Config) -> EndpointRegistry:
+    """During validation an endpoint registry is built and stored in CORE.data["matter"]["endpoints"]."""
+    endpoints = EndpointRegistry()
+    for endpoint_id, endpoint_config in matter_config[CONF_ENDPOINTS].items():
+        endpoints.register(Endpoint(endpoint_id, endpoint_config))
+
+    # Register matter actions that might require specific features to the endpoints.
+    for action_type, action in iter_matter_actions(full_config):
+        if action_type not in ("matter.send_event", "matter.set_attribute"):
+            continue
+        endpoint = endpoints.lookup(action[CONF_ENDPOINT])
+        if action_type == "matter.send_event":
+            cluster, event = get_event_from_config(action)
+            endpoint.register_usage(cluster, event)
+        else:
+            cluster, attribute = get_attribute_from_config(action)
+            endpoint.register_usage(cluster, attribute)
+
+    for endpoint in endpoints:
+        endpoint.resolve()
+
+    CORE.data.setdefault(CONF_MATTER, {})[CONF_ENDPOINTS] = endpoints
+    return endpoints
+
+
 async def register_endpoints(var, config: ConfigType):
     root_node = DEVICE_TYPES_BY_ID[22]
     global_includes = set()
@@ -444,8 +635,7 @@ async def register_endpoints(var, config: ConfigType):
         }
     )
 
-    for endpoint_id, endpoint_config in config[CONF_ENDPOINTS].items():
-        endpoint = Endpoint(endpoint_id, endpoint_config)
+    for endpoint in CORE.data[CONF_MATTER][CONF_ENDPOINTS]:
         await endpoint.register(var)
         global_includes.update(endpoint.global_includes)
         enabled_sdkconfig_clusters.update(endpoint.enabled_sdkconfig_options)
