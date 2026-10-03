@@ -58,7 +58,7 @@ Alternatively, read the setup code (`SetupQRCode`) from the logs after boot:
 [C][matter]: Matter:
 [C][matter]:   SetupQRCode: MT:Y.K904QI14-O992WI00
 [C][matter]:   QR URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K904QI14-O992WI00
-[C][matter]:   Manual pairing code: 32552014321
+[C][matter]:   Manual pairing code: 3255-201-4321
 [C][matter]:   Commissioning window: open
 [C][matter]:   Fabrics: none
 ```

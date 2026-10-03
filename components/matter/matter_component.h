@@ -4,7 +4,7 @@
 #ifdef USE_MATTER
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
-#ifdef USE_MATTER_TEXT_SENSOR
+#ifdef USE_TEXT_SENSOR
 #include "esphome/components/text_sensor/text_sensor.h"
 #endif
 
@@ -35,7 +35,7 @@ public:
 
   void factory_reset();
 
-#ifdef USE_MATTER_TEXT_SENSOR
+#ifdef USE_TEXT_SENSOR
   void set_manual_pairing_code_sensor(text_sensor::TextSensor *sensor) {
     this->manual_pairing_code_sensor_ = sensor;
   }
@@ -113,7 +113,7 @@ private:
   uint32_t passcode_{0};
   std::string manual_pairing_code_;
   std::string qr_code_;
-#ifdef USE_MATTER_TEXT_SENSOR
+#ifdef USE_TEXT_SENSOR
   text_sensor::TextSensor *manual_pairing_code_sensor_{nullptr};
   text_sensor::TextSensor *qr_code_sensor_{nullptr};
 #endif

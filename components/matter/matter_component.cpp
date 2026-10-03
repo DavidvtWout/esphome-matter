@@ -59,6 +59,12 @@ static bool is_valid_passcode(uint32_t pin) {
   return true;
 }
 
+static std::string format_manual_pairing_code(const std::string &code) {
+  if (code.length() != 11)
+    return code;
+  return code.substr(0, 4) + "-" + code.substr(4, 3) + "-" + code.substr(7, 4);
+}
+
 // Loads existing commissioning data from NVS, or generates random values and
 // stores them. The EXAMPLE_COMMISSIONABLE_DATA_PROVIDER reads these same NVS
 // keys on every boot, so whatever we write here becomes the device's
@@ -301,11 +307,11 @@ void MatterComponent::setup() {
   this->passcode_ = passcode;
   this->generate_commissioning_codes_();
 
-#ifdef USE_MATTER_TEXT_SENSOR
+#ifdef USE_TEXT_SENSOR
   if (this->manual_pairing_code_sensor_ != nullptr &&
       !this->manual_pairing_code_.empty()) {
     this->manual_pairing_code_sensor_->publish_state(
-        this->manual_pairing_code_);
+        format_manual_pairing_code(this->manual_pairing_code_));
   }
   if (this->qr_code_sensor_ != nullptr && !this->qr_code_.empty()) {
     this->qr_code_sensor_->publish_state(this->qr_code_);
@@ -424,8 +430,9 @@ void MatterComponent::dump_config() {
         this->qr_code_.c_str());
   }
   if (!this->manual_pairing_code_.empty()) {
-    ESP_LOGCONFIG(TAG, "  Manual pairing code: %s",
-                  this->manual_pairing_code_.c_str());
+    ESP_LOGCONFIG(
+        TAG, "  Manual pairing code: %s",
+        format_manual_pairing_code(this->manual_pairing_code_).c_str());
   }
 
   chip::DeviceLayer::PlatformMgr().LockChipStack();

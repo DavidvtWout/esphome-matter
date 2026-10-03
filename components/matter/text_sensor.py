@@ -3,20 +3,17 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import text_sensor
-from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC
+from esphome.const import CONF_ID, ENTITY_CATEGORY_DIAGNOSTIC
 
+from .const import CONF_MANUAL_PAIRING_CODE, CONF_QR_CODE
 from .types import MatterComponent
 
 DEPENDENCIES = ["matter"]
 
-CONF_MATTER_ID = "matter_id"
-CONF_MANUAL_PAIRING_CODE = "manual_pairing_code"
-CONF_QR_CODE = "qr_code"
-
 CONFIG_SCHEMA = cv.All(
     cv.Schema(
         {
-            cv.GenerateID(CONF_MATTER_ID): cv.use_id(MatterComponent),
+            cv.GenerateID(): cv.use_id(MatterComponent),
             cv.Optional(CONF_MANUAL_PAIRING_CODE): text_sensor.text_sensor_schema(
                 icon="mdi:key",
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
@@ -32,8 +29,7 @@ CONFIG_SCHEMA = cv.All(
 
 
 async def to_code(config):
-    cg.add_define("USE_MATTER_TEXT_SENSOR")
-    parent = await cg.get_variable(config[CONF_MATTER_ID])
+    parent = await cg.get_variable(config[CONF_ID])
 
     if sensor_config := config.get(CONF_MANUAL_PAIRING_CODE):
         sens = await text_sensor.new_text_sensor(sensor_config)

@@ -2,6 +2,8 @@ CONF_MATTER = "matter"
 CONF_ENDPOINTS = "endpoints"
 CONF_DISCRIMINATOR = "discriminator"
 CONF_PASSCODE = "passcode"
+CONF_MANUAL_PAIRING_CODE = "manual_pairing_code"
+CONF_QR_CODE = "qr_code"
 
 # BasicInformation cluster attributes
 CONF_HARDWARE_VERSION = "hardware_version"
