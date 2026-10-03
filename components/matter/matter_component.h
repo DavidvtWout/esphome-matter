@@ -4,6 +4,7 @@
 #ifdef USE_MATTER
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
+#include "matter_text_sensors.h"
 
 #include "matter_attributes.h"
 #include "matter_endpoints.h"
@@ -11,6 +12,7 @@
 #include "matter_sensors.h"
 
 #include <functional>
+#include <string>
 #include <vector>
 
 #include <esp_matter.h>
@@ -30,6 +32,23 @@ public:
   }
 
   void factory_reset();
+
+#ifdef USE_TEXT_SENSOR
+  void set_manual_pairing_code_sensor(text_sensor::TextSensor *sensor) {
+    this->manual_pairing_code_sensor_ = sensor;
+  }
+  void set_qr_code_sensor(text_sensor::TextSensor *sensor) {
+    this->qr_code_sensor_ = sensor;
+  }
+  void set_fabric_compressed_id_sensor(size_t slot,
+                                       text_sensor::TextSensor *sensor);
+  void set_fabric_id_sensor(size_t slot, text_sensor::TextSensor *sensor);
+  void set_fabric_label_sensor(size_t slot, text_sensor::TextSensor *sensor);
+  void set_fabric_node_id_sensor(size_t slot, text_sensor::TextSensor *sensor);
+  void set_fabric_vendor_id_sensor(size_t slot,
+                                   text_sensor::TextSensor *sensor);
+  void schedule_fabric_sensor_update();
+#endif
 
   // Register Matter endpoints
   void register_endpoint(uint16_t endpoint_id, MatterEndpointBuildFn build_fn);
@@ -91,12 +110,23 @@ public:
   }
 
 private:
+  void generate_commissioning_codes_();
   // Defined in matter_endpoints.cpp
   bool create_endpoints_(esp_matter::node_t *node);
   void initialize_endpoint_mappings_();
 
   uint16_t discriminator_{0};
   uint32_t passcode_{0};
+  std::string manual_pairing_code_;
+  std::string qr_code_;
+#ifdef USE_TEXT_SENSOR
+  text_sensor::TextSensor *manual_pairing_code_sensor_{nullptr};
+  text_sensor::TextSensor *qr_code_sensor_{nullptr};
+  std::vector<MatterFabricSensorRegistration> fabric_sensors_;
+  MatterFabricSensorRegistration &get_fabric_sensors_(size_t slot);
+  void publish_commissioning_code_sensors_();
+  void publish_fabric_sensors_();
+#endif
 
   std::vector<MatterEndpointRegistration> endpoint_registrations_;
   std::vector<MatterEndpointMappingBase *> mappings_;

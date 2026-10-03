@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cinttypes>
+#include <cstdio>
 #include <cstring>
 #include <esp_matter_client.h>
 #include <esp_random.h>
@@ -175,6 +176,9 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
     ESP_LOGI(TAG_EVENT, "Fabric removed");
+#ifdef USE_TEXT_SENSOR
+    global_matter_component->schedule_fabric_sensor_update();
+#endif
     // TODO: reopen commissioning window?
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
@@ -182,9 +186,15 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricUpdated:
     ESP_LOGI(TAG_EVENT, "Fabric is updated");
+#ifdef USE_TEXT_SENSOR
+    global_matter_component->schedule_fabric_sensor_update();
+#endif
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
     ESP_LOGI(TAG_EVENT, "Fabric is committed");
+#ifdef USE_TEXT_SENSOR
+    global_matter_component->schedule_fabric_sensor_update();
+#endif
     break;
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
     ESP_LOGD(TAG_EVENT, "DNS-SD restart needed");
@@ -299,6 +309,11 @@ void MatterComponent::setup() {
   }
   this->discriminator_ = discriminator;
   this->passcode_ = passcode;
+  this->generate_commissioning_codes_();
+
+#ifdef USE_TEXT_SENSOR
+  this->publish_commissioning_code_sensors_();
+#endif
 
   // Always update device-name so it stays in sync if the ESPHome device name
   // changes. This is the DN TXT record in _matterc._udp — what controllers show
@@ -352,6 +367,9 @@ void MatterComponent::setup() {
   esp_matter::client::binding_manager_init();
   replay_attribute_triggers(this);
   this->initialize_endpoint_mappings_();
+#ifdef USE_TEXT_SENSOR
+  this->publish_fabric_sensors_();
+#endif
 }
 
 void MatterComponent::factory_reset() {
@@ -367,13 +385,7 @@ void MatterComponent::factory_reset() {
   App.safe_reboot();
 }
 
-void MatterComponent::dump_config() {
-  ESP_LOGCONFIG(TAG, "Matter:");
-  if (this->is_failed()) {
-    ESP_LOGE(TAG, "  Failed to initialize!");
-    return;
-  }
-
+void MatterComponent::generate_commissioning_codes_() {
   chip::SetupPayload payload;
   payload.version = 0;
   payload.vendorID = CHIP_DEVICE_CONFIG_DEVICE_VENDOR_ID;
@@ -388,23 +400,39 @@ void MatterComponent::dump_config() {
   payload.discriminator.SetLongValue(this->discriminator_);
   payload.setUpPINCode = this->passcode_;
 
-  std::string qr_code;
   if (chip::QRCodeSetupPayloadGenerator(payload).payloadBase38Representation(
-          qr_code) == CHIP_NO_ERROR) {
-    ESP_LOGCONFIG(TAG, "  SetupQRCode: %s", qr_code.c_str());
+          this->qr_code_) != CHIP_NO_ERROR) {
+    this->qr_code_.clear();
+    ESP_LOGE(TAG, "  Failed to generate QR code");
+  }
+
+  if (chip::ManualSetupPayloadGenerator(payload)
+          .payloadDecimalStringRepresentation(this->manual_pairing_code_) !=
+      CHIP_NO_ERROR) {
+    this->manual_pairing_code_.clear();
+    ESP_LOGE(TAG, "  Failed to generate manual pairing code");
+  }
+}
+
+void MatterComponent::dump_config() {
+  ESP_LOGCONFIG(TAG, "Matter:");
+  if (this->is_failed()) {
+    ESP_LOGE(TAG, "  Failed to initialize!");
+    return;
+  }
+
+  if (!this->qr_code_.empty()) {
+    ESP_LOGCONFIG(TAG, "  SetupQRCode: %s", this->qr_code_.c_str());
     ESP_LOGCONFIG(
         TAG,
         "  QR URL: "
         "https://project-chip.github.io/connectedhomeip/qrcode.html?data=%s",
-        qr_code.c_str());
-  } else {
-    ESP_LOGE(TAG, "  Failed to generate QR code");
+        this->qr_code_.c_str());
   }
-
-  std::string manual_code;
-  if (chip::ManualSetupPayloadGenerator(payload)
-          .payloadDecimalStringRepresentation(manual_code) == CHIP_NO_ERROR) {
-    ESP_LOGCONFIG(TAG, "  Manual pairing code: %s", manual_code.c_str());
+  if (!this->manual_pairing_code_.empty()) {
+    ESP_LOGCONFIG(
+        TAG, "  Manual pairing code: %s",
+        format_manual_pairing_code(this->manual_pairing_code_).c_str());
   }
 
   chip::DeviceLayer::PlatformMgr().LockChipStack();

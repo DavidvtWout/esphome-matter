@@ -37,19 +37,28 @@ seconds before a command is successfully sent.
 
 So far, `ESP32-C3`, `ESP32-C5`, `ESP32-C6`, `ESP32-S3` and `ESP32-H2` have been tested and confirmed to work!
 
-# Commissioning
+# [Commissioning](docs/commissioning.md)
 
 Because ESPHome devices already have their Wi-Fi or Thread credentials from your YAML configuration, commissioning
 works differently than with most other Matter devices. You still need to commission the device to a Matter fabric, but
 this does not happen over BLE (bluetooth) like with most matter devices.
 
-After flashing, the device prints a setup code (`SetupQRCode`) to the logs on every boot:
+Add the following text sensor to your config to get the pairing code in Home Assistant:
+
+```yaml
+text_sensor:
+  - platform: matter
+    qr_code:
+      name: "Matter QR-code string"
+```
+
+Alternatively, read the setup code (`SetupQRCode`) from the logs after boot:
 
 ```
 [C][matter]: Matter:
 [C][matter]:   SetupQRCode: MT:Y.K904QI14-O992WI00
 [C][matter]:   QR URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K904QI14-O992WI00
-[C][matter]:   Manual pairing code: 32552014321
+[C][matter]:   Manual pairing code: 3255-201-4321
 [C][matter]:   Commissioning window: open
 [C][matter]:   Fabrics: none
 ```
@@ -274,6 +283,8 @@ matter.send_command: some_endpoint.level_control.stop_with_on_off
 
 - As this is based on [Espressif's SDK for Matter (esp-matter)](https://components.espressif.com/components/espressif/esp_matter/) any features/functions not supported there in upstream first can not be supported in this project.
 - BLE commissioning is currently broken and if it wasn't, it cannot be combined with the `api` component because of limitations in the ESPHome `network` component.
+- Mapped covers support lift positions with optional tilt. Absolute positions
+  and tilt-only mappings are unsupported. See [covers](docs/covers.md).
 
 # See Also
 
