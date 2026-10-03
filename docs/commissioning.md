@@ -6,7 +6,7 @@ After flashing the device, a commission code is generated and shown (SetupQRCode
 [C][matter]: Matter:
 [C][matter]:   SetupQRCode: MT:Y.K904QI14-O992WI00
 [C][matter]:   QR URL: https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K904QI14-O992WI00
-[C][matter]:   Manual pairing code: 32552014321
+[C][matter]:   Manual pairing code: 3255-201-4321
 [C][matter]:   Commissioning window: open
 [C][matter]:   Fabrics: none
 ```
@@ -24,12 +24,29 @@ text_sensor:
       name: "Matter QR-code string"
     manual_pairing_code: # Pairing code formatted as 0000-000-0000
       name: "Matter manual pairing code"
+    fabric_1:
+      compressed_fabric_id:
+        name: "Matter fabric 1 compressed ID"
+      fabric_id:
+        name: "Matter fabric 1 ID"
+      label:
+        name: "Matter fabric 1 label"
+      node_id:
+        name: "Matter fabric 1 node ID"
+      vendor_id:
+        name: "Matter fabric 1 vendor ID"
 ```
 
 Both accept the standard [text sensor options](https://esphome.io/components/text_sensor/)
 and default to the diagnostic entity category. Values remain available when
 Home Assistant reconnects. A code value does not indicate whether the
 commissioning window is open; see [Persistence](#persistence) below.
+
+Fabric slots `fabric_1` through `fabric_255` can each expose a `compressed_fabric_id`, `fabric_id`,
+`label`, `node_id`, and `vendor_id` text sensor and are very useful for debugging commissioning issues.
+Slots remain unknown while they have never contained a fabric. When an existing fabric is removed, its
+slot is cleared. However, due to a limitation in the `text_sensor`, the values can't be set back to
+unknown and becomes an empty string until after a restart.
 
 ## Matter reset button
 

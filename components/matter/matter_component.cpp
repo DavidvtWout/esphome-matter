@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cinttypes>
+#include <cstdio>
 #include <cstring>
 #include <esp_matter_client.h>
 #include <esp_random.h>
@@ -57,12 +58,6 @@ static bool is_valid_passcode(uint32_t pin) {
       return false;
   }
   return true;
-}
-
-static std::string format_manual_pairing_code(const std::string &code) {
-  if (code.length() != 11)
-    return code;
-  return code.substr(0, 4) + "-" + code.substr(4, 3) + "-" + code.substr(7, 4);
 }
 
 // Loads existing commissioning data from NVS, or generates random values and
@@ -181,6 +176,9 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
     ESP_LOGI(TAG_EVENT, "Fabric removed");
+#ifdef USE_TEXT_SENSOR
+    global_matter_component->schedule_fabric_sensor_update();
+#endif
     // TODO: reopen commissioning window?
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
@@ -188,9 +186,15 @@ static void event_callback(const ChipDeviceEvent *event, intptr_t arg) {
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricUpdated:
     ESP_LOGI(TAG_EVENT, "Fabric is updated");
+#ifdef USE_TEXT_SENSOR
+    global_matter_component->schedule_fabric_sensor_update();
+#endif
     break;
   case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
     ESP_LOGI(TAG_EVENT, "Fabric is committed");
+#ifdef USE_TEXT_SENSOR
+    global_matter_component->schedule_fabric_sensor_update();
+#endif
     break;
   case chip::DeviceLayer::DeviceEventType::kDnssdRestartNeeded:
     ESP_LOGD(TAG_EVENT, "DNS-SD restart needed");
@@ -308,14 +312,7 @@ void MatterComponent::setup() {
   this->generate_commissioning_codes_();
 
 #ifdef USE_TEXT_SENSOR
-  if (this->manual_pairing_code_sensor_ != nullptr &&
-      !this->manual_pairing_code_.empty()) {
-    this->manual_pairing_code_sensor_->publish_state(
-        format_manual_pairing_code(this->manual_pairing_code_));
-  }
-  if (this->qr_code_sensor_ != nullptr && !this->qr_code_.empty()) {
-    this->qr_code_sensor_->publish_state(this->qr_code_);
-  }
+  this->publish_commissioning_code_sensors_();
 #endif
 
   // Always update device-name so it stays in sync if the ESPHome device name
@@ -370,6 +367,9 @@ void MatterComponent::setup() {
   esp_matter::client::binding_manager_init();
   replay_attribute_triggers(this);
   this->initialize_endpoint_mappings_();
+#ifdef USE_TEXT_SENSOR
+  this->publish_fabric_sensors_();
+#endif
 }
 
 void MatterComponent::factory_reset() {

@@ -4,9 +4,7 @@
 #ifdef USE_MATTER
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
-#ifdef USE_TEXT_SENSOR
-#include "esphome/components/text_sensor/text_sensor.h"
-#endif
+#include "matter_text_sensors.h"
 
 #include "matter_attributes.h"
 #include "matter_endpoints.h"
@@ -42,6 +40,14 @@ public:
   void set_qr_code_sensor(text_sensor::TextSensor *sensor) {
     this->qr_code_sensor_ = sensor;
   }
+  void set_fabric_compressed_id_sensor(size_t slot,
+                                       text_sensor::TextSensor *sensor);
+  void set_fabric_id_sensor(size_t slot, text_sensor::TextSensor *sensor);
+  void set_fabric_label_sensor(size_t slot, text_sensor::TextSensor *sensor);
+  void set_fabric_node_id_sensor(size_t slot, text_sensor::TextSensor *sensor);
+  void set_fabric_vendor_id_sensor(size_t slot,
+                                   text_sensor::TextSensor *sensor);
+  void schedule_fabric_sensor_update();
 #endif
 
   // Register Matter endpoints
@@ -116,6 +122,10 @@ private:
 #ifdef USE_TEXT_SENSOR
   text_sensor::TextSensor *manual_pairing_code_sensor_{nullptr};
   text_sensor::TextSensor *qr_code_sensor_{nullptr};
+  std::vector<MatterFabricSensorRegistration> fabric_sensors_;
+  MatterFabricSensorRegistration &get_fabric_sensors_(size_t slot);
+  void publish_commissioning_code_sensors_();
+  void publish_fabric_sensors_();
 #endif
 
   std::vector<MatterEndpointRegistration> endpoint_registrations_;
