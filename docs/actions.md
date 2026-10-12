@@ -152,7 +152,7 @@ OnOff commands are used for simple binary devices such as lights, plugs and rela
 ```yaml
 # Turn off, turn on, or toggle a bound device. These have no arguments so the shorthand notation is possible.
 matter.send_command: some_endpoint.on_off.on
-matter.send_command: some_endpoint.on_off.on
+matter.send_command: some_endpoint.on_off.off
 matter.send_command: some_endpoint.on_off.toggle
 
 # Turn off with a visual effect, if the bound device supports it.
