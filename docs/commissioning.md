@@ -101,6 +101,9 @@ controller. The original code can be used again after a Matter factory reset.
 
 The fabric data is also stored on flash (nvs partition) and also survives ota updates. The fabric itself is independent of the hardware layer (wifi or thread). This means that it's even possible to commission a device over wifi and later substitute the wifi component with openthread (as long as the hardware supports both) and you don't need to re-commission!
 
+Keep the NVS partition and endpoint IDs stable across updates. For discovery
+problems after a Thread reboot, see [Thread debugging](dev/thread-debugging.md#commissioned-devices-after-reboot).
+
 # Multiple fabrics
 
 Up to 5 fabrics are supported by default, but if needed, this can be increased with the `CONFIG_MAX_FABRICS` sdkconfig option:
