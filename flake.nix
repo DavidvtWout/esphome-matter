@@ -30,15 +30,6 @@
                 -e 's/"wheel[^"]*"/"wheel"/' \
                 pyproject.toml
             '';
-            dependencies =
-              old.dependencies
-              ++ (with pkgs.python3.pkgs; [
-                (toPythonModule pkgs.platformio-core)
-                filelock
-                ninja
-                platformdirs
-                pytest
-              ]);
             doCheck = false;
           }
           // extraOverrides
