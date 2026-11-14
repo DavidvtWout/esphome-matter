@@ -7,6 +7,9 @@
     "chip_fqn": "chip::app::Clusters::BindingCluster",
     "chip_include": "#include <app/clusters/bindings/BindingCluster.h>"
   },
+  "Window Covering": {
+    "chip_fqn": null
+  },
   "Access Control": {
     "chip_include": null
   },

@@ -52,7 +52,7 @@ REQUIRED_DEVICE_TYPES = [
     # "video_doorbell",
     # "chime",
     # "doorbell",
-    # "window_covering",
+    "window_covering",
     # "closure",
     # "closure_panel",
     # "closure_controller",

@@ -5,10 +5,16 @@ from pathlib import Path
 
 import esphome.config_validation as cv
 from esphome import automation
-from esphome.components import light
+from esphome.components import cover, light
 from esphome.const import CONF_LIGHT_ID
 
-from ..const import CONF_MAX_LEVEL, CONF_MIN_LEVEL, CONF_WITH_FEATURES
+from ..const import (
+    CONF_COVER_ID,
+    CONF_END_PRODUCT_TYPE,
+    CONF_MAX_LEVEL,
+    CONF_MIN_LEVEL,
+    CONF_WITH_FEATURES,
+)
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
 from .clusters import CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster, Feature
@@ -146,6 +152,17 @@ class DeviceType:
         # TODO: replace with something better
         if self.name.endswith("light"):
             schema[cv.Optional(CONF_LIGHT_ID)] = cv.use_id(light.LightState)
+
+        if self.name == "window_covering":
+            schema[cv.Optional(CONF_COVER_ID)] = cv.use_id(cover.Cover)
+            schema[cv.Optional(CONF_END_PRODUCT_TYPE)] = cv.enum(
+                {
+                    "roller_shade": 0x00,
+                    "interior_venetian_blind": 0x0C,
+                    "exterior_venetian_blind": 0x0D,
+                },
+                lower=True,
+            )
 
         if self.name.endswith("light") and any(
             cluster.name == "LevelControl" and cluster.required

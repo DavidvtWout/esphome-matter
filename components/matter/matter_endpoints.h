@@ -20,16 +20,23 @@ struct MatterEndpointRegistration {
 
 using MatterFeatureAddFn = esp_err_t (*)(esp_matter::cluster_t *);
 
+// esp-matter's legacy window covering feature add returns ESP_ERR_NOT_FINISHED
+// when the persisted attribute already holds the value it sets. The feature is
+// added, and esp-matter itself treats that code as "nothing to report".
+inline esp_err_t feature_add_result(esp_err_t err) {
+  return err == ESP_ERR_NOT_FINISHED ? ESP_OK : err;
+}
+
 inline esp_err_t add_feature(esp_matter::cluster_t *cluster,
                              MatterFeatureAddFn add_fn) {
-  return add_fn(cluster);
+  return feature_add_result(add_fn(cluster));
 }
 
 template <typename ConfigT>
 esp_err_t add_feature(esp_matter::cluster_t *cluster,
                       esp_err_t (*add_fn)(esp_matter::cluster_t *, ConfigT *)) {
   ConfigT config{};
-  return add_fn(cluster, &config);
+  return feature_add_result(add_fn(cluster, &config));
 }
 
 class MatterEndpointMappingBase {

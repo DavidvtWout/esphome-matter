@@ -107,6 +107,8 @@ jobs:
         config:
           - tests/configs/esp32-thread.yaml
           - tests/configs/esp32-wifi.yaml
+          - tests/configs/esp32-window-covering.yaml
+          - tests/configs/esp32-thread-window-covering.yaml
         esphome-version:
           - 2026.9.1
 

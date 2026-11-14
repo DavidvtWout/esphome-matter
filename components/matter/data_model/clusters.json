@@ -15462,6 +15462,7 @@
   },
   "258": {
     "name": "Window Covering",
+    "chip_fqn": null,
     "revision": 8,
     "features": {
       "0": {

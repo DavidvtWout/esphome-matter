@@ -248,6 +248,24 @@ class Endpoint:
                 )
 
             resulting_codes = enabled_codes | inferred_codes
+            # ESPHome covers report normalized positions, so mapping one needs
+            # position awareness per axis. Adapter limitation, not conformance.
+            if (
+                cluster.name == "WindowCovering"
+                and CONF_COVER_ID in self._config.get("window_covering", {})
+                and (
+                    "ABS" in resulting_codes
+                    or not resulting_codes & {"PA_LF", "PA_TL"}
+                    or any(
+                        axis in resulting_codes and f"PA_{axis}" not in resulting_codes
+                        for axis in ("LF", "TL")
+                    )
+                )
+            ):
+                raise cv.Invalid(
+                    "Mapped ESPHome covers need position_aware_lift or "
+                    "position_aware_tilt for each enabled axis and no absolute_position"
+                )
             choices = defaultdict(list)
             for feature in cluster.features:
                 if feature.conformance is not None and feature.conformance.choice:
@@ -371,6 +389,10 @@ class Endpoint:
             self._light_variables[device_type.name] = light_
             cg.add(var.register_light(light_, self._endpoint_id))
 
+        if CONF_COVER_ID in device_config:
+            cover_ = await cg.get_variable(device_config[CONF_COVER_ID])
+            cg.add(var.register_cover(cover_, self._endpoint_id))
+
         # Register extra features
         for enabled_feature in device_config.get(CONF_WITH_FEATURES, ()):
             for cluster in device_type.server_clusters:
@@ -380,11 +402,25 @@ class Endpoint:
 
     def _make_device_type_lines(self, device_type: DeviceType, index: int):
         config_var = f"device_config_{index}"
-        lines = [
-            f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{}};"
-        ]
-
         device_config = self._config[device_type.conf_key]
+        if device_type.name == "window_covering":
+            features = self._cluster_configs["WindowCovering"].enabled_features
+            lift, tilt = features.get("Lift"), features.get("Tilt")
+            # Matter Type: roller shade, tilt-only blind, or lift-and-tilt blind.
+            covering_type = (0x08 if lift else 0x07) if tilt else 0x00
+            # EndProductType: interior venetian blind when tilting, else roller shade.
+            end_product_type = 0x0C if tilt else 0x00
+            if CONF_END_PRODUCT_TYPE in device_config:
+                end_product_type = device_config[CONF_END_PRODUCT_TYPE].enum_value
+            lines = [
+                f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{0x{end_product_type:02X}}};",
+                f"{config_var}.window_covering.type = 0x{covering_type:02X};",
+            ]
+        else:
+            lines = [
+                f"esp_matter::endpoint::{device_type.namespace}::config_t {config_var}{{}};"
+            ]
+
         if min_level := device_config.get(CONF_MIN_LEVEL):
             lines.append(f"{config_var}.level_control.min_level = {min_level};")
         if max_level := device_config.get(CONF_MAX_LEVEL):
