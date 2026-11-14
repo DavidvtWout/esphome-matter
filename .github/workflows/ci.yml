@@ -34,8 +34,9 @@ jobs:
     strategy:
       matrix:
         esphome-version:
-          - 2026.6.0
-          - 2026.7.4
+          - 2026.8.1
+          - 2026.9.1
+          - 2026.10.2
 
     steps:
       - name: Check out repository
@@ -71,7 +72,7 @@ jobs:
       - name: Install ESPHome
         run: |
           python -m venv .venv
-          .venv/bin/python -m pip install "esphome==2026.7.4" pytest
+          .venv/bin/python -m pip install "esphome==2026.9.1" pytest
 
       - name: Read esp-matter version
         id: esp-matter
@@ -107,8 +108,7 @@ jobs:
           - tests/configs/esp32-thread.yaml
           - tests/configs/esp32-wifi.yaml
         esphome-version:
-          # - 2026.6.0
-          - 2026.7.4
+          - 2026.9.1
 
     steps:
       - name: Check out repository
@@ -166,7 +166,7 @@ jobs:
     strategy:
       matrix:
         esphome-version:
-          - 2026.7.4
+          - 2026.9.1
         esp32-variant:
           # - ESP32
           # - ESP32C2
@@ -214,7 +214,7 @@ jobs:
     strategy:
       matrix:
         esphome-version:
-          - 2026.7.4
+          - 2026.9.1
         esp32-variant:
           # - ESP32C5
           # - ESP32C6
