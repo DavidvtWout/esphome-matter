@@ -17,7 +17,12 @@ from esphome.types import ConfigType
 from .actions import get_attribute_from_config, get_event_from_config
 from .const import *
 from .data_model.attributes import Attribute, SensorAttribute, attribute_value_type
-from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME, Cluster
+from .data_model.clusters import (
+    CLUSTERS,
+    CLUSTERS_BY_CONF_KEY,
+    CLUSTERS_BY_NAME,
+    Cluster,
+)
 from .data_model.conformance import (
     ConformanceDisposition,
     ConformanceError,
@@ -97,6 +102,11 @@ ENDPOINT_SCHEMA = cv.All(
     ),
     _validate_on_attribute_forms,
 )
+
+
+def _lookup_cluster(key):
+    # Keys in `clusters:` are snake_case conf keys, not display names.
+    return CLUSTERS_BY_CONF_KEY.get(key) or CLUSTERS_BY_NAME[key]
 
 
 @dataclass
@@ -194,7 +204,7 @@ class Endpoint:
                 usages_by_cluster[cluster.id].append(usage)
 
         for cluster_name in self._config[CONF_CLUSTERS]:
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+            cluster = _lookup_cluster(cluster_name)
             clusters_by_id[cluster.id] = cluster
 
         for config_key, device_config in self._config.items():
@@ -301,9 +311,10 @@ class Endpoint:
                 await self._configure_device_type(var, device_type, device_config)
 
         for cluster_name, config in self._config[CONF_CLUSTERS].items():
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+            cluster = _lookup_cluster(cluster_name)
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
-            cluster_config = self._cluster_configs[cluster_name]
+            # Key by the display name like everywhere else; otherwise one cluster gets two entries and is created twice.
+            cluster_config = self._cluster_configs[cluster.name]
             for configured_feature in config.get(CONF_WITH_FEATURES, ()):
                 if feature := cluster.get_feature(configured_feature):
                     cluster_config.enabled_features[feature.name] = True
@@ -510,7 +521,10 @@ class Endpoint:
             feature_flags.append(
                 f"{cluster_ns}::feature::{feature.namespace}::get_id()"
             )
-        if feature_flags:
+        # esp-matter's fan_control config_t has no feature_flags member: its features are added with add() after the
+        # cluster has been created.
+        add_after_create = cluster.espm_namespace in ("fan_control",)
+        if feature_flags and not add_after_create:
             lines.append(f"{config_var}.feature_flags = {' | '.join(feature_flags)};")
         lines.extend(
             (
@@ -518,6 +532,25 @@ class Endpoint:
                 "  return false;",
             )
         )
+        if feature_flags and add_after_create:
+            cluster_var = f"{cluster.espm_namespace}_cluster"
+            lines.extend(
+                (
+                    f"auto *{cluster_var} = esp_matter::cluster::get(endpoint, {cluster.id});",
+                    f"if ({cluster_var} == nullptr)",
+                    "  return false;",
+                )
+            )
+            for feature_name, enabled in cluster_config.enabled_features.items():
+                if not enabled:
+                    continue
+                feature = features_by_name[feature_name]
+                lines.extend(
+                    (
+                        f"if (esphome::matter::add_feature({cluster_var}, {cluster_ns}::feature::{feature.namespace}::add) != ESP_OK)",
+                        "  return false;",
+                    )
+                )
         return lines
 
     def _make_build_callback(self) -> str:
@@ -529,7 +562,7 @@ class Endpoint:
 
         for cluster_name, cluster_config in self._cluster_configs.items():
             if not cluster_config.created:
-                lines.extend(self._make_cluster_lines(CLUSTERS_BY_NAME[cluster_name]))
+                lines.extend(self._make_cluster_lines(_lookup_cluster(cluster_name)))
 
         # Choice features must be present in the config used to create their
         # cluster. Other features on device-type-created clusters are added
@@ -537,7 +570,7 @@ class Endpoint:
         for cluster_name, cluster_config in self._cluster_configs.items():
             if not cluster_config.created:
                 continue
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+            cluster = _lookup_cluster(cluster_name)
             features_by_name = {feature.name: feature for feature in cluster.features}
             direct_features = [
                 features_by_name[feature_name]
