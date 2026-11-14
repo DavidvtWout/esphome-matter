@@ -41,6 +41,12 @@
       esphome-2026_9_1 =
         mkEsphomeOverride "esphome" "2026.9.1" "sha256-/sXrTLZidx+pEi0U47dPwReHqZjb/nDviAThLQCo0HY="
           { };
+      esphome-2026_10_0 =
+        mkEsphomeOverride "esphome" "2026.10.0" "sha256-0JCrry+AOLY5dmXJWrE5O7uCCDQk5/nKTKI3c+Hf69I="
+          { };
+      esphome-2026_10_1 =
+        mkEsphomeOverride "esphome" "2026.10.1" "sha256-JsPHa3aKHfSSdn31xGSn/+cKynQR8urmegDzCpZTjv0="
+          { };
       esphome-2026_10_2 =
         mkEsphomeOverride "esphome" "2026.10.2" "sha256-DMz0dy8mYUglNP036EwVfPr6A0gIoA/YAk80+hhAwfM="
           { };
@@ -81,11 +87,14 @@
       checks.${system}.pre-commit = preCommitCheck;
       formatter.${system} = pkgs.nixfmt;
 
+      # Enter dev shell with `nix develop`
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
           my-esphome
           (mkEsphomeCommand "2026.8.1" esphome-2026_8_1)
           (mkEsphomeCommand "2026.9.1" esphome-2026_9_1)
+          (mkEsphomeCommand "2026.10.0" esphome-2026_10_0)
+          (mkEsphomeCommand "2026.10.1" esphome-2026_10_1)
           (mkEsphomeCommand "2026.10.2" esphome-2026_10_2)
           esptool
         ];
