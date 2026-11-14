@@ -1,0 +1,81 @@
+esphome:
+  name: matter-ci-ethernet
+
+substitutions:
+  esp32_variant: ESP32
+
+esp32:
+  toolchain: platformio
+  variant: ${esp32_variant}
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+
+api:
+
+network:
+  enable_ipv6: true
+
+ethernet:
+  type: LAN8720
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk:
+    pin: GPIO17
+    mode: CLK_OUT
+  phy_addr: 0
+
+matter:
+  endpoints:
+    1:
+      id: dimmer_endpoint
+      dimmer_switch:
+    2:
+      temperature_sensor:
+        temperature: internal_temp
+
+binary_sensor:
+  - id: button_up
+    platform: gpio
+    pin:
+      number: GPIO0
+      mode:
+        pullup: true
+        input: true
+      inverted: true
+    on_click:
+      matter.send_command: dimmer_endpoint.on_off.on
+    on_press:
+      matter.send_command:
+        path: dimmer_endpoint.level_control.move_with_on_off
+        arguments:
+          move_mode: 0
+          rate: 50
+    on_release:
+      matter.send_command: dimmer_endpoint.level_control.stop_with_on_off
+  - id: button_down
+    platform: gpio
+    pin:
+      number: GPIO1
+      mode:
+        pullup: true
+        input: true
+      inverted: true
+    on_click:
+      matter.send_command: dimmer_endpoint.on_off.off
+    on_press:
+      matter.send_command:
+        path: dimmer_endpoint.level_control.move_with_on_off
+        arguments:
+          move_mode: 1
+          rate: 50
+    on_release:
+      matter.send_command: dimmer_endpoint.level_control.stop_with_on_off
+
+sensor:
+  - platform: internal_temperature
+    id: internal_temp

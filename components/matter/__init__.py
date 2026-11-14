@@ -193,7 +193,7 @@ async def to_code(config: ConfigType):
 
     add_idf_component(
         name="davidvtwout/esp_matter",
-        ref=ESP_MATTER_VERSION,
+        path="/path/to/fork",  # TEMP: local test
     )
 
     cg.add_define("USE_MATTER")
@@ -225,7 +225,7 @@ async def to_code(config: ConfigType):
     use_wifi = "wifi" in CORE.loaded_integrations
     use_ethernet = "ethernet" in CORE.loaded_integrations
     # has_connectivity determines whether the device should be commissioned over BLE or not.
-    has_connectivity = use_openthread or use_wifi  # or use_ethernet
+    has_connectivity = use_openthread or use_wifi or use_ethernet
 
     # CONFIG_USE_MINIMAL_MDNS=n makes connectedhomeip use the espressif/mdns component.
     add_idf_sdkconfig_option("CONFIG_USE_MINIMAL_MDNS", False)
@@ -240,7 +240,7 @@ async def to_code(config: ConfigType):
     if use_openthread or not has_connectivity:
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_NUM_ADDRESSES", 6)
 
-    if use_openthread or use_wifi:
+    if use_openthread or use_wifi or use_ethernet:
         # Force the Matter DNS-SD bridge object into the final link. ESP-IDF/PlatformIO may compile
         # component sources that the static-link step still discards unless an exported symbol is referenced.
         cg.add_build_flag("-Wl,-u,esphome_matter_link_dnssd")
@@ -261,8 +261,12 @@ async def to_code(config: ConfigType):
         # lwIP must add the route to the thread network via the border router to its routing table.
         add_idf_sdkconfig_option("CONFIG_LWIP_IPV6_ND6_ROUTE_INFO_OPTION_SUPPORT", True)
 
-    # Has nothing to do with telemetry... But this is how connectedhomeip names the option that enables ethernet.
-    add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", use_ethernet)
+    # Has nothing to do with telemetry... This is how connectedhomeip names the option that enables its own
+    # Ethernet driver (EMAC + PHY init). ESPHome's ethernet component owns the netif, so keep this disabled.
+    add_idf_sdkconfig_option("CONFIG_ENABLE_ETHERNET_TELEMETRY", False)
+
+    # Ethernet is owned by ESPHome, so esp-matter must not install its own Ethernet driver or touch the hardware.
+    add_idf_sdkconfig_option("CONFIG_ESP_MATTER_APPLICATION_OWNS_NETWORK_INTERFACE", use_ethernet)
 
     # CONFIG_ENABLE_CHIPOBLE is enabled by default and must explicitly be disabled when not needed.
     add_idf_sdkconfig_option("CONFIG_ENABLE_CHIPOBLE", not has_connectivity)
