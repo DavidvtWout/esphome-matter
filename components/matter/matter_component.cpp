@@ -375,13 +375,13 @@ void MatterComponent::setup() {
   CHIP_ERROR advertising_error = chip::DeviceLayer::PlatformMgr().ScheduleWork(
       [](intptr_t) { chip::app::DnssdServer::Instance().StartServer(); }, 0);
   if (advertising_error != CHIP_NO_ERROR) {
-    ESP_LOGE(TAG, "Failed to schedule Thread Matter service advertising: "
-                  "0x%08" PRIx32,
+    ESP_LOGE(TAG,
+             "Failed to schedule Thread Matter service advertising: "
+             "0x%08" PRIx32,
              static_cast<uint32_t>(advertising_error.AsInteger()));
-    this->mark_failed();
-    return;
+  } else {
+    ESP_LOGD(TAG, "Scheduled Thread Matter operational advertisement");
   }
-  ESP_LOGD(TAG, "Scheduled Thread Matter operational advertisement");
 #endif // USE_OPENTHREAD
 
   esp_matter::client::binding_manager_init();
