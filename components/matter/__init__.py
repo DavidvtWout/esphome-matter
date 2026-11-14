@@ -207,6 +207,16 @@ async def to_code(config: ConfigType):
 
     add_idf_sdkconfig_option("CONFIG_MBEDTLS_HKDF_C", True)
     try:
+        from esphome.components.esp32 import require_mbedtls_tls_extras
+
+        # connectedhomeip's crypto PAL uses AES-CCM (mbedtls_ccm_*). Since ESPHome 2026.10
+        # CONFIG_MBEDTLS_CCM_C is trimmed unless a component requires it, so without this the
+        # link fails with "undefined reference to mbedtls_ccm_init" (Matter over WiFi).
+        require_mbedtls_tls_extras(("CONFIG_MBEDTLS_CCM_C",))
+    except ImportError:
+        # Older ESPHome does not trim CCM, nothing to request.
+        pass
+    try:
         from esphome.components.esp32 import require_certificate_bundle
 
         # Supported from ESPHome 2026.9.0
