@@ -25,6 +25,8 @@
 #endif // CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <lib/support/Base64.h>
 #ifdef USE_OPENTHREAD
+#include <esp_netif.h>
+#include <esp_openthread_netif_glue.h>
 #include <openthread/ip6.h>
 #endif // USE_OPENTHREAD
 #include <setup_payload/ManualSetupPayloadGenerator.h>
@@ -352,6 +354,16 @@ void MatterComponent::setup() {
     this->mark_failed();
     return;
   }
+#ifndef USE_OPENTHREAD_BORDER_ROUTER
+  // ESPHome 2026.10 starts OpenThread with esp_openthread_start(), which does
+  // not make the Thread netif the default route. Matter's UDP replies to
+  // controllers outside the mesh are then dropped.
+  if (esp_netif_t *netif = esp_openthread_get_netif(); netif != nullptr) {
+    if (esp_err_t err = esp_netif_set_default_netif(netif); err != ESP_OK)
+      ESP_LOGW(TAG, "Failed to make Thread the default route: %s",
+               esp_err_to_name(err));
+  }
+#endif // USE_OPENTHREAD_BORDER_ROUTER
 #endif // USE_OPENTHREAD
 
   /* Matter start */
