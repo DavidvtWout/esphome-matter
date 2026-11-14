@@ -44,15 +44,16 @@
           // extraOverrides
         );
 
-      esphome-2026_7_0 =
-        mkEsphomeOverride "esphome" "2026.7.0" "sha256-MupDWgc2w913z3POrSIX4YtDqLfCbKqHGAJbzpR8vGc="
-          { };
-      esphome-2026_7_1 =
-        mkEsphomeOverride "esphome" "2026.7.1" "sha256-8D+aqAd4WZQQ29cirNdfHTyffTzEt77cRlUmDutTB5I="
-          { };
       esphome-2026_8_1 =
         mkEsphomeOverride "esphome" "2026.8.1" "sha256-zSO7zVBcDiPGOmjMoYDnGYdZSHFRDOzl3iG+I+ybmQM="
           { };
+      esphome-2026_9_1 =
+        mkEsphomeOverride "esphome" "2026.9.1" "sha256-/sXrTLZidx+pEi0U47dPwReHqZjb/nDviAThLQCo0HY="
+          { };
+      esphome-2026_10_2 =
+        mkEsphomeOverride "esphome" "2026.10.2" "sha256-DMz0dy8mYUglNP036EwVfPr6A0gIoA/YAk80+hhAwfM="
+          { };
+
       my-esphome =
         mkEsphomeOverride "DavidvtWout" "openthread-logging"
           "sha256-/sXrTLZidx+pEi0U47dPwReHqZjb/nDviAThLQCo0HY="
@@ -60,6 +61,12 @@
             version = "2026.9.0-dev";
             patches = [ ];
           };
+
+      mkEsphomeCommand =
+        version: package:
+        pkgs.writeShellScriptBin "esphome-${version}" ''
+          exec ${package}/bin/esphome "$@"
+        '';
 
       preCommitCheck = pre-commit-hooks.lib.${system}.run {
         src = ./.;
@@ -86,10 +93,9 @@
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
           my-esphome
-          # esphome  # 2026.6.5 from nixpkgs-unstable
-          # esphome-2026_7_0
-          # esphome-2026_7_1
-          # esphome-2026_8_1
+          (mkEsphomeCommand "2026.8.1" esphome-2026_8_1)
+          (mkEsphomeCommand "2026.9.1" esphome-2026_9_1)
+          (mkEsphomeCommand "2026.10.2" esphome-2026_10_2)
           esptool
         ];
         shellHook = ''
