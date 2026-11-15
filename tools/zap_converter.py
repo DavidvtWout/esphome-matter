@@ -1,10 +1,10 @@
 import argparse
-import json
-import re
-import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
+import json
 from pathlib import Path
+import re
+import sys
 from typing import Any
 from xml.etree import ElementTree
 
@@ -1387,14 +1387,14 @@ def parse_args() -> argparse.Namespace:
         nargs="?",
         type=Path,
         default=Path("../../connectedhomeip/src/app/zap-templates/zcl/data-model/chip"),
-        help=f"path to the ZAP data model",
+        help="path to the ZAP data model",
     )
     parser.add_argument(
         "output_path",
         nargs="?",
         type=Path,
         default=Path("../components/matter/data_model"),
-        help=f"output path",
+        help="output path",
     )
     return parser.parse_args()
 
@@ -1423,34 +1423,34 @@ def main():
     device_types = post_process_device_types(raw_device_types, raw_clusters)
     fixup(device_types)
 
-    with open(args.output_path / "overrides" / "commands.json") as file:
+    with Path(args.output_path / "overrides" / "commands.json").open() as file:
         command_overrides = json.load(file)
     apply_command_overrides(commands, command_overrides)
     clusters = post_process_clusters(raw_clusters, commands, events)
 
-    with open(args.output_path / "overrides" / "clusters.json") as file:
+    with Path(args.output_path / "overrides" / "clusters.json").open() as file:
         cluster_overrides = json.load(file)
     apply_cluster_overrides(clusters, cluster_overrides)
 
-    with open(args.output_path / "device_types.json", "w") as file:
+    with Path(args.output_path / "device_types.json").open("w") as file:
         json.dump(device_types, file, indent=2)
 
-    with open(args.output_path / "clusters.json", "w") as file:
+    with Path(args.output_path / "clusters.json").open("w") as file:
         json.dump(clusters, file, indent=2)
 
     documentation_path = Path(__file__).resolve().parent.parent / "docs" / "generated"
     documentation_path.mkdir(parents=True, exist_ok=True)
-    with open(documentation_path / "commands.md", "w") as file:
+    with Path(documentation_path / "commands.md").open("w") as file:
         file.write(generate_command_documentation(documentation_clusters, commands))
     # with open(documentation_path / "attributes.md", "w") as file:
     #     file.write(generate_attribute_documentation(documentation_clusters))
-    with open(documentation_path / "device_types.md", "w") as file:
+    with Path(documentation_path / "device_types.md").open("w") as file:
         file.write(
             generate_device_type_documentation(
                 device_types, documentation_device_types, documentation_clusters
             )
         )
-    with open(documentation_path / "events.md", "w") as file:
+    with Path(documentation_path / "events.md").open("w") as file:
         file.write(generate_event_documentation(documentation_clusters, events))
 
     arg_types = defaultdict(int)

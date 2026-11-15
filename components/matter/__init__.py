@@ -1,32 +1,26 @@
 import logging
 
 import esphome.codegen as cg
-import esphome.config_validation as cv
-import esphome.final_validate as fv
 from esphome.components.esp32 import (
     add_idf_component,
     add_idf_sdkconfig_option,
     require_vfs_select,
 )
+import esphome.config_validation as cv
 from esphome.const import (
     CONF_ENABLE_IPV6,
     CONF_ID,
     Framework,
-)
-from esphome.const import (
     __version__ as ESPHOME_VERSION,
 )
 from esphome.core import CORE, HexInt
 from esphome.coroutine import CoroPriority, coroutine_with_priority
+import esphome.final_validate as fv
 from esphome.types import ConfigType
 
 from .actions import register_bound_command_actions
 from .const import *
-from .endpoints import (
-    ENDPOINT_SCHEMA,
-    build_endpoints,
-    register_endpoints,
-)
+from .endpoints import ENDPOINT_SCHEMA, build_endpoints, register_endpoints
 from .types import MatterComponent
 
 _LOGGER = logging.getLogger(__name__)
@@ -107,7 +101,7 @@ def _require_platformio_toolchain(config):
 
 def _truncate(string: str, length: int):
     if len(string) > length:
-        _LOGGER.warning(f"{string} got truncated to {length} characters")
+        _LOGGER.warning("%s got truncated to %s characters", string, length)
         return string[:length]
     return string
 

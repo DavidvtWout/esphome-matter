@@ -17,29 +17,25 @@
 namespace {
 static const char *const TAG = "matter.wifi";
 bool wifi_events_registered{false};
-} // namespace
+}  // namespace
 
 namespace chip::DeviceLayer {
 class ConnectivityManagerImpl;
-} // namespace chip::DeviceLayer
+}  // namespace chip::DeviceLayer
 
-extern "C" CHIP_ERROR esphome_matter_real_connectivity_init_wifi(
-    chip::DeviceLayer::ConnectivityManagerImpl
-        *self) asm("__real__"
-                   "ZN4chip11DeviceLayer23ConnectivityManagerImpl8InitWiFiEv");
-extern "C" CHIP_ERROR esphome_matter_wrap_connectivity_init_wifi(
-    chip::DeviceLayer::ConnectivityManagerImpl
-        *self) asm("__wrap__"
-                   "ZN4chip11DeviceLayer23ConnectivityManagerImpl8InitWiFiEv");
-extern "C" CHIP_ERROR esphome_matter_wrap_connectivity_init_wifi(
-    chip::DeviceLayer::ConnectivityManagerImpl *self) {
+extern "C" CHIP_ERROR esphome_matter_real_connectivity_init_wifi(chip::DeviceLayer::ConnectivityManagerImpl *self) asm(
+    "__real__"
+    "ZN4chip11DeviceLayer23ConnectivityManagerImpl8InitWiFiEv");
+extern "C" CHIP_ERROR esphome_matter_wrap_connectivity_init_wifi(chip::DeviceLayer::ConnectivityManagerImpl *self) asm(
+    "__wrap__"
+    "ZN4chip11DeviceLayer23ConnectivityManagerImpl8InitWiFiEv");
+extern "C" CHIP_ERROR esphome_matter_wrap_connectivity_init_wifi(chip::DeviceLayer::ConnectivityManagerImpl *self) {
   CHIP_ERROR err = esphome_matter_real_connectivity_init_wifi(self);
   if (err != CHIP_NO_ERROR)
     return err;
 
   err = chip::DeviceLayer::ConnectivityMgr().SetWiFiStationMode(
-      chip::DeviceLayer::ConnectivityManager::
-          kWiFiStationMode_ApplicationControlled);
+      chip::DeviceLayer::ConnectivityManager::kWiFiStationMode_ApplicationControlled);
   if (err != CHIP_NO_ERROR) {
     ESP_LOGE(TAG,
              "Failed to set CHIP Wi-Fi station mode to application-controlled: "
@@ -59,16 +55,14 @@ extern "C" CHIP_ERROR esphome_matter_wrap_esp32_init_wifi_stack() {
     return CHIP_NO_ERROR;
 
   ESP_LOGV(TAG, "Skipping CHIP Wi-Fi stack init; ESPHome owns Wi-Fi");
-  esp_err_t err = esp_event_handler_register(
-      WIFI_EVENT, ESP_EVENT_ANY_ID,
-      chip::DeviceLayer::PlatformManagerImpl::HandleESPSystemEvent, nullptr);
+  esp_err_t err = esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
+                                             chip::DeviceLayer::PlatformManagerImpl::HandleESPSystemEvent, nullptr);
   if (err != ESP_OK) {
-    ESP_LOGE(TAG, "Failed to register CHIP Wi-Fi event handler: %s",
-             esp_err_to_name(err));
+    ESP_LOGE(TAG, "Failed to register CHIP Wi-Fi event handler: %s", esp_err_to_name(err));
     return chip::DeviceLayer::Internal::ESP32Utils::MapError(err);
   }
   wifi_events_registered = true;
   return CHIP_NO_ERROR;
 }
 
-#endif // USE_MATTER && USE_WIFI
+#endif  // USE_MATTER && USE_WIFI

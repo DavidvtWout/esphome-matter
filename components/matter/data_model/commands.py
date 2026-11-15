@@ -105,8 +105,7 @@ class Field:
             return cv.Required(conf_key)
         if self.default is not None:
             return cv.Optional(conf_key, default=self.default)
-        else:
-            return cv.Optional(conf_key)
+        return cv.Optional(conf_key)
 
     def _validate_enum(self, value):
         if isinstance(value, int):

@@ -1,6 +1,6 @@
+from dataclasses import dataclass, field
 import json
 import logging
-from dataclasses import dataclass, field
 from pathlib import Path
 
 import esphome.config_validation as cv
@@ -189,7 +189,7 @@ def _load_clusters(
     clusters_file: Path = Path(__file__).resolve().parent / "clusters.json",
 ) -> tuple[Cluster, ...]:
     clusters: list[Cluster] = []
-    with open(clusters_file, "r") as file:
+    with Path(clusters_file).open() as file:
         contents = json.load(file)
     for cluster_id, cluster_data in contents.items():
         clusters.append(Cluster.from_dict({"id": int(cluster_id), **cluster_data}))

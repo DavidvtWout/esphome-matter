@@ -1,5 +1,5 @@
-import esphome.codegen as cg
 from esphome import automation
+import esphome.codegen as cg
 
 matter_ns = cg.esphome_ns.namespace("matter")
 

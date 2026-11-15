@@ -8,9 +8,9 @@ DATA_MODEL_DIR = Path(__file__).parents[2] / "components" / "matter" / "data_mod
 
 @pytest.fixture(scope="module")
 def data_model() -> tuple[dict, dict]:
-    with open(DATA_MODEL_DIR / "clusters.json") as file:
+    with Path(DATA_MODEL_DIR / "clusters.json").open() as file:
         clusters = json.load(file)
-    with open(DATA_MODEL_DIR / "device_types.json") as file:
+    with Path(DATA_MODEL_DIR / "device_types.json").open() as file:
         device_types = json.load(file)
     return clusters, device_types
 

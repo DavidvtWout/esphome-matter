@@ -1,9 +1,9 @@
 import os
-import re
 from pathlib import Path
+import re
 
-import pytest
 from esphome.core import CORE
+import pytest
 
 REPO_DIR = Path(__file__).parents[2]
 ESP_MATTER_COMPONENT = "davidvtwout__esp_matter"

@@ -1,16 +1,14 @@
-import logging
 from collections import defaultdict
 from dataclasses import dataclass, field
+import logging
 
-import esphome.codegen as cg
-import esphome.config_validation as cv
 from esphome import automation
-from esphome.components import light
+import esphome.codegen as cg
 from esphome.components.binary_sensor import BinarySensor
 from esphome.components.esp32 import add_idf_sdkconfig_option
-from esphome.components.sensor import Sensor
 from esphome.config import Config
-from esphome.const import CONF_ID, CONF_LIGHT_ID, CONF_RESTORE_MODE, CONF_TRIGGER_ID
+import esphome.config_validation as cv
+from esphome.const import CONF_ID, CONF_LIGHT_ID, CONF_TRIGGER_ID
 from esphome.core import CORE, ID
 from esphome.types import ConfigType
 

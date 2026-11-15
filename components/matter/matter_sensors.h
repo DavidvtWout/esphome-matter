@@ -8,10 +8,10 @@
 
 #ifdef USE_BINARY_SENSOR
 #include "esphome/components/binary_sensor/binary_sensor.h"
-#endif // USE_BINARY_SENSOR
+#endif  // USE_BINARY_SENSOR
 #ifdef USE_SENSOR
 #include "esphome/components/sensor/sensor.h"
-#endif // USE_SENSOR
+#endif  // USE_SENSOR
 
 #include <data_model_provider/esp_matter_data_model_provider.h>
 #include <type_traits>
@@ -20,19 +20,12 @@ namespace esphome::matter {
 
 using SensorValueConverter = esp_matter_attr_val_t (*)(float);
 using BinarySensorValueConverter = esp_matter_attr_val_t (*)(bool);
-using SensorAttributeUpdater = CHIP_ERROR (*)(uint16_t, uint32_t,
-                                              esp_matter_attr_val_t);
+using SensorAttributeUpdater = CHIP_ERROR (*)(uint16_t, uint32_t, esp_matter_attr_val_t);
 
 #ifdef USE_SENSOR
-template <
-    typename ClusterT, typename ValueT,
-    CHIP_ERROR (ClusterT::*Setter)(chip::app::DataModel::Nullable<ValueT>)>
-CHIP_ERROR update_code_driven_sensor_attribute(uint16_t endpoint_id,
-                                               uint32_t cluster_id,
-                                               esp_matter_attr_val_t value) {
-  auto *server =
-      esp_matter::data_model::provider::get_instance().registry().Get(
-          {endpoint_id, cluster_id});
+template<typename ClusterT, typename ValueT, CHIP_ERROR (ClusterT::*Setter)(chip::app::DataModel::Nullable<ValueT>)>
+CHIP_ERROR update_code_driven_sensor_attribute(uint16_t endpoint_id, uint32_t cluster_id, esp_matter_attr_val_t value) {
+  auto *server = esp_matter::data_model::provider::get_instance().registry().Get({endpoint_id, cluster_id});
   if (server == nullptr)
     return CHIP_ERROR_NOT_FOUND;
 
@@ -47,15 +40,13 @@ CHIP_ERROR update_code_driven_sensor_attribute(uint16_t endpoint_id,
 }
 
 class MatterSensorAttributeMapping : public MatterEndpointMappingBase {
-public:
-  MatterSensorAttributeMapping(sensor::Sensor *sensor, uint16_t endpoint_id,
-                               uint32_t cluster_id, uint32_t attribute_id,
-                               SensorValueConverter converter,
-                               SensorAttributeUpdater updater = nullptr);
+ public:
+  MatterSensorAttributeMapping(sensor::Sensor *sensor, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                               SensorValueConverter converter, SensorAttributeUpdater updater = nullptr);
 
   void initialize() override;
 
-protected:
+ protected:
   void publish_(float value);
 
   sensor::Sensor *sensor_;
@@ -64,24 +55,20 @@ protected:
   SensorValueConverter converter_;
   SensorAttributeUpdater updater_;
 };
-#endif // USE_SENSOR
+#endif  // USE_SENSOR
 
 #ifdef USE_BINARY_SENSOR
-CHIP_ERROR update_boolean_state_attribute(uint16_t endpoint_id,
-                                          uint32_t cluster_id,
-                                          esp_matter_attr_val_t value);
+CHIP_ERROR update_boolean_state_attribute(uint16_t endpoint_id, uint32_t cluster_id, esp_matter_attr_val_t value);
 
 class MatterBinarySensorAttributeMapping : public MatterEndpointMappingBase {
-public:
-  MatterBinarySensorAttributeMapping(binary_sensor::BinarySensor *sensor,
-                                     uint16_t endpoint_id, uint32_t cluster_id,
-                                     uint32_t attribute_id,
-                                     BinarySensorValueConverter converter,
+ public:
+  MatterBinarySensorAttributeMapping(binary_sensor::BinarySensor *sensor, uint16_t endpoint_id, uint32_t cluster_id,
+                                     uint32_t attribute_id, BinarySensorValueConverter converter,
                                      SensorAttributeUpdater updater = nullptr);
 
   void initialize() override;
 
-protected:
+ protected:
   void publish_(bool value);
 
   binary_sensor::BinarySensor *sensor_;
@@ -90,8 +77,8 @@ protected:
   BinarySensorValueConverter converter_;
   SensorAttributeUpdater updater_;
 };
-#endif // USE_BINARY_SENSOR
+#endif  // USE_BINARY_SENSOR
 
-} // namespace esphome::matter
+}  // namespace esphome::matter
 
-#endif // USE_MATTER
+#endif  // USE_MATTER

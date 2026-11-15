@@ -1,5 +1,5 @@
-import re
 from collections.abc import Iterator, Mapping, Sequence
+import re
 
 import esphome.config_validation as cv
 from esphome.types import ConfigFragmentType

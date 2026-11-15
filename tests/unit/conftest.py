@@ -1,7 +1,7 @@
 from collections.abc import Generator
 
-import pytest
 from esphome.core import CORE
+import pytest
 
 CORE.name = "matter-unit-tests"
 

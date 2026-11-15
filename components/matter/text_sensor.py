@@ -1,8 +1,8 @@
 """Expose stored Matter commissioning codes through the native ESPHome API."""
 
 import esphome.codegen as cg
-import esphome.config_validation as cv
 from esphome.components import text_sensor
+import esphome.config_validation as cv
 from esphome.const import CONF_ID, ENTITY_CATEGORY_DIAGNOSTIC
 
 from .const import (
