@@ -26,6 +26,6 @@ struct MatterFabricSensorRegistration {
 
 std::string format_manual_pairing_code(const std::string &code);
 
-} // namespace esphome::matter
+}  // namespace esphome::matter
 
-#endif // USE_MATTER
+#endif  // USE_MATTER

@@ -20,7 +20,7 @@
 namespace esphome::matter {
 
 class MatterComponent : public Component {
-public:
+ public:
   void setup() override;
   void dump_config() override;
   float get_setup_priority() const override {
@@ -34,19 +34,13 @@ public:
   void factory_reset();
 
 #ifdef USE_TEXT_SENSOR
-  void set_manual_pairing_code_sensor(text_sensor::TextSensor *sensor) {
-    this->manual_pairing_code_sensor_ = sensor;
-  }
-  void set_qr_code_sensor(text_sensor::TextSensor *sensor) {
-    this->qr_code_sensor_ = sensor;
-  }
-  void set_fabric_compressed_id_sensor(size_t slot,
-                                       text_sensor::TextSensor *sensor);
+  void set_manual_pairing_code_sensor(text_sensor::TextSensor *sensor) { this->manual_pairing_code_sensor_ = sensor; }
+  void set_qr_code_sensor(text_sensor::TextSensor *sensor) { this->qr_code_sensor_ = sensor; }
+  void set_fabric_compressed_id_sensor(size_t slot, text_sensor::TextSensor *sensor);
   void set_fabric_id_sensor(size_t slot, text_sensor::TextSensor *sensor);
   void set_fabric_label_sensor(size_t slot, text_sensor::TextSensor *sensor);
   void set_fabric_node_id_sensor(size_t slot, text_sensor::TextSensor *sensor);
-  void set_fabric_vendor_id_sensor(size_t slot,
-                                   text_sensor::TextSensor *sensor);
+  void set_fabric_vendor_id_sensor(size_t slot, text_sensor::TextSensor *sensor);
   void schedule_fabric_sensor_update();
 #endif
 
@@ -56,60 +50,43 @@ public:
   // Register attribute update actions
   void register_attribute_trigger(MatterAttributeTriggerBase *trigger) {
     this->attribute_triggers_.push_back(trigger);
-    this->register_attribute_callback(
-        trigger->endpoint_id(), trigger->cluster_id(), trigger->attribute_id(),
-        [trigger](const esp_matter_attr_val_t &value) {
-          trigger->dispatch(value);
-        });
+    this->register_attribute_callback(trigger->endpoint_id(), trigger->cluster_id(), trigger->attribute_id(),
+                                      [trigger](const esp_matter_attr_val_t &value) { trigger->dispatch(value); });
   }
-  void register_attribute_callback(uint16_t endpoint_id, uint32_t cluster_id,
-                                   uint32_t attribute_id,
+  void register_attribute_callback(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                    MatterAttributeCallback callback);
-  void dispatch_attribute_update(uint16_t endpoint_id, uint32_t cluster_id,
-                                 uint32_t attribute_id,
+  void dispatch_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                  const esp_matter_attr_val_t &value);
-  void replay_attribute_callback(uint16_t endpoint_id, uint32_t cluster_id,
-                                 uint32_t attribute_id);
+  void replay_attribute_callback(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
   std::vector<MatterAttributeTriggerBase *> attribute_triggers_;
 
   // Register ESPHome entities
 #ifdef USE_LIGHT
   void register_light(light::LightState *light, uint16_t endpoint_id);
-#endif // USE_LIGHT
+#endif  // USE_LIGHT
 #ifdef USE_SENSOR
-  void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id,
-                                 uint32_t cluster_id, uint32_t attribute_id,
-                                 SensorValueConverter converter);
+  void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id, uint32_t cluster_id,
+                                 uint32_t attribute_id, SensorValueConverter converter);
 
-  template <
-      typename ClusterT, typename ValueT,
-      CHIP_ERROR (ClusterT::*Setter)(chip::app::DataModel::Nullable<ValueT>)>
-  void register_code_driven_sensor_attribute(sensor::Sensor *sensor,
-                                             uint16_t endpoint_id,
-                                             uint32_t cluster_id,
-                                             uint32_t attribute_id,
-                                             SensorValueConverter converter) {
-    this->mappings_.push_back(new MatterSensorAttributeMapping(
-        sensor, endpoint_id, cluster_id, attribute_id, converter,
-        update_code_driven_sensor_attribute<ClusterT, ValueT, Setter>));
+  template<typename ClusterT, typename ValueT, CHIP_ERROR (ClusterT::*Setter)(chip::app::DataModel::Nullable<ValueT>)>
+  void register_code_driven_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id, uint32_t cluster_id,
+                                             uint32_t attribute_id, SensorValueConverter converter) {
+    this->mappings_.push_back(
+        new MatterSensorAttributeMapping(sensor, endpoint_id, cluster_id, attribute_id, converter,
+                                         update_code_driven_sensor_attribute<ClusterT, ValueT, Setter>));
   }
-#endif // USE_SENSOR
+#endif  // USE_SENSOR
 #ifdef USE_BINARY_SENSOR
-  void
-  register_binary_sensor_attribute(binary_sensor::BinarySensor *sensor,
-                                   uint16_t endpoint_id, uint32_t cluster_id,
-                                   uint32_t attribute_id,
-                                   BinarySensorValueConverter converter,
-                                   SensorAttributeUpdater updater = nullptr);
-#endif // USE_BINARY_SENSOR
+  void register_binary_sensor_attribute(binary_sensor::BinarySensor *sensor, uint16_t endpoint_id, uint32_t cluster_id,
+                                        uint32_t attribute_id, BinarySensorValueConverter converter,
+                                        SensorAttributeUpdater updater = nullptr);
+#endif  // USE_BINARY_SENSOR
 
   // Public wrapper around the protected Component scheduler; used by the
   // Matter-thread callbacks to hop onto the main loop (defer is thread-safe).
-  void defer_to_main_loop(std::function<void()> &&f) {
-    this->defer(std::move(f));
-  }
+  void defer_to_main_loop(std::function<void()> &&f) { this->defer(std::move(f)); }
 
-private:
+ private:
   void generate_commissioning_codes_();
   // Defined in matter_endpoints.cpp
   bool create_endpoints_(esp_matter::node_t *node);
@@ -133,16 +110,13 @@ private:
   std::vector<MatterAttributeCallbackRegistration> attribute_callbacks_;
 };
 
-extern MatterComponent *
-    global_matter_component; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+extern MatterComponent *global_matter_component;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
-template <typename... Ts>
-class MatterFactoryResetAction : public Action<Ts...>,
-                                 public Parented<MatterComponent> {
-public:
+template<typename... Ts> class MatterFactoryResetAction : public Action<Ts...>, public Parented<MatterComponent> {
+ public:
   void play(Ts... x) override { this->parent_->factory_reset(); }
 };
 
-} // namespace esphome::matter
+}  // namespace esphome::matter
 
-#endif // USE_MATTER
+#endif  // USE_MATTER

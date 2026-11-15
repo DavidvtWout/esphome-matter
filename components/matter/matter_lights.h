@@ -24,9 +24,8 @@ struct MatterLightCapabilities {
   optional<MatterColorTemperatureRange> color_temperature_range;
 };
 
-class MatterLightMapping : public MatterEndpointMappingBase,
-                           public light::LightRemoteValuesListener {
-public:
+class MatterLightMapping : public MatterEndpointMappingBase, public light::LightRemoteValuesListener {
+ public:
   MatterLightMapping(light::LightState *light, uint16_t endpoint_id);
 
   void on_light_remote_values_update() override;
@@ -34,7 +33,7 @@ public:
 
   void push_state_to_matter();
 
-protected:
+ protected:
   // Attribute callbacks
   void apply_on_off_(bool on);
   void apply_level_(uint8_t level);
@@ -48,6 +47,6 @@ protected:
   bool color_update_pending_{false};
 };
 
-} // namespace esphome::matter
+}  // namespace esphome::matter
 
-#endif // USE_MATTER && USE_LIGHT
+#endif  // USE_MATTER && USE_LIGHT

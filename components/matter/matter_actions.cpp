@@ -19,17 +19,16 @@ static const char *const TAG = "matter.actions";
 namespace esphome::matter {
 
 class JsonEventWriter : public chip::app::EventLoggingDelegate {
-public:
+ public:
   explicit JsonEventWriter(const char *data) : data_(data) {}
 
   CHIP_ERROR WriteEvent(chip::TLV::TLVWriter &writer) override {
-    esp_err_t err = esp_matter::json_to_tlv(
-        this->data_, writer,
-        chip::TLV::ContextTag(chip::app::EventDataIB::Tag::kData));
+    esp_err_t err =
+        esp_matter::json_to_tlv(this->data_, writer, chip::TLV::ContextTag(chip::app::EventDataIB::Tag::kData));
     return err == ESP_OK ? CHIP_NO_ERROR : CHIP_ERROR_INVALID_ARGUMENT;
   }
 
-protected:
+ protected:
   const char *data_;
 };
 
@@ -37,15 +36,12 @@ protected:
 // esp_matter once per matching binding entry for every command sent through
 // cluster_update(), so a single action fans out to one call per bound node.
 static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
-                             esp_matter::client::request_handle_t *req_handle,
-                             void *priv_data) {
+                             esp_matter::client::request_handle_t *req_handle, void *priv_data) {
   if (req_handle->type != esp_matter::client::INVOKE_CMD) {
     return;
   }
   const char *cmd_data =
-      req_handle->request_data != nullptr
-          ? static_cast<const char *>(req_handle->request_data)
-          : "{}";
+      req_handle->request_data != nullptr ? static_cast<const char *>(req_handle->request_data) : "{}";
   // Captured into the response/failure callbacks below so each log line names
   // the node it came from; without it, fan-out to several bound nodes produces
   // indistinguishable lines. Captured rather than passed through send_request's
@@ -54,100 +50,77 @@ static void client_invoke_cb(esp_matter::client::peer_device_t *peer_device,
   ESP_LOGV(TAG, "Sending request to node=%" PRIu64, node_id);
   esp_matter::client::interaction::invoke::send_request(
       nullptr, peer_device, req_handle->command_path, cmd_data,
-      [node_id](void *, const chip::app::ConcreteCommandPath &path,
-                const chip::app::StatusIB &status, chip::TLV::TLVReader *) {
-        ESP_LOGD(TAG,
-                 "Response: node=%" PRIu64
-                 " endpoint=%u cluster=%lu command=%lu status=0x%02x",
-                 node_id, static_cast<unsigned>(path.mEndpointId),
-                 static_cast<unsigned long>(path.mClusterId),
-                 static_cast<unsigned long>(path.mCommandId),
-                 static_cast<unsigned>(status.mStatus));
+      [node_id](void *, const chip::app::ConcreteCommandPath &path, const chip::app::StatusIB &status,
+                chip::TLV::TLVReader *) {
+        ESP_LOGD(TAG, "Response: node=%" PRIu64 " endpoint=%u cluster=%lu command=%lu status=0x%02x", node_id,
+                 static_cast<unsigned>(path.mEndpointId), static_cast<unsigned long>(path.mClusterId),
+                 static_cast<unsigned long>(path.mCommandId), static_cast<unsigned>(status.mStatus));
       },
       [node_id](void *, CHIP_ERROR error) {
-        ESP_LOGW(TAG,
-                 "Send command to node=%" PRIu64 " failed: %" CHIP_ERROR_FORMAT,
-                 node_id, error.Format());
+        ESP_LOGW(TAG, "Send command to node=%" PRIu64 " failed: %" CHIP_ERROR_FORMAT, node_id, error.Format());
       },
       chip::NullOptional);
 }
 
-static void
-client_group_invoke_cb(uint8_t fabric_index,
-                       esp_matter::client::request_handle_t *req_handle,
-                       void *priv_data) {
+static void client_group_invoke_cb(uint8_t fabric_index, esp_matter::client::request_handle_t *req_handle,
+                                   void *priv_data) {
   if (req_handle->type != esp_matter::client::INVOKE_CMD) {
     return;
   }
   const char *cmd_data =
-      req_handle->request_data != nullptr
-          ? static_cast<const char *>(req_handle->request_data)
-          : "{}";
+      req_handle->request_data != nullptr ? static_cast<const char *>(req_handle->request_data) : "{}";
   ESP_LOGV(TAG, "Sending group request");
-  esp_matter::client::interaction::invoke::send_group_request(
-      fabric_index, req_handle->command_path, cmd_data);
+  esp_matter::client::interaction::invoke::send_group_request(fabric_index, req_handle->command_path, cmd_data);
 }
 
 void register_client_request_callbacks() {
-  esp_matter::client::set_request_callback(client_invoke_cb,
-                                           client_group_invoke_cb, nullptr);
+  esp_matter::client::set_request_callback(client_invoke_cb, client_group_invoke_cb, nullptr);
 }
 
-void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster,
-                         chip::CommandId command, const char *command_data) {
+void send_client_command(uint16_t endpoint_id, chip::ClusterId cluster, chip::CommandId command,
+                         const char *command_data) {
   esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
   auto *cluster_ptr = esp_matter::cluster::get(endpoint_id, cluster);
   if (cluster_ptr == nullptr ||
-      esp_matter::command::get(cluster_ptr, command,
-                               esp_matter::COMMAND_FLAG_ACCEPTED) == nullptr) {
-    ESP_LOGW(
-        TAG,
-        "Cannot send unavailable command: endpoint=%u cluster=%lu command=%lu",
-        endpoint_id, static_cast<unsigned long>(cluster),
-        static_cast<unsigned long>(command));
+      esp_matter::command::get(cluster_ptr, command, esp_matter::COMMAND_FLAG_ACCEPTED) == nullptr) {
+    ESP_LOGW(TAG, "Cannot send unavailable command: endpoint=%u cluster=%lu command=%lu", endpoint_id,
+             static_cast<unsigned long>(cluster), static_cast<unsigned long>(command));
     return;
   }
 
   auto &binding_table = chip::app::Clusters::Binding::Table::GetInstance();
   std::string node_ids;
   for (const auto &entry : binding_table) {
-    if (entry.local == endpoint_id &&
-        (!entry.clusterId.has_value() || entry.clusterId.value() == cluster)) {
+    if (entry.local == endpoint_id && (!entry.clusterId.has_value() || entry.clusterId.value() == cluster)) {
       if (!node_ids.empty())
         node_ids += ",";
       char node_id[21];
-      snprintf(node_id, sizeof(node_id), "%" PRIu64,
-               static_cast<uint64_t>(entry.nodeId));
+      snprintf(node_id, sizeof(node_id), "%" PRIu64, static_cast<uint64_t>(entry.nodeId));
       node_ids += node_id;
     }
   }
 
   if (node_ids.empty()) {
-    ESP_LOGW(TAG, "No bound nodes for endpoint=%u cluster=%lu", endpoint_id,
-             static_cast<uint32_t>(cluster));
+    ESP_LOGW(TAG, "No bound nodes for endpoint=%u cluster=%lu", endpoint_id, static_cast<uint32_t>(cluster));
     return;
   }
-  ESP_LOGD(
-      TAG,
-      "Sending command: nodes=[%s] endpoint=%u cluster=%lu command=%lu data=%s",
-      node_ids.c_str(), endpoint_id, static_cast<uint32_t>(cluster),
-      static_cast<uint32_t>(command),
-      command_data != nullptr ? command_data : "{}");
+  ESP_LOGD(TAG, "Sending command: nodes=[%s] endpoint=%u cluster=%lu command=%lu data=%s", node_ids.c_str(),
+           endpoint_id, static_cast<uint32_t>(cluster), static_cast<uint32_t>(command),
+           command_data != nullptr ? command_data : "{}");
 
   esp_matter::client::request_handle_t req;
   req.type = esp_matter::client::INVOKE_CMD;
   req.command_path.mClusterId = cluster;
   req.command_path.mCommandId = command;
-  req.request_data =
-      const_cast<char *>(command_data != nullptr ? command_data : "{}");
+  req.request_data = const_cast<char *>(command_data != nullptr ? command_data : "{}");
   esp_err_t err = esp_matter::client::cluster_update(endpoint_id, &req);
   if (err != ESP_OK) {
     ESP_LOGW(TAG, "cluster_update failed: %s", esp_err_to_name(err));
   }
 }
 
-void send_event(uint16_t endpoint_id, chip::ClusterId cluster,
-                chip::EventId event, uint8_t priority, const char *event_data) {
+void send_event(uint16_t endpoint_id, chip::ClusterId cluster, chip::EventId event, uint8_t priority,
+                const char *event_data) {
   JsonEventWriter writer(event_data != nullptr ? event_data : "{}");
   chip::app::EventOptions options;
   options.mPath = chip::app::ConcreteEventPath(endpoint_id, cluster, event);
@@ -156,29 +129,22 @@ void send_event(uint16_t endpoint_id, chip::ClusterId cluster,
 
   esp_matter::lock::ScopedChipStackLock scoped_lock(portMAX_DELAY);
   auto *cluster_ptr = esp_matter::cluster::get(endpoint_id, cluster);
-  if (cluster_ptr == nullptr ||
-      esp_matter::event::get(cluster_ptr, event) == nullptr) {
-    ESP_LOGW(TAG,
-             "Cannot send unavailable event: endpoint=%u cluster=%lu event=%lu",
-             endpoint_id, static_cast<unsigned long>(cluster),
-             static_cast<unsigned long>(event));
+  if (cluster_ptr == nullptr || esp_matter::event::get(cluster_ptr, event) == nullptr) {
+    ESP_LOGW(TAG, "Cannot send unavailable event: endpoint=%u cluster=%lu event=%lu", endpoint_id,
+             static_cast<unsigned long>(cluster), static_cast<unsigned long>(event));
     return;
   }
 
-  CHIP_ERROR err = chip::app::EventManagement::GetInstance().LogEvent(
-      &writer, options, event_number);
+  CHIP_ERROR err = chip::app::EventManagement::GetInstance().LogEvent(&writer, options, event_number);
   if (err != CHIP_NO_ERROR) {
-    ESP_LOGW(TAG,
-             "Send event failed: endpoint=%u cluster=%lu event=%lu error=%s",
-             endpoint_id, static_cast<unsigned long>(cluster),
-             static_cast<unsigned long>(event), err.AsString());
+    ESP_LOGW(TAG, "Send event failed: endpoint=%u cluster=%lu event=%lu error=%s", endpoint_id,
+             static_cast<unsigned long>(cluster), static_cast<unsigned long>(event), err.AsString());
     return;
   }
-  ESP_LOGD(TAG, "Sent event: endpoint=%u cluster=%lu event=%lu number=%" PRIu64,
-           endpoint_id, static_cast<unsigned long>(cluster),
-           static_cast<unsigned long>(event), event_number);
+  ESP_LOGD(TAG, "Sent event: endpoint=%u cluster=%lu event=%lu number=%" PRIu64, endpoint_id,
+           static_cast<unsigned long>(cluster), static_cast<unsigned long>(event), event_number);
 }
 
-} // namespace esphome::matter
+}  // namespace esphome::matter
 
-#endif // USE_MATTER
+#endif  // USE_MATTER

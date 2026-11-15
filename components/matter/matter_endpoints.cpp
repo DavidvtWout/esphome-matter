@@ -21,10 +21,9 @@ struct EspMatterNodeHeader {
   uint16_t min_unused_endpoint_id;
 };
 
-} // namespace
+}  // namespace
 
-void MatterComponent::register_endpoint(uint16_t endpoint_id,
-                                        MatterEndpointBuildFn build_fn) {
+void MatterComponent::register_endpoint(uint16_t endpoint_id, MatterEndpointBuildFn build_fn) {
   for (const auto &registration : this->endpoint_registrations_) {
     if (registration.endpoint_id == endpoint_id)
       return;
@@ -37,8 +36,7 @@ bool MatterEndpointMappingBase::has_server_cluster(uint32_t cluster_id) const {
   if (endpoint == nullptr)
     return false;
   auto *cluster = esp_matter::cluster::get(endpoint, cluster_id);
-  return cluster != nullptr && (esp_matter::cluster::get_flags(cluster) &
-                                esp_matter::CLUSTER_FLAG_SERVER);
+  return cluster != nullptr && (esp_matter::cluster::get_flags(cluster) & esp_matter::CLUSTER_FLAG_SERVER);
 }
 
 bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
@@ -48,11 +46,8 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
     // esp_matter::start(), so advance the single node's allocator watermark
     // once before resuming them.
     auto max_registration =
-        std::max_element(this->endpoint_registrations_.begin(),
-                         this->endpoint_registrations_.end(),
-                         [](const auto &lhs, const auto &rhs) {
-                           return lhs.endpoint_id < rhs.endpoint_id;
-                         });
+        std::max_element(this->endpoint_registrations_.begin(), this->endpoint_registrations_.end(),
+                         [](const auto &lhs, const auto &rhs) { return lhs.endpoint_id < rhs.endpoint_id; });
     uint16_t max_endpoint_id = max_registration->endpoint_id;
     auto *node_header = reinterpret_cast<EspMatterNodeHeader *>(node);
     if (node_header->min_unused_endpoint_id <= max_endpoint_id)
@@ -67,8 +62,8 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
       return false;
     }
 
-    esp_matter::endpoint_t *endpoint = esp_matter::endpoint::resume(
-        node, esp_matter::ENDPOINT_FLAG_NONE, endpoint_id, nullptr);
+    esp_matter::endpoint_t *endpoint =
+        esp_matter::endpoint::resume(node, esp_matter::ENDPOINT_FLAG_NONE, endpoint_id, nullptr);
     if (endpoint == nullptr) {
       ESP_LOGE(TAG, "Failed to create endpoint %u", endpoint_id);
       return false;
@@ -77,11 +72,9 @@ bool MatterComponent::create_endpoints_(esp_matter::node_t *node) {
     // Create "empty" descriptor cluster. Connectedhomip fills this internally.
     esp_matter::cluster::descriptor::config_t descriptor_config;
     esp_matter::cluster_t *descriptor_cluster =
-        esp_matter::cluster::descriptor::create(
-            endpoint, &descriptor_config, esp_matter::CLUSTER_FLAG_SERVER);
+        esp_matter::cluster::descriptor::create(endpoint, &descriptor_config, esp_matter::CLUSTER_FLAG_SERVER);
     if (descriptor_cluster == nullptr) {
-      ESP_LOGE(TAG, "Failed to create descriptor cluster for endpoint %u",
-               endpoint_id);
+      ESP_LOGE(TAG, "Failed to create descriptor cluster for endpoint %u", endpoint_id);
       return false;
     }
 
@@ -106,6 +99,6 @@ void MatterComponent::initialize_endpoint_mappings_() {
   }
 }
 
-} // namespace esphome::matter
+}  // namespace esphome::matter
 
-#endif // USE_MATTER
+#endif  // USE_MATTER
