@@ -50,6 +50,12 @@ matter:
     5:
       id: generic_switch_endpoint
       generic_switch:
+    6:
+      extended_color_light:
+        light_id: rgb_status_light
+    7:
+      extended_color_light:
+        light_id: rgbww_status_light
     100:
       temperature_sensor:
         temperature: internal_temp
@@ -72,6 +78,31 @@ output:
     id: dimmable_status_light_output
     write_action:
       - lambda: (void) state;
+  - platform: template
+    type: float
+    id: red_status_light_output
+    write_action:
+      - lambda: (void) state;
+  - platform: template
+    type: float
+    id: green_status_light_output
+    write_action:
+      - lambda: (void) state;
+  - platform: template
+    type: float
+    id: blue_status_light_output
+    write_action:
+      - lambda: (void) state;
+  - platform: template
+    type: float
+    id: cold_white_status_light_output
+    write_action:
+      - lambda: (void) state;
+  - platform: template
+    type: float
+    id: warm_white_status_light_output
+    write_action:
+      - lambda: (void) state;
 
 light:
   - platform: binary
@@ -82,3 +113,19 @@ light:
     id: dimmable_status_light
     name: Dimmable Status Light
     output: dimmable_status_light_output
+  - platform: rgb
+    id: rgb_status_light
+    name: RGB Status Light
+    red: red_status_light_output
+    green: green_status_light_output
+    blue: blue_status_light_output
+  - platform: rgbww
+    id: rgbww_status_light
+    name: RGBWW Status Light
+    red: red_status_light_output
+    green: green_status_light_output
+    blue: blue_status_light_output
+    cold_white: cold_white_status_light_output
+    warm_white: warm_white_status_light_output
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2700 K
