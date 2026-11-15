@@ -1,11 +1,11 @@
+from dataclasses import dataclass, replace
 import json
 import logging
-from dataclasses import dataclass, replace
 from pathlib import Path
 
-import esphome.config_validation as cv
 from esphome import automation
 from esphome.components import light
+import esphome.config_validation as cv
 from esphome.const import CONF_LIGHT_ID
 
 from ..const import CONF_MAX_LEVEL, CONF_MIN_LEVEL, CONF_WITH_FEATURES
@@ -219,7 +219,7 @@ def _load_device_types(
 ) -> tuple[DeviceType, ...]:
     device_types: list[DeviceType] = []
 
-    with open(device_types_file, "r") as file:
+    with Path(device_types_file).open() as file:
         contents = json.load(file)
 
     for device_type_id, device_type_data in contents.items():

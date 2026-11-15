@@ -73,13 +73,7 @@
           files = "\\.(md|yaml)$";
         };
         hooks.nixfmt.enable = true;
-        hooks.ruff = {
-          enable = true;
-          args = [
-            "--select"
-            "I"
-          ]; # Sort imports
-        };
+        # hooks.ruff.enable = true;
         hooks.ruff-format.enable = true;
       };
     in
@@ -96,7 +90,10 @@
           (mkEsphomeCommand "2026.10.0" esphome-2026_10_0)
           (mkEsphomeCommand "2026.10.1" esphome-2026_10_1)
           (mkEsphomeCommand "2026.10.2" esphome-2026_10_2)
+
+          clang-tools
           esptool
+          ruff
         ];
         shellHook = ''
           ${preCommitCheck.shellHook}

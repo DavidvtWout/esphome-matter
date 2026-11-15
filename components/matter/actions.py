@@ -1,27 +1,17 @@
+from collections.abc import Mapping
 import json
 import logging
-from collections.abc import Mapping
 
+from esphome import automation
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome import automation
-from esphome.const import (
-    CONF_ATTRIBUTE,
-    CONF_COMMAND,
-    CONF_ID,
-    CONF_PATH,
-    CONF_VALUE,
-)
+from esphome.const import CONF_ATTRIBUTE, CONF_COMMAND, CONF_ID, CONF_PATH, CONF_VALUE
 from esphome.core import CORE, ID
 from esphome.types import ConfigType
 
 from .const import *
 from .data_model.attributes import Attribute, attribute_value_type
-from .data_model.clusters import (
-    CLUSTERS,
-    CLUSTERS_BY_CONF_KEY,
-    Cluster,
-)
+from .data_model.clusters import CLUSTERS, CLUSTERS_BY_CONF_KEY, Cluster
 from .data_model.commands import Command
 from .data_model.events import Event
 from .types import (
@@ -427,8 +417,7 @@ def _command_schema(command: Command):
 
     if has_required:
         return schema
-    else:
-        return automation.maybe_conf(CONF_ENDPOINT_ID, schema)
+    return automation.maybe_conf(CONF_ENDPOINT_ID, schema)
 
 
 # ------------------------------------------------ #
