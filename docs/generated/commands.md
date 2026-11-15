@@ -394,6 +394,9 @@ matter.send_command:
     ssid:
     credentials:
     # breadcrumb:
+    # network_identity:
+    # client_identifier:
+    # possession_nonce:
 
 # This command is used to add or update a Thread network configuration.
 matter.send_command:
@@ -423,6 +426,13 @@ matter.send_command:
     network_id:
     network_index:
     # breadcrumb:
+
+# This command is used to query the identity of a network configuration.
+matter.send_command:
+  path: some_endpoint.network_commissioning.query_identity
+  arguments:
+    key_identifier:
+    # possession_nonce:
 ```
 
 # DiagnosticLogs
@@ -1445,6 +1455,14 @@ matter.send_command:
 
 # This command is used to trigger a calibration of the closure.
 matter.send_command: some_endpoint.closure_control.calibrate
+
+# This command is intended to be invoked using groupcast addressing to move a group of closures to a target position, latch, and/or perform the movement at a specific speed.
+matter.send_command:
+  path: some_endpoint.closure_control.grouped_move_to
+  arguments:
+    # position: # enum: move_to_fully_closed, move_to_fully_open, move_to_pedestrian_position, move_to_ventilation_position, move_to_signature_position
+    # latch:
+    # speed: # default: 0x00
 ```
 
 # ClosureDimension
@@ -1463,6 +1481,22 @@ matter.send_command:
 # This command is used to move a dimension of the closure to a target position by a number of steps.
 matter.send_command:
   path: some_endpoint.closure_dimension.step
+  arguments:
+    direction: # enum: decrease, increase
+    number_of_steps:
+    # speed: # default: 0x00
+
+# This command is intended to be invoked using groupcast addressing to move a group of closures dimensions to a target position, latch, and/or perform the movement at a specific speed.
+matter.send_command:
+  path: some_endpoint.closure_dimension.grouped_set_target
+  arguments:
+    # position:
+    # latch:
+    # speed: # default: 0x00
+
+# This command is intended to be invoked using groupcast addressing to move a group of closures dimensions to a target position by a number of steps.
+matter.send_command:
+  path: some_endpoint.closure_dimension.grouped_step
   arguments:
     direction: # enum: decrease, increase
     number_of_steps:
@@ -1849,6 +1883,60 @@ matter.send_command:
     extended_pan_id:
 ```
 
+# CommissioningProxy
+
+This cluster provides a proxy service allowing a Commissioner to utilize commissioning transports not supported locally, or to extend the commissioning range of the Commissioner.
+
+```yaml
+# This command serves to establish a transport connection to a commissionable device discovered by the proxy.
+matter.send_command:
+  path: some_endpoint.commissioning_proxy.proxy_connect_request
+  arguments:
+    address:
+    # transport: # bitmap: ble, wi_fi_paf, ntl
+    discriminator:
+    vendor_id:
+    product_id:
+    timeout:
+    # wi_fi_band: # bitmap: 2_g4, 5_g
+
+# This disconnects a transport connection created via the ProxyConnectRequest command.
+matter.send_command:
+  path: some_endpoint.commissioning_proxy.proxy_disconnect_request
+  arguments:
+    session_id:
+
+# This command requests the proxy to provide a list of all commissionable devices found on the requested transports and bands.
+matter.send_command:
+  path: some_endpoint.commissioning_proxy.proxy_scan_request
+  arguments:
+    # transport: # bitmap: ble, wi_fi_paf, ntl
+    # wi_fi_bands: # bitmap: 2_g4, 5_g
+
+# This command requests the proxy to start background scanning for commissionable devices on the selected transports.
+matter.send_command:
+  path: some_endpoint.commissioning_proxy.proxy_back_ground_scan_start_request
+  arguments:
+    # transport: # bitmap: ble, wi_fi_paf, ntl
+    timeout:
+    # wi_fi_bands: # bitmap: 2_g4, 5_g
+
+# This command requests the proxy to stop background scanning for commissionable devices on the selected transports.
+matter.send_command:
+  path: some_endpoint.commissioning_proxy.proxy_back_ground_scan_stop_request
+  arguments:
+    # transport: # bitmap: ble, wi_fi_paf, ntl
+    # wi_fi_bands: # bitmap: 2_g4, 5_g
+
+# This command sends a message packet to the proxy.
+matter.send_command:
+  path: some_endpoint.commissioning_proxy.proxy_message_request
+  arguments:
+    session_id:
+    response_timeout:
+    message:
+```
+
 # WakeonLAN
 
 > This cluster is not supported by esp-matter.
@@ -1908,6 +1996,88 @@ matter.send_command:
 # ContentAppObserver
 
 > This cluster is not supported by esp-matter.
+
+# MediaFileManagement
+
+This cluster provides an interface for managing and sharing media files on devices such as Streaming Speakers, Smart TVs, or other media playback devices.
+
+```yaml
+# Upon receipt, this command SHALL initiate the process of adding a new media file to the device's storage.
+matter.send_command:
+  path: some_endpoint.media_file_management.add_file
+  arguments:
+    name:
+    size:
+    mime_type:
+    image_uri:
+
+# Upon receipt, this command SHALL delete the specified media file from the device's storage.
+matter.send_command:
+  path: some_endpoint.media_file_management.delete_file
+  arguments:
+    file_id:
+
+# Upon receipt, this command SHALL initiate a request for the server to share files with the requesting client.
+matter.send_command:
+  path: some_endpoint.media_file_management.request_shared_files
+  arguments:
+    client_name:
+    request_id:
+    # supported_mime_types:
+
+# Upon receipt, this command SHALL retrieve information about a file that was previously shared with the requesting client.
+matter.send_command:
+  path: some_endpoint.media_file_management.get_shared_file
+  arguments:
+    response_id:
+
+# Upon receipt, this command SHALL indicate that the requesting client wishes to share a file with the server.
+matter.send_command:
+  path: some_endpoint.media_file_management.offer_file
+  arguments:
+    client_name:
+    name:
+    size:
+    mime_type:
+    image_uri:
+```
+
+# AudioControl
+
+This cluster provides attributes and commands to control the audio output volume and frequency corrections of a device.
+
+```yaml
+# This command SHALL set the value of the SoftMuted attribute to TRUE.
+matter.send_command: some_endpoint.audio_control.mute
+
+# This command SHALL set the value of the SoftMuted attribute to FALSE.
+matter.send_command: some_endpoint.audio_control.unmute
+
+# This command SHALL toggle the state of the SoftMuted attribute.
+matter.send_command: some_endpoint.audio_control.toggle_muted
+
+# Sets the volume to a specified level.
+matter.send_command:
+  path: some_endpoint.audio_control.set_volume
+  arguments:
+    new_volume:
+    # unmute_policy: # enum: unmute_or_change_volume, unmute_or_do_not_change_volume, do_not_unmute_and_change_volume, do_not_unmute_and_do_not_change_volume
+
+# Increases the volume by a specified level.
+matter.send_command:
+  path: some_endpoint.audio_control.increase_volume
+  arguments:
+    # step_size:
+    # unmute_policy: # enum: unmute_or_change_volume, unmute_or_do_not_change_volume, do_not_unmute_and_change_volume, do_not_unmute_and_do_not_change_volume
+    # unmute_volume: # enum: min_device_volume, volume, volume_plus_step_size
+
+# Decreases the volume by a specified level.
+matter.send_command:
+  path: some_endpoint.audio_control.decrease_volume
+  arguments:
+    # step_size:
+    # unmute_policy: # enum: unmute_or_change_volume, unmute_or_do_not_change_volume, do_not_unmute_and_change_volume, do_not_unmute_and_do_not_change_volume
+```
 
 # ZoneManagement
 
