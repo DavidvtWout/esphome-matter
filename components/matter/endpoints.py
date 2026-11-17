@@ -17,7 +17,12 @@ from esphome.types import ConfigType
 from .actions import get_attribute_from_config, get_event_from_config
 from .const import *
 from .data_model.attributes import Attribute, SensorAttribute, attribute_value_type
-from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME, Cluster
+from .data_model.clusters import (
+    CLUSTERS,
+    CLUSTERS_BY_CONF_KEY,
+    CLUSTERS_BY_NAME,
+    Cluster,
+)
 from .data_model.conformance import (
     ConformanceDisposition,
     ConformanceError,
@@ -97,6 +102,11 @@ ENDPOINT_SCHEMA = cv.All(
     ),
     _validate_on_attribute_forms,
 )
+
+
+def _lookup_cluster(key: str) -> Cluster:
+    """Find a cluster by its conf key (snake_case, as used in `clusters:`) or by its name."""
+    return CLUSTERS_BY_CONF_KEY.get(key) or CLUSTERS_BY_NAME[key]
 
 
 @dataclass
@@ -194,7 +204,7 @@ class Endpoint:
                 usages_by_cluster[cluster.id].append(usage)
 
         for cluster_name in self._config[CONF_CLUSTERS]:
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+            cluster = _lookup_cluster(cluster_name)
             clusters_by_id[cluster.id] = cluster
 
         for config_key, device_config in self._config.items():
@@ -301,7 +311,7 @@ class Endpoint:
                 await self._configure_device_type(var, device_type, device_config)
 
         for cluster_name, config in self._config[CONF_CLUSTERS].items():
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+            cluster = _lookup_cluster(cluster_name)
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
             cluster_config = self._cluster_configs[cluster_name]
             for configured_feature in config.get(CONF_WITH_FEATURES, ()):
@@ -529,7 +539,7 @@ class Endpoint:
 
         for cluster_name, cluster_config in self._cluster_configs.items():
             if not cluster_config.created:
-                lines.extend(self._make_cluster_lines(CLUSTERS_BY_NAME[cluster_name]))
+                lines.extend(self._make_cluster_lines(_lookup_cluster(cluster_name)))
 
         # Choice features must be present in the config used to create their
         # cluster. Other features on device-type-created clusters are added
@@ -537,7 +547,7 @@ class Endpoint:
         for cluster_name, cluster_config in self._cluster_configs.items():
             if not cluster_config.created:
                 continue
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+            cluster = _lookup_cluster(cluster_name)
             features_by_name = {feature.name: feature for feature in cluster.features}
             direct_features = [
                 features_by_name[feature_name]
