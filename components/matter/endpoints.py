@@ -313,7 +313,9 @@ class Endpoint:
         for cluster_name, config in self._config[CONF_CLUSTERS].items():
             cluster = _lookup_cluster(cluster_name)
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
-            cluster_config = self._cluster_configs[cluster_name]
+            # Key by cluster.name like everywhere else. Keying by the conf key created a second entry for the same
+            # cluster, so it was created twice.
+            cluster_config = self._cluster_configs[cluster.name]
             for configured_feature in config.get(CONF_WITH_FEATURES, ()):
                 if feature := cluster.get_feature(configured_feature):
                     cluster_config.enabled_features[feature.name] = True
