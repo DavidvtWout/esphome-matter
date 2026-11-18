@@ -48,7 +48,7 @@ class Cluster:
     # Parsed directly from clusters.json  #
     # ----------------------------------- #
     id: int
-    # Name with spaces and special characters such as "/"
+    # Unmodified name from the ZAP definitions. Still contains spaces and special characters such as "/".
     _name: str
     # CamelCase name that's used almost everywhere in esphome_matter
     name: str
@@ -198,7 +198,6 @@ def _load_clusters(
 
 CLUSTERS: tuple[Cluster, ...] = _load_clusters()
 CLUSTERS_BY_ID: dict[int, Cluster] = {cluster.id: cluster for cluster in CLUSTERS}
-CLUSTERS_BY_NAME: dict[str, Cluster] = {cluster.name: cluster for cluster in CLUSTERS}
 CLUSTERS_BY_CONF_KEY: dict[str, Cluster] = {
     cluster.conf_key: cluster for cluster in CLUSTERS
 }

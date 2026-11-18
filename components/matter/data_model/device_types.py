@@ -11,7 +11,7 @@ from esphome.const import CONF_LIGHT_ID
 from ..const import CONF_MAX_LEVEL, CONF_MIN_LEVEL, CONF_WITH_FEATURES
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
-from .clusters import CLUSTERS_BY_ID, CLUSTERS_BY_NAME, Cluster, Feature
+from .clusters import CLUSTERS_BY_ID, Cluster, Feature
 from .conformance import Conformance
 from .units import percentage
 
@@ -120,7 +120,7 @@ class DeviceType:
         clusters = {cluster for cluster in self.server_clusters if cluster.required}
         for sensor_attribute in self.sensor_attributes:
             if config.get(sensor_attribute.conf_key) is not None:
-                clusters.add(CLUSTERS_BY_NAME[sensor_attribute.cluster.name])
+                clusters.add(CLUSTERS_BY_ID[sensor_attribute.cluster.id])
         return clusters
 
     @property
@@ -194,7 +194,7 @@ class DeviceType:
 #     def configured_server_clusters(self, config: dict) -> set[Cluster]:
 #         clusters = DeviceType.configured_server_clusters(self, config)
 #         clusters.update(
-#             CLUSTERS_BY_NAME[cluster_name] for cluster_name in config["with_clusters"]
+#             CLUSTERS_BY_CONF_KEY[cluster_name] for cluster_name in config["with_clusters"]
 #         )
 #         return clusters
 #
