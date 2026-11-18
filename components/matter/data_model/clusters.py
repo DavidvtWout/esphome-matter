@@ -44,22 +44,22 @@ class Feature:
 
 @dataclass(frozen=True, slots=True)
 class Cluster:
-    # ----------------------------------- #
-    # Parsed directly from clusters.json  #
-    # ----------------------------------- #
+    # -------------------------------------- #
+    # Parsed directly from clusters.json     #
+    # -------------------------------------- #
     id: int
-    # CamelCase name that's used almost everywhere in esphome_matter
+    # Cluster name as defined by ZAP. May contain spaces and special characters such as "-".
     name: str
-    revision: int
     features: tuple[Feature, ...]
     attributes: tuple[Attribute, ...]
     commands: tuple[Command, ...]
     events: tuple[Event, ...]
-    # ----------------------------------- #
-    # Derived attributes                  #
-    # ----------------------------------- #
+    # -------------------------------------- #
+    # Derived attributes (unless overridden) #
+    # -------------------------------------- #
     # The conf_key is the snake_case name of the cluster as used in the yaml config
     conf_key: str
+    # sdkconfig cluster enable options are generaly shaped like CONFIG_SUPPORT_<CLUSTER_NAME>_CLUSTER
     sdkconfig_option: str
     # connectedhomeip fully qualified name. e.g.: chip::app::Clusters::TemperatureMeasurementCluster
     chip_fqn: str | None
@@ -67,9 +67,9 @@ class Cluster:
     chip_include: str | None
     # esp_matter class namespace. e.g.:
     espm_namespace: str
-    # ----------------------------------- #
-    # Set by DeviceType                   #
-    # ----------------------------------- #
+    # -------------------------------------- #
+    # Set by DeviceType                      #
+    # -------------------------------------- #
     server: bool = False
     client: bool = False
     server_locked: bool = False
@@ -81,8 +81,9 @@ class Cluster:
 
     @classmethod
     def from_dict(cls, data: dict):
-        name = data["name"]
+        name: str = data["name"]
 
+        # There are some special characters such as in Wi-Fi, On/Off and PM2.5
         camel_case_name = (
             name.replace("/", "").replace(" ", "").replace("-", "").replace(".", "")
         )
@@ -102,8 +103,8 @@ class Cluster:
             _features.append(Feature.from_dict(int(bit), feature_data))
 
         chip_class = f"{camel_case_name}Cluster"
-        cluster_path = snake_case(camel_case_name).replace("_", "-")
         chip_fqn = data.get("chip_fqn", f"chip::app::Clusters::{chip_class}")
+        cluster_path = snake_case(camel_case_name).replace("_", "-")
         chip_include = data.get(
             "chip_include",
             f"#include <app/clusters/{cluster_path}-server/{chip_class}.h>",
@@ -120,10 +121,8 @@ class Cluster:
 
         return cls(
             id=data["id"],
-            name=camel_case_name,
+            name=name,
             conf_key=snake_case(camel_case_name),
-            # Some lack a revision. Assuming it's 1...
-            revision=data.get("revision", 1),
             features=tuple(_features),
             attributes=tuple(
                 Attribute.from_dict(int(attribute_id), attribute)

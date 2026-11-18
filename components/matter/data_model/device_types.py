@@ -67,7 +67,7 @@ class DeviceType:
             if cluster.server_locked and not cluster.server:
                 continue
             for attribute_name, sensor_attribute in SENSOR_ATTRIBUTES.get(
-                cluster.name, {}
+                cluster.conf_key, {}
             ).items():
                 sensor_attributes.append(
                     replace(
@@ -148,7 +148,7 @@ class DeviceType:
             schema[cv.Optional(CONF_LIGHT_ID)] = cv.use_id(light.LightState)
 
         if self.name.endswith("light") and any(
-            cluster.name == "LevelControl" and cluster.required
+            cluster.conf_key == "level_control" and cluster.required
             for cluster in self.server_clusters
         ):
             level = cv.All(percentage(), cv.int_range(min=1, max=254))

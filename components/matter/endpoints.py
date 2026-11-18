@@ -149,7 +149,7 @@ class Endpoint:
             if device_type is None:
                 continue
             for device_cluster in device_type.server_clusters:
-                if device_cluster.name != cluster.name:
+                if device_cluster.id != cluster.id:
                     continue
                 cluster_present |= device_cluster.required
                 device_features.extend(device_cluster.features)
@@ -216,7 +216,7 @@ class Endpoint:
                 usage_names = ", ".join(usage.name for usage in usages)
                 raise cv.Invalid(
                     f"Matter endpoint {self._endpoint_id} does not contain the "
-                    f"{cluster.name} cluster required by: {usage_names}"
+                    f"'{cluster.name}' cluster required by: {usage_names}"
                 )
 
             feature_conformance = {
@@ -259,7 +259,7 @@ class Endpoint:
                 if choice.max is not None and len(selected) > choice.max:
                     raise cv.Invalid(
                         f"Matter endpoint {self._endpoint_id} selects conflicting "
-                        f"{cluster.name} features: {', '.join(selected)}"
+                        f"features for cluster '{cluster.name}': {', '.join(selected)}"
                     )
 
             cluster_config = self._cluster_configs[cluster.conf_key]
@@ -353,7 +353,7 @@ class Endpoint:
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
             if cluster.required:
                 self._cluster_configs[cluster.conf_key].created = True
-                if cluster.name == "Binding":
+                if cluster.conf_key == "binding":
                     # esp_matter doesn't create the binding cluster when adding a device type to an endpoint, even when
                     # the device type requires it so it must always be forcibly created when a device type needs it.
                     self._cluster_configs[cluster.conf_key].created = False
@@ -505,7 +505,7 @@ class Endpoint:
             feature = features_by_name.get(feature_name)
             if not feature:
                 raise cv.Invalid(
-                    f"Cluster {cluster.name} has no feature {feature_name}"
+                    f"Cluster '{cluster.name}' has no feature {feature_name}"
                 )
             feature_flags.append(
                 f"{cluster_ns}::feature::{feature.namespace}::get_id()"
