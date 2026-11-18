@@ -48,8 +48,6 @@ class Cluster:
     # Parsed directly from clusters.json  #
     # ----------------------------------- #
     id: int
-    # Unmodified name from the ZAP definitions. Still contains spaces and special characters such as "/".
-    _name: str
     # CamelCase name that's used almost everywhere in esphome_matter
     name: str
     revision: int
@@ -60,6 +58,7 @@ class Cluster:
     # ----------------------------------- #
     # Derived attributes                  #
     # ----------------------------------- #
+    # The conf_key is the snake_case name of the cluster as used in the yaml config
     conf_key: str
     sdkconfig_option: str
     # connectedhomeip fully qualified name. e.g.: chip::app::Clusters::TemperatureMeasurementCluster
@@ -121,7 +120,6 @@ class Cluster:
 
         return cls(
             id=data["id"],
-            _name=name,
             name=camel_case_name,
             conf_key=snake_case(camel_case_name),
             # Some lack a revision. Assuming it's 1...
