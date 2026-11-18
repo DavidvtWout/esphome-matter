@@ -17,7 +17,7 @@ from esphome.types import ConfigType
 from .actions import get_attribute_from_config, get_event_from_config
 from .const import *
 from .data_model.attributes import Attribute, SensorAttribute, attribute_value_type
-from .data_model.clusters import CLUSTERS, CLUSTERS_BY_NAME, Cluster
+from .data_model.clusters import CLUSTERS, CLUSTERS_BY_CONF_KEY, Cluster
 from .data_model.conformance import (
     ConformanceDisposition,
     ConformanceError,
@@ -54,18 +54,18 @@ def _on_attribute_schema():
             attribute_key = snake_case(attribute.name)
             automation_schema = automation.validate_automation(trigger_schema)
             attributes[cv.Optional(attribute_key)] = automation_schema
-            options[cv.Optional(f"{snake_case(cluster.name)}.{attribute_key}")] = (
+            options[cv.Optional(f"{cluster.conf_key}.{attribute_key}")] = (
                 automation_schema
             )
         if attributes:
-            options[cv.Optional(snake_case(cluster.name))] = cv.Schema(attributes)
+            options[cv.Optional(cluster.conf_key)] = cv.Schema(attributes)
     return cv.Schema(options)
 
 
 def _validate_on_attribute_forms(config):
     configured = config.get(CONF_ON_ATTRIBUTE, {})
     for cluster in CLUSTERS:
-        cluster_key = snake_case(cluster.name)
+        cluster_key = cluster.conf_key
         nested = configured.get(cluster_key, {})
         for attribute in cluster.attributes:
             if not attribute.server:
@@ -136,9 +136,7 @@ class Endpoint:
         cluster_present = False
         device_features = []
 
-        explicit_cluster_config = self._config[CONF_CLUSTERS].get(
-            snake_case(cluster.name)
-        )
+        explicit_cluster_config = self._config[CONF_CLUSTERS].get(cluster.conf_key)
         if explicit_cluster_config is not None:
             cluster_present = True
             for feature_name in explicit_cluster_config.get(CONF_WITH_FEATURES, ()):
@@ -151,7 +149,7 @@ class Endpoint:
             if device_type is None:
                 continue
             for device_cluster in device_type.server_clusters:
-                if device_cluster.name != cluster.name:
+                if device_cluster.id != cluster.id:
                     continue
                 cluster_present |= device_cluster.required
                 device_features.extend(device_cluster.features)
@@ -193,8 +191,8 @@ class Endpoint:
             if usage.conformance is not None:
                 usages_by_cluster[cluster.id].append(usage)
 
-        for cluster_name in self._config[CONF_CLUSTERS]:
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+        for cluster_key in self._config[CONF_CLUSTERS]:
+            cluster = CLUSTERS_BY_CONF_KEY[cluster_key]
             clusters_by_id[cluster.id] = cluster
 
         for config_key, device_config in self._config.items():
@@ -218,7 +216,7 @@ class Endpoint:
                 usage_names = ", ".join(usage.name for usage in usages)
                 raise cv.Invalid(
                     f"Matter endpoint {self._endpoint_id} does not contain the "
-                    f"{cluster.name} cluster required by: {usage_names}"
+                    f"'{cluster.name}' cluster required by: {usage_names}"
                 )
 
             feature_conformance = {
@@ -261,10 +259,10 @@ class Endpoint:
                 if choice.max is not None and len(selected) > choice.max:
                     raise cv.Invalid(
                         f"Matter endpoint {self._endpoint_id} selects conflicting "
-                        f"{cluster.name} features: {', '.join(selected)}"
+                        f"features for cluster '{cluster.name}': {', '.join(selected)}"
                     )
 
-            cluster_config = self._cluster_configs[cluster.name]
+            cluster_config = self._cluster_configs[cluster.conf_key]
             for code in inferred_codes:
                 cluster_config.enabled_features[cluster.get_feature(code).name] = True
 
@@ -300,10 +298,10 @@ class Endpoint:
             if device_type:
                 await self._configure_device_type(var, device_type, device_config)
 
-        for cluster_name, config in self._config[CONF_CLUSTERS].items():
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+        for cluster_key, config in self._config[CONF_CLUSTERS].items():
+            cluster = CLUSTERS_BY_CONF_KEY[cluster_key]
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
-            cluster_config = self._cluster_configs[cluster_name]
+            cluster_config = self._cluster_configs[cluster.conf_key]
             for configured_feature in config.get(CONF_WITH_FEATURES, ()):
                 if feature := cluster.get_feature(configured_feature):
                     cluster_config.enabled_features[feature.name] = True
@@ -316,7 +314,7 @@ class Endpoint:
     async def _register_attribute_automations(self, var):
         configured_clusters = self._config.get(CONF_ON_ATTRIBUTE, {})
         for cluster in CLUSTERS:
-            cluster_key = snake_case(cluster.name)
+            cluster_key = cluster.conf_key
             cluster_config = configured_clusters.get(cluster_key, {})
             for attribute in cluster.attributes:
                 if not attribute.server:
@@ -354,11 +352,11 @@ class Endpoint:
             # Enable all clusters and not only the enabled ones because esp_matter doesn't correctly guard endpoint compilation...
             self.enabled_sdkconfig_options.add(cluster.sdkconfig_option)
             if cluster.required:
-                self._cluster_configs[cluster.name].created = True
-                if cluster.name == "Binding":
+                self._cluster_configs[cluster.conf_key].created = True
+                if cluster.conf_key == "binding":
                     # esp_matter doesn't create the binding cluster when adding a device type to an endpoint, even when
                     # the device type requires it so it must always be forcibly created when a device type needs it.
-                    self._cluster_configs["Binding"].created = False
+                    self._cluster_configs[cluster.conf_key].created = False
 
         # Register sensor attributes
         for sensor_attr in device_type.sensor_attributes:
@@ -375,7 +373,7 @@ class Endpoint:
         for enabled_feature in device_config.get(CONF_WITH_FEATURES, ()):
             for cluster in device_type.server_clusters:
                 if feature := cluster.get_feature(enabled_feature):
-                    cluster_config = self._cluster_configs[cluster.name]
+                    cluster_config = self._cluster_configs[cluster.conf_key]
                     cluster_config.enabled_features[feature.name] = True
 
     def _make_device_type_lines(self, device_type: DeviceType, index: int):
@@ -411,7 +409,7 @@ class Endpoint:
         for cluster in device_type.server_clusters:
             if not cluster.required:
                 continue  # Non-required clusters must be created after the device_type
-            cluster_config = self._cluster_configs[cluster.name]
+            cluster_config = self._cluster_configs[cluster.conf_key]
             features_by_name = {f.name: f for f in cluster.features}
             feature_flags = []
             for feature_name, enabled in cluster_config.enabled_features.items():
@@ -445,9 +443,11 @@ class Endpoint:
                 f"sensor_attribute {sensor_attribute.conf_key} is not initialized"
             )
 
-        self._cluster_configs[cluster.name].created |= False
+        self._cluster_configs[cluster.conf_key].created |= False
         for feature_name in sensor_attribute.features:
-            self._cluster_configs[cluster.name].enabled_features[feature_name] = True
+            self._cluster_configs[cluster.conf_key].enabled_features[feature_name] = (
+                True
+            )
 
         sensor = await cg.get_variable(sensor_id)
         converter = cg.RawExpression(
@@ -498,14 +498,14 @@ class Endpoint:
         lines = [f"{cluster_ns}::config_t {config_var}{{}};"]
         feature_flags = []
         features_by_name = {feature.name: feature for feature in cluster.features}
-        cluster_config = self._cluster_configs[cluster.name]
+        cluster_config = self._cluster_configs[cluster.conf_key]
         for feature_name, enabled in cluster_config.enabled_features.items():
             if not enabled:
                 continue
             feature = features_by_name.get(feature_name)
             if not feature:
                 raise cv.Invalid(
-                    f"Cluster {cluster.name} has no feature {feature_name}"
+                    f"Cluster '{cluster.name}' has no feature {feature_name}"
                 )
             feature_flags.append(
                 f"{cluster_ns}::feature::{feature.namespace}::get_id()"
@@ -527,17 +527,19 @@ class Endpoint:
         for index, device_type in enumerate(self._device_types):
             lines.extend(self._make_device_type_lines(device_type, index))
 
-        for cluster_name, cluster_config in self._cluster_configs.items():
+        for cluster_key, cluster_config in self._cluster_configs.items():
             if not cluster_config.created:
-                lines.extend(self._make_cluster_lines(CLUSTERS_BY_NAME[cluster_name]))
+                lines.extend(
+                    self._make_cluster_lines(CLUSTERS_BY_CONF_KEY[cluster_key])
+                )
 
         # Choice features must be present in the config used to create their
         # cluster. Other features on device-type-created clusters are added
         # directly after the device type has created the cluster.
-        for cluster_name, cluster_config in self._cluster_configs.items():
+        for cluster_key, cluster_config in self._cluster_configs.items():
             if not cluster_config.created:
                 continue
-            cluster = CLUSTERS_BY_NAME[cluster_name]
+            cluster = CLUSTERS_BY_CONF_KEY[cluster_key]
             features_by_name = {feature.name: feature for feature in cluster.features}
             direct_features = [
                 features_by_name[feature_name]

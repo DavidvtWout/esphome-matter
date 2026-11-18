@@ -106,50 +106,50 @@ class SensorAttribute:
 
 # Arranged by Cluster, Attribute
 SENSOR_ATTRIBUTES = {
-    "BooleanState": {  # 0x0045
+    "boolean_state": {  # 0x0045
         "StateValue": SensorAttribute(
             "boolean_state", "boolean_state", BinarySensor, code_driven=True
         )
     },
-    "OccupancySensing": {  # 0x0406
+    "occupancy_sensing": {  # 0x0406
         "Occupancy": SensorAttribute("occupancy", "occupancy", BinarySensor)
     },
-    "IlluminanceMeasurement": {  # 0x0400
+    "illuminance_measurement": {  # 0x0400
         "MeasuredValue": SensorAttribute(
             "illuminance",
             "illuminance",
             code_driven=True,
         )
     },
-    "TemperatureMeasurement": {  # 0x0402
+    "temperature_measurement": {  # 0x0402
         "MeasuredValue": SensorAttribute(
             "temperature",
             "temperature",
             code_driven=True,
         )
     },
-    "PressureMeasurement": {  # 0x0403
+    "pressure_measurement": {  # 0x0403
         "MeasuredValue": SensorAttribute(
             "pressure",
             "pressure",
             code_driven=True,
         )
     },
-    "FlowMeasurement": {  # 0x0404
+    "flow_measurement": {  # 0x0404
         "MeasuredValue": SensorAttribute(
             "flow",
             "flow",
             code_driven=True,
         )
     },
-    "RelativeHumidityMeasurement": {  # 0x0405
+    "relative_humidity_measurement": {  # 0x0405
         "MeasuredValue": SensorAttribute(
             "relative_humidity",
             "percentage",
             code_driven=True,
         )
     },
-    "ElectricalPowerMeasurement": {  # 0x0090
+    "electrical_power_measurement": {  # 0x0090
         "Voltage": SensorAttribute("voltage", "volts"),
         "ActiveCurrent": SensorAttribute("active_current", "ampere"),
         "ReactiveCurrent": SensorAttribute("reactive_current", "ampere"),
@@ -164,57 +164,57 @@ SENSOR_ATTRIBUTES = {
         "PowerFactor": SensorAttribute("power_factor", "percentage"),
         "NeutralCurrent": SensorAttribute("neutral_current", "ampere"),
     },
-    "CarbonMonoxideConcentrationMeasurement": {  # 0x040C
+    "carbon_monoxide_concentration_measurement": {  # 0x040C
         "MeasuredValue": SensorAttribute(
             "carbon_monoxide", "concentration", features=("NumericMeasurement",)
         )
     },
-    "CarbonDioxideConcentrationMeasurement": {  # 0x040D
+    "carbon_dioxide_concentration_measurement": {  # 0x040D
         "MeasuredValue": SensorAttribute(
             "carbon_dioxide", "concentration", features=("NumericMeasurement",)
         )
     },
-    "NitrogenDioxideConcentrationMeasurement": {  # 0x0413
+    "nitrogen_dioxide_concentration_measurement": {  # 0x0413
         "MeasuredValue": SensorAttribute(
             "nitrogen_dioxide", "concentration", features=("NumericMeasurement",)
         )
     },
-    "OzoneConcentrationMeasurement": {  # 0x0415
+    "ozone_concentration_measurement": {  # 0x0415
         "MeasuredValue": SensorAttribute(
             "ozone", "concentration", features=("NumericMeasurement",)
         )
     },
-    "PM25ConcentrationMeasurement": {  # 0x042A
+    "pm25_concentration_measurement": {  # 0x042A
         "MeasuredValue": SensorAttribute(
             "pm_2_5", "concentration", features=("NumericMeasurement",)
         )
     },
-    "FormaldehydeConcentrationMeasurement": {  # 0x042B
+    "formaldehyde_concentration_measurement": {  # 0x042B
         "MeasuredValue": SensorAttribute(
             "formaldehyde", "concentration", features=("NumericMeasurement",)
         )
     },
-    "PM1ConcentrationMeasurement": {  # 0x042C
+    "pm1_concentration_measurement": {  # 0x042C
         "MeasuredValue": SensorAttribute(
             "pm_1", "concentration", features=("NumericMeasurement",)
         )
     },
-    "PM10ConcentrationMeasurement": {  # 0x042D
+    "pm10_concentration_measurement": {  # 0x042D
         "MeasuredValue": SensorAttribute(
             "pm_10", "concentration", features=("NumericMeasurement",)
         )
     },
-    "TotalVolatileOrganicCompoundsConcentrationMeasurement": {  # 0x042E
+    "total_volatile_organic_compounds_concentration_measurement": {  # 0x042E
         "MeasuredValue": SensorAttribute(
             "total_voc", "concentration", features=("NumericMeasurement",)
         )
     },
-    "RadonConcentrationMeasurement": {  # 0x042F
+    "radon_concentration_measurement": {  # 0x042F
         "MeasuredValue": SensorAttribute(
             "radon", "concentration", features=("NumericMeasurement",)
         )
     },
-    "SoilMeasurement": {  # 0x0430
+    "soil_measurement": {  # 0x0430
         "SoilMoistureMeasuredValue": SensorAttribute("soil_moisture", "percentage")
     },
 }
