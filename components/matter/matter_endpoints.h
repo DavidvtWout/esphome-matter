@@ -29,6 +29,11 @@ template <typename ConfigT>
 esp_err_t add_feature(esp_matter::cluster_t *cluster,
                       esp_err_t (*add_fn)(esp_matter::cluster_t *, ConfigT *)) {
   ConfigT config{};
+  // With the Rocking feature enabled, RockSupport must advertise at least one rock direction. esp-matter defaults it
+  // to 0 and the Fan Control cluster reads RockSupport only at startup (it can't be changed afterwards), so every
+  // RockSetting != 0 would be rejected with CONSTRAINT_ERROR. Advertise all directions by default.
+  if constexpr (requires { config.rock_support; })
+    config.rock_support = 0x07;
   return add_fn(cluster, &config);
 }
 
