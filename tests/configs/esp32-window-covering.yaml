@@ -1,0 +1,53 @@
+esphome:
+  name: matter-ci-window-covering
+  compile_process_limit: 2
+
+esp32:
+  toolchain: platformio
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ../../components
+
+logger:
+api:
+network:
+  enable_ipv6: true
+
+wifi:
+  ssid: ci-test-network
+  password: ci-test-password
+
+matter:
+  endpoints:
+    1:
+      window_covering:
+        cover_id: simulated_blind
+        with_features:
+          - position_aware_lift
+          - position_aware_tilt
+
+# Commands and state updates stay in this simulated cover; no motor or GPIO.
+cover:
+  - platform: template
+    id: simulated_blind
+    name: Simulated Venetian Blind
+    optimistic: true
+    has_position: true
+    position_action:
+      - logger.log:
+          format: "Requested lift %.2f"
+          args: [pos]
+    tilt_action:
+      - logger.log:
+          format: "Requested tilt %.2f"
+          args: [tilt]
+    stop_action:
+      - logger.log: "Requested Stop"
+
+script:
+  - id: local_stop
+    then:
+      - cover.stop: simulated_blind
