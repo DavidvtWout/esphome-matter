@@ -3481,6 +3481,22 @@
             "choice": "a"
           }
         }
+      },
+      "3": {
+        "code": "PDC",
+        "name": "PerDeviceCredentials",
+        "conformance": {
+          "otherwise": [
+            {
+              "provisional": true
+            },
+            {
+              "mandatory": {
+                "feature": "WI"
+              }
+            }
+          ]
+        }
       }
     },
     "attributes": {
@@ -3669,6 +3685,29 @@
             "name": "Breadcrumb",
             "type": "int64u",
             "optional": true
+          },
+          {
+            "id": 3,
+            "name": "NetworkIdentity",
+            "type": "octet_string",
+            "optional": true,
+            "length": 140
+          },
+          {
+            "id": 4,
+            "name": "ClientIdentifier",
+            "type": "octet_string",
+            "optional": true,
+            "length": 20,
+            "min_length": 20
+          },
+          {
+            "id": 5,
+            "name": "PossessionNonce",
+            "type": "octet_string",
+            "optional": true,
+            "length": 32,
+            "min_length": 32
           }
         ],
         "conformance": {
@@ -3792,6 +3831,38 @@
               }
             ]
           }
+        }
+      },
+      "QueryIdentity": {
+        "id": 9,
+        "args": [
+          {
+            "id": 0,
+            "name": "KeyIdentifier",
+            "type": "octet_string",
+            "length": 20,
+            "min_length": 20
+          },
+          {
+            "id": 1,
+            "name": "PossessionNonce",
+            "type": "octet_string",
+            "optional": true,
+            "length": 32,
+            "min_length": 32
+          }
+        ],
+        "conformance": {
+          "otherwise": [
+            {
+              "provisional": true
+            },
+            {
+              "mandatory": {
+                "feature": "PDC"
+              }
+            }
+          ]
         }
       }
     },
@@ -7013,7 +7084,7 @@
   },
   "63": {
     "name": "Group Key Management",
-    "revision": 3,
+    "revision": 4,
     "features": {
       "0": {
         "code": "CS",
@@ -7159,16 +7230,6 @@
                 "name": "EpochStartTime2",
                 "type": "int64u",
                 "nullable": true
-              },
-              {
-                "id": 8,
-                "name": "GroupKeyMulticastPolicy",
-                "type": "enum8",
-                "max": 1,
-                "enum_values": {
-                  "per_group_id": 0,
-                  "all_nodes": 1
-                }
               }
             ]
           }
@@ -16121,7 +16182,7 @@
   },
   "260": {
     "name": "Closure Control",
-    "revision": 1,
+    "revision": 2,
     "features": {
       "0": {
         "code": "PS",
@@ -16210,6 +16271,20 @@
         "conformance": {
           "optional": true
         }
+      },
+      "9": {
+        "code": "ACC",
+        "name": "Access",
+        "conformance": {
+          "otherwise": [
+            {
+              "provisional": true
+            },
+            {
+              "optional": true
+            }
+          ]
+        }
       }
     },
     "attributes": {
@@ -16220,7 +16295,7 @@
         "server": true,
         "max": 259200,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "optional": {
             "and": [
@@ -16276,7 +16351,7 @@
         "server": true,
         "max": 3,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "LT"
@@ -16342,6 +16417,59 @@
           "mandatory": {
             "feature": "CL"
           }
+        }
+      },
+      "GroupedMoveTo": {
+        "id": 3,
+        "args": [
+          {
+            "id": 0,
+            "name": "Position",
+            "type": "enum8",
+            "max": 4,
+            "optional": true,
+            "enum_values": {
+              "move_to_fully_closed": 0,
+              "move_to_fully_open": 1,
+              "move_to_pedestrian_position": 2,
+              "move_to_ventilation_position": 3,
+              "move_to_signature_position": 4
+            }
+          },
+          {
+            "id": 1,
+            "name": "Latch",
+            "type": "boolean",
+            "optional": true
+          },
+          {
+            "id": 2,
+            "name": "Speed",
+            "type": "enum8",
+            "max": 3,
+            "default": "0x00",
+            "optional": true,
+            "enum_values": {
+              "auto": 0,
+              "low": 1,
+              "medium": 2,
+              "high": 3
+            }
+          }
+        ],
+        "conformance": {
+          "otherwise": [
+            {
+              "provisional": true
+            },
+            {
+              "mandatory": {
+                "not": {
+                  "feature": "ACC"
+                }
+              }
+            }
+          ]
         }
       }
     },
@@ -16410,7 +16538,7 @@
   },
   "261": {
     "name": "Closure Dimension",
-    "revision": 1,
+    "revision": 2,
     "features": {
       "0": {
         "code": "PS",
@@ -16496,6 +16624,20 @@
             }
           }
         }
+      },
+      "8": {
+        "code": "ACC",
+        "name": "Access",
+        "conformance": {
+          "otherwise": [
+            {
+              "provisional": true
+            },
+            {
+              "optional": true
+            }
+          ]
+        }
       }
     },
     "attributes": {
@@ -16522,7 +16664,7 @@
         "server": true,
         "max": 10000,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "default": "0",
         "conformance": {
           "mandatory": {
@@ -16537,7 +16679,7 @@
         "server": true,
         "max": 10000,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "default": "0",
         "conformance": {
           "mandatory": {
@@ -16552,7 +16694,7 @@
         "server": true,
         "max": 1,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "UT"
@@ -16565,7 +16707,7 @@
         "type": "UnitRangeStruct",
         "server": true,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "UT"
@@ -16578,7 +16720,7 @@
         "type": "RangePercent100thsStruct",
         "server": true,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "LM"
@@ -16592,7 +16734,7 @@
         "server": true,
         "max": 11,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "TR"
@@ -16606,7 +16748,7 @@
         "server": true,
         "max": 10,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "RO"
@@ -16620,7 +16762,7 @@
         "server": true,
         "max": 10,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "RO"
@@ -16634,7 +16776,7 @@
         "server": true,
         "max": 4,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "MD"
@@ -16648,7 +16790,7 @@
         "server": true,
         "max": 3,
         "writable": false,
-        "optional": false,
+        "optional": true,
         "conformance": {
           "mandatory": {
             "feature": "LT"
@@ -16726,6 +16868,107 @@
           "mandatory": {
             "feature": "PS"
           }
+        }
+      },
+      "GroupedSetTarget": {
+        "id": 2,
+        "args": [
+          {
+            "id": 0,
+            "name": "Position",
+            "type": "int16u",
+            "optional": true
+          },
+          {
+            "id": 1,
+            "name": "Latch",
+            "type": "boolean",
+            "optional": true
+          },
+          {
+            "id": 2,
+            "name": "Speed",
+            "type": "enum8",
+            "max": 3,
+            "default": "0x00",
+            "optional": true,
+            "enum_values": {
+              "auto": 0,
+              "low": 1,
+              "medium": 2,
+              "high": 3
+            }
+          }
+        ],
+        "conformance": {
+          "otherwise": [
+            {
+              "provisional": true
+            },
+            {
+              "mandatory": {
+                "not": {
+                  "feature": "ACC"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "GroupedStep": {
+        "id": 3,
+        "args": [
+          {
+            "id": 0,
+            "name": "Direction",
+            "type": "enum8",
+            "max": 1,
+            "enum_values": {
+              "decrease": 0,
+              "increase": 1
+            }
+          },
+          {
+            "id": 1,
+            "name": "NumberOfSteps",
+            "type": "int16u",
+            "min": 1
+          },
+          {
+            "id": 2,
+            "name": "Speed",
+            "type": "enum8",
+            "max": 3,
+            "default": "0x00",
+            "optional": true,
+            "enum_values": {
+              "auto": 0,
+              "low": 1,
+              "medium": 2,
+              "high": 3
+            }
+          }
+        ],
+        "conformance": {
+          "otherwise": [
+            {
+              "provisional": true
+            },
+            {
+              "mandatory": {
+                "and": [
+                  {
+                    "feature": "PS"
+                  },
+                  {
+                    "not": {
+                      "feature": "ACC"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         }
       }
     }
@@ -18742,7 +18985,7 @@
   },
   "514": {
     "name": "Fan Control",
-    "revision": 5,
+    "revision": 6,
     "features": {
       "0": {
         "code": "SPD",
@@ -20986,7 +21229,7 @@
   },
   "1024": {
     "name": "Illuminance Measurement",
-    "revision": 3,
+    "revision": 5,
     "attributes": {
       "0": {
         "define": "ILLUM_MEASURED_VALUE",
@@ -21047,7 +21290,7 @@
   },
   "1026": {
     "name": "Temperature Measurement",
-    "revision": 4,
+    "revision": 6,
     "attributes": {
       "0": {
         "define": "TEMP_MEASURED_VALUE",
@@ -24368,6 +24611,309 @@
       }
     }
   },
+  "1109": {
+    "name": "Commissioning Proxy",
+    "revision": 1,
+    "features": {
+      "0": {
+        "code": "WI",
+        "name": "WiFiNetworkInterface",
+        "conformance": {
+          "optional": true
+        }
+      },
+      "1": {
+        "code": "BGS",
+        "name": "BackgroundScan",
+        "conformance": {
+          "optional": true
+        }
+      }
+    },
+    "attributes": {
+      "0": {
+        "define": "TRANSPORT",
+        "name": "Transport",
+        "type": "CapabilitiesBitmap",
+        "server": true,
+        "min": 1,
+        "writable": false,
+        "optional": false
+      },
+      "1": {
+        "define": "SCAN_MAX_TIME",
+        "name": "ScanMaxTime",
+        "type": "int8u",
+        "server": true,
+        "min": 1,
+        "writable": true,
+        "optional": false
+      },
+      "2": {
+        "define": "MAX_SESSIONS",
+        "name": "MaxSessions",
+        "type": "int8u",
+        "server": true,
+        "min": 1,
+        "writable": false,
+        "optional": false
+      },
+      "3": {
+        "define": "MAX_CACHED_RESULTS",
+        "name": "MaxCachedResults",
+        "type": "int8u",
+        "server": true,
+        "min": 1,
+        "writable": false,
+        "optional": true,
+        "conformance": {
+          "mandatory": {
+            "feature": "BGS"
+          }
+        }
+      },
+      "4": {
+        "define": "NUM_CACHED_RESULTS",
+        "name": "NumCachedResults",
+        "type": "int8u",
+        "server": true,
+        "writable": false,
+        "optional": true,
+        "conformance": {
+          "mandatory": {
+            "feature": "BGS"
+          }
+        }
+      },
+      "5": {
+        "define": "CACHE_TIMEOUT",
+        "name": "CacheTimeout",
+        "type": "int16u",
+        "server": true,
+        "min": 1,
+        "writable": true,
+        "optional": true,
+        "conformance": {
+          "mandatory": {
+            "feature": "BGS"
+          }
+        }
+      },
+      "6": {
+        "define": "CACHED_RESULTS",
+        "name": "CachedResults",
+        "type": "array",
+        "server": true,
+        "writable": false,
+        "optional": true,
+        "conformance": {
+          "mandatory": {
+            "feature": "BGS"
+          }
+        }
+      },
+      "7": {
+        "define": "WI_FI_BAND",
+        "name": "WiFiBand",
+        "type": "WiFiBandBitmap",
+        "server": true,
+        "max": 5,
+        "writable": false,
+        "optional": true,
+        "conformance": {
+          "optional": {
+            "feature": "WI"
+          }
+        }
+      }
+    },
+    "commands": {
+      "ProxyConnectRequest": {
+        "id": 0,
+        "args": [
+          {
+            "id": 0,
+            "name": "Address",
+            "type": "octet_string",
+            "nullable": true,
+            "length": 100
+          },
+          {
+            "id": 1,
+            "name": "Transport",
+            "type": "bitmap8",
+            "max": 26,
+            "bitmap_masks": {
+              "ble": 2,
+              "wi_fi_paf": 8,
+              "ntl": 16
+            }
+          },
+          {
+            "id": 2,
+            "name": "Discriminator",
+            "type": "int16u",
+            "max": 4095
+          },
+          {
+            "id": 3,
+            "name": "VendorID",
+            "type": "int16u"
+          },
+          {
+            "id": 4,
+            "name": "ProductID",
+            "type": "int16u"
+          },
+          {
+            "id": 5,
+            "name": "Timeout",
+            "type": "int16u"
+          },
+          {
+            "id": 6,
+            "name": "WiFiBand",
+            "type": "bitmap16",
+            "max": 5,
+            "optional": true,
+            "bitmap_masks": {
+              "2_g4": 1,
+              "5_g": 4
+            }
+          }
+        ]
+      },
+      "ProxyDisconnectRequest": {
+        "id": 2,
+        "args": [
+          {
+            "id": 0,
+            "name": "SessionID",
+            "type": "int16u",
+            "nullable": true
+          }
+        ]
+      },
+      "ProxyScanRequest": {
+        "id": 3,
+        "args": [
+          {
+            "id": 0,
+            "name": "Transport",
+            "type": "bitmap8",
+            "max": 26,
+            "bitmap_masks": {
+              "ble": 2,
+              "wi_fi_paf": 8,
+              "ntl": 16
+            }
+          },
+          {
+            "id": 1,
+            "name": "WiFiBands",
+            "type": "bitmap16",
+            "max": 5,
+            "optional": true,
+            "bitmap_masks": {
+              "2_g4": 1,
+              "5_g": 4
+            }
+          }
+        ]
+      },
+      "ProxyBackGroundScanStartRequest": {
+        "id": 5,
+        "args": [
+          {
+            "id": 0,
+            "name": "Transport",
+            "type": "bitmap8",
+            "max": 26,
+            "bitmap_masks": {
+              "ble": 2,
+              "wi_fi_paf": 8,
+              "ntl": 16
+            }
+          },
+          {
+            "id": 1,
+            "name": "Timeout",
+            "type": "int16u"
+          },
+          {
+            "id": 2,
+            "name": "WiFiBands",
+            "type": "bitmap16",
+            "max": 5,
+            "optional": true,
+            "bitmap_masks": {
+              "2_g4": 1,
+              "5_g": 4
+            }
+          }
+        ],
+        "conformance": {
+          "mandatory": {
+            "feature": "BGS"
+          }
+        }
+      },
+      "ProxyBackGroundScanStopRequest": {
+        "id": 6,
+        "args": [
+          {
+            "id": 0,
+            "name": "Transport",
+            "type": "bitmap8",
+            "max": 26,
+            "bitmap_masks": {
+              "ble": 2,
+              "wi_fi_paf": 8,
+              "ntl": 16
+            }
+          },
+          {
+            "id": 1,
+            "name": "WiFiBands",
+            "type": "bitmap16",
+            "max": 5,
+            "optional": true,
+            "bitmap_masks": {
+              "2_g4": 1,
+              "5_g": 4
+            }
+          }
+        ],
+        "conformance": {
+          "mandatory": {
+            "feature": "BGS"
+          }
+        }
+      },
+      "ProxyMessageRequest": {
+        "id": 7,
+        "args": [
+          {
+            "id": 0,
+            "name": "SessionID",
+            "type": "int16u"
+          },
+          {
+            "id": 1,
+            "name": "ResponseTimeout",
+            "type": "int8u"
+          },
+          {
+            "id": 2,
+            "name": "Message",
+            "type": "long_octet_string",
+            "nullable": true,
+            "length": 1280
+          }
+        ]
+      }
+    }
+  },
   "1289": {
     "name": "Keypad Input",
     "revision": 1,
@@ -24574,6 +25120,532 @@
         "server": true,
         "writable": false,
         "optional": false
+      }
+    }
+  },
+  "1297": {
+    "name": "Media File Management",
+    "revision": 1,
+    "features": {
+      "0": {
+        "code": "MS",
+        "name": "MediaSharing",
+        "conformance": {
+          "optional": true
+        }
+      }
+    },
+    "attributes": {
+      "0": {
+        "define": "TOTAL_STORAGE",
+        "name": "TotalStorage",
+        "type": "int64u",
+        "server": true,
+        "writable": false,
+        "optional": false,
+        "default": "0"
+      },
+      "1": {
+        "define": "AVAILABLE_STORAGE",
+        "name": "AvailableStorage",
+        "type": "int64u",
+        "server": true,
+        "writable": false,
+        "optional": false,
+        "default": "0"
+      },
+      "2": {
+        "define": "AVAILABLE_FILES",
+        "name": "AvailableFiles",
+        "type": "array",
+        "server": true,
+        "writable": false,
+        "optional": false
+      },
+      "3": {
+        "define": "SUPPORTED_MIME_TYPES",
+        "name": "SupportedMimeTypes",
+        "type": "array",
+        "server": true,
+        "writable": false,
+        "optional": false
+      }
+    },
+    "commands": {
+      "AddFile": {
+        "id": 0,
+        "args": [
+          {
+            "id": 0,
+            "name": "Name",
+            "type": "char_string",
+            "length": 128
+          },
+          {
+            "id": 1,
+            "name": "Size",
+            "type": "int64u"
+          },
+          {
+            "id": 2,
+            "name": "MimeType",
+            "type": "long_char_string",
+            "length": 256
+          },
+          {
+            "id": 3,
+            "name": "ImageUri",
+            "type": "long_char_string",
+            "length": 256
+          }
+        ]
+      },
+      "DeleteFile": {
+        "id": 2,
+        "args": [
+          {
+            "id": 0,
+            "name": "FileID",
+            "type": "int64u"
+          }
+        ]
+      },
+      "RequestSharedFiles": {
+        "id": 3,
+        "args": [
+          {
+            "id": 0,
+            "name": "ClientName",
+            "type": "char_string",
+            "length": 128
+          },
+          {
+            "id": 1,
+            "name": "RequestID",
+            "type": "int16u"
+          },
+          {
+            "id": 2,
+            "name": "SupportedMimeTypes",
+            "type": "char_string",
+            "optional": true,
+            "nullable": true,
+            "array": true,
+            "length": 64
+          }
+        ],
+        "conformance": {
+          "mandatory": {
+            "feature": "MS"
+          }
+        }
+      },
+      "GetSharedFile": {
+        "id": 4,
+        "args": [
+          {
+            "id": 0,
+            "name": "ResponseID",
+            "type": "int16u"
+          }
+        ],
+        "conformance": {
+          "mandatory": {
+            "feature": "MS"
+          }
+        }
+      },
+      "OfferFile": {
+        "id": 6,
+        "args": [
+          {
+            "id": 0,
+            "name": "ClientName",
+            "type": "char_string",
+            "length": 128
+          },
+          {
+            "id": 1,
+            "name": "Name",
+            "type": "char_string",
+            "length": 128
+          },
+          {
+            "id": 2,
+            "name": "Size",
+            "type": "int64u"
+          },
+          {
+            "id": 3,
+            "name": "MimeType",
+            "type": "long_char_string",
+            "length": 256
+          },
+          {
+            "id": 4,
+            "name": "ImageUri",
+            "type": "long_char_string",
+            "length": 256
+          }
+        ],
+        "conformance": {
+          "mandatory": {
+            "feature": "MS"
+          }
+        }
+      }
+    }
+  },
+  "1298": {
+    "name": "Audio Control",
+    "revision": 1,
+    "features": {
+      "0": {
+        "code": "DB",
+        "name": "Decibel",
+        "conformance": {
+          "optional": true
+        }
+      },
+      "1": {
+        "code": "BEQ",
+        "name": "BasicEqualizer",
+        "conformance": {
+          "optional": true
+        }
+      }
+    },
+    "attributes": {
+      "0": {
+        "define": "SOFT_MUTED",
+        "name": "SoftMuted",
+        "type": "boolean",
+        "server": true,
+        "writable": false,
+        "optional": false
+      },
+      "1": {
+        "define": "PHYSICALLY_MUTED",
+        "name": "PhysicallyMuted",
+        "type": "boolean",
+        "server": true,
+        "writable": false,
+        "optional": true,
+        "default": "0",
+        "conformance": {
+          "optional": true
+        }
+      },
+      "2": {
+        "define": "VOLUME",
+        "name": "Volume",
+        "type": "int16u",
+        "server": true,
+        "min": 1,
+        "writable": false,
+        "optional": false
+      },
+      "3": {
+        "define": "MIN_DEVICE_VOLUME",
+        "name": "MinDeviceVolume",
+        "type": "int16u",
+        "server": true,
+        "min": 1,
+        "writable": false,
+        "optional": false
+      },
+      "4": {
+        "define": "MAX_DEVICE_VOLUME",
+        "name": "MaxDeviceVolume",
+        "type": "int16u",
+        "server": true,
+        "min": 1,
+        "writable": false,
+        "optional": false
+      },
+      "5": {
+        "define": "MAX_DEVICE_VOLUME_DB",
+        "name": "MaxDeviceVolumeDB",
+        "type": "int16u",
+        "server": true,
+        "writable": false,
+        "optional": true,
+        "conformance": {
+          "optional": {
+            "not": {
+              "feature": "DB"
+            }
+          }
+        }
+      },
+      "6": {
+        "define": "MAX_USER_VOLUME",
+        "name": "MaxUserVolume",
+        "type": "int16u",
+        "server": true,
+        "min": 1,
+        "writable": true,
+        "optional": true,
+        "conformance": {
+          "optional": true
+        }
+      },
+      "7": {
+        "define": "DEFAULT_STEP_SIZE",
+        "name": "DefaultStepSize",
+        "type": "int16u",
+        "server": true,
+        "min": 1,
+        "max": 65534,
+        "writable": true,
+        "optional": false
+      },
+      "8": {
+        "define": "SET_VOLUME_UNMUTE_POLICY",
+        "name": "SetVolumeUnmutePolicy",
+        "type": "UnmutePolicyEnum",
+        "server": true,
+        "max": 3,
+        "writable": true,
+        "optional": false
+      },
+      "9": {
+        "define": "INCREASE_VOLUME_UNMUTE_POLICY",
+        "name": "IncreaseVolumeUnmutePolicy",
+        "type": "UnmutePolicyEnum",
+        "server": true,
+        "max": 3,
+        "writable": true,
+        "optional": false
+      },
+      "10": {
+        "define": "INCREASE_VOLUME_UNMUTE_VOLUME",
+        "name": "IncreaseVolumeUnmuteVolume",
+        "type": "UnmuteVolumeEnum",
+        "server": true,
+        "max": 2,
+        "writable": true,
+        "optional": false
+      },
+      "11": {
+        "define": "DECREASE_VOLUME_UNMUTE_POLICY",
+        "name": "DecreaseVolumeUnmutePolicy",
+        "type": "UnmutePolicyEnum",
+        "server": true,
+        "max": 3,
+        "writable": true,
+        "optional": false
+      },
+      "12": {
+        "define": "START_UP_MUTED",
+        "name": "StartUpMuted",
+        "type": "boolean",
+        "server": true,
+        "writable": true,
+        "optional": true,
+        "default": "0",
+        "conformance": {
+          "optional": true
+        }
+      },
+      "13": {
+        "define": "START_UP_VOLUME",
+        "name": "StartUpVolume",
+        "type": "int16u",
+        "server": true,
+        "min": 1,
+        "max": 65534,
+        "writable": true,
+        "optional": true,
+        "conformance": {
+          "optional": true
+        }
+      },
+      "14": {
+        "define": "BASS",
+        "name": "Bass",
+        "type": "int16s",
+        "server": true,
+        "writable": true,
+        "optional": true,
+        "default": "0",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1,
+            "term": {
+              "feature": "BEQ"
+            }
+          }
+        }
+      },
+      "15": {
+        "define": "MID",
+        "name": "Mid",
+        "type": "int16s",
+        "server": true,
+        "writable": true,
+        "optional": true,
+        "default": "0",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1,
+            "term": {
+              "feature": "BEQ"
+            }
+          }
+        }
+      },
+      "16": {
+        "define": "TREBLE",
+        "name": "Treble",
+        "type": "int16s",
+        "server": true,
+        "writable": true,
+        "optional": true,
+        "default": "0",
+        "conformance": {
+          "optional": {
+            "choice": "a",
+            "more": true,
+            "min": 1,
+            "term": {
+              "feature": "BEQ"
+            }
+          }
+        }
+      },
+      "17": {
+        "define": "MIN_CORRECTION",
+        "name": "MinCorrection",
+        "type": "int16s",
+        "server": true,
+        "max": 0,
+        "writable": false,
+        "optional": true,
+        "conformance": {
+          "mandatory": {
+            "feature": "BEQ"
+          }
+        }
+      },
+      "18": {
+        "define": "MAX_CORRECTION",
+        "name": "MaxCorrection",
+        "type": "int16s",
+        "server": true,
+        "min": 0,
+        "writable": false,
+        "optional": true,
+        "conformance": {
+          "mandatory": {
+            "feature": "BEQ"
+          }
+        }
+      }
+    },
+    "commands": {
+      "Mute": {
+        "id": 0,
+        "args": []
+      },
+      "Unmute": {
+        "id": 1,
+        "args": []
+      },
+      "ToggleMuted": {
+        "id": 2,
+        "args": []
+      },
+      "SetVolume": {
+        "id": 3,
+        "args": [
+          {
+            "id": 0,
+            "name": "NewVolume",
+            "type": "int16u"
+          },
+          {
+            "id": 1,
+            "name": "UnmutePolicy",
+            "type": "enum8",
+            "max": 3,
+            "optional": true,
+            "enum_values": {
+              "unmute_or_change_volume": 0,
+              "unmute_or_do_not_change_volume": 1,
+              "do_not_unmute_and_change_volume": 2,
+              "do_not_unmute_and_do_not_change_volume": 3
+            }
+          }
+        ]
+      },
+      "IncreaseVolume": {
+        "id": 4,
+        "args": [
+          {
+            "id": 0,
+            "name": "StepSize",
+            "type": "int16u",
+            "min": 1,
+            "max": 65534,
+            "optional": true
+          },
+          {
+            "id": 1,
+            "name": "UnmutePolicy",
+            "type": "enum8",
+            "max": 3,
+            "optional": true,
+            "enum_values": {
+              "unmute_or_change_volume": 0,
+              "unmute_or_do_not_change_volume": 1,
+              "do_not_unmute_and_change_volume": 2,
+              "do_not_unmute_and_do_not_change_volume": 3
+            }
+          },
+          {
+            "id": 2,
+            "name": "UnmuteVolume",
+            "type": "enum8",
+            "max": 2,
+            "optional": true,
+            "enum_values": {
+              "min_device_volume": 0,
+              "volume": 1,
+              "volume_plus_step_size": 2
+            }
+          }
+        ]
+      },
+      "DecreaseVolume": {
+        "id": 5,
+        "args": [
+          {
+            "id": 0,
+            "name": "StepSize",
+            "type": "int16u",
+            "min": 1,
+            "max": 65534,
+            "optional": true
+          },
+          {
+            "id": 1,
+            "name": "UnmutePolicy",
+            "type": "enum8",
+            "max": 3,
+            "optional": true,
+            "enum_values": {
+              "unmute_or_change_volume": 0,
+              "unmute_or_do_not_change_volume": 1,
+              "do_not_unmute_and_change_volume": 2,
+              "do_not_unmute_and_do_not_change_volume": 3
+            }
+          }
+        ]
       }
     }
   },
@@ -26640,7 +27712,10 @@
         "type": "array",
         "server": true,
         "writable": false,
-        "optional": false
+        "optional": false,
+        "conformance": {
+          "mandatory": true
+        }
       }
     },
     "commands": {
@@ -26775,7 +27850,10 @@
             "length": 16,
             "min_length": 1
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       },
       "ProvideOffer": {
         "id": 2,
@@ -26919,7 +27997,10 @@
             "length": 16,
             "min_length": 1
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       },
       "ProvideAnswer": {
         "id": 4,
@@ -26934,7 +28015,10 @@
             "name": "SDP",
             "type": "char_string"
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       },
       "ProvideICECandidates": {
         "id": 5,
@@ -26971,7 +28055,10 @@
               }
             ]
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       },
       "EndSession": {
         "id": 6,
@@ -27002,7 +28089,10 @@
               "unknown_reason": 12
             }
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       }
     },
     "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_PROVIDER_CLUSTER"
@@ -27017,7 +28107,10 @@
         "type": "array",
         "server": true,
         "writable": false,
-        "optional": false
+        "optional": false,
+        "conformance": {
+          "mandatory": true
+        }
       }
     },
     "commands": {
@@ -27080,7 +28173,10 @@
             "optional": true,
             "length": 16
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       },
       "Answer": {
         "id": 1,
@@ -27095,7 +28191,10 @@
             "name": "SDP",
             "type": "char_string"
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       },
       "ICECandidates": {
         "id": 2,
@@ -27132,7 +28231,10 @@
               }
             ]
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       },
       "End": {
         "id": 3,
@@ -27163,7 +28265,10 @@
               "unknown_reason": 12
             }
           }
-        ]
+        ],
+        "conformance": {
+          "mandatory": true
+        }
       }
     },
     "sdkconfig_option": "CONFIG_SUPPORT_WEB_RTC_TRANSPORT_REQUESTOR_CLUSTER"
@@ -28745,6 +29850,20 @@
         "max": 65534,
         "writable": false,
         "optional": false
+      }
+    }
+  },
+  "4294048801": {
+    "name": "Test Hidden Manufacturer Specific",
+    "revision": null,
+    "attributes": {
+      "0": {
+        "define": "TEST_ATTRIBUTE",
+        "type": "boolean",
+        "server": true,
+        "writable": false,
+        "optional": false,
+        "default": "true"
       }
     }
   }

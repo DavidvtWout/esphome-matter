@@ -313,7 +313,7 @@
   },
   "22": {
     "name": "root_node",
-    "revision": 4,
+    "revision": 5,
     "clusters": {
       "29": {
         "name": "Descriptor",
@@ -1452,9 +1452,20 @@
       }
     }
   },
+  "146": {
+    "name": "commissioning_by_proxy",
+    "revision": 1,
+    "clusters": {
+      "1109": {
+        "name": "Commissioning Proxy",
+        "server": true,
+        "client_locked": true
+      }
+    }
+  },
   "256": {
     "name": "on_off_light",
-    "revision": 3,
+    "revision": 4,
     "clusters": {
       "3": {
         "name": "Identify",
@@ -3156,7 +3167,7 @@
   },
   "560": {
     "name": "closure",
-    "revision": 1,
+    "revision": 2,
     "clusters": {
       "3": {
         "name": "Identify",
@@ -3181,13 +3192,29 @@
         "name": "Closure Control",
         "server": true,
         "server_locked": true,
-        "client_locked": true
+        "client_locked": true,
+        "features": {
+          "ACC": {
+            "conformance": {
+              "otherwise": [
+                {
+                  "provisional": true
+                },
+                {
+                  "mandatory": {
+                    "condition": "AccessDevice"
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
     }
   },
   "561": {
     "name": "closure_panel",
-    "revision": 1,
+    "revision": 2,
     "clusters": {
       "29": {
         "name": "Descriptor",
@@ -3206,13 +3233,29 @@
         "name": "Closure Dimension",
         "server": true,
         "server_locked": true,
-        "client_locked": true
+        "client_locked": true,
+        "features": {
+          "ACC": {
+            "conformance": {
+              "otherwise": [
+                {
+                  "provisional": true
+                },
+                {
+                  "mandatory": {
+                    "condition": "AccessDevice"
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
     }
   },
   "574": {
     "name": "closure_controller",
-    "revision": 1,
+    "revision": 2,
     "clusters": {
       "3": {
         "name": "Identify",
