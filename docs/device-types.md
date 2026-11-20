@@ -7,7 +7,7 @@ For a generated configuration overview of every supported device type and its op
 
 The Matter light device types are [`on_off_light`](generated/device_types.md#on_off_light), [`dimmable_light`](generated/device_types.md#dimmable_light), [`color_temperature_light`](generated/device_types.md#color_temperature_light), and [`extended_color_light`](generated/device_types.md#extended_color_light). Each adds more functionality to the previous device type.
 
-All of the light device types can be created, but currently only the on/off feature is working.
+All of the light device types can be created. `light_id` synchronizes on/off, brightness, color temperature, and XY color. Apple Home only shows a color picker when `hue_and_saturation` is enabled; Home Assistant can set color through XY without it.
 
 ```yaml
 matter:
@@ -26,7 +26,7 @@ matter:
         light_id: light_id
         # Unlike the other lights, the extended_color_light supports additional features;
         with_features:
-          - hue_and_saturation # Supports color specification via hue/saturation.
+          - hue_and_saturation # Required for the Apple Home color picker. Home Assistant can use XY without it.
           - enhanced_hue # Enhanced hue is supported.
           - color_loop # Color loop is supported.
 ```

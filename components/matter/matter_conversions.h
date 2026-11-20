@@ -35,6 +35,8 @@ namespace to_matter {
 
 uint8_t brightness(float brightness);
 bool color(float red, float green, float blue, uint16_t &x, uint16_t &y);
+bool hue_saturation(float red, float green, float blue, uint8_t &hue,
+                    uint8_t &saturation);
 uint16_t color_temperature(float color_temperature);
 
 } // namespace to_matter
@@ -43,6 +45,8 @@ namespace from_matter {
 
 float brightness(uint8_t level);
 bool color(uint16_t x, uint16_t y, float &red, float &green, float &blue);
+bool hue_saturation(uint8_t hue, uint8_t saturation, float &red, float &green,
+                    float &blue);
 
 } // namespace from_matter
 

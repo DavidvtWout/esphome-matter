@@ -21,6 +21,8 @@ class Feature:
     code: str
     name: str  # CamelCase
     conformance: Conformance | None = field(default=None, compare=False, hash=False)
+    # esp-matter identifier when it differs from the snake_case spec name.
+    espm_namespace: str | None = None
 
     @classmethod
     def from_dict(cls, bit: int, data: dict):
@@ -30,15 +32,17 @@ class Feature:
             code=data["code"],
             name=name,
             conformance=Conformance.from_dict(data.get("conformance")),
+            espm_namespace=data.get("esp_matter_namespace"),
         )
 
     @property
     def namespace(self) -> str:
         """Feature name in esp_matter::cluster::<cluster>::feature::<feature> namespace."""
-        return snake_case(self.name)
+        return self.espm_namespace or snake_case(self.name)
 
     @property
     def conf_key(self):
+        """YAML key. This stays the spec name even when esp-matter spells the feature differently."""
         return snake_case(self.name)
 
 

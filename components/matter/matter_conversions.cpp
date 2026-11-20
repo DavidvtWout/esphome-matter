@@ -212,6 +212,42 @@ bool color(float red, float green, float blue, uint16_t &matter_x,
   return true;
 }
 
+// Matter CurrentHue is 0-254 for a full circle and CurrentSaturation is 0-254
+// for 0-100%. Brightness stays on the Level Control cluster, so the value
+// channel of this conversion is always fully on.
+bool hue_saturation(float red, float green, float blue, uint8_t &hue,
+                    uint8_t &saturation) {
+  float r = std::clamp(red, 0.0f, 1.0f);
+  float g = std::clamp(green, 0.0f, 1.0f);
+  float b = std::clamp(blue, 0.0f, 1.0f);
+  float max_channel = std::max({r, g, b});
+  float min_channel = std::min({r, g, b});
+  float chroma = max_channel - min_channel;
+
+  float hue_degrees = 0.0f;
+  if (chroma > 0.0f) {
+    if (max_channel == r)
+      hue_degrees = std::fmod((g - b) / chroma, 6.0f);
+    else if (max_channel == g)
+      hue_degrees = (b - r) / chroma + 2.0f;
+    else
+      hue_degrees = (r - g) / chroma + 4.0f;
+    hue_degrees *= 60.0f;
+    if (hue_degrees < 0.0f)
+      hue_degrees += 360.0f;
+  }
+
+  int scaled_hue = std::lround(hue_degrees * 254.0f / 360.0f);
+  if (scaled_hue >= 254 || scaled_hue < 0)
+    scaled_hue = 0;
+  float scaled_saturation =
+      (max_channel == 0.0f ? 0.0f : chroma / max_channel) * 254.0f;
+  hue = static_cast<uint8_t>(scaled_hue);
+  saturation = static_cast<uint8_t>(
+      std::lround(std::clamp(scaled_saturation, 0.0f, 254.0f)));
+  return true;
+}
+
 // ESPHome and Matter both use mireds for color temperature, but ESPHome uses
 // floating-point values while Matter uses integers.
 uint16_t color_temperature(float color_temperature) {
@@ -260,6 +296,45 @@ bool color(uint16_t matter_x, uint16_t matter_y, float &red, float &green,
   red = r;
   green = g;
   blue = b;
+  return true;
+}
+
+bool hue_saturation(uint8_t hue, uint8_t saturation, float &red, float &green,
+                    float &blue) {
+  float hue_degrees =
+      static_cast<float>(std::min<int>(hue, 254)) * 360.0f / 254.0f;
+  float chroma = static_cast<float>(std::min<int>(saturation, 254)) / 254.0f;
+  float sector = hue_degrees / 60.0f;
+  float secondary =
+      chroma * (1.0f - std::fabs(std::fmod(sector, 2.0f) - 1.0f));
+
+  float r = 0.0f;
+  float g = 0.0f;
+  float b = 0.0f;
+  if (sector < 1.0f) {
+    r = chroma;
+    g = secondary;
+  } else if (sector < 2.0f) {
+    r = secondary;
+    g = chroma;
+  } else if (sector < 3.0f) {
+    g = chroma;
+    b = secondary;
+  } else if (sector < 4.0f) {
+    g = secondary;
+    b = chroma;
+  } else if (sector < 5.0f) {
+    r = secondary;
+    b = chroma;
+  } else {
+    r = chroma;
+    b = secondary;
+  }
+
+  float match = 1.0f - chroma;
+  red = r + match;
+  green = g + match;
+  blue = b + match;
   return true;
 }
 

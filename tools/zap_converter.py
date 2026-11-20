@@ -869,8 +869,23 @@ def apply_cluster_overrides(
                     f"Unknown attribute override: {cluster_name}.{attribute_id}"
                 )
             cluster["attributes"][attribute_id].update(attribute_override)
+        features_by_code = {
+            feature["code"]: feature
+            for feature in cluster.get("features", {}).values()
+            if "code" in feature
+        }
+        for feature_code, feature_override in override.get("features", {}).items():
+            if feature_code not in features_by_code:
+                raise ValueError(
+                    f"Unknown feature override: {cluster_name}.{feature_code}"
+                )
+            features_by_code[feature_code].update(feature_override)
         cluster.update(
-            {key: value for key, value in override.items() if key != "attributes"}
+            {
+                key: value
+                for key, value in override.items()
+                if key not in ("attributes", "features")
+            }
         )
 
 

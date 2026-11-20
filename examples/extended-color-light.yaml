@@ -34,6 +34,9 @@ matter:
       extended_color_light:
         light_id: rgbww_light
         min_level: 20%
+        # Apple Home only shows a color picker when hue/saturation is enabled.
+        with_features:
+          - hue_and_saturation
 
 button:
   - platform: restart

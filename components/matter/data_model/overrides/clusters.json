@@ -97,7 +97,42 @@
   },
   "Color Control": {
     "chip_fqn": "ColorControlServer",
-    "chip_include": "#include <app/clusters/color-control-server/color-control-server.h>"
+    "chip_include": "#include <app/clusters/color-control-server/color-control-server.h>",
+    "features": {
+      "HS": {
+        "esp_matter_namespace": "hue_saturation"
+      }
+    }
+  },
+  "Energy EVSE": {
+    "features": {
+      "SOC": {
+        "esp_matter_namespace": "soc_reporting"
+      },
+      "V2X": {
+        "esp_matter_namespace": "v2x"
+      }
+    }
+  },
+  "Door Lock": {
+    "features": {
+      "UBOLT": {
+        "esp_matter_namespace": "unbolting"
+      },
+      "WDSCH": {
+        "esp_matter_namespace": "weekday_access_schedules"
+      },
+      "COTA": {
+        "esp_matter_namespace": "credential_over_the_air_access"
+      }
+    }
+  },
+  "Fan Control": {
+    "features": {
+      "AUT": {
+        "esp_matter_namespace": "fan_auto"
+      }
+    }
   },
   "Occupancy Sensing": {
     "chip_fqn": "chip::app::Clusters::OccupancySensingCluster",

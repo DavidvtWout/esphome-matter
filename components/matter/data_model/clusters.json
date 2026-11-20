@@ -12506,6 +12506,7 @@
       "1": {
         "code": "SOC",
         "name": "SoCReporting",
+        "esp_matter_namespace": "soc_reporting",
         "conformance": {
           "otherwise": [
             {
@@ -12541,6 +12542,7 @@
       "4": {
         "code": "V2X",
         "name": "V2X",
+        "esp_matter_namespace": "v2x",
         "conformance": {
           "otherwise": [
             {
@@ -13767,6 +13769,7 @@
       "12": {
         "code": "UBOLT",
         "name": "Unbolt",
+        "esp_matter_namespace": "unbolting",
         "conformance": {
           "optional": true
         }
@@ -13811,6 +13814,7 @@
       "4": {
         "code": "WDSCH",
         "name": "WeekDayAccessSchedules",
+        "esp_matter_namespace": "weekday_access_schedules",
         "conformance": {
           "optional": true
         }
@@ -13839,6 +13843,7 @@
       "7": {
         "code": "COTA",
         "name": "CredentialsOverTheAirAccess",
+        "esp_matter_namespace": "credential_over_the_air_access",
         "conformance": {
           "optional": true
         }
@@ -18754,6 +18759,7 @@
       "1": {
         "code": "AUT",
         "name": "Auto",
+        "esp_matter_namespace": "fan_auto",
         "conformance": {
           "optional": true
         }
@@ -19024,6 +19030,7 @@
       "0": {
         "code": "HS",
         "name": "Hue And Saturation",
+        "esp_matter_namespace": "hue_saturation",
         "conformance": {
           "otherwise": [
             {
