@@ -1,4 +1,4 @@
-There are four different lights in Matter; `on_off_light`, `dimmable_light`, `color_temperature_light` and `extended_colour_light`. These are fully supported by esphome-matter.
+There are four different lights in Matter; `on_off_light`, `dimmable_light`, `color_temperature_light` and `extended_color_light`. These are fully supported by esphome-matter.
 
 The `on_off_light` is the simplest light device type. This light only has the OnOff cluster and as the name suggests, only support the "on" and "off" states.
 
@@ -6,7 +6,7 @@ The `dimmable_light` adds the LevelControl cluster on top to support dimming.
 
 The `color_temperature_light` adds the ColorControl cluster to support color temperature.
 
-The `extended_colour_light` is for RGB lights. This device type adds additional attributes and commands to the ColorControl cluster to support the full colour spectrum.
+The `extended_color_light` is for RGB lights. This device type adds additional attributes and commands to the ColorControl cluster to support the full colour spectrum.
 
 ### Pre-defined behaviour
 
@@ -16,7 +16,7 @@ All four lights support the `light_id` config option. This maps a light to a Mat
 matter:
   endpoints:
     1:
-      extended_colour_light:
+      extended_color_light:
         light_id: some_light
         #  It can be useful to set a higher minimum, for example when a low brightness
         #  turns off the light completely. The native Matter level range is 1-254, but
@@ -29,6 +29,20 @@ lights:
 ```
 
 State is synchronized both ways between the ESPHome light entity and Matter. So if you set the brightness via Home Assistant, the Matter brightness attribute will be updated accordingly. The other way around is also true.
+
+Apple Home only shows a color picker for a Matter light that has the hue/saturation feature. Home Assistant can already set color through the XY feature, which an extended color light has by default. Enable hue/saturation as well when the light should be colored from Apple Home:
+
+```yaml
+matter:
+  endpoints:
+    1:
+      extended_color_light:
+        light_id: some_light
+        with_features:
+          - hue_and_saturation
+```
+
+With that feature enabled, `light_id` applies `CurrentHue` and `CurrentSaturation` writes to the ESPHome light as RGB, and reports hue and saturation back when the light color changes. XY updates continue to work alongside that.
 
 ##### Power-on behaviour
 

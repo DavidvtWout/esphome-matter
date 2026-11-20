@@ -21,6 +21,7 @@ struct MatterColorTemperatureRange {
 struct MatterLightCapabilities {
   bool has_level{false};
   bool has_color{false};
+  bool has_hue_saturation{false};
   optional<MatterColorTemperatureRange> color_temperature_range;
 };
 
@@ -40,12 +41,14 @@ protected:
   void apply_level_(uint8_t level);
   void apply_color_temperature_(uint16_t color_temperature);
   void apply_color_(uint16_t x, uint16_t y);
+  void apply_hue_saturation_(uint8_t hue, uint8_t saturation);
   void apply_color_mode_(uint8_t color_mode);
 
   light::LightState *light_;
   MatterLightCapabilities capabilities_;
   bool synchronizing_from_matter_{false};
   bool color_update_pending_{false};
+  bool hue_update_pending_{false};
 };
 
 } // namespace esphome::matter

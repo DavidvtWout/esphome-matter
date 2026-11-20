@@ -28,6 +28,19 @@ get_color_temperature_range(const light::LightTraits &traits) {
   };
 }
 
+bool color_mode_is_hue_and_saturation(uint16_t endpoint_id) {
+  using namespace chip::app::Clusters;
+  esp_matter_attr_val_t mode;
+  if (esp_matter::attribute::get_val(
+          endpoint_id, ColorControl::Id, ColorControl::Attributes::ColorMode::Id,
+          &mode) != ESP_OK ||
+      mode.is_null())
+    return false;
+  return mode.val.u8 ==
+         static_cast<uint8_t>(
+             ColorControl::ColorModeEnum::kCurrentHueAndCurrentSaturation);
+}
+
 // Removing the colour temperature capability from the ColorCapabilities
 // attribute is not according to Matter spec. But the Matter spec is stupid so
 // who cares...
@@ -79,6 +92,15 @@ void MatterLightMapping::initialize() {
         get_color_temperature_range(traits);
   } else {
     this->capabilities_.color_temperature_range = nullopt;
+  }
+  this->capabilities_.has_hue_saturation = false;
+  if (this->capabilities_.has_color) {
+    using namespace chip::app::Clusters;
+    esp_matter_attr_val_t hue_value;
+    this->capabilities_.has_hue_saturation =
+        esp_matter::attribute::get_val(
+            this->endpoint_id(), ColorControl::Id,
+            ColorControl::Attributes::CurrentHue::Id, &hue_value) == ESP_OK;
   }
   if (this->capabilities_.has_color && !supports_color_temperature) {
     esp_err_t err = remove_color_temperature_capability(this->endpoint_id());
@@ -133,6 +155,11 @@ void MatterLightMapping::initialize() {
           chip::DeviceLayer::SystemLayer().ScheduleLambda([this]() {
             this->color_update_pending_ = false;
             using namespace chip::app::Clusters;
+            // A hue/saturation command also updates the derived XY attributes.
+            // Apply the representation named by ColorMode so the two callbacks
+            // do not overwrite each other.
+            if (color_mode_is_hue_and_saturation(this->endpoint_id()))
+              return;
             esp_matter_attr_val_t x_value;
             esp_matter_attr_val_t y_value;
             if (esp_matter::attribute::get_val(
@@ -157,6 +184,46 @@ void MatterLightMapping::initialize() {
     global_matter_component->register_attribute_callback(
         this->endpoint_id(), ColorControl::Id,
         ColorControl::Attributes::CurrentY::Id, std::move(color_callback));
+  }
+  if (this->capabilities_.has_hue_saturation) {
+    MatterAttributeCallback hue_callback =
+        [this](const esp_matter_attr_val_t &) {
+          if (this->hue_update_pending_)
+            return;
+          this->hue_update_pending_ = true;
+          // CurrentHue and CurrentSaturation are updated separately. Read the
+          // pair after the current Matter work item completes.
+          chip::DeviceLayer::SystemLayer().ScheduleLambda([this]() {
+            this->hue_update_pending_ = false;
+            using namespace chip::app::Clusters;
+            if (!color_mode_is_hue_and_saturation(this->endpoint_id()))
+              return;
+            esp_matter_attr_val_t hue_value;
+            esp_matter_attr_val_t saturation_value;
+            if (esp_matter::attribute::get_val(
+                    this->endpoint_id(), ColorControl::Id,
+                    ColorControl::Attributes::CurrentHue::Id,
+                    &hue_value) != ESP_OK ||
+                esp_matter::attribute::get_val(
+                    this->endpoint_id(), ColorControl::Id,
+                    ColorControl::Attributes::CurrentSaturation::Id,
+                    &saturation_value) != ESP_OK ||
+                hue_value.is_null() || saturation_value.is_null())
+              return;
+            uint8_t hue = hue_value.val.u8;
+            uint8_t saturation = saturation_value.val.u8;
+            global_matter_component->defer_to_main_loop([this, hue, saturation]() {
+              this->apply_hue_saturation_(hue, saturation);
+            });
+          });
+        };
+    global_matter_component->register_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::CurrentHue::Id, hue_callback);
+    global_matter_component->register_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::CurrentSaturation::Id,
+        std::move(hue_callback));
   }
   if (this->capabilities_.has_color ||
       this->capabilities_.color_temperature_range.has_value()) {
@@ -219,9 +286,15 @@ void MatterLightMapping::push_state_to_matter() {
     has_color = false;
   auto color_temperature = conversion::to_matter::color_temperature(
       this->light_->remote_values.get_color_temperature());
+  uint8_t hue = 0;
+  uint8_t saturation = 0;
+  bool has_hue =
+      has_color && this->capabilities_.has_hue_saturation &&
+      conversion::to_matter::hue_saturation(values.get_red(), values.get_green(),
+                                            values.get_blue(), hue, saturation);
   chip::DeviceLayer::SystemLayer().ScheduleLambda(
-      [eid, has_level, has_color, has_color_temperature, on, level, color_x,
-       color_y, color_temperature]() {
+      [eid, has_level, has_color, has_color_temperature, has_hue, on, level,
+       color_x, color_y, color_temperature, hue, saturation]() {
         using namespace chip::app::Clusters;
         esp_matter_attr_val_t on_val = esp_matter_bool(on);
         esp_matter::attribute::report(eid, OnOff::Id,
@@ -251,6 +324,16 @@ void MatterLightMapping::push_state_to_matter() {
           esp_matter::attribute::report(
               eid, ColorControl::Id,
               ColorControl::Attributes::EnhancedColorMode::Id, &color_mode_val);
+        }
+        if (has_hue) {
+          esp_matter_attr_val_t hue_val = esp_matter_uint8(hue);
+          esp_matter::attribute::report(
+              eid, ColorControl::Id, ColorControl::Attributes::CurrentHue::Id,
+              &hue_val);
+          esp_matter_attr_val_t saturation_val = esp_matter_uint8(saturation);
+          esp_matter::attribute::report(
+              eid, ColorControl::Id,
+              ColorControl::Attributes::CurrentSaturation::Id, &saturation_val);
         }
         if (has_color_temperature) {
           esp_matter_attr_val_t color_temperature_val =
@@ -327,14 +410,43 @@ void MatterLightMapping::apply_color_(uint16_t x, uint16_t y) {
   this->synchronizing_from_matter_ = false;
 }
 
+void MatterLightMapping::apply_hue_saturation_(uint8_t hue,
+                                               uint8_t saturation) {
+  float red;
+  float green;
+  float blue;
+  if (!conversion::from_matter::hue_saturation(hue, saturation, red, green,
+                                               blue)) {
+    ESP_LOGW(TAG,
+             "Failed to convert Matter hue/saturation: endpoint=%u, hue=%u, "
+             "saturation=%u",
+             this->endpoint_id(), hue, saturation);
+    return;
+  }
+  auto call = this->light_->make_call();
+  call.set_rgb(red, green, blue);
+  call.set_transition_length(0);
+  this->synchronizing_from_matter_ = true;
+  call.perform();
+  this->synchronizing_from_matter_ = false;
+}
+
 // The color mode should always update before the mireds or current_x or
 // current_y attributes. But just in case, replay the colour state attributes
 // updates for when the mode attribute is updated later.
 void MatterLightMapping::apply_color_mode_(uint8_t color_mode) {
   using namespace chip::app::Clusters;
   auto mode = static_cast<ColorControl::ColorModeEnum>(color_mode);
-  if (mode == ColorControl::ColorModeEnum::kCurrentXAndCurrentY &&
-      this->capabilities_.has_color) {
+  if (mode == ColorControl::ColorModeEnum::kCurrentHueAndCurrentSaturation &&
+      this->capabilities_.has_hue_saturation) {
+    global_matter_component->replay_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::CurrentHue::Id);
+    global_matter_component->replay_attribute_callback(
+        this->endpoint_id(), ColorControl::Id,
+        ColorControl::Attributes::CurrentSaturation::Id);
+  } else if (mode == ColorControl::ColorModeEnum::kCurrentXAndCurrentY &&
+             this->capabilities_.has_color) {
     global_matter_component->replay_attribute_callback(
         this->endpoint_id(), ColorControl::Id,
         ColorControl::Attributes::CurrentX::Id);
