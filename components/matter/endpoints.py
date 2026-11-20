@@ -496,7 +496,7 @@ class Endpoint:
 
         config_var = f"{cluster.espm_namespace}_config"
         lines = [f"{cluster_ns}::config_t {config_var}{{}};"]
-        feature_flags = []
+        enabled_features = []
         features_by_name = {feature.name: feature for feature in cluster.features}
         cluster_config = self._cluster_configs[cluster.conf_key]
         for feature_name, enabled in cluster_config.enabled_features.items():
@@ -507,17 +507,42 @@ class Endpoint:
                 raise cv.Invalid(
                     f"Cluster '{cluster.name}' has no feature {feature_name}"
                 )
-            feature_flags.append(
+            enabled_features.append(feature)
+        # Not every esp-matter cluster config has a feature_flags member (e.g. fan_control). Whether it does is only
+        # known to the C++ compiler: set_feature_flags() is a no-op without the member, and the features are then
+        # added with add() after the cluster has been created.
+        if enabled_features:
+            feature_ids = " | ".join(
                 f"{cluster_ns}::feature::{feature.namespace}::get_id()"
+                for feature in enabled_features
             )
-        if feature_flags:
-            lines.append(f"{config_var}.feature_flags = {' | '.join(feature_flags)};")
+            lines.append(
+                f"esphome::matter::set_feature_flags({config_var}, {feature_ids});"
+            )
         lines.extend(
             (
                 f"if ({cluster_ns}::create(endpoint, &{config_var}, esp_matter::CLUSTER_FLAG_SERVER) == nullptr)",
                 "  return false;",
             )
         )
+        if enabled_features:
+            cluster_var = f"{cluster.espm_namespace}_cluster"
+            lines.extend(
+                (
+                    f"if (!esphome::matter::has_feature_flags<decltype({config_var})>) {{",
+                    f"  auto *{cluster_var} = esp_matter::cluster::get(endpoint, {cluster.id});",
+                    f"  if ({cluster_var} == nullptr)",
+                    "    return false;",
+                )
+            )
+            for feature in enabled_features:
+                lines.extend(
+                    (
+                        f"  if (esphome::matter::add_feature({cluster_var}, {cluster_ns}::feature::{feature.namespace}::add) != ESP_OK)",
+                        "    return false;",
+                    )
+                )
+            lines.append("}")
         return lines
 
     def _make_build_callback(self) -> str:
