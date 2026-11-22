@@ -185,6 +185,28 @@ async def _set_executable_component_name():
         value += " -DEXECUTABLE_COMPONENT_NAME=src"
         cg.add_platformio_option(key, value)
 
+def _thread_capable() -> bool:
+    """Whether ESPHome's openthread component accepts this target.
+    The set of 802.15.4-capable variants lives inside ESPHome's openthread config
+    validator and is not exported, so ask the validator itself: an empty config
+    has no ``border_router:`` key, which makes it take the plain-device path and
+    raise for variants without a native radio.
+    """
+    try:
+        from esphome.components.openthread import _validate_platform
+    except ImportError:
+        return False
+    try:
+        _validate_platform({})
+    except cv.Invalid:
+        # The validator rejected this variant: no native 802.15.4 radio.
+        return False
+    except Exception:
+        # Anything else (framework version, unexpected internal error) is not a
+        # capability verdict. Fail open so Thread stays available, matching the
+        # previous unconditional behaviour rather than silently dropping it.
+        return True
+    return True
 
 @coroutine_with_priority(CoroPriority.NETWORK_SERVICES)
 async def to_code(config: ConfigType):
@@ -282,11 +304,26 @@ async def to_code(config: ConfigType):
         # commissioned as matter-over-thread or matter-over-wifi device depending on the hardware capabilities of the
         # device. If the device supports both, it can be commissioned in either mode.
 
-        # TODO: only enable if device supports it
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CLI", False)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
-        add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
+        # Thread can only commission on an SoC with an IEEE 802.15.4 radio, and
+        # ESPHome's openthread component already knows which variants those are.
+        # Its allow-list is not exported (it sits inside the config validator), so
+        # probe that validator rather than duplicating the list here - when
+        # ESPHome's list changes this follows it automatically.
+        thread_capable = _thread_capable()
+        if thread_capable:
+            # The SoC has a native 802.15.4 radio, so the device can be
+            # commissioned as matter-over-thread as well as matter-over-wifi.
+            add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", True)
+            add_idf_sdkconfig_option("CONFIG_OPENTHREAD_ENABLED", True)
+            add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CLI", False)
+            add_idf_sdkconfig_option("CONFIG_OPENTHREAD_CONSOLE_ENABLE", False)
+            add_idf_sdkconfig_option("CONFIG_OPENTHREAD_SRP_CLIENT", True)
+        else:
+            # No 802.15.4 radio. Thread defaults to on at two layers - in
+            # connectedhomeip and in esp_matter - so both must be disabled or a
+            # Thread stack is built for a radio that does not exist.
+            add_idf_sdkconfig_option("CONFIG_ENABLE_MATTER_OVER_THREAD", False)
+            add_idf_sdkconfig_option("CONFIG_ESP_MATTER_ENABLE_OPENTHREAD", False)
 
         # TODO: use CORE.data?
         add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
