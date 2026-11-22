@@ -107,6 +107,7 @@ jobs:
         config:
           - tests/configs/esp32-thread.yaml
           - tests/configs/esp32-wifi.yaml
+          - tests/configs/esp32-ethernet.yaml
         esphome-version:
           - 2026.9.1
 

@@ -29,7 +29,8 @@ Connectivity depends on which ESPHome networking components are configured:
 - **Matter-over-Wi-Fi**: If `wifi` is configured, Matter announces itself over mDNS and can be commissioned
   on the network.
 - **Matter-over-Thread**: Requires the `openthread` component and ESPHome **2026.6.0** or newer.
-- **Matter-over-Ethernet**: Isn't supported yet and isn't actively being worked on. Feel free to implement it ;)
+- **Matter-over-Ethernet**: If `ethernet` is configured, Matter announces itself over mDNS and can be commissioned
+  on the network, just like Wi-Fi.
 - **BLE commissioning**: Currently broken, but this is something that I want to work on. The idea is that esphome-matter falls back to BLE commissioning (the default for most matter devices) when no `wifi`, `openthread`, or `ethernet` component is configured.
 
 Binding (for example, a button to a light) is working but still has some stability issues. Sometimes it takes a few
@@ -114,6 +115,8 @@ network:
 wifi: ...
 # Or:
 openthread: ...
+# Or:
+ethernet: ...
 
 matter:
   # vendor_name: defaults to ESPHome
