@@ -97,6 +97,15 @@ public:
 #ifdef USE_BINARY_SENSOR
   void
   register_binary_sensor_attribute(binary_sensor::BinarySensor *sensor,
+  void register_sensor_attribute_with_updater(sensor::Sensor *sensor,
+                                              uint16_t endpoint_id,
+                                              uint32_t cluster_id,
+                                              uint32_t attribute_id,
+                                              SensorValueConverter converter,
+                                              SensorAttributeUpdater updater) {
+    this->mappings_.push_back(new MatterSensorAttributeMapping(
+        sensor, endpoint_id, cluster_id, attribute_id, converter, updater));
+  }
                                    uint16_t endpoint_id, uint32_t cluster_id,
                                    uint32_t attribute_id,
                                    BinarySensorValueConverter converter,

@@ -46,6 +46,13 @@ CHIP_ERROR update_code_driven_sensor_attribute(uint16_t endpoint_id,
   return (static_cast<ClusterT *>(server)->*Setter)(converted);
 }
 
+CHIP_ERROR update_air_quality_attribute(uint16_t endpoint_id,
+                                        uint32_t cluster_id,
+                                        esp_matter_attr_val_t value);
+CHIP_ERROR update_resource_condition_attribute(uint16_t endpoint_id,
+                                               uint32_t cluster_id,
+                                               esp_matter_attr_val_t value);
+
 class MatterSensorAttributeMapping : public MatterEndpointMappingBase {
 public:
   MatterSensorAttributeMapping(sensor::Sensor *sensor, uint16_t endpoint_id,
@@ -70,6 +77,8 @@ protected:
 CHIP_ERROR update_boolean_state_attribute(uint16_t endpoint_id,
                                           uint32_t cluster_id,
                                           esp_matter_attr_val_t value);
+CHIP_ERROR update_resource_change_indication_attribute(
+    uint16_t endpoint_id, uint32_t cluster_id, esp_matter_attr_val_t value);
 
 class MatterBinarySensorAttributeMapping : public MatterEndpointMappingBase {
 public:

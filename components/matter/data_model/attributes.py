@@ -99,6 +99,7 @@ class SensorAttribute:
     sensor_type: MockObjClass = field(default_factory=lambda: Sensor)
     features: tuple[str, ...] = ()
     code_driven: bool = False
+    updater: str | None = None
     # Set by DeviceType:
     cluster: "Cluster | None" = None
     attribute: Attribute | None = None
@@ -106,6 +107,28 @@ class SensorAttribute:
 
 # Arranged by Cluster, Attribute
 SENSOR_ATTRIBUTES = {
+    "air_quality": {  # 0x005B
+        "AirQuality": SensorAttribute(
+            "air_quality",
+            "air_quality",
+            features=("Fair", "Moderate", "VeryPoor", "ExtremelyPoor"),
+            updater="update_air_quality_attribute",
+        )
+    },
+    "hepa_filter_monitoring": {  # 0x0071
+        "Condition": SensorAttribute(
+            "hepa_filter_condition",
+            "filter_condition",
+            features=("Condition",),
+            updater="update_resource_condition_attribute",
+        ),
+        "ChangeIndication": SensorAttribute(
+            "hepa_filter_change_indication",
+            "filter_change_indication",
+            BinarySensor,
+            updater="update_resource_change_indication_attribute",
+        ),
+    },
     "boolean_state": {  # 0x0045
         "StateValue": SensorAttribute(
             "boolean_state", "boolean_state", BinarySensor, code_driven=True
