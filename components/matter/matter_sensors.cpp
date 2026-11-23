@@ -5,9 +5,7 @@
 #include "esphome/core/log.h"
 #include "matter_component.h"
 
-#include <app/clusters/air-quality-server/AirQualityCluster.h>
 #include <app/clusters/boolean-state-server/BooleanStateCluster.h>
-#include <app/clusters/resource-monitoring-server/ResourceMonitoringCluster.h>
 #include <platform/CHIPDeviceLayer.h>
 
 #include <cinttypes>
@@ -81,37 +79,6 @@ void MatterComponent::register_sensor_attribute(
       sensor, endpoint_id, cluster_id, attribute_id, converter));
 }
 
-CHIP_ERROR update_air_quality_attribute(uint16_t endpoint_id,
-                                        uint32_t cluster_id,
-                                        esp_matter_attr_val_t value) {
-  auto *server =
-      esp_matter::data_model::provider::get_instance().registry().Get(
-          {endpoint_id, cluster_id});
-  if (server == nullptr)
-    return CHIP_ERROR_NOT_FOUND;
-
-  static_cast<chip::app::Clusters::AirQualityCluster *>(server)->SetAirQuality(
-      static_cast<chip::app::Clusters::AirQuality::AirQualityEnum>(
-          value.val.u8));
-  return CHIP_NO_ERROR;
-}
-
-CHIP_ERROR update_resource_condition_attribute(uint16_t endpoint_id,
-                                               uint32_t cluster_id,
-                                               esp_matter_attr_val_t value) {
-  auto *server =
-      esp_matter::data_model::provider::get_instance().registry().Get(
-          {endpoint_id, cluster_id});
-  if (server == nullptr)
-    return CHIP_ERROR_NOT_FOUND;
-
-  static_cast<
-      chip::app::Clusters::ResourceMonitoring::ResourceMonitoringCluster *>(
-      server)
-      ->UpdateCondition(value.val.u8);
-  return CHIP_NO_ERROR;
-}
-
 MatterSensorAttributeMapping::MatterSensorAttributeMapping(
     sensor::Sensor *sensor, uint16_t endpoint_id, uint32_t cluster_id,
     uint32_t attribute_id, SensorValueConverter converter,
@@ -147,20 +114,6 @@ CHIP_ERROR update_boolean_state_attribute(uint16_t endpoint_id,
 
   static_cast<chip::app::Clusters::BooleanStateCluster *>(server)
       ->SetStateValue(value.val.b);
-  return CHIP_NO_ERROR;
-}
-
-CHIP_ERROR update_resource_change_indication_attribute(
-    uint16_t endpoint_id, uint32_t cluster_id, esp_matter_attr_val_t value) {
-  auto *server =
-      esp_matter::data_model::provider::get_instance().registry().Get(
-          {endpoint_id, cluster_id});
-  if (server == nullptr)
-    return CHIP_ERROR_NOT_FOUND;
-
-  using namespace chip::app::Clusters::ResourceMonitoring;
-  static_cast<ResourceMonitoringCluster *>(server)->UpdateChangeIndication(
-      static_cast<ChangeIndicationEnum>(value.val.u8));
   return CHIP_NO_ERROR;
 }
 
