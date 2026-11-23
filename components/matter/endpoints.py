@@ -370,6 +370,19 @@ class Endpoint:
             self._light_variables[device_type.name] = light_
             cg.add(var.register_light(light_, self._endpoint_id))
 
+        if CONF_FAN_ID in device_config:
+            fan_ = await cg.get_variable(device_config[CONF_FAN_ID])
+            self.global_includes.add(
+                '#include "esphome/components/matter/matter_fans.h"'
+            )
+            self._extra_build_lines.extend(
+                (
+                    f"if (!esphome::matter::configure_fan_control(endpoint, {fan_}))",
+                    "  return false;",
+                )
+            )
+            cg.add(var.register_fan(fan_, self._endpoint_id))
+
         # Register extra features
         for enabled_feature in device_config.get(CONF_WITH_FEATURES, ()):
             for cluster in device_type.server_clusters:

@@ -8,6 +8,7 @@
 
 #include "matter_attributes.h"
 #include "matter_endpoints.h"
+#include "matter_fans.h"
 #include "matter_lights.h"
 #include "matter_sensors.h"
 
@@ -76,6 +77,9 @@ public:
 #ifdef USE_LIGHT
   void register_light(light::LightState *light, uint16_t endpoint_id);
 #endif // USE_LIGHT
+#ifdef USE_FAN
+  void register_fan(fan::Fan *fan, uint16_t endpoint_id);
+#endif // USE_FAN
 #ifdef USE_SENSOR
   void register_sensor_attribute(sensor::Sensor *sensor, uint16_t endpoint_id,
                                  uint32_t cluster_id, uint32_t attribute_id,
