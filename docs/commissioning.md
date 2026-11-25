@@ -48,6 +48,37 @@ Slots remain unknown while they have never contained a fabric. When an existing 
 slot is cleared. However, due to a limitation in the `text_sensor`, the values can't be set back to
 unknown and becomes an empty string until after a restart.
 
+## Setup codes from a factory partition
+
+By default the setup code is generated on the device and stored in the `nvs`
+partition, passcode included. To give each device a code made off the device
+instead, such as one printed on a label, put the commissioning data in a
+separate NVS partition and name it:
+
+```yaml
+esp32:
+  partitions: partitions.csv # with e.g. "fctry, data, nvs, 0x1A000, 0x6000"
+
+matter:
+  factory_partition: fctry
+```
+
+Make the partition image with
+[esp-matter-mfg-tool](https://pypi.org/project/esp-matter-mfg-tool/), which
+stores the discriminator, salt, iteration count and verifier but not the
+passcode, and write it once over serial:
+
+```bash
+esp-matter-mfg-tool -v 0xFFF1 -p 0x8000 -s 0x6000 --outdir out
+esptool.py write_flash 0x1A000 out/<vid>_<pid>/<uuid>/<uuid>-partition.bin
+```
+
+OTA updates and the Matter factory reset leave the partition alone, so the code
+stays the same for the life of the device. Without the passcode on the device,
+no QR code or manual pairing code is logged or published to the text sensors.
+If the partition is empty, a code is generated and stored there as without the
+option.
+
 ## Matter reset button
 
 To remove all Matter fabrics and restart for initial commissioning:
