@@ -339,14 +339,16 @@ void MatterComponent::setup() {
   // Always update device-name so it stays in sync if the ESPHome device name
   // changes. This is the DN TXT record in _matterc._udp — what controllers show
   // in their UI.
+#ifndef MATTER_FACTORY_PARTITION
   {
     nvs_handle_t h;
-    if (open_factory_namespace(NVS_READWRITE, &h) == ESP_OK) {
+    if (nvs_open(NVS_NAMESPACE, NVS_READWRITE, &h) == ESP_OK) {
       nvs_set_str(h, "device-name", App.get_name().c_str());
       nvs_commit(h);
       nvs_close(h);
     }
   }
+#endif // MATTER_FACTORY_PARTITION
 
   esp_matter::node::config_t node_config;
   esp_matter::node_t *node = esp_matter::node::create(

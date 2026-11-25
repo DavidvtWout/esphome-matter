@@ -77,7 +77,8 @@ OTA updates and the Matter factory reset leave the partition alone, so the code
 stays the same for the life of the device. Without the passcode on the device,
 no QR code or manual pairing code is logged or published to the text sensors.
 If the partition is empty, a code is generated and stored there as without the
-option.
+option. The device never writes to the partition otherwise, so the device name
+is not advertised in the `DN` record.
 
 ## Matter reset button
 
