@@ -65,6 +65,11 @@ matter:
       air_quality_sensor:
         pm_2_5: test_pm25
         air_quality: test_air_quality
+    103:
+      fan:
+        fan_id: test_fan
+        with_features:
+          - multi_speed
 
 sensor:
   - platform: internal_temperature
@@ -79,7 +84,18 @@ sensor:
     name: Test Air Quality
     lambda: return 1.0;
 
+fan:
+  - platform: speed
+    id: test_fan
+    name: Test Fan
+    output: test_fan_output
+
 output:
+  - platform: template
+    type: float
+    id: test_fan_output
+    write_action:
+      - lambda: (void) state;
   - platform: template
     type: binary
     id: binary_status_light_output
