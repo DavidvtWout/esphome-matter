@@ -14,6 +14,11 @@ from .events import Event
 
 _LOGGER = logging.getLogger(__name__)
 
+# Features whose snake_case name is a C++ keyword (or otherwise differs from the
+# identifier esp-matter uses) need an explicit override. esp-matter names the
+# FanControl Auto feature namespace `fan_auto`, since `auto` is a C++ keyword.
+_ESP_MATTER_FEATURE_NAMESPACES = {"auto": "fan_auto"}
+
 
 @dataclass(frozen=True, slots=True)
 class Feature:
@@ -35,7 +40,8 @@ class Feature:
     @property
     def namespace(self) -> str:
         """Feature name in esp_matter::cluster::<cluster>::feature::<feature> namespace."""
-        return snake_case(self.name)
+        namespace = snake_case(self.name)
+        return _ESP_MATTER_FEATURE_NAMESPACES.get(namespace, namespace)
 
     @property
     def conf_key(self):
