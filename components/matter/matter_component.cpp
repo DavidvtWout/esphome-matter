@@ -16,6 +16,7 @@
 #include <esp_matter_client.h>
 #include <esp_random.h>
 #include <nvs.h>
+#include <nvs_flash.h>
 #include <string>
 
 #include <app/server/Server.h>
@@ -63,6 +64,19 @@ static bool is_valid_passcode(uint32_t pin) {
   return true;
 }
 
+static esp_err_t open_factory_namespace(nvs_open_mode_t mode,
+                                        nvs_handle_t *handle) {
+#ifdef MATTER_FACTORY_PARTITION
+  esp_err_t err = nvs_flash_init_partition(MATTER_FACTORY_PARTITION);
+  if (err != ESP_OK)
+    return err;
+  return nvs_open_from_partition(MATTER_FACTORY_PARTITION, NVS_NAMESPACE, mode,
+                                 handle);
+#else
+  return nvs_open(NVS_NAMESPACE, mode, handle);
+#endif // MATTER_FACTORY_PARTITION
+}
+
 // Loads existing commissioning data from NVS, or generates random values and
 // stores them. The EXAMPLE_COMMISSIONABLE_DATA_PROVIDER reads these same NVS
 // keys on every boot, so whatever we write here becomes the device's
@@ -70,19 +84,22 @@ static bool is_valid_passcode(uint32_t pin) {
 static bool load_or_generate_commissioning_data(uint16_t &discriminator,
                                                 uint32_t &passcode) {
   nvs_handle_t handle;
-  if (nvs_open(NVS_NAMESPACE, NVS_READWRITE, &handle) != ESP_OK) {
+  if (open_factory_namespace(NVS_READWRITE, &handle) != ESP_OK) {
     ESP_LOGE(TAG, "Failed to open NVS namespace '%s'", NVS_NAMESPACE);
     return false;
   }
 
-  uint32_t stored_discriminator, stored_passcode;
+  uint32_t stored_discriminator;
+  size_t verifier_length = 0;
   bool already_provisioned =
       (nvs_get_u32(handle, NVS_KEY_DISCRIMINATOR, &stored_discriminator) ==
            ESP_OK &&
-       nvs_get_u32(handle, NVS_KEY_PASSCODE, &stored_passcode) == ESP_OK);
+       nvs_get_str(handle, NVS_KEY_VERIFIER, nullptr, &verifier_length) ==
+           ESP_OK);
   if (already_provisioned) {
     discriminator = (uint16_t)stored_discriminator;
-    passcode = stored_passcode;
+    if (nvs_get_u32(handle, NVS_KEY_PASSCODE, &passcode) != ESP_OK)
+      passcode = 0;
     nvs_close(handle);
     return true;
   }
@@ -312,7 +329,8 @@ void MatterComponent::setup() {
   }
   this->discriminator_ = discriminator;
   this->passcode_ = passcode;
-  this->generate_commissioning_codes_();
+  if (passcode != 0)
+    this->generate_commissioning_codes_();
 
 #ifdef USE_TEXT_SENSOR
   this->publish_commissioning_code_sensors_();
@@ -321,6 +339,7 @@ void MatterComponent::setup() {
   // Always update device-name so it stays in sync if the ESPHome device name
   // changes. This is the DN TXT record in _matterc._udp — what controllers show
   // in their UI.
+#ifndef MATTER_FACTORY_PARTITION
   {
     nvs_handle_t h;
     if (nvs_open(NVS_NAMESPACE, NVS_READWRITE, &h) == ESP_OK) {
@@ -329,6 +348,7 @@ void MatterComponent::setup() {
       nvs_close(h);
     }
   }
+#endif // MATTER_FACTORY_PARTITION
 
   esp_matter::node::config_t node_config;
   esp_matter::node_t *node = esp_matter::node::create(
@@ -454,6 +474,8 @@ void MatterComponent::dump_config() {
         TAG, "  Manual pairing code: %s",
         format_manual_pairing_code(this->manual_pairing_code_).c_str());
   }
+  if (this->passcode_ == 0)
+    ESP_LOGCONFIG(TAG, "  Setup code: not stored on the device, see its label");
 
   chip::DeviceLayer::PlatformMgr().LockChipStack();
   auto &server = chip::Server::GetInstance();

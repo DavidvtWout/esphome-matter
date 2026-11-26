@@ -118,6 +118,9 @@ CONFIG_SCHEMA = cv.All(
             cv.GenerateID(): cv.declare_id(MatterComponent),
             cv.Optional(CONF_DISCRIMINATOR): cv.int_range(min=0, max=4095),
             cv.Optional(CONF_PASSCODE): _validate_passcode,
+            cv.Optional(CONF_FACTORY_PARTITION): cv.All(
+                cv.string_strict, cv.Length(min=1, max=15)
+            ),
             # Vendor name
             cv.Optional(CONF_VENDOR_NAME, default="ESPHome"): cv.All(
                 cv.string_strict, cv.Length(min=1, max=32)
@@ -229,6 +232,13 @@ async def to_code(config: ConfigType):
         cg.add_define("MATTER_DISCRIMINATOR", config[CONF_DISCRIMINATOR])
     if CONF_PASSCODE in config:
         cg.add_define("MATTER_PASSCODE", config[CONF_PASSCODE])
+    if factory_partition := config.get(CONF_FACTORY_PARTITION):
+        cg.add_define(
+            "MATTER_FACTORY_PARTITION", cg.RawExpression(cpp_string_escape(factory_partition))
+        )
+        add_idf_sdkconfig_option(
+            "CONFIG_CHIP_FACTORY_NAMESPACE_PARTITION_LABEL", factory_partition
+        )
     _configure_basic_information(config)
 
     use_openthread = "openthread" in CORE.loaded_integrations

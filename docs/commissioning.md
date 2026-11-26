@@ -48,6 +48,42 @@ Slots remain unknown while they have never contained a fabric. When an existing 
 slot is cleared. However, due to a limitation in the `text_sensor`, the values can't be set back to
 unknown and becomes an empty string until after a restart.
 
+## Setup codes from a factory partition
+
+By default the setup code is generated on the device and stored in the `nvs`
+partition **including the raw passcode**, so a flash dump reveals the pairing
+code. For a retail device, generate a **unique factory image per physical
+device** off the device instead, so the flash holds only a **one-way
+cryptographic verifier** (Matter's SPAKE2+ verifier) and never the passcode. Put
+the commissioning data in a separate NVS partition and name it:
+
+```yaml
+esp32:
+  partitions: partitions.csv # with e.g. "fctry, data, nvs, 0x1A000, 0x6000"
+
+matter:
+  factory_partition: fctry
+```
+
+Make a per-device partition image with
+[esp-matter-mfg-tool](https://pypi.org/project/esp-matter-mfg-tool/). It derives
+the SPAKE2+ verifier from the passcode (a one-way, salted, iterated function) and
+stores the discriminator, salt, iteration count and **verifier — never the
+passcode**; given your own passcode it also prints that device's QR and manual
+pairing codes for the label. Write it once over serial:
+
+```bash
+esp-matter-mfg-tool -v 0xFFF1 -p 0x8000 -s 0x6000 --outdir out
+esptool.py write_flash 0x1A000 out/<vid>_<pid>/<uuid>/<uuid>-partition.bin
+```
+
+OTA updates and the Matter factory reset leave the partition alone, so the code
+stays the same for the life of the device. Without the passcode on the device,
+no QR code or manual pairing code is logged or published to the text sensors.
+If the partition is empty, a code is generated and stored there as without the
+option. The device never writes to the partition otherwise, so the device name
+is not advertised in the `DN` record.
+
 ## Matter reset button
 
 To remove all Matter fabrics and restart for initial commissioning:
