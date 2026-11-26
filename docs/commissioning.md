@@ -51,9 +51,11 @@ unknown and becomes an empty string until after a restart.
 ## Setup codes from a factory partition
 
 By default the setup code is generated on the device and stored in the `nvs`
-partition, passcode included. To give each device a code made off the device
-instead, such as one printed on a label, put the commissioning data in a
-separate NVS partition and name it:
+partition **including the raw passcode**, so a flash dump reveals the pairing
+code. For a retail device, generate a **unique factory image per physical
+device** off the device instead, so the flash holds only a **one-way
+cryptographic verifier** (Matter's SPAKE2+ verifier) and never the passcode. Put
+the commissioning data in a separate NVS partition and name it:
 
 ```yaml
 esp32:
@@ -63,10 +65,12 @@ matter:
   factory_partition: fctry
 ```
 
-Make the partition image with
-[esp-matter-mfg-tool](https://pypi.org/project/esp-matter-mfg-tool/), which
-stores the discriminator, salt, iteration count and verifier but not the
-passcode, and write it once over serial:
+Make a per-device partition image with
+[esp-matter-mfg-tool](https://pypi.org/project/esp-matter-mfg-tool/). It derives
+the SPAKE2+ verifier from the passcode (a one-way, salted, iterated function) and
+stores the discriminator, salt, iteration count and **verifier — never the
+passcode**; given your own passcode it also prints that device's QR and manual
+pairing codes for the label. Write it once over serial:
 
 ```bash
 esp-matter-mfg-tool -v 0xFFF1 -p 0x8000 -s 0x6000 --outdir out
