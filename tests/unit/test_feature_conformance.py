@@ -4,14 +4,14 @@ import esphome.codegen as cg
 from esphome.core import CORE
 
 from components.matter.const import CONF_CLUSTERS, CONF_WITH_FEATURES
-from components.matter.data_model.clusters import CLUSTERS_BY_NAME
+from components.matter.data_model.clusters import CLUSTERS_BY_CONF_KEY
 from components.matter.data_model.conformance import resolve_feature_requirements
 from components.matter.endpoints import Endpoint
 
 
 def test_events_enable_features() -> None:
     """The switch.initial_press requires the momentary_switch feature and should automatically enable the momentary_switch_release feature."""
-    cluster = CLUSTERS_BY_NAME["Switch"]
+    cluster = CLUSTERS_BY_CONF_KEY["switch"]
     event = cluster.get_event("initial_press")
 
     inferred_features = resolve_feature_requirements(
@@ -25,7 +25,7 @@ def test_events_enable_features() -> None:
 
 def test_feature_cascading() -> None:
     """The switch.short_release requires the momentary_switch_release feature, which in turn requires the momentary_switch feature, so both should be enabled."""
-    cluster = CLUSTERS_BY_NAME["Switch"]
+    cluster = CLUSTERS_BY_CONF_KEY["switch"]
     event = cluster.get_event("short_release")
 
     inferred_features = resolve_feature_requirements(
@@ -39,7 +39,7 @@ def test_feature_cascading() -> None:
 
 def test_Endpoint_feature_registration() -> None:
     """Test if features are actually registered on an endpoint."""
-    cluster = CLUSTERS_BY_NAME["Switch"]
+    cluster = CLUSTERS_BY_CONF_KEY["switch"]
     event = cluster.get_event("short_release")
     assert event is not None
 
@@ -53,7 +53,7 @@ def test_Endpoint_feature_registration() -> None:
     endpoint.register_usage(cluster, event)
     endpoint.resolve()
 
-    assert endpoint._cluster_configs["Switch"].enabled_features == {
+    assert endpoint._cluster_configs["switch"].enabled_features == {
         "MomentarySwitch": True,
         "MomentarySwitchRelease": True,
     }

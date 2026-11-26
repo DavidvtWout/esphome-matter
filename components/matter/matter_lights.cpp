@@ -28,6 +28,27 @@ get_color_temperature_range(const light::LightTraits &traits) {
   };
 }
 
+// Removing the colour temperature capability from the ColorCapabilities
+// attribute is not according to Matter spec. But the Matter spec is stupid so
+// who cares...
+esp_err_t remove_color_temperature_capability(uint16_t endpoint_id) {
+  esp_matter_attr_val_t value;
+  esp_err_t err = esp_matter::attribute::get_val(
+      endpoint_id, chip::app::Clusters::ColorControl::Id,
+      chip::app::Clusters::ColorControl::Attributes::ColorCapabilities::Id,
+      &value);
+  if (err != ESP_OK)
+    return err;
+
+  const uint16_t color_temperature_capability = static_cast<uint16_t>(
+      esp_matter::cluster::color_control::feature::color_temperature::get_id());
+  value.val.u16 &= ~color_temperature_capability;
+  return esp_matter::attribute::update(
+      endpoint_id, chip::app::Clusters::ColorControl::Id,
+      chip::app::Clusters::ColorControl::Attributes::ColorCapabilities::Id,
+      &value);
+}
+
 } // namespace
 
 void MatterComponent::register_light(light::LightState *light,
@@ -48,10 +69,26 @@ void MatterLightMapping::initialize() {
       this->has_server_cluster(chip::app::Clusters::LevelControl::Id);
   this->capabilities_.has_color =
       this->has_server_cluster(chip::app::Clusters::ColorControl::Id);
-  this->capabilities_.color_temperature_range =
-      get_color_temperature_range(this->light_->get_traits());
-  if (!this->has_server_cluster(chip::app::Clusters::ColorControl::Id))
+  auto traits = this->light_->get_traits();
+  bool supports_color_temperature =
+      traits.supports_color_capability(
+          light::ColorCapability::COLOR_TEMPERATURE) ||
+      traits.supports_color_capability(light::ColorCapability::COLD_WARM_WHITE);
+  if (this->capabilities_.has_color && supports_color_temperature) {
+    this->capabilities_.color_temperature_range =
+        get_color_temperature_range(traits);
+  } else {
     this->capabilities_.color_temperature_range = nullopt;
+  }
+  if (this->capabilities_.has_color && !supports_color_temperature) {
+    esp_err_t err = remove_color_temperature_capability(this->endpoint_id());
+    if (err != ESP_OK) {
+      ESP_LOGE(TAG,
+               "Failed to remove color temperature capability from endpoint "
+               "%u: %s",
+               this->endpoint_id(), esp_err_to_name(err));
+    }
+  }
 
   // Register attribute callbacks
   using namespace chip::app::Clusters;

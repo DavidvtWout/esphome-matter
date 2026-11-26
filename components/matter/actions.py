@@ -355,7 +355,7 @@ def register_bound_command_actions():
     for cluster in CLUSTERS:
         for command in cluster.commands:
             automation.register_action(
-                f"matter.{snake_case(cluster.name)}.{snake_case(command.name)}",
+                f"matter.{cluster.conf_key}.{snake_case(command.name)}",
                 MatterSendCommandAction,
                 cv.All(
                     _command_schema(command),
@@ -375,15 +375,13 @@ def _make_send_command_to_code(cluster: Cluster, command: Command):
             command,
         )
 
-    to_code.__name__ = (
-        f"matter_{snake_case(cluster.name)}_{snake_case(command.name)}_to_code"
-    )
+    to_code.__name__ = f"matter_{cluster.conf_key}_{snake_case(command.name)}_to_code"
     return to_code
 
 
 def _warn_deprecated_command(cluster: Cluster, command: Command):
-    old_name = f"matter.{snake_case(cluster.name)}.{snake_case(command.name)}"
-    new_path = f"{snake_case(cluster.name)}.{snake_case(command.name)}"
+    old_name = f"matter.{cluster.conf_key}.{snake_case(command.name)}"
+    new_path = f"{cluster.conf_key}.{snake_case(command.name)}"
 
     def validator(config):
         _LOGGER.warning(

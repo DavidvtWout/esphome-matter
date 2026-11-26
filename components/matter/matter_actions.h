@@ -37,7 +37,7 @@ public:
   }
   void set_value(TemplatableValue<T, Ts...> value) { this->value_ = value; }
 
-  void play(Ts... x) override {
+  void play(const Ts &...x) override {
     set_attribute_value(this->endpoint_id_, this->cluster_id_,
                         this->attribute_id_, this->value_.value(x...));
   }
@@ -58,7 +58,7 @@ public:
   void set_command_id(uint32_t command_id) { this->command_id_ = command_id; }
   void set_data(const char *data) { this->data_ = data; }
 
-  void play(Ts... x) override {
+  void play(const Ts &...x) override {
     send_client_command(this->endpoint_id_, this->cluster_id_,
                         this->command_id_, this->data_.c_str());
   }
@@ -80,7 +80,7 @@ public:
   void set_priority(uint8_t priority) { this->priority_ = priority; }
   void set_data(const char *data) { this->data_ = data; }
 
-  void play(Ts... x) override {
+  void play(const Ts &...x) override {
     send_event(this->endpoint_id_, this->cluster_id_, this->event_id_,
                this->priority_, this->data_.c_str());
   }
