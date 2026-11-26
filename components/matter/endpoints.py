@@ -119,6 +119,7 @@ class Endpoint:
         )
         self._device_types: list[DeviceType] = []
         self._light_variables = {}
+        self._extra_build_lines: list[str] = []
 
     @property
     def endpoint_id(self) -> int:
@@ -369,6 +370,19 @@ class Endpoint:
             self._light_variables[device_type.name] = light_
             cg.add(var.register_light(light_, self._endpoint_id))
 
+        if CONF_FAN_ID in device_config:
+            fan_ = await cg.get_variable(device_config[CONF_FAN_ID])
+            self.global_includes.add(
+                '#include "esphome/components/matter/matter_fans.h"'
+            )
+            self._extra_build_lines.extend(
+                (
+                    f"if (!esphome::matter::configure_fan_control(endpoint, {fan_}))",
+                    "  return false;",
+                )
+            )
+            cg.add(var.register_fan(fan_, self._endpoint_id))
+
         # Register extra features
         for enabled_feature in device_config.get(CONF_WITH_FEATURES, ()):
             for cluster in device_type.server_clusters:
@@ -453,7 +467,43 @@ class Endpoint:
         converter = cg.RawExpression(
             f"esphome::matter::conversion::{sensor_attribute.converter}"
         )
-        if sensor_attribute.sensor_type is BinarySensor:
+        updater = None
+        if sensor_attribute.updater is not None:
+            updater = cg.RawExpression(f"esphome::matter::{sensor_attribute.updater}")
+        if (
+            cluster.conf_key == "hepa_filter_monitoring"
+            and attribute.name == "Condition"
+        ):
+            degradation_direction = cluster.get_attribute("DegradationDirection")
+            self._extra_build_lines.extend(
+                (
+                    f"if (!esphome::matter::set_initial_enum8(endpoint, {cluster.id}, {degradation_direction.id}, 1))",
+                    "  return false;",
+                )
+            )
+        if updater is not None and sensor_attribute.sensor_type is BinarySensor:
+            cg.add(
+                var.register_binary_sensor_attribute(
+                    sensor,
+                    self._endpoint_id,
+                    cluster.id,
+                    attribute.id,
+                    converter,
+                    updater,
+                )
+            )
+        elif updater is not None:
+            cg.add(
+                var.register_sensor_attribute_with_updater(
+                    sensor,
+                    self._endpoint_id,
+                    cluster.id,
+                    attribute.id,
+                    converter,
+                    updater,
+                )
+            )
+        elif sensor_attribute.sensor_type is BinarySensor:
             args = [sensor, self._endpoint_id, cluster.id, attribute.id, converter]
             if sensor_attribute.code_driven:
                 if cluster.chip_include is not None:
@@ -569,6 +619,7 @@ class Endpoint:
                     )
                 )
 
+        lines.extend(self._extra_build_lines)
         lines.extend(("return true;", "}"))
         return "\n".join(lines)
 

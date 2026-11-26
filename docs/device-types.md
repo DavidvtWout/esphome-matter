@@ -182,11 +182,14 @@ matter:
 
 The `Air Quality Sensor` supports many concentration measurements as well as temperature and humidity. Each measurement gets its own cluster. These clusters are only created when a sensor_id is mapped to that measurement cluster.
 
+It also exposes the overall `air_quality` rating (the AirQuality cluster's `AirQuality` attribute, an enum from 0 to 6). That attribute lives in connectedhomeip rather than esp-matter's attribute store, so it is updated through the [`set_attribute`](actions.md#set_attribute) action.
+
 ```yaml
 matter:
   endpoints:
     1:
       air_quality_sensor:
+        air_quality: air_quality_id
         temperature: temperature_id
         relative_humidity: humidity_id
         carbon_monoxide: co_id
@@ -205,6 +208,26 @@ matter:
 
 This device type exposes clusters and attributes for power and energy measurements. However, this device type currently can't successfully be created in esphome-matter yet.
 
+# [fan](generated/device_types.md#fan) and [air_purifier](generated/device_types.md#air_purifier)
+
+Map an ESPHome `fan` to the Fan Control cluster with `fan_id`. Speed and on/off state sync both ways. Enable fan features with `with_features` (e.g. `multi_speed`, `rocking`). The `air_purifier` device type takes the same `fan_id` and can also expose HEPA / activated-carbon filter monitoring.
+
+```yaml
+matter:
+  endpoints:
+    1:
+      fan:
+        fan_id: my_fan
+        with_features:
+          - multi_speed
+    2:
+      air_purifier:
+        fan_id: my_fan
+        hepa_filter_condition: filter_condition_sensor
+```
+
+The Fan Control `auto` feature needs the `fan_auto` namespace fix (#116) to compile.
+
 # Untested / unsupported
 
 The following device types are untested. Many of them can still successfully be created. Interactions with these device types can be done with the [set_attribute](actions.md#set_attribute) action and [on_attribute](actions.md#on_attribute) trigger.
@@ -221,8 +244,6 @@ The following device types are untested. Many of them can still successfully be 
 - [`battery_storage`](generated/device_types.md#battery_storage)
 - [`secondary_network_interface`](generated/device_types.md#secondary_network_interface)
 - [`mode_select`](generated/device_types.md#mode_select)
-- [`fan`](generated/device_types.md#fan)
-- [`air_purifier`](generated/device_types.md#air_purifier)
 - [`water_freeze_detector`](generated/device_types.md#water_freeze_detector)
 - [`water_valve`](generated/device_types.md#water_valve)
 - [`water_leak_detector`](generated/device_types.md#water_leak_detector)

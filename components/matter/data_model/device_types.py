@@ -5,10 +5,15 @@ from pathlib import Path
 
 import esphome.config_validation as cv
 from esphome import automation
-from esphome.components import light
+from esphome.components import fan, light
 from esphome.const import CONF_LIGHT_ID
 
-from ..const import CONF_MAX_LEVEL, CONF_MIN_LEVEL, CONF_WITH_FEATURES
+from ..const import (
+    CONF_FAN_ID,
+    CONF_MAX_LEVEL,
+    CONF_MIN_LEVEL,
+    CONF_WITH_FEATURES,
+)
 from ..util import maybe_empty
 from .attributes import SENSOR_ATTRIBUTES, SensorAttribute
 from .clusters import CLUSTERS_BY_ID, Cluster, Feature
@@ -146,6 +151,9 @@ class DeviceType:
         # TODO: replace with something better
         if self.name.endswith("light"):
             schema[cv.Optional(CONF_LIGHT_ID)] = cv.use_id(light.LightState)
+
+        if self.name in ("fan", "air_purifier"):
+            schema[cv.Optional(CONF_FAN_ID)] = cv.use_id(fan.Fan)
 
         if self.name.endswith("light") and any(
             cluster.conf_key == "level_control" and cluster.required

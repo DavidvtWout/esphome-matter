@@ -25,6 +25,7 @@ CONF_MIN_LEVEL = "min_level"
 CONF_MAX_LEVEL = "max_level"
 CONF_ON_ATTRIBUTE = "on_attribute"
 
+CONF_FAN_ID = "fan_id"
 # Actions
 CONF_ENDPOINT_ID = "endpoint_id"
 CONF_CLUSTER_ID = "cluster_id"

@@ -99,6 +99,24 @@ esp_matter_attr_val_t boolean_state(bool value) {
   return esp_matter_bool(value);
 }
 
+esp_matter_attr_val_t filter_change_indication(bool value) {
+  return esp_matter_enum8(value ? 2 : 0);
+}
+
+esp_matter_attr_val_t filter_condition(float value) {
+  uint8_t condition = 0;
+  if (std::isfinite(value))
+    condition = static_cast<uint8_t>(std::clamp(std::lround(value), 0L, 100L));
+  return esp_matter_uint8(condition);
+}
+
+esp_matter_attr_val_t air_quality(float value) {
+  uint8_t level = 0;
+  if (std::isfinite(value) && value >= 1.0f)
+    level = static_cast<uint8_t>(std::min(6L, std::lround(value)));
+  return esp_matter_enum8(level);
+}
+
 esp_matter_attr_val_t concentration(float value) {
   nullable<float> converted;
   if (std::isfinite(value))
