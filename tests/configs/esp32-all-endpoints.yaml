@@ -61,11 +61,23 @@ matter:
         temperature: internal_temp
     101:
       temperature_sensor: internal_temp
+    102:
+      air_quality_sensor:
+        pm_2_5: test_pm25
+        air_quality: test_air_quality
 
 sensor:
   - platform: internal_temperature
     id: internal_temp
     name: Internal Temperature
+  - platform: template
+    id: test_pm25
+    name: Test PM2.5
+    lambda: return 5.0;
+  - platform: template
+    id: test_air_quality
+    name: Test Air Quality
+    lambda: return 1.0;
 
 output:
   - platform: template
