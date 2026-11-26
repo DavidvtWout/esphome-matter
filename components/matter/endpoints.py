@@ -249,7 +249,7 @@ class Endpoint:
             # ESPHome covers report normalized positions, so mapping one needs
             # position awareness per axis. Adapter limitation, not conformance.
             if (
-                cluster.name == "WindowCovering"
+                cluster.conf_key == "window_covering"
                 and CONF_COVER_ID in self._config.get("window_covering", {})
                 and (
                     "ABS" in resulting_codes
@@ -402,7 +402,7 @@ class Endpoint:
         config_var = f"device_config_{index}"
         device_config = self._config[device_type.conf_key]
         if device_type.name == "window_covering":
-            features = self._cluster_configs["WindowCovering"].enabled_features
+            features = self._cluster_configs["window_covering"].enabled_features
             lift, tilt = features.get("Lift"), features.get("Tilt")
             # Matter Type: roller shade, tilt-only blind, or lift-and-tilt blind.
             covering_type = (0x08 if lift else 0x07) if tilt else 0x00
