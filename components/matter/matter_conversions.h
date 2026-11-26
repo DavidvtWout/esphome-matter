@@ -19,6 +19,9 @@ bool convert_attribute_value(const esp_matter_attr_val_t &value,
 
 esp_matter_attr_val_t ampere(float value);
 esp_matter_attr_val_t boolean_state(bool value);
+esp_matter_attr_val_t filter_change_indication(bool value);
+esp_matter_attr_val_t filter_condition(float value);
+esp_matter_attr_val_t air_quality(float value);
 esp_matter_attr_val_t concentration(float value);
 esp_matter_attr_val_t flow(float value);
 esp_matter_attr_val_t frequency(float value);

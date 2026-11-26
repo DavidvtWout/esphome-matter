@@ -101,7 +101,15 @@ matter.set_attribute:
 
 Currently, the value must be a raw matter value, usually some kind of integer. Support for units (such as `50%` in the above example) will be added later.
 
-More complicated values such as structs aren't supported yet. Also, some attributes require delegates in esp-matter and this has also not been implemented yet.
+More complicated values such as structs aren't supported yet.
+
+Some clusters keep their own state inside connectedhomeip instead of in esp-matter's attribute store. For these, `set_attribute` calls the cluster's own setter. This is implemented for:
+
+- `fan_control`: `fan_mode`, `percent_setting`, `percent_current`, `speed_setting`, `speed_current`
+- `air_quality`: `air_quality`
+- `hepa_filter_monitoring` and `activated_carbon_filter_monitoring`: `condition`, `change_indication`
+
+Other attributes on such clusters can't be set yet.
 
 # on_attribute
 

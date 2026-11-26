@@ -3,6 +3,7 @@
 
 #include "esphome/core/log.h"
 #include "matter_attributes.h"
+#include "matter_code_driven.h"
 #include "matter_component.h"
 
 #include <platform/CHIPDeviceLayer.h>
@@ -182,6 +183,17 @@ void set_attribute_value_on_matter_thread(uint16_t endpoint_id,
              " attribute=0x%08" PRIx32,
              static_cast<unsigned>(type), endpoint_id, cluster_id,
              attribute_id);
+    return;
+  }
+
+  if (auto updater = find_code_driven_updater(cluster_id, attribute_id)) {
+    CHIP_ERROR chip_err = updater(endpoint_id, cluster_id, attribute_value);
+    if (chip_err != CHIP_NO_ERROR) {
+      ESP_LOGE(TAG,
+               "Failed to set attribute: endpoint=%u cluster=0x%08" PRIx32
+               " attribute=0x%08" PRIx32 ": %s",
+               endpoint_id, cluster_id, attribute_id, chip_err.AsString());
+    }
     return;
   }
 

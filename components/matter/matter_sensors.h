@@ -3,6 +3,7 @@
 #include "esphome/core/defines.h"
 #ifdef USE_MATTER
 
+#include "matter_code_driven.h"
 #include "matter_conversions.h"
 #include "matter_endpoints.h"
 
@@ -20,8 +21,7 @@ namespace esphome::matter {
 
 using SensorValueConverter = esp_matter_attr_val_t (*)(float);
 using BinarySensorValueConverter = esp_matter_attr_val_t (*)(bool);
-using SensorAttributeUpdater = CHIP_ERROR (*)(uint16_t, uint32_t,
-                                              esp_matter_attr_val_t);
+using SensorAttributeUpdater = CodeDrivenAttributeUpdater;
 
 #ifdef USE_SENSOR
 template <

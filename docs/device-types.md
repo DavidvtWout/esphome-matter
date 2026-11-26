@@ -182,11 +182,14 @@ matter:
 
 The `Air Quality Sensor` supports many concentration measurements as well as temperature and humidity. Each measurement gets its own cluster. These clusters are only created when a sensor_id is mapped to that measurement cluster.
 
+It also exposes the overall `air_quality` rating (the AirQuality cluster's `AirQuality` attribute, an enum from 0 to 6). That attribute lives in connectedhomeip rather than esp-matter's attribute store, so it is updated through the [`set_attribute`](actions.md#set_attribute) action.
+
 ```yaml
 matter:
   endpoints:
     1:
       air_quality_sensor:
+        air_quality: air_quality_id
         temperature: temperature_id
         relative_humidity: humidity_id
         carbon_monoxide: co_id
