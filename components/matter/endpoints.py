@@ -606,6 +606,7 @@ class Endpoint:
                     )
                 )
 
+        lines.extend(self._extra_build_lines)
         lines.extend(("return true;", "}"))
         return "\n".join(lines)
 
@@ -619,7 +620,6 @@ class EndpointRegistry:
         self._endpoints.append(endpoint)
         self._lookup[endpoint.endpoint_id] = endpoint
         self._lookup[endpoint.config[CONF_ID]] = endpoint
-        lines.extend(self._extra_build_lines)
 
     def lookup(self, endpoint_reference: int | ID) -> Endpoint:
         endpoint = self._lookup.get(endpoint_reference)
