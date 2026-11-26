@@ -7,6 +7,7 @@
 #include "matter_text_sensors.h"
 
 #include "matter_attributes.h"
+#include "matter_covers.h"
 #include "matter_endpoints.h"
 #include "matter_lights.h"
 #include "matter_sensors.h"
@@ -73,6 +74,9 @@ public:
   std::vector<MatterAttributeTriggerBase *> attribute_triggers_;
 
   // Register ESPHome entities
+#ifdef USE_COVER
+  void register_cover(cover::Cover *cover, uint16_t endpoint_id);
+#endif // USE_COVER
 #ifdef USE_LIGHT
   void register_light(light::LightState *light, uint16_t endpoint_id);
 #endif // USE_LIGHT
